@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Trisoft.ISHRemote.Objects.Enumerations" Collapsed="true">
+    <Position X="8.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Objects\Enumerations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.IshEvents" Collapsed="true">
+    <Position X="8.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEACAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\IshEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.IshFields" Collapsed="true">
+    <Position X="1.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gIgAAAAEAAAAAAAAMACAAASAAAAAAAAMAAAAAEAAgAA=</HashCode>
+      <FileName>Objects\IshFields.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.IshFolders" Collapsed="true">
+    <Position X="8.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACAAAAAIAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\IshFolders.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.IshLovValues" Collapsed="true">
+    <Position X="8.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAQA=</HashCode>
+      <FileName>Objects\IshLovValues.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.IshObjects" Collapsed="true">
+    <Position X="8.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\IshObjects.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.IshTypeFieldSetup" Collapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAIAAAQAAAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\IshTypeFieldSetup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.IshFeatures" Collapsed="true">
+    <Position X="8.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAQAAAAAAAANAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\IshFeatures.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshTypeFieldDefinitionCompare" Collapsed="true">
+    <Position X="4.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Objects\Public\IshTypeFieldDefinitionCompare.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshTypeFieldDefinition" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAIAAECIgAAQBAABBAASAIAMAABABAQAAAkAIAAA=</HashCode>
+      <FileName>Objects\Public\IshTypeFieldDefinition.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshVersion" Collapsed="true">
+    <Position X="0.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAECkAAAAACAAAEAAABAAAAAEAAAAAAA=</HashCode>
+      <FileName>Objects\Public\IshVersion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshSession" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CHCAAAAQWiGAQQnIREAAQYWSoBQBFgIAU5YQQRiIjoA=</HashCode>
+      <FileName>Objects\Public\IshSession.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshRequestedMetadataField" Collapsed="true">
+    <Position X="1.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Public\IshRequestedMetadataField.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshMetadataFilterField" Collapsed="true">
+    <Position X="5.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAIAAAgAAAAAkAAAAAAAAABAAAAAAIAAAoAAAAAAA=</HashCode>
+      <FileName>Objects\Public\IshMetadataFilterField.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshMetadataField" Collapsed="true">
+    <Position X="3.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAIAAAAAAAAAkAAAAAAAAAAAAAAAAIAAAoAAAAAAA=</HashCode>
+      <FileName>Objects\Public\IshMetadataField.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshField" Collapsed="true">
+    <Position X="3.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAIAAAAAAAAAkAgAAAAAQQAAAAAIANAAAIAAAAEAA=</HashCode>
+      <FileName>Objects\Public\IshField.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshApplicationSetting" Collapsed="true">
+    <Position X="10.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAoAACAAAMAAAAAQAIAAAAAoAAAAACICAAAACAA=</HashCode>
+      <FileName>Objects\Public\IshApplicationSetting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshApplicationSettings" Collapsed="true">
+    <Position X="8.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAMAAAAAACgAABAACAAAAAAAAAAIAAAAgAAQABAAEAA=</HashCode>
+      <FileName>Objects\Public\IshApplicationSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshFolder" Collapsed="true">
+    <Position X="10.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAEAAEBAAAAAAAAAAAAAAAAAAAAAAAAAgAI=</HashCode>
+      <FileName>Objects\Public\IshFolder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshEvent" Collapsed="true">
+    <Position X="10.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgSABAAABAAAAAAAQEAAAAAAAAEAABAAgAAAA=</HashCode>
+      <FileName>Objects\Public\IshEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshEventData" Collapsed="true">
+    <Position X="12" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAiAAQAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Objects\Public\IshEventData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshLovValue" Collapsed="true">
+    <Position X="10.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAhUAAgAAAEABAAAAAAEAAAAAAgAAAQAAgAAAA=</HashCode>
+      <FileName>Objects\Public\IshLovValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshFeature" Collapsed="true">
+    <Position X="10.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAIAAAAAAAAAAAAAAAAAQAAAAAAAAIAAAgAAAAAAA=</HashCode>
+      <FileName>Objects\Public\IshFeature.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshObject" Collapsed="true">
+    <Position X="10.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAASAAAAABAAAAAAAQAAAAAIQAQACAAAAgAAAA=</HashCode>
+      <FileName>Objects\Public\IshObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshData" Collapsed="true">
+    <Position X="12" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAiAAQQAAAAAAAAAAAAAAAAAEAAAAABQA=</HashCode>
+      <FileName>Objects\Public\IshData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Objects.Public.IshDataObject" Collapsed="true">
+    <Position X="13.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEAAAAAACABAgAQAQAAAAAQBAAACAAAAAAEAAAIABQA=</HashCode>
+      <FileName>Objects\Public\IshDataObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

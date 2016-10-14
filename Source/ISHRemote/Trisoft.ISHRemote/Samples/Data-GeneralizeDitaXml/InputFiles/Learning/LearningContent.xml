@@ -1,0 +1,129 @@
+﻿<!--Arbortext, Inc., 1988-2006, v.4002-->
+<!DOCTYPE learningContent PUBLIC "-//OASIS//DTD DITA Learning Content//EN" "../../dtd/learningContent.dtd"[]>
+<learningContent id="GUID-7952A6DF-6D75-495D-A213-A63F400F38AE" xml:lang="en">
+  <title>The DITA learning and training content specialization</title>
+  <shortdesc>This topic introduces the technical specifications for DITA learning
+and training content</shortdesc>
+  <learningContentbody>
+    <lcIntro>
+      <p>The DITA for learning technical specifications provide a starting
+point for those professionals looking to take advantage of DITA and apply
+it to learning. The specifications were drawn up by a sub-committee of the
+OASIS DITA Technical Committee, composed of DITA experts and learning professionals,
+all with a keen interest in creating a specialization that addresses the unique
+needs of the learning community. These specifications are not meant to be
+the end point, but rather the launching pad and the foundation from which
+DITA extends itself into the world of learning and training.</p>
+    </lcIntro>
+  </learningContentbody>
+  <concept id="_2">
+    <title>Introducing the DITA for Learning Spec</title>
+    <conbody>
+      <section>
+        <title>The topic types</title>
+        <dl>
+          <dlentry>
+            <dt>Learning plan</dt>
+            <dd>The learning plan allows a learning design team to provide descriptive
+data about the learning need being addressed and the mechanics of how it will
+be addressed. It provides a way for learning professionals to chart a clear
+path for a learning endeavor prior to authoring any actual content. The data
+provided in this topic type will provide entire learning teams, including
+design and development personnel the path and tools that will most likely
+be required to fulfill the obligations of the learning need.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Learning overview</dt>
+            <dd>The learning overview identifies the learning objectives, includes other
+information helpful to the learner, such as prerequisites, duration, intended
+audience, and can include information and strategies that seek to gain attention
+and stimulate recall of prior learning. A learning overview provides a bird's
+eye view of the content and let a potential learner know what to expect as
+they proceed through the rest of the content.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Learning summary</dt>
+            <dd>The learning summary recaps and provides context for the learning objectives,
+provides guidance to reinforce learning and long-term memory, and may pose
+questions to enhance encoding and verification of the learning content. The
+learning summary brings closure for the learner on the content and summarizes
+the key learning points covered in the main body of the content.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Learning content</dt>
+            <dd>The learning content provides the learning content itself, and enables
+direct use of content from DITA task, concept, and reference topics, as well
+as additional content of any topic type that supports the specific objectives
+declared in the learning overview topic type. It is here that a learner can
+expect to find the actual "content" that supports the objectives identified
+by the overview.</dd>
+          </dlentry>
+          <dlentry>
+            <dt>Learning assessment interactions</dt>
+            <dd>The learning assessment presents instruments that measure progress, encourage
+retrieval, and stimulate reinforcement of the learning content.</dd>
+          </dlentry>
+        </dl>
+      </section>
+      <section>
+        <title>The Interactions Domain</title>
+        <p>Although Interactions
+were built to support the notion of assessment they have been created as a
+DITA domain, and made available in the lcInteractions element in learningAssessmentbody.</p>
+        <p>Because
+the interactions are defined as a DITA domain, however, they can be made available
+for use in other topic types, if that is desirable. For example, you could
+make lcInteractions available for use in learning activities within the body
+of a learning content topic.</p>
+      </section>
+      <section>
+        <title>The learning map domain</title>
+        <p>The learning map domain defines the following set of specialized topicref
+elements:<dl><dlentry><dt>learningGroup</dt><dd>A container to introduce and group learning objects into higher-level
+organizations, such as course-level, module-level, or lesson-level. A learningGroup
+can contain other learningGroup elements, allowing you to organize learning
+content at course, module, or other higher-levels of hierarchy.</dd></dlentry><dlentry><dt>learningObject</dt><dd>A container to introduce and group the topic references for a learning
+object. </dd></dlentry><dlentry><dt>learningPlanRef</dt><dd>A topic reference to a learning plan topic.</dd></dlentry><dlentry><dt>learningOverviewRef</dt><dd>A topic reference to a learning overview topic, which introduces the learning
+object.</dd></dlentry><dlentry><dt>learningContentRef</dt><dd>One or more topic references to a learning content topic, or a topic,
+task, concept, reference or other specialized topic.</dd></dlentry><dlentry><dt>learningSummaryRef</dt><dd>A topic reference to a learning summary topic.</dd></dlentry><dlentry><dt>learningPreAssessmentRef</dt><dd>A topic reference to a learning assessment topic that is used as a pre-assessment.</dd></dlentry><dlentry><dt>learningPostAssessmentRef</dt><dd>A topic reference to a learning assessment topic that is used as a post-assessment.</dd></dlentry></dl></p>
+        <p>A DITA learning object in a map domain looks like the following:</p>
+        <pre>
+&lt;learningObject collection-type="sequence" href="../ImportModules/top_Overview.dita" type="learningOverview"&gt;
+  &lt;learningPlanRef href="../ImportModules/learningPlan_topic.dita" type="learningPlan"/&gt;
+  &lt;learningOverviewRef href="../ImportModules/lo_Overview.dita" type="learningOverview"/&gt;
+  &lt;learningContentRef href="../ImportModules/lo_Content.dita" type="learningContent"/&gt;
+  &lt;learningPostAssessmentRef href="../ImportModules/lo_Assess.dita" type="learningAssessment/"&gt;
+  &lt;learningSummaryRef href="../ImportModules/lo_Summary.dita" type="learningSummary"/&gt;
+&lt;learningObject&gt;
+</pre>
+      </section>
+      <section>
+        <title>Learning metadata</title>
+        <p>In addition to standard DITA
+metadata, learning-specific metadata is also available for use with learning
+topics and learning maps, through a DITA domain specialization. This learning
+metadata follows the IEEE LOM standard for learning objects metadata. </p>
+        <ul>
+          <li>lcLom, makes the lom elements available in the learning topics</li>
+          <li>lomAggregationLevel </li>
+          <li>lomContext </li>
+          <li>lomCoverage </li>
+          <li>lomDifficulty </li>
+          <li>lomInstallationRemarks </li>
+          <li>lomIntendedUserRole </li>
+          <li>lomInteractivityLevel </li>
+          <li>lomInteractivityType </li>
+          <li>lomLearningResourceType </li>
+          <li>lomOtherPlatformRequirements </li>
+          <li>lomSemanticDensity </li>
+          <li>lomStructure </li>
+          <li>lomTechRequirement </li>
+          <li>lomTypicalAgeRange </li>
+          <li>lomTypicalLearningTime</li>
+        </ul>
+      </section>
+    </conbody>
+  </concept>
+</learningContent>
+<?Pub Caret?>
+<?Pub *0000005034?>

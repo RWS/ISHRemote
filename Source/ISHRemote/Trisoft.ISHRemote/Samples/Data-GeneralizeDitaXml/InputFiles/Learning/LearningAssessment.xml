@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Arbortext, Inc., 1988-2006, v.4002-->
+<!DOCTYPE learningAssessment PUBLIC "-//OASIS//DTD DITA Learning Assessment//EN" "../../dtd/learningAssessment.dtd"[]>
+<learningAssessment id="GUID-A8D57F0E-FBB2-4D36-BB7C-1032FE23746A" xml:lang="en">
+  <title>Quiz: The DITA learning and training content specialization</title>
+  <shortdesc ishresult="EL WES EHEHEHEH">This is a set of questions to check your understanding.</shortdesc>
+  <learningAssessmentbody>
+    <lcInteraction>
+      <!--Matching Interaction                    -->
+      <lcMatching id="LearnSpecMATCH">
+        <title>DITA Learning Specifications</title>
+        <lcQuestion> Match the following descriptions of the DITA for Learning topic
+types with their respective types </lcQuestion>
+        <lcMatchTable>
+          <lcMatchingHeader>
+            <lcItem>Topic Type</lcItem>
+            <lcMatchingItem>Description</lcMatchingItem>
+          </lcMatchingHeader>
+          <lcMatchingPair>
+            <lcItem> Learning Plan</lcItem>
+            <lcMatchingItem>Allows a learning design team to provide descriptive data
+around the learning need being addressed and the mechanics of how it will
+be addressed </lcMatchingItem>
+          </lcMatchingPair>
+          <lcMatchingPair>
+            <lcItem> Learning Overview </lcItem>
+            <lcMatchingItem>Identifies the learning objectives, includes other information
+helpful to the learner, such as prerequisites, duration, intended audience,
+and can include information and strategies that seeks to gain attention and
+stimulate recall of prior learning.</lcMatchingItem>
+          </lcMatchingPair>
+          <lcMatchingPair>
+            <lcItem> Learning Summary </lcItem>
+            <lcMatchingItem> Recaps and provides context for the learning objectives,
+provides guidance to reinforce learning and long-term memory, and may pose
+questions to enhance encoding and verification of the learning content.</lcMatchingItem>
+          </lcMatchingPair>
+          <lcMatchingPair>
+            <lcItem> Learning Content </lcItem>
+            <lcMatchingItem>Provides the learning content itself, and enables direct use
+of content from DITA task, concept, and reference topics, as well as additional
+content of any topic type that supports specific objectives declared in the
+Learning Overview topic type.</lcMatchingItem>
+          </lcMatchingPair>
+        </lcMatchTable>
+      </lcMatching>
+      <lcTrueFalse id="LearnSpecTF1">
+        <title>DITA learning specifications</title>
+        <lcQuestion>The learning map domain provides a grouping of learning topic
+types into a singular learning object using the topic types defined in the
+spec.</lcQuestion>
+        <lcAnswerOptionGroup>
+          <lcAnswerOption>
+            <lcAnswerContent>True</lcAnswerContent>
+            <lcCorrectResponse />
+            <lcFeedback>Excellent. That is the correct response</lcFeedback>
+          </lcAnswerOption>
+          <lcAnswerOption>
+            <lcAnswerContent>False</lcAnswerContent>
+            <lcFeedback>Sorry. The answer was true</lcFeedback>
+          </lcAnswerOption>
+        </lcAnswerOptionGroup>
+      </lcTrueFalse>
+    </lcInteraction>
+  </learningAssessmentbody>
+</learningAssessment>

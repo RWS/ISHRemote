@@ -1,0 +1,1315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(SolutionDir)Build.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{68CB1E31-D4CA-41B0-967E-23E73FB76F30}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Trisoft.ISHRemote</RootNamespace>
+    <AssemblyName>ISHRemote</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\ISHRemote.xml</DocumentationFile>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <NoStdLib>false</NoStdLib>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\ISHRemote.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>true</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\..\..\Shared\InfoShare.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Management.Automation" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cmdlets\Application\ApplicationCmdlet.cs" />
+    <Compile Include="Cmdlets\Application\GetIshVersion.cs" />
+    <Compile Include="Cmdlets\DocumentObj\AddIshDocumentObj.cs" />
+    <Compile Include="Cmdlets\DocumentObj\MoveIshDocumentObj.cs" />
+    <Compile Include="Cmdlets\DocumentObj\GetIshDocumentObjData.cs" />
+    <Compile Include="Cmdlets\DocumentObj\GetIshDocumentObjFolderLocation.cs" />
+    <Compile Include="Cmdlets\DocumentObj\RemoveIshDocumentObj.cs" />
+    <Compile Include="Cmdlets\DocumentObj\GetIshDocumentObj.cs" />
+    <Compile Include="Cmdlets\DocumentObj\DocumentObjCmdlet.cs" />
+    <Compile Include="Cmdlets\DocumentObj\FindIshDocumentObj.cs" />
+    <Compile Include="Cmdlets\DocumentObj\SetIshDocumentObj.cs" />
+    <Compile Include="Cmdlets\EDT\AddIshEDT.cs" />
+    <Compile Include="Cmdlets\EDT\EDTCmdlet.cs" />
+    <Compile Include="Cmdlets\EDT\FindIshEDT.cs" />
+    <Compile Include="Cmdlets\EDT\RemoveIshEDT.cs" />
+    <Compile Include="Cmdlets\EDT\GetIshEDT.cs" />
+    <Compile Include="Cmdlets\EDT\SetIshEDT.cs" />
+    <Compile Include="Cmdlets\EventMonitor\EventCmdlet.cs" />
+    <Compile Include="Cmdlets\EventMonitor\GetIshEvent.cs" />
+    <Compile Include="Cmdlets\Feature\FeatureCmdlet.cs" />
+    <Compile Include="Cmdlets\Field\FieldCmdlet.cs" />
+    <Compile Include="Cmdlets\Field\GetIshMetadataField.cs" />
+    <Compile Include="Cmdlets\FileProcessor\FileProcessorCmdlet.cs" />
+    <Compile Include="Cmdlets\FileProcessor\NewIshDitaGeneralizedXml.cs" />
+    <Compile Include="Cmdlets\Folder\AddIshFolder.cs" />
+    <Compile Include="Cmdlets\Folder\GetIshFolderLocation.cs" />
+    <Compile Include="Cmdlets\Folder\MoveIshFolder.cs" />
+    <Compile Include="Cmdlets\Folder\GetIshFolderContent.cs" />
+    <Compile Include="Cmdlets\Folder\SetIshFolder.cs" />
+    <Compile Include="Cmdlets\Folder\RemoveIshFolder.cs" />
+    <Compile Include="Cmdlets\Folder\GetIshFolder.cs" />
+    <Compile Include="Cmdlets\Folder\FolderCmdlet.cs" />
+    <Compile Include="Cmdlets\ListOfValues\AddIshLovValue.cs" />
+    <Compile Include="Cmdlets\ListOfValues\SetIshLovValue.cs" />
+    <Compile Include="Cmdlets\ListOfValues\RemoveIshLovValue.cs" />
+    <Compile Include="Cmdlets\ListOfValues\GetIshLovValue.cs" />
+    <Compile Include="Cmdlets\ListOfValues\ListOfValuesCmdlet.cs" />
+    <Compile Include="Cmdlets\OutputFormat\AddIshOutputFormat.cs" />
+    <Compile Include="Cmdlets\OutputFormat\FindIshOutputFormat.cs" />
+    <Compile Include="Cmdlets\OutputFormat\OutputFormatCmdlet.cs" />
+    <Compile Include="Cmdlets\OutputFormat\RemoveIshOutputFormat.cs" />
+    <Compile Include="Cmdlets\OutputFormat\GetIshOutputFormat.cs" />
+    <Compile Include="Cmdlets\OutputFormat\SetIshOutputFormat.cs" />
+    <Compile Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.cs" />
+    <Compile Include="Cmdlets\PublicationOutput\FindIshPublicationOutput.cs" />
+    <Compile Include="Cmdlets\PublicationOutput\PublicationOutputCmdlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cmdlets\PublicationOutput\StopIshPublicationOutput.cs" />
+    <Compile Include="Cmdlets\PublicationOutput\PublishIshPublicationOutput.cs" />
+    <Compile Include="Cmdlets\PublicationOutput\RemoveIshPublicationOutput.cs" />
+    <Compile Include="Cmdlets\PublicationOutput\GetIshPublicationOutputFolderLocation.cs" />
+    <Compile Include="Cmdlets\PublicationOutput\GetIshPublicationOutput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cmdlets\PublicationOutput\GetIshPublicationOutputData.cs" />
+    <Compile Include="Cmdlets\PublicationOutput\SetIshPublicationOutput.cs" />
+    <Compile Include="Cmdlets\Session\SessionCmdlet.cs" />
+    <Compile Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.cs" />
+    <Compile Include="Cmdlets\Settings\GetIshSetting.cs" />
+    <Compile Include="Cmdlets\Settings\GetIshTimeZone.cs" />
+    <Compile Include="Cmdlets\Settings\GetIshTypeFieldDefinition.cs" />
+    <Compile Include="Cmdlets\Settings\SetIshSetting.cs" />
+    <Compile Include="Cmdlets\Settings\SettingsCmdlet.cs" />
+    <Compile Include="Cmdlets\TrisoftCmdletLogger.cs" />
+    <Compile Include="Cmdlets\UserGroup\AddIshUserGroup.cs" />
+    <Compile Include="Cmdlets\UserGroup\FindIshUserGroup.cs" />
+    <Compile Include="Cmdlets\UserGroup\GetIshUserGroup.cs" />
+    <Compile Include="Cmdlets\UserGroup\RemoveIshUserGroup.cs" />
+    <Compile Include="Cmdlets\UserGroup\SetIshUserGroup.cs" />
+    <Compile Include="Cmdlets\UserGroup\UserGroupCmdlet.cs" />
+    <Compile Include="Cmdlets\UserRole\AddIshUserRole.cs" />
+    <Compile Include="Cmdlets\UserRole\FindIshUserRole.cs" />
+    <Compile Include="Cmdlets\UserRole\GetIshUserRole.cs" />
+    <Compile Include="Cmdlets\UserRole\RemoveIshUserRole.cs" />
+    <Compile Include="Cmdlets\UserRole\SetIshUserRole.cs" />
+    <Compile Include="Cmdlets\UserRole\UserRoleCmdlet.cs" />
+    <Compile Include="Cmdlets\User\AddIshUser.cs" />
+    <Compile Include="Cmdlets\User\FindIshUser.cs" />
+    <Compile Include="Cmdlets\User\GetIshUser.cs" />
+    <Compile Include="Cmdlets\User\RemoveIshUser.cs" />
+    <Compile Include="Cmdlets\User\SetIshUser.cs" />
+    <Compile Include="Cmdlets\User\UserCmdlet.cs" />
+    <Compile Include="Objects\FieldElements.cs" />
+    <Compile Include="HelperClasses\CertificateValidationHelper.cs" />
+    <Compile Include="HelperClasses\EnumConverter.cs" />
+    <Compile Include="HelperClasses\SecureStringConversions.cs" />
+    <Compile Include="HelperClasses\TriDKXmlSetupHelper.cs" />
+    <Compile Include="InfoShareWcfConnection.cs" />
+    <Compile Include="InfoShareWcfConnectionParameters.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Objects\Public\IshRequestedMetadataField.cs" />
+    <Compile Include="Objects\Public\IshTypeFieldDefinition.cs" />
+    <Compile Include="Objects\Public\IshTypeFieldDefinitionCompare.cs" />
+    <Compile Include="Objects\IshTypeFieldSetup.cs" />
+    <Compile Include="Properties\Resouces\ISHTypeFieldSetup.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ISHTypeFieldSetup.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Objects\Public\IshEvent.cs" />
+    <Compile Include="Objects\Public\IshEventData.cs" />
+    <Compile Include="Objects\IshEvents.cs" />
+    <Compile Include="Objects\IshLovValues.cs" />
+    <Compile Include="Objects\Public\IshLovValue.cs" />
+    <Compile Include="Objects\IshFolders.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\Application25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\Baseline25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\DocumentObj25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\EDT25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\EventMonitor25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\Folder25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ListOfValues25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\MetadataBinding25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\OutputFormat25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PublicationOutput25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\Search25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\Settings25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\TranslationJob25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\TranslationTemplate25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\User25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UserGroup25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UserRole25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Cmdlets\Feature\SetIshFeature.cs" />
+    <Compile Include="HelperClasses\DitaXmlCatalogMatch.cs" />
+    <Compile Include="HelperClasses\DitaXmlCatalogMatchFilter.cs" />
+    <Compile Include="HelperClasses\DitaXmlGeneralization.cs" />
+    <Compile Include="HelperClasses\DitaXmlGeneralizationCatalogMapping.cs" />
+    <Compile Include="HelperClasses\FileNameHelper.cs" />
+    <Compile Include="HelperClasses\MimeTypeHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HelperClasses\StringEnum.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HelperClasses\XmlOASISCatalog.cs" />
+    <Compile Include="HelperClasses\XmlResolverUsingCatalog.cs" />
+    <Compile Include="Objects\Public\IshFeature.cs" />
+    <Compile Include="Objects\IshFeatures.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Public\IshApplicationSetting.cs" />
+    <Compile Include="Objects\Public\IshApplicationSettings.cs" />
+    <Compile Include="Objects\Public\IshData.cs" />
+    <Compile Include="Objects\Public\IshDataObject.cs" />
+    <Compile Include="Objects\Public\IshFolder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Public\IshVersion.cs" />
+    <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
+    <None Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.Tests.ps1" />
+    <None Include="Objects\_ObjectsDiagram.cd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\basemap.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\basetopic.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\delayResolutionDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\hazardstatementDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\highlightDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\indexingDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\mapGroup.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\topicDefn.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\utilitiesDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\abbreviateDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\concept.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\glossary.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\glossentry.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\glossgroup.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\glossrefDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\map.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\programmingDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\reference.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\softwareDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\task.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\taskreqDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\topic.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\uiDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\xnal\dtd\xnalDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\basemap.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\basetopic.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\commonElements.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\delayResolutionDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\hazardstatementDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\highlightDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\indexingDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\mapGroup.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\topicDefn.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\utilitiesDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\commonElementGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\commonElementMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\delayResolutionDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\ditaarch.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\hazardstatementDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\highlightDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\indexingDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\mapGroupMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\mapGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\mapMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\metaDeclGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\metaDeclMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\tblDeclGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\tblDeclMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\topicGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\topicMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\utilitiesDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\xsd\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\bookmap\dtd\bookmap.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\bookmap\dtd\bookmap.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\bookmap\xsd\bookmap.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\bookmap\xsd\bookmapGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\bookmap\xsd\bookmapMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\ditaval\dtd\ditaval.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\ditaval\xsd\ditaval.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningAssessment.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningAssessment.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningBase.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningBookmap.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningContent.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningContent.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningInteractionBaseDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningMap.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningMapDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningMetadataDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningOverview.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningOverview.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningPlan.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningPlan.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningSummary.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningSummary.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningAssessment.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningAssessmentGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningAssessmentMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningBaseGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningBaseMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningBookmap.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningContent.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningContentGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningContentMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningInteractionBaseDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningMap.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningMapDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningMapGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningMetadataDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningOverview.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningOverviewGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningOverviewMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningPlan.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningPlanGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningPlanMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningSummary.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningSummaryGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\xsd\learningSummaryMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\machineryIndustry\dtd\machineryTask.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\machineryIndustry\xsd\machineryTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\machineryIndustry\xsd\machineryTaskbodyConstraintIntMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\machineryIndustry\xsd\machineryTaskbodyConstraintMod.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\machineryIndustry\xsd\machineryTaskbodyConstraintMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\dtd\classifyDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\dtd\classifyMap.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\dtd\subjectScheme.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\dtd\subjectScheme.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\xsd\classifyDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\xsd\classifyMap.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\xsd\subjectScheme.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\xsd\subjectSchemeGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\xsd\subjectSchemeMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\abbreviateDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\concept.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\concept.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\ditabase.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\generalTask.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossary.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossary.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossentry.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossentry.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossgroup.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossgroup.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossrefDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\map.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\programmingDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\reference.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\reference.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\softwareDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\task.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\task.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\taskreqDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\topic.dtd" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\uiDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\abbreviateDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\concept.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\conceptGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\conceptMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\ditabase.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\generalTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossary.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossaryGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossaryMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossentry.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossentryGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossentryMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossgroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossgroupGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossgroupMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\glossrefDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\map.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\programmingDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\reference.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\referenceGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\referenceMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\softwareDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\strictTaskbodyConstraintMod.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\strictTaskbodyConstraintMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\task.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\taskGrp.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\taskMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\taskreqDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\topic.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\xsd\uiDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\trisoft\base\xsd\commonElementMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\trisoft\base\xsd\hazardstatementDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\trisoft\base\xsd\tblDeclMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\trisoft\technicalContent\xsd\glossentryMod.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\trisoft\technicalContent\xsd\softwareDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\dtd\xnalDomain.ent" />
+    <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\xsd\xnalDomain.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Settings25ServiceReference\Settings1.disco" />
+    <None Include="Cmdlets\Application\GetIshVersion.Tests.ps1" />
+    <None Include="Cmdlets\DocumentObj\AddIshDocumentObj.Tests.ps1" />
+    <None Include="Cmdlets\DocumentObj\GetIshDocumentObjFolderLocation.Tests.ps1" />
+    <None Include="Cmdlets\Field\GetIshMetadataField.Tests.ps1" />
+    <None Include="Cmdlets\Field\SetIshRequestedMetadataField.Tests.ps1" />
+    <None Include="Cmdlets\Field\SetIshMetadataFilterField.Tests.ps1" />
+    <None Include="Cmdlets\Field\SetIshMetadataField.Tests.ps1" />
+    <None Include="Cmdlets\Folder\AddIshFolder.Tests.ps1" />
+    <None Include="Cmdlets\Folder\MoveIshFolder.Tests.ps1" />
+    <None Include="Cmdlets\Folder\RemoveIshFolder.Tests.ps1" />
+    <None Include="Cmdlets\Folder\GetIshFolder.Tests.ps1" />
+    <None Include="Cmdlets\Folder\GetIshFolderContent.Tests.ps1" />
+    <None Include="Cmdlets\Folder\GetIshFolderLocation.Tests.ps1" />
+    <None Include="Cmdlets\Folder\SetIshFolder.Tests.ps1" />
+    <None Include="Cmdlets\ListOfValues\AddIshLovValue.Tests.ps1" />
+    <None Include="Cmdlets\PublicationOutput\GetPublicationOutputFolderLocation.Tests.ps1" />
+    <None Include="Cmdlets\PublicationOutput\StopIshPublicationOutput.Tests.ps1" />
+    <None Include="Cmdlets\Session\NewIshSession.Tests.ps1" />
+    <None Include="Cmdlets\Settings\GetIshSetting.Tests.ps1" />
+    <None Include="Cmdlets\Settings\GetIshTimeZone.Tests.ps1" />
+    <None Include="Cmdlets\Settings\GetIshTypeFieldDefinition.Tests.ps1" />
+    <None Include="ISHRemote.PesterSetup.ps1" />
+    <None Include="ISHRemote.psd1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\AssemblyInfo.targets" />
+    <None Include="Properties\ModuleManifest.targets" />
+    <None Include="Samples\Publish-PublicationOutputs\Sample.Automate.PublishPublicationOutputs.ps1" />
+    <None Include="Samples\Data-DocumentObj\Task.dita" />
+    <None Include="Samples\Data-DocumentObj\Topic.dita" />
+    <None Include="Samples\Sample.Automate.GeneralizeDitaXml.ps1" />
+    <Compile Include="Cmdlets\Field\SetIshRequestedMetadataField.cs" />
+    <Compile Include="Cmdlets\Field\SetIshField.cs" />
+    <Compile Include="Cmdlets\Field\SetIshMetadataFilterField.cs" />
+    <Compile Include="Cmdlets\Session\NewIshSession.cs" />
+    <Compile Include="Objects\Enumerations.cs" />
+    <Compile Include="Objects\Public\IshField.cs" />
+    <Compile Include="Objects\IshFields.cs" />
+    <Compile Include="Objects\Public\IshMetadataFilterField.cs" />
+    <Compile Include="Objects\Public\IshObject.cs" />
+    <Compile Include="Objects\IshObjects.cs" />
+    <Compile Include="Objects\Public\IshMetadataField.cs" />
+    <Compile Include="Objects\Public\IshSession.cs" />
+    <Compile Include="Cmdlets\Field\SetIshMetadataField.cs" />
+    <Compile Include="ISHRemoteCmdlets.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Exceptions\TrisoftAutomationException.cs" />
+    <Compile Include="Cmdlets\TrisoftCmdlet.cs" />
+    <None Include="Service References\Application25ServiceReference\Application.wsdl" />
+    <None Include="Service References\Application25ServiceReference\Application.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Application25ServiceReference\Application1.wsdl" />
+    <None Include="Service References\Application25ServiceReference\Application1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Application25ServiceReference\Application2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\BaseLine.wsdl" />
+    <None Include="Service References\Baseline25ServiceReference\Baseline.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline1.wsdl" />
+    <None Include="Service References\Baseline25ServiceReference\Baseline1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.CanBeFrozenResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.FreezeResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.GetBaselineResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.wsdl" />
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj1.wsdl" />
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.BaseFolder.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.CheckOutResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.CreateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.FolderLocationResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetObjectResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetPossibleTargetStatusesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.SetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.TryGetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.UpdateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\EDT25ServiceReference\EDT.wsdl" />
+    <None Include="Service References\EDT25ServiceReference\EDT.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EDT25ServiceReference\EDT1.wsdl" />
+    <None Include="Service References\EDT25ServiceReference\EDT1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EDT25ServiceReference\EDT2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EDT25ServiceReference\EDT3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EDT25ServiceReference\EDT4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EventMonitor25ServiceReference\EventMonitor.wsdl" />
+    <None Include="Service References\EventMonitor25ServiceReference\EventMonitor.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EventMonitor25ServiceReference\EventMonitor1.wsdl" />
+    <None Include="Service References\EventMonitor25ServiceReference\EventMonitor1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EventMonitor25ServiceReference\EventMonitor2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EventMonitor25ServiceReference\EventMonitor3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EventMonitor25ServiceReference\EventMonitor4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\EventMonitor25ServiceReference\Trisoft.ISHRemote.EventMonitor25ServiceReference.GetNextEventDetailDataChunkResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\EventMonitor25ServiceReference\Trisoft.ISHRemote.EventMonitor25ServiceReference.StartEventResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Folder25ServiceReference\Folder.wsdl" />
+    <None Include="Service References\Folder25ServiceReference\Folder.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Folder25ServiceReference\Folder1.wsdl" />
+    <None Include="Service References\Folder25ServiceReference\Folder1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Folder25ServiceReference\Folder2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Folder25ServiceReference\Folder3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Folder25ServiceReference\Folder4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Folder25ServiceReference\Trisoft.ISHRemote.Folder25ServiceReference.BaseFolder.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Folder25ServiceReference\Trisoft.ISHRemote.Folder25ServiceReference.FolderLocationResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ListOfValues25ServiceReference\ListOfValues.wsdl" />
+    <None Include="Service References\ListOfValues25ServiceReference\ListOfValues.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ListOfValues25ServiceReference\ListOfValues1.wsdl" />
+    <None Include="Service References\ListOfValues25ServiceReference\ListOfValues1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ListOfValues25ServiceReference\ListOfValues2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ListOfValues25ServiceReference\ListOfValues3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ListOfValues25ServiceReference\ListOfValues4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ListOfValues25ServiceReference\Trisoft.ISHRemote.ListOfValues25ServiceReference.CreateValue2Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.wsdl" />
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding1.wsdl" />
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\OutputFormat25ServiceReference\OutputFormat.wsdl" />
+    <None Include="Service References\OutputFormat25ServiceReference\OutputFormat.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\OutputFormat25ServiceReference\OutputFormat1.wsdl" />
+    <None Include="Service References\OutputFormat25ServiceReference\OutputFormat1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\OutputFormat25ServiceReference\OutputFormat2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\OutputFormat25ServiceReference\OutputFormat3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\OutputFormat25ServiceReference\OutputFormat4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\OutputFormat25ServiceReference\Trisoft.ISHRemote.OutputFormat25ServiceReference.GetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.wsdl" />
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput1.wsdl" />
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.BaseFolder.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.CreateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.FolderLocationResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextDataObjectChunkByIshLngRefResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetPossibleTargetStatusesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.ReleaseByIshLngRefResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.ReleaseResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.SetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.TryGetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Search25ServiceReference\Search.wsdl" />
+    <None Include="Service References\Search25ServiceReference\Search.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Search25ServiceReference\Search1.wsdl" />
+    <None Include="Service References\Search25ServiceReference\Search1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Search25ServiceReference\Search2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Search25ServiceReference\Search3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Search25ServiceReference\Trisoft.ISHRemote.Search25ServiceReference.PerformSearchInPublicationResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Search25ServiceReference\Trisoft.ISHRemote.Search25ServiceReference.PerformSearchResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Settings25ServiceReference\Settings2.wsdl" />
+    <None Include="Service References\Settings25ServiceReference\Settings21.wsdl" />
+    <None Include="Service References\Settings25ServiceReference\Settings5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Settings25ServiceReference\Settings51.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Settings25ServiceReference\Settings52.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Settings25ServiceReference\Settings53.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Settings25ServiceReference\Settings54.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TranslationJob25ServiceReference\TranslationJob.wsdl" />
+    <None Include="Service References\TranslationJob25ServiceReference\TranslationJob.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TranslationJob25ServiceReference\TranslationJob1.wsdl" />
+    <None Include="Service References\TranslationJob25ServiceReference\TranslationJob1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TranslationJob25ServiceReference\TranslationJob2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TranslationJob25ServiceReference\TranslationJob3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TranslationJob25ServiceReference\Trisoft.ISHRemote.TranslationJob25ServiceReference.GetTranslationJobResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\TranslationTemplate25ServiceReference\TranslationTemplate.wsdl" />
+    <None Include="Service References\TranslationTemplate25ServiceReference\TranslationTemplate.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TranslationTemplate25ServiceReference\TranslationTemplate1.wsdl" />
+    <None Include="Service References\TranslationTemplate25ServiceReference\TranslationTemplate1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TranslationTemplate25ServiceReference\TranslationTemplate2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\User25ServiceReference\User.wsdl" />
+    <None Include="Service References\User25ServiceReference\User.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\User25ServiceReference\User1.wsdl" />
+    <None Include="Service References\User25ServiceReference\User1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\User25ServiceReference\User2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\User25ServiceReference\User3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\User25ServiceReference\User4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserGroup25ServiceReference\UserGroup.wsdl" />
+    <None Include="Service References\UserGroup25ServiceReference\UserGroup.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserGroup25ServiceReference\UserGroup1.wsdl" />
+    <None Include="Service References\UserGroup25ServiceReference\UserGroup1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserGroup25ServiceReference\UserGroup2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserGroup25ServiceReference\UserGroup3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserGroup25ServiceReference\UserGroup4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserRole25ServiceReference\UserRole.wsdl" />
+    <None Include="Service References\UserRole25ServiceReference\UserRole.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserRole25ServiceReference\UserRole1.wsdl" />
+    <None Include="Service References\UserRole25ServiceReference\UserRole1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserRole25ServiceReference\UserRole2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserRole25ServiceReference\UserRole3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\UserRole25ServiceReference\UserRole4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="ISHRemote.psm1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\delayResolutionDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\hazardstatementDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\highlightDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\indexingDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\map.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\mapGroup.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\metaDecl.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\tblDecl.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\topic.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\utilitiesDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\abbreviateDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\glossrefDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\programmingDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\reference.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\softwareDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\technicalContent\dtd\uiDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\xnal\dtd\xnalDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\bookmap.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\Learning\LearningAssessment.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\Learning\LearningContent.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\Learning\LearningSummary.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\Reference.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\SubjectScheme\SubjectScheme.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\catalog-alldita12dtds.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\delayResolutionDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\hazardstatementDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\highlightDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\indexingDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\map.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\mapGroup.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\metaDecl.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\tblDecl.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\topic.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\utilitiesDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\bookmap\dtd\bookmap.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningAssessment.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningBase.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningContent.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningInteractionBaseDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningMapDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningMetadataDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningOverview.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningPlan.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\learning\dtd\learningSummary.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\machineryIndustry\dtd\machineryTaskbodyConstraint.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\dtd\classifyDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\subjectScheme\dtd\subjectScheme.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\abbreviateDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\concept.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossary.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossentry.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossgroup.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\glossrefDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\programmingDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\reference.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\softwareDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\strictTaskbodyConstraint.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\task.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\taskreqDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\uiDomain.mod" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\dtd\xnalDomain.mod" />
+    <Content Include="Samples\Publish-PublicationOutputs\publishconfig.sample.xml" />
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.disco" />
+    <None Include="Service References\DocumentObj25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\DocumentObj25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\DocumentObj25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\Application25ServiceReference\Application.disco" />
+    <None Include="Service References\Application25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\Application25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\Application25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline.disco" />
+    <None Include="Service References\Baseline25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\Baseline25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\Baseline25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\EDT25ServiceReference\EDT.disco" />
+    <None Include="Service References\EDT25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\EDT25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\EDT25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\EventMonitor25ServiceReference\EventMonitor.disco" />
+    <None Include="Service References\EventMonitor25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\EventMonitor25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\EventMonitor25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\Folder25ServiceReference\Folder.disco" />
+    <None Include="Service References\Folder25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\Folder25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\Folder25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ListOfValues25ServiceReference\ListOfValues.disco" />
+    <None Include="Service References\ListOfValues25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\ListOfValues25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\ListOfValues25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.disco" />
+    <None Include="Service References\MetadataBinding25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\MetadataBinding25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\MetadataBinding25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\OutputFormat25ServiceReference\OutputFormat.disco" />
+    <None Include="Service References\OutputFormat25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\OutputFormat25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\OutputFormat25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.disco" />
+    <None Include="Service References\PublicationOutput25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\PublicationOutput25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\PublicationOutput25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\Search25ServiceReference\Search.disco" />
+    <None Include="Service References\Search25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\Search25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\Search25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\Settings25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\Settings25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\Settings25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\TranslationJob25ServiceReference\TranslationJob.disco" />
+    <None Include="Service References\TranslationJob25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\TranslationJob25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\TranslationJob25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\TranslationTemplate25ServiceReference\TranslationTemplate.disco" />
+    <None Include="Service References\TranslationTemplate25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\TranslationTemplate25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\TranslationTemplate25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\User25ServiceReference\User.disco" />
+    <None Include="Service References\User25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\User25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\User25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\UserGroup25ServiceReference\UserGroup.disco" />
+    <None Include="Service References\UserGroup25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\UserGroup25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\UserGroup25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\UserRole25ServiceReference\UserRole.disco" />
+    <None Include="Service References\UserRole25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\UserRole25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\UserRole25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="ISHRemote.dll-help.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Samples\Sample.Automate.ActiveDirectory.ps1" />
+    <None Include="Samples\Sample.Automate.ProvisionUsers.ps1" />
+    <None Include="ISHRemote.Format.ps1xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="ISHRemote.PostBuild.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\Application25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\Baseline25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\DocumentObj25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\EDT25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\EventMonitor25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\Folder25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\ListOfValues25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\MetadataBinding25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\OutputFormat25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\PublicationOutput25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\Search25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\Settings25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\TranslationJob25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\TranslationTemplate25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\User25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\UserGroup25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\UserRole25ServiceReference\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resouces\ISHTypeFieldSetup.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ISHTypeFieldSetup.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.1\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="Properties\AssemblyInfo.targets" />
+  <Import Project="Properties\ModuleManifest.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"$(SolutionDir)..\Tools\XmlDoc2CmdletDoc\XmlDoc2CmdletDoc.exe" "$(TargetPath)"
+
+%25WINDIR%25\SysNative\WindowsPowerShell\v1.0\powershell.exe $(ProjectDir)ISHRemote.PostBuild.ps1 $(TargetDir)\ %25USERPROFILE%25\Documents\WindowsPowerShell\Modules</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>REM %25WINDIR%25\SysNative\WindowsPowerShell\v1.0\powershell.exe "$(SolutionDir)..\Tools\PowerShell\Test-SDLOpenSourceHeader.ps1" -Path "$(SolutionDir)..\"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

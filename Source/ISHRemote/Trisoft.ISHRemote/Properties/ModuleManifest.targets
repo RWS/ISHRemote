@@ -1,0 +1,32 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Overriding the Microsoft.CSharp.targets target dependency chain -->
+  <!-- Call our custom AssemblyVersion target before build, even from VS -->
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      ModuleManifest
+    </BuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="ModuleManifest">
+    <PropertyGroup>
+      <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">$(WINDIR)\System32\WindowsPowerShell\v1.0\powershell.exe</PowerShellExe>
+      <ManifestPath>$(MSBuildProjectDirectory)\$(ModuleName).psd1</ManifestPath>
+      <RootModule>$(ModuleName).psm1</RootModule>
+      <NestedModules>&apos;$(ModuleName).dll&apos;</NestedModules>
+      <ModuleVersion>$(FullModuleBuildVersion)</ModuleVersion>
+      <Guid>$(ModuleGuid)</Guid>
+      <Author>$(ModuleCompany)</Author>
+      <CompanyName>$(ModuleCompany)</CompanyName>
+      <Copyright>$(ModuleCopyright)</Copyright>
+      <Description>$(ModuleDescription)</Description>
+      <PowerShellVersion>$(MinPowerShellVersion)</PowerShellVersion>
+      <CLRVersion>$(MinCLRVersion)</CLRVersion>
+      <DotNetFrameworkVersion>$(MinDotNetVersion)</DotNetFrameworkVersion>
+      <HelpInfoURI>$(DocPortalLink)</HelpInfoURI>
+      <FormatsToProcessPath>$(ModuleName).Format.ps1xml</FormatsToProcessPath>
+    </PropertyGroup>
+    <Exec Command='$(PowerShellExe) -NonInteractive -command "New-ModuleManifest -Path &apos;$(ManifestPath)&apos; -FormatsToProcess &apos;$(FormatsToProcessPath)&apos; -RootModule &apos;$(RootModule)&apos; -NestedModules @($(NestedModules)) -ModuleVersion &apos;$(ModuleVersion)&apos; -Guid &apos;$(Guid)&apos; -Author &apos;$(Author)&apos; -CompanyName &apos;$(CompanyName)&apos; -Copyright &apos;$(Copyright)&apos; -Description &apos;$(Description)&apos; -PowerShellVersion &apos;$(PowerShellVersion)&apos; -ClrVersion &apos;$(CLRVersion)&apos; -DotNetFrameworkVersion &apos;$(DotNetFrameworkVersion)&apos; -HelpInfoURI &apos;$(HelpInfoURI)&apos;"'/>
+  </Target>
+</Project>

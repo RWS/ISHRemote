@@ -1,0 +1,29 @@
+<!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA Learning BookMap//EN" "../../dtd/bookmap.dtd"[]>
+<bookmap id="taskbook">
+ <booktitle>
+   <mainbooktitle>Product tasks</mainbooktitle>
+   <booktitlealt>Tasks and what they do</booktitlealt>
+ </booktitle>
+ <bookmeta>
+   <author>John Doe</author>
+   <bookrights>
+     <copyrfirst>
+       <year>2006</year>
+     </copyrfirst>
+     <bookowner>
+       <person href="janedoe.dita">Jane Doe</person>
+     </bookowner>
+   </bookrights>
+ </bookmeta>
+ <frontmatter>
+   <preface/>
+ </frontmatter>
+   <chapter format="ditamap" href="installing.ditamap"/>
+   <chapter href="configuring.dita"/>
+   <chapter href="maintaining.dita">
+     <topicref href="maintainstorage.dita"/>
+     <topicref href="maintainserver.dita"/>
+     <topicref href="maintaindatabase.dita"/>
+   </chapter>
+ <appendix href="task_appendix.dita"/>
+</bookmap>
