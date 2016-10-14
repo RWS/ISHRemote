@@ -1,7 +1,5 @@
 # BACKLOG ORDER	
 
-1. [ISHREMOTE-007] Publish to PSGallery
-1. [ISHREMOTE-004] OpenSource on GitHub
 1. [ISHREMOTE-011] `IshField` promotion to properties
 1. [ISHREMOTE-022] Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones
 1. [ISHREMOTE-047] `Set-IshMetadataField`/`Set-IshMetadataFilterField` take `object[]` instead of `string` and convert internally
@@ -98,9 +96,9 @@
 Below entries are about plans, ideas, cross-linking,...
 
 ## <a name="ISHREMOTE-001"></a>[ISHREMOTE-001]
-* `ISHRemote.PesterSetup.ps1` through Get-CIVariable("PROJECT", “NAME”, “DEFAULT”) idea (see ISHBootStrap)
+* `ISHRemote.PesterSetup.ps1` through Get-CIVariable("PROJECT", "NAME", "DEFAULT") idea (see ISHBootStrap)
 * Continuous Integration (CI) should run on release/debug, project/version/user dimensions; allowing 10.0.x (partially!), 11.0.x, 12.0.x and TEST nightly run. This table needs README.MD documentation, and probably also takes part in ISHRemote major version bumping
-* Clean up .\Samples\ for proprietary stuff like username/password/machinenames.... Either becomes Articles, Get-Help inspiration and Pester Test. 
+* .\Samples\ becomes Articles, Get-Help inspiration and Pester Test. 
 * `ISHRemote.PesterSetup.ps1` to hold $ignoreSslPolicyErrors=$false which is explictly passed to all `New-IshSession` switch parameters IgnoreSslPolicyErrors:$ignoreSslPolicyErrors except overwritten by the `-IgnoreSslPolicyErrors` tests. This would allow CI-testing of environments with invalid certificates.
 
 ## <a name="ISHREMOTE-002"></a>[ISHREMOTE-002]
@@ -113,7 +111,7 @@ To avoid the unwanted Retrieve calls, specify -PassThru $false explicitly. Impli
 ## <a name="ISHREMOTE-003"></a>[ISHREMOTE-003]  *DONE*
 * Convert readme.txt to README.MD and BACKLOG.MD including a why and getting started section.
 
-## <a name="ISHREMOTE-004"></a>[ISHREMOTE-004]
+## <a name="ISHREMOTE-004"></a>[ISHREMOTE-004]  *DONE*
 * Public GitHub project
 
 ## <a name="ISHREMOTE-005"></a>[ISHREMOTE-005]
@@ -122,7 +120,7 @@ To avoid the unwanted Retrieve calls, specify -PassThru $false explicitly. Impli
 ## <a name="ISHREMOTE-006"></a>[ISHREMOTE-006]
 * All new code should receive Pester tests, this one is about correcting legacy/missing tests.
 
-## <a name="ISHREMOTE-007"></a>[ISHREMOTE-007]
+## <a name="ISHREMOTE-007"></a>[ISHREMOTE-007]  *DONE*
 * Publish to PSGallery, allowing traction, refering to answer in community forums like [How to get word count for all topics in SDL in a particular period of time?](https://community.sdl.com/products-solutions/solutions/customer_experience_cloud/knowledge_delivery/knowledge-center/knowledgecenter-developers/f/215/t/8541)
 * Requires [ISHREMOTE-026]
 * This aligns but doesn't necessarily require [ISHREMOTE-004]
@@ -179,7 +177,7 @@ DocumentObj data migration cmdlets like `Get-IshDocumentObjData`, `Save-IshDocum
 * Add `Test-IshFolder` that calls Folder25.GetSubFoldersByIshFolderRef avoiding server-side errors to check for object existance
 
 ## <a name="ISHREMOTE-015"></a>[ISHREMOTE-015]
-* Add Move-IshPublicationOutput based on Move-IshDocumentObj holding the same Folder25.MoveObjects implementation for consistency
+* Add `Move-IshPublicationOutput` based on `Move-IshDocumentObj` holding the same Folder25.MoveObjects implementation for consistency
 
 ## <a name="ISHREMOTE-016"></a>[ISHREMOTE-016]
 Add `Filter-IshObject` cmdlet taking MetadataFilter parameter to do client-side object filtering [TS-10372]
