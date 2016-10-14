@@ -1,20 +1,5 @@
 # BACKLOG ORDER	
 
-1. [ISHREMOTE-003] Convert readme.txt to README.MD and BACKLOG.MD  *DONE-0.1.2119.0_(Nexus)*
-1. [ISHREMOTE-037] Rename `Add-IshValue`/`Get-IshValue`/`Remove-IshValue`/`Set-IshValue` to`Add-IshLovValue`/`Get-IshLovValue`/`Remove-IshLovValue`/`Set-IshLovValue`  *DONE-0.1.2119.0_(Nexus)*
-1. [ISHREMOTE-038] Fix `Set-IshFilterField` to allow more than one filter on the same field (also verified for `Set-IshValueField` and `Set-IshField`)  *DONE-0.1.2206.0_(Nexus)*
-1. [ISHREMOTE-017] Add `IshSession.IshTypeFieldSetup` allowing `Get-IshTypeFieldDefinition` and `Compare-IshTypeFieldDefinition`  *DONE-0.1.2206.0_(Nexus)*
-1. [ISHREMOTE-018] Add `Get-IshTypeFieldDefinition` takes an optional `IshSession` and allows loading of a TriDKXmlSetup-FullExport  *DONE-0.1.2206.0_(Nexus)*
-1. [ISHREMOTE-019] Add `Compare-IshTypeFieldDefinition`  *DONE-0.1.2206.0_(Nexus)*
-1. [ISHREMOTE-039] Fix RemoveSystemFields to not send the new user fields like FISHPASSWORDMODIFIEDON  *DONE-0.2.2212.0_(Nexus)*
-1. [ISHREMOTE-021] Rename `Set-IshValueField`, `Set-IshFilterField` and `Set-IshField` to `Set-IshMetadataField`, `Set-IshMetadataFilterField` and `Set-IshRequestedMetadataField`  *DONE-0.2.2212.0_(Nexus)*
-1. [ISHREMOTE-023] Extend `Set-IshMetadataField`, `Set-IshMetadataFilterField` and `Set-IshRequestedMetadataField` cmdlets with `-IshSession` to allow ISHTypeFieldDefinition lookup  *DONE-0.2.2212.0_(Nexus)*
-1. [ISHREMOTE-036] Fix `IshSession` by removing Set properties which don't work like Timeout for WCF-proxy  *DONE-0.2.2212.0_(Nexus)*
-1. [ISHREMOTE-041] Respect single type for `IshObjects`/`IshFolders`/`IshEvents`/`IshLovValues`, so mark `internal`  *DONE-0.2.2212.0_(Nexus)*
-1. [ISHREMOTE-042] Respect single type for `IshFeatures`, so mark `internal`, improve `ps1xml` formatting  *DONE-0.2.2212.0_(Nexus)*
-1. [ISHREMOTE-044] Respect single type for `IshApplicationSettings` which is used for statistics when `-Count` is specified, `IshApplicationSetting` (single) without `-Count`  *DONE-0.2.2212.0_(Nexus)*
-1. [ISHREMOTE-043] Respect single type for `IshFields`, so mark `internal`, improve `ps1xml` formatting  *DONE-0.2.2212.0_(Nexus)*
-1. [ISHREMOTE-026] Break compatiblity, remove all `Trisoft.Automation` artefacts  *DONE-0.2.2212.0_(Nexus)*
 1. [ISHREMOTE-007] Publish to PSGallery
 1. [ISHREMOTE-004] OpenSource on GitHub
 1. [ISHREMOTE-011] `IshField` promotion to properties
@@ -129,8 +114,7 @@ To avoid the unwanted Retrieve calls, specify -PassThru $false explicitly. Impli
 * Convert readme.txt to README.MD and BACKLOG.MD including a why and getting started section.
 
 ## <a name="ISHREMOTE-004"></a>[ISHREMOTE-004]
-* OSS/rdevries creates the public GitHub project, and will review the private BitBucket/Stash first. Requires Copyright header for search engines...
-   See [Confluence](https://confluence.sdl.com/display/DEV/Open+Source+Checklist)
+* Public GitHub project
 
 ## <a name="ISHREMOTE-005"></a>[ISHREMOTE-005]
 * Timeout is implemented, but there is no retry mechanism for API calls inside the cmdlets. Probably means intoducing an API interface/facade to be able to easily wrap that. Potentially include token refresh as well. Might make it easier to change transport layer in a far future (e.g. REST or 3.0 API)
