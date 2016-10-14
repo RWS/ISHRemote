@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Major>0</Major>
-    <Minor>2</Minor>
+    <Minor>3</Minor>
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
     <!-- <AdvBuild>$([System.DateTime]::UtcNow.ToString("HHmmss"))</AdvBuild> -->
     <Revision>0</Revision>
@@ -11,7 +11,7 @@
     <ProductName>ISHRemote</ProductName>
     <ModuleName>ISHRemote</ModuleName>
     <ModuleTitle>SDL Knowledge Center Content Manager $(ModuleName)</ModuleTitle>
-    <ModuleDescription>Business automation on top of the Component Content Management System (InfoShare)</ModuleDescription>
+    <ModuleDescription>Business automation module on top of SDL Knowledge Center Content Manager (LiveContent Architect, Trisoft InfoShare)</ModuleDescription>
     <ModuleCompany>SDL plc</ModuleCompany>
     <ModuleProduct>SDL Knowledge Center Content Manager $(ModuleName)</ModuleProduct>
     <ModuleCopyright>Copyright SDL Group. All rights reserved.</ModuleCopyright>

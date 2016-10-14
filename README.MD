@@ -26,58 +26,33 @@ When you have a PowerShell version lower than 5 on your client machine, the PSVe
 
 So either upgrade to [Windows Management Framework 5.0](https://www.microsoft.com/en-us/download/details.aspx?id=50395) or stay on PowerShell 4 and install [Package Management Preview – March 2016 for PowerShell 4 & 3](https://blogs.msdn.microsoft.com/powershell/2016/03/08/package-management-preview-march-2016-for-powershell-4-3-is-now-available/).
 
-Open a `Windows PowerShell ISE`, most likely you still have to register and trust the PSRepository that SDL offers internally called SDL `Nexus` through
-	Register-PSRepository -Name "Nexus" -SourceLocation "https://nexus.sdl.com/service/local/nuget/releases_powershell/" -InstallationPolicy Trusted
-
 ## Install
-1. Open a Windows PowerShell ISE, most likely you still have to register and trust the PSRepository that SDL offers internally called SDL `Nexus` through
+Open a PowerShell, then you can find and install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator. The `-Force` will make you bypass some security/trust questions.
 
-        Register-PSRepository -Name "Nexus" -SourceLocation "https://nexus.sdl.com/service/local/nuget/releases_powershell/" -InstallationPolicy Trusted
-		
-1. Then you can find and install the ISHRemote module. CurrentUser scope indicates that you don't have to run PowerShell as Administrator.
-
-        Install-Module ISHRemote -Repository Nexus -Scope CurrentUser
-
-1. To verify that it is available now, you can run
-
-        Get-Module ISHRemote -ListAvailable
+		Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
 
 ## Update
 
-1. Open a Windows PowerShell ISE and run. Optionally specify `-Repository` if you are registered to more than one PSRepository that offers this module.
+Open a PowerShell and run.
 
         Update-Module ISHRemote
 
-1. To verify that it is available now, you can run
-
-        Get-Module ISHRemote -ListAvailable
  
+## Uninstall
 
-# Release Notes
+Open a PowerShell and run.
 
-1. [Release-0.2.2212.0-Nexus]
-1. [Release-0.1.2206.0-Nexus]
-1. [Release-0.1.2115.0-Nexus]
-1. [Release-0.1.2029.0-Nexus]
-1. [Release-0.1.2025.0-Nexus]
-1. [Release-0.1.1914.0-Nexus]
-
-[Release-0.2.2212.0-Nexus]: Docs/Release/Release-0.2.2212.0-Nexus.md "Release Notes of 0.2.2212.0, made available on Nexus Gallery"
-[Release-0.1.2206.0-Nexus]: Docs/Release/Release-0.1.2206.0-Nexus.md "Release Notes of 0.1.2206.0, made available on Nexus Gallery"
-[Release-0.1.2115.0-Nexus]: Docs/Release/Release-0.1.2115.0-Nexus.md "Release Notes of 0.1.2115.0, made available on Nexus Gallery"
-[Release-0.1.2029.0-Nexus]: Docs/Release/Release-0.1.2029.0-Nexus.md "Release Notes of 0.1.2029.0, made available on Nexus Gallery"
-[Release-0.1.2025.0-Nexus]: Docs/Release/Release-0.1.2025.0-Nexus.md "Release Notes of 0.1.2025.0, made available on Nexus Gallery"
-[Release-0.1.1914.0-Nexus]: Docs/Release/Release-0.1.1914.0-Nexus.md "Release Notes of 0.1.1914.0, made available on Nexus Gallery"
-
+        Uninstall-Module ISHRemote -AllVersion 
 
 # Backlog & Feedback
-Any feedback is welcome. As a comment here, in an email. What do you like, what are you missing, etc
+Any feedback is welcome. Please log a GitHub issue, make sure you submit your version number, expected and current result,...
 
 [Backlog]
 
 [Backlog]: BACKLOG.MD "Backlog"
 
 # Known Issues & FAQ
+
 ## Execution Known Issues
 * If you get `New-IshSession : Reference to undeclared entity 'raquo'. Line 98, position 121.`, most likely you specified an existing "Web Services API" url. Make sure your url ends with an ending slash `/`.
 * If a test fails with `The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.`,
@@ -104,28 +79,6 @@ If you get error `New-IshSession : The communication object, System.ServiceModel
 * [XmlDoc2CmdletDoc bug 23](https://github.com/red-gate/XmlDoc2CmdletDoc/issues/23) `System.NullReferenceException: Object reference not set to an instance of an object.` at `XmlDoc2CmdletDoc.Core.Domain.Command.<>c.<get_OutputTypes>` `Retrieve-IshFolder` had `[OutputType(nameof(IshFolder))]`, which should have been `[OutputType(typeof(IshFolder))]`.
 
 
-## Legacy: Trisoft.Automation versus ISHRemote 
-
-Summarized ISHRemote is the natural successor of Trisoft.Automation. [Release-0.2.2212.0-Nexus] broke compatibility. General feedback was that the legacy aliases had inconsistent naming and confused newcommers. The most noticeable changes are
-
-1. Non standard verbs like `Retrieve-`, `Stop-`, etc are replaced by PowerShell standard verbs. There are no aliases.
-1. PowerShell best practice is to prefix, we did resulting in cmdlets like `Get-IshUser` which avoids confusion with its to wide ancestor `Get-User` which could be about any system.
-1. Parameters `-TrisoftSession`, `-TrisoftUserName` and `-TrisoftPassword` are replaced by their `-Ish` prefixed counter part.
-1. ISHRemote no longer accepts positional parameters. Positional parameters are nice when used in interactive mode, but should be avoided in scripts.
-1. `Get-IshObject` and `GetIshFolderChildren` functionality is merged into `Get-IshDocumentObj` and `Get-IshFolder` (using `-Depth 1`) respectively.
-
-## Legacy: Get-Help editors versus XmlDoc2CmdletDoc
-
-## XmlDoc2CmdletDoc
-Inline `*.cs` tripple-slash `///` documentation. Syntax options are explained on [simple-talk.com](https://www.simple-talk.com/dotnet/software-tools/documenting-your-powershell-binary-cmdlets/). [XmlDoc2CmdletDoc](https://github.com/red-gate/XmlDoc2CmdletDoc) generates the requisite 
-MAML file for you using essentially standard C# doc-comments embedded directly in your code, just like 
-documenting any other C# library. Now you can document PowerShell simply and easily, and keep it 
-synchronized with the code.
-
-## github.com PLATYPS
-[PLATYPS](https://github.com/PowerShell/platyPS/tree/master/docs) generated MarkDown like Get-Help does
-Take a look what platyPS does to provide online help for their cmdlets. No portal required. It’s part of you repository. Cool thing about git, if the files don’t change at all, then they are not taken into account for the next commit. Therefore you can safely put this in the build step.
-
 # Standards To Respect
 
 ## Coding Standards 
@@ -146,6 +99,12 @@ Take a look what platyPS does to provide online help for their cmdlets. No porta
 * Inline `*.cs` tripple-slash `///` documentation. Syntax options are explained on [simple-talk.com](https://www.simple-talk.com/dotnet/software-tools/documenting-your-powershell-binary-cmdlets/). [XmlDoc2CmdletDoc](https://github.com/red-gate/XmlDoc2CmdletDoc) generates the requisite MAML file for you using essentially standard C# doc-comments embedded directly in your code, just like  documenting any other C# library. Now you can document PowerShell simply and easily, and keep it synchronized with the code.
 * Document the container object class like `IshSession`, and not the using parameters like  `-IshSession` everywhere.
 
+### XmlDoc2CmdletDoc
+Inline `*.cs` tripple-slash `///` documentation. Syntax options are explained on [simple-talk.com](https://www.simple-talk.com/dotnet/software-tools/documenting-your-powershell-binary-cmdlets/). [XmlDoc2CmdletDoc](https://github.com/red-gate/XmlDoc2CmdletDoc) generates the requisite 
+MAML file for you using essentially standard C# doc-comments embedded directly in your code, just like 
+documenting any other C# library. Now you can document PowerShell simply and easily, and keep it 
+synchronized with the code.
+
 ## Testing Standards
 
 * Most Pester tests are acceptance test, enriched which some unit tests where possible.
@@ -153,11 +112,24 @@ Take a look what platyPS does to provide online help for their cmdlets. No porta
 * Using the -Tag with "Create", "Read", "Update", "Delete" to allow [Pester grouping](See https://github.com/pester/Pester/wiki/Describe) Tags
 * Data initialization and breakdown are key but also time consuming. BeforeEach/AfterEach are run for every It block, so makes things slow.
 
-## Coding Prerequisites  
+# Coding Prerequisites  
 
-## Debugging
+## Testing and Debugging using Pester in Visual Studio 2015
 
-### Debug using F5 In Visual Studio 2015
+[src1](http://www.powershellmagazine.com/2014/03/12/get-started-with-pester-powershell-unit-testing-framework/) [src2](http://www.powershellmagazine.com/2014/03/27/testing-your-powershell-scripts-with-pester-assertions-and-more/) [src3](https://www.simple-talk.com/sysadmin/powershell/practical-powershell-unit-testing-getting-started/) [src4](https://github.com/pester/Pester/wiki
+Prerequisites)
+
+### Prerequisites
+
+1. Install or make sure you run Windows Management Framework v5, so PowerShell v5 for Pester support, see https://msdn.microsoft.com/en-us/powershell/wmf/requirements
+1. Install [Powershell Tools for Visual Studio 2015](https://visualstudiogallery.msdn.microsoft.com/c9eb3ba8-0c59-4944-9a62-6eee37294597/view/Discussions/1)
+1. Install Pester and have it available in `%userprofile%\My Documents\WindowsPowerShell\Modules\Pester`
+
+    [Warning](https://www.nuget.org/packages/Pester/): Install `Pester` as Administrator, see  :  `Install-Package Pester -Source PSGallery` will eventually show you `Failed to load Pester module. The specified module 'Pester' was not loaded because no valid module 
+file was found in any module directory.` when running [Tests in Visual Studio](http://rostacik.net/2015/12/16/how-to-use-nuget-packages-even-with-powershell-projects-with-visual-studio-2015/)
+[Solution](https://writeabout.net/2016/01/01/visual-studio-github-powershell-pester/) is to copy content of `%ProgramFiles%\WindowsPowerShell\Modules\Pester\3.4.0" to "%userprofile%\My Documents\WindowsPowerShell\Modules\Pester`
+
+## Debugging using F5 In Visual Studio 2015
 [src](http://www.powershellmagazine.com/2014/04/08/basics-of-writing-a-powershell-module-with-c-part-2-debugging/)
 
 In the properties window, select Debug tab and select Start external program under Start Options. 
@@ -176,20 +148,4 @@ of our module the option would be:
  
 Warning: If you get a security warning, run the above exact powershell.exe command using Run As Administrator, 
 then execute `Set-ExecutionPolicy Unrestricted`
-
-## Testing using Pester in Visual Studio 2015
-
-[src1](http://www.powershellmagazine.com/2014/03/12/get-started-with-pester-powershell-unit-testing-framework/) [src2](http://www.powershellmagazine.com/2014/03/27/testing-your-powershell-scripts-with-pester-assertions-and-more/) [src3](https://www.simple-talk.com/sysadmin/powershell/practical-powershell-unit-testing-getting-started/) [src4](https://github.com/pester/Pester/wiki
-Prerequisites)
-
-### Prerequisites
-
-1. Install or make sure you run Windows Management Framework v5, so PowerShell v5 for Pester support, see https://msdn.microsoft.com/en-us/powershell/wmf/requirements
-1. Install [Powershell Tools for Visual Studio 2015](https://visualstudiogallery.msdn.microsoft.com/c9eb3ba8-0c59-4944-9a62-6eee37294597/view/Discussions/1)
-1. Install Pester and have it available in `%userprofile%\My Documents\WindowsPowerShell\Modules\Pester`
-
-    [Warning](https://www.nuget.org/packages/Pester/): Install `Pester` as Administrator, see  :  `Install-Package Pester -Source PSGallery` will eventually show you `Failed to load Pester module. The specified module 'Pester' was not loaded because no valid module 
-file was found in any module directory.` when running [Tests in Visual Studio](http://rostacik.net/2015/12/16/how-to-use-nuget-packages-even-with-powershell-projects-with-visual-studio-2015/)
-[Solution](https://writeabout.net/2016/01/01/visual-studio-github-powershell-pester/) is to copy content of `%ProgramFiles%\WindowsPowerShell\Modules\Pester\3.4.0" to "%userprofile%\My Documents\WindowsPowerShell\Modules\Pester`
-
 
