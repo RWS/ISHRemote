@@ -88,10 +88,10 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                         foreach (IshObject ishObject in IshObject)
                         {
                             WriteDebug($"Id[{ishObject.IshRef}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            ishObject.IshFields = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Update);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
                             if (ShouldProcess(ishObject.IshRef))
                             {
-                                IshSession.UserRole25.Update(ishObject.IshRef, ishObject.IshFields.ToXml());
+                                IshSession.UserRole25.Update(ishObject.IshRef, metadata.ToXml());
                             }
                             returnUserRoles.Add(ishObject.IshRef);
                         }
@@ -102,7 +102,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                     else
                     {
                         // 1a. Using Id and Metadata
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Update);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
                         WriteDebug($"Id[{Id}] metadata.length[{metadata.ToXml().Length}]");
                         if (ShouldProcess(Id))
                         {

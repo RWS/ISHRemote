@@ -24,6 +24,11 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
 {
     public abstract class UserGroupCmdlet : TrisoftCmdlet
     {
+        public Enumerations.ISHType[] ISHType
+        {
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHUserGroup }; }
+        }
+
         /// <summary>
         /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
         /// </summary>

@@ -86,5 +86,116 @@ namespace Trisoft.ISHRemote.Objects
             }
             return null;
         }
+
+
+        #region Assist functions on allowed field usage based on IshFieldDefinition[]
+
+        // Dimensions
+        //   Enumerations.Level.None, 
+        //   removal of certain value types, or all like Enumerations.ValueType.All
+        //   What: descriptive (inc FTITLE?), all
+
+
+       //private IshFields GenerateMetadataFields(IshFields ishFields)
+       //{
+       //    IshFields metadataFields = new IshFields();
+       //    foreach (IshField ishField in ishFields.Fields())
+       //    {
+       //        metadataFields.AddField(ishField.ToMetadataField());
+       //    }
+       //    return metadataFields;
+       //}
+
+        private IshFields AddDescriptiveFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Remove IshField entries that are not matching with the provided actionMode - based on IshFieldDefinition.AllowOn...
+        /// </summary>
+        private IshFields RemoveUnallowedActionFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Requested metadata fields will be duplicated and enriched to cater our Public Objects initilization.
+        /// The minimal fields (IsDescriptive) will be added to allow initialization of the various IshObject types for all ValueTypes. 
+        /// Unallowed fields for read operations (IshFieldDefinition.AllowOnRead) will be stripped with a Debug log message.
+        /// </summary>
+        /// <remarks>Logs debug entry for unknown combinations of ishTypes and ishField (name, level) entries - will not throw.</remarks>
+        /// <param name="ishTypes">Given ISHTypes (like ISHMasterDoc, ISHLibrary, ISHConfiguration,...) to verify/alter the IshFields for</param>
+        /// <param name="ishFields">Incoming IshFields entries will be transformed to matching and allowed IshRequestedMetadataField entries</param>
+        /// <param name="actionMode">RequestedMetadataFields only has value for read operations like Read, Find, Search,...</param>
+        public IshFields ToIshRequestedMetadataFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        {
+            // for loop over types, switch statement to ignore incoming ISHNone/ISHNotFound
+            //  checks AllowOnRead (covers Read/Find/Search, ignore Create/Update/Delete actions)
+            //  merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet
+            //  returns IshMetadataField entries as IshFields (plural) so covers ToRequestedFields and RemoveSystemFields conversion
+            return null;
+        }
+
+        /// <summary>
+        /// Metadata write operations will be duplicated and cleared client side.
+        /// Unallowed fields for write operations (IshFieldDefinition.AllowOnCreate/AllowOnUpdate) will be stripped with a Debug log message.
+        /// </summary>
+        /// <remarks>Logs debug entry for unknown combinations of ishTypes, ishField (name, level), mandatory, multi-value,... entries - will not throw.</remarks>
+        /// <param name="ishTypes">Given ISHTypes (like ISHMasterDoc, ISHLibrary, ISHConfiguration,...) to verify/alter the IshFields for</param>
+        /// <param name="ishFields">Incoming IshFields entries will be transformed to matching and allowed IshMetadataField entries</param>
+        /// <param name="actionMode">MetadataFields only has value for write operations like Create, Update,...</param>
+        public IshFields ToIshMetadataFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        {
+            IshFields metadataFields = new IshFields();
+            foreach (Enumerations.ISHType ishType in ishTypes)
+            {
+                foreach (IshMetadataField ishField in ishFields.Fields())
+                {
+                    var key = Enumerations.Key(ishType, ishField.Level, ishField.Name);
+                    if (!_ishTypeFieldDefinitions.ContainsKey(key))
+                    {
+                        _logger.WriteDebug($"ToIshMetadataFields unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                        continue;
+                    }
+                    switch (actionMode)
+                    {
+                        case Enumerations.ActionMode.Create:
+                            if (!_ishTypeFieldDefinitions[key].AllowOnCreate)
+                            {
+                                _logger.WriteDebug($"ToIshMetadataFields AllowOnCreate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                            }
+                            else
+                            {
+                                metadataFields.AddField(ishField.ToMetadataField());
+                            }
+                            break;
+                        case Enumerations.ActionMode.Update:
+                            if (!_ishTypeFieldDefinitions[key].AllowOnUpdate)
+                            {
+                                _logger.WriteDebug($"ToIshMetadataFields AllowOnUpdate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
+                            }
+                            else
+                            {
+                                metadataFields.AddField(ishField.ToMetadataField());
+                            }
+                            break;
+                        default:
+                            _logger.WriteDebug($"ToIshMetadataFields called for actionMode[{actionMode}], skipping");
+                            break;
+                    }
+                }
+            }
+            return metadataFields;
+        }
+
+        /// <summary>
+        /// Correctly named overload of ToIshMetadataFields(...). Allows tuning in the future.
+        /// </summary>
+        public IshFields ToIshRequiredCurrentMetadataFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        {
+            return ToIshMetadataFields(ishTypes, ishFields, actionMode);
+        }
+        #endregion
     }
 }

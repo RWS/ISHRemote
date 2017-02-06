@@ -104,12 +104,12 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                                         Enumerations.ValueType.Value)[0];
                             string userName = userNameValueField.Value;
                             WriteDebug($"UserName[{userName}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            ishObject.IshFields = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Create);
+                            var metadata = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(userName))
                             {
                                 string userId = IshSession.User25.Create(
                                     userName,
-                                    ishObject.IshFields.ToXml());
+                                    metadata.ToXml());
                                 returnUsers.Add(userId);
                             }
                         }

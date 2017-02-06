@@ -455,6 +455,14 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// Unique descriptive identifier of an IshTypeFieldDefinition concatenating type, level (respecting log/version/lng), and field name
+        /// </summary>
+        internal static string Key(Enumerations.ISHType ishType, Enumerations.Level level, string fieldName)
+        {
+            return ishType + "=" + (int)level + level + "=" + fieldName;
+        }
+
+        /// <summary>
         /// Extracts the TriDK CardType level from input like USER, CTMAPL,...
         /// </summary>
         internal static Level ToLevelFromCardType(string cardType)

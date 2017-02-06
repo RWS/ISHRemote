@@ -91,12 +91,12 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                                         Enumerations.ValueType.Value);
                             string userRoleName = userRoleNameValueField.Value;
                             WriteDebug($"UserRoleName[{userRoleName}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            ishObject.IshFields = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Create);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(userRoleName))
                             {
                                 var userRoleId = IshSession.UserRole25.Create(
                                     userRoleName,
-                                    ishObject.IshFields.ToXml());
+                                    metadata.ToXml());
                                 returnUserRoles.Add(userRoleId);
                             }
                         }
@@ -107,7 +107,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                     else
                     {
                         // 1a. Using Id and Metadata
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Create);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
                         WriteVerbose("Id[" + Name + "] metadata.length[" + metadata.ToXml().Length + "]");
                         if (ShouldProcess(Name))
                         {

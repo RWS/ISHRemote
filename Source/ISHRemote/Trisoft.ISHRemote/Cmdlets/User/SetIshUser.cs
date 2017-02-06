@@ -87,12 +87,12 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                         foreach (IshObject ishObject in IshObject)
                         {
                             WriteDebug($"Id[{ishObject.IshRef}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            ishObject.IshFields = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Update);
+                            var metadata = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Update);
                             if (ShouldProcess(ishObject.IshRef))
                             {
                                 IshSession.User25.Update(
                                     ishObject.IshRef,
-                                    ishObject.IshFields.ToXml());
+                                    metadata.ToXml());
                             }
                             returnUsers.Add(ishObject.IshRef);
                         }

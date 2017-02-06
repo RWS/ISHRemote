@@ -91,12 +91,12 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                                         Enumerations.ValueType.Value)[0];
                             string userGroupName = userGroupNameValueField.Value;
                             WriteDebug($"UserGroupName[{userGroupName}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            ishObject.IshFields = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Create);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(userGroupName))
                             {
                                 var userGroupId = IshSession.UserGroup25.Create(
                                     userGroupName,
-                                    ishObject.IshFields.ToXml());
+                                    metadata.ToXml());
                                 returnUserGroups.Add(userGroupId);
                             }
                         }
@@ -107,7 +107,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                     else
                     {
                         // 1a. Using Id and Metadata
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Update);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
                         WriteVerbose("Id[" + Name + "] metadata.length[" + metadata.ToXml().Length + "]");
                         if (ShouldProcess(Name))
                         {

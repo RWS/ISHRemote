@@ -156,6 +156,28 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         }
 
+        internal IshTypeFieldSetup IshTypeFieldSetup
+        {
+            get
+            {
+                if (_ishTypeFieldSetup == null)
+                {
+                    if (_serverVersion.MajorVersion >= 13)
+                    {
+                        _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
+                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null));
+                    }
+                    else
+                    {
+                        _logger.WriteDebug($"Loading TriDKXmlSetupFullExport_12_00_01...");
+                        var triDKXmlSetupHelper = new TriDKXmlSetupHelper(_logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
+                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition);
+                    }
+                }
+                return _ishTypeFieldSetup;
+            }
+        }
+
         public string WebServicesBaseUrl
         {
             get { return _webServicesBaseUri.ToString(); }
@@ -213,21 +235,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                if (_ishTypeFieldSetup == null)
-                {
-                    if (_serverVersion.MajorVersion >= 13)
-                    {
-                        _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
-                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null));
-                    }
-                    else
-                    {
-                        _logger.WriteDebug($"Loading TriDKXmlSetupFullExport_12_00_01...");
-                        var triDKXmlSetupHelper = new TriDKXmlSetupHelper(_logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
-                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition);
-                    }
-                }
-                return _ishTypeFieldSetup.IshTypeFieldDefinition;
+                return IshTypeFieldSetup.IshTypeFieldDefinition;
             }
             internal set
             {
