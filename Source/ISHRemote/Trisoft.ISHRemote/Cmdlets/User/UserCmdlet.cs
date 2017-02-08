@@ -58,6 +58,9 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                 // When creating the user, the user is always active..so, the value cannot be set during creation
                 ishFields.RemoveField(FieldElements.ObjectActive, level, valueType);
                 ishFields.RemoveField(FieldElements.UserDisabled, level, valueType);
+
+                // User locked field
+                ishFields.RemoveField(FieldElements.UserLocked, level, valueType);
             }
 
             // Specific for Update in Trisoft.ISHRemote
@@ -77,17 +80,18 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                 // General date fields
                 ishFields.RemoveField(FieldElements.CreationDate, level, valueType);
                 ishFields.RemoveField(FieldElements.ModificationDate, level, valueType);
+
+                // User authentication fields   
                 ishFields.RemoveField(FieldElements.UserPasswordModifiedOn, level, valueType);
+                ishFields.RemoveField(FieldElements.UserLastLoginOn, level, valueType);
                 ishFields.RemoveField(FieldElements.UserFailedAttempts, level, valueType);
                 ishFields.RemoveField(FieldElements.UserLockedSince, level, valueType);
-                ishFields.RemoveField(FieldElements.UserPasswordHistory, level, valueType);
             }
 
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 // The password field cannot be retrieved BUT can be set by an administrator
                 ishFields.RemoveField(FieldElements.Password, level, valueType);
-                ishFields.RemoveField(FieldElements.UserPasswordHistory, level, valueType);
             }          
 
             // The field FISHFAVORITES is an internal field and cannot be accessed
@@ -98,6 +102,10 @@ namespace Trisoft.ISHRemote.Cmdlets.User
             ishFields.RemoveField(FieldElements.ModifyAccess, level, valueType);
             ishFields.RemoveField(FieldElements.DeleteAccess, level, valueType);
             ishFields.RemoveField(FieldElements.Owner, level, valueType);
+
+            // Password salt and password history fields are not retrievable or updatable
+            ishFields.RemoveField(FieldElements.UserPasswordSalt, level, valueType);
+            ishFields.RemoveField(FieldElements.UserPasswordHistory, level, valueType);
 
             return ishFields;
         }

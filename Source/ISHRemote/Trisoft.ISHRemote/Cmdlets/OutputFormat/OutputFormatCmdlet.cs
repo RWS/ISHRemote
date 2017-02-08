@@ -88,6 +88,12 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                 ishFields.RemoveField(FieldElements.ModificationDate, level, valueType);
             }
 
+            //if (actionMode == Enumerations.ActionMode.Read)
+            //{
+            //    // The DitaDeliveryClientSecret field cannot be retrieved BUT can be set by an administrator
+            //    ishFields.RemoveField(FieldElements.DitaDeliveryClientSecret, level, valueType);
+            //}
+
             // General document fields
             ishFields.RemoveField(FieldElements.ED, level, valueType);
             ishFields.RemoveField(FieldElements.CheckedOut, level, valueType);
