@@ -1,5 +1,6 @@
 # BACKLOG ORDER	
 
+1. [ISHREMOTE-052] Add `Get-IshBaseline`, `Find-IshBaseline` and `Get-IshBaselineItem` for metrics/insights purposes
 1. [ISHREMOTE-011] `IshField` promotion to properties
 1. [ISHREMOTE-022] Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones
 1. [ISHREMOTE-047] `Set-IshMetadataField`/`Set-IshMetadataFilterField` take `object[]` instead of `string` and convert internally
@@ -88,6 +89,7 @@
 [ISHREMOTE-049]: #ISHREMOTE-049 "Overload `Set-IshRequestedMetadataField` to accept `IshTypeFieldDefinition[]` to generate `IshMetadataField[]`"
 [ISHREMOTE-050]: #ISHREMOTE-050 "`Get-IshSetting` should return same output type IshField for `-FieldName` (string) and `-RequestedMetadata`. String output could be achieved by `-Raw` flag for both."
 [ISHREMOTE-051]: #ISHREMOTE-051 "Mandatory AllowOnCreate fields for `Add-` cmdlets should have their own ParameterSetName `MandatoryParameterGroup`"
+[ISHREMOTE-052]: #ISHREMOTE-052 "Add `Get-IshBaseline`, `Find-IshBaseline` and `Get-IshBaselineItem` for metrics/insights purposes"
 [ISHREMOTE-999]: #ISHREMOTE-999 "The end!"
 
 
@@ -299,7 +301,7 @@ Add `Get-IshTranslationJob`, `Find-IshTranslationJob` and `Get-IshTranslationJob
     * Especially columns error/externalstatus allow debugging, available since (TS-10305)
 	* Can a `IshTranslationJobItem` be promoted to a `IshDocumentObj`? An extra client-side cmdlet, beware of in-memory `New-IshDocumentObj` consistency.
 * None-scope is Creating/Updating/Deleting `IshTranslationJob`
-* None-scope is Creating/Updating/Deleting `IshTranslationJobItems`
+* None-scope is Creating/Updating/Deleting `IshTranslationJobItem`
 
 ## <a name="ISHREMOTE-035"></a>[ISHREMOTE-035]
 Add `Get-IshSettingWorkflow` which in turn requires `IshSettingWorkflowSetup` and `IshSettingWorkflowTransition`
@@ -386,5 +388,18 @@ Overload `Set-IshRequestedMetadataField` to accept `IshTypeFieldDefinition[]` to
 Mandatory AllowOnCreate fields for `Add-` cmdlets should have their own ParameterSetName `MandatoryParameterGroup`
     * The metadata for an Add-IshUser requires fields FUSERGROUP, PASSWORD (Internal only) which could as well be explicit cmdlet parameters
 	* Same goes for other ISHTypes. Alternative could be some `New-IshUser` or `New-IshDocumentObj` that creates an in-memory object. See also [ISHREMOTE-009]
+
+## <a name="ISHREMOTE-052"></a>[ISHREMOTE-052]
+Add `Get-IshBaseline`, `Find-IshBaseline` and `Get-IshBaselineItem` for analysis purposes
+* Add `Get-IshBaseline` of a single `IshBaseline` always fully initializes by several API calls, and returns 
+    1. `IshBaseline` respecting `IshTypeFieldSetup`, see [ISHREMOTE-017]
+* Add `Find-IshBaseline` returning `IshBaseline[]` only initializes `IshBaseline` respecting `IshTypeFieldSetup`, see [ISHREMOTE-017]
+* Add `Get-IshBaselineItem` of a single `IshBaseline` in turn requires `IshBaselineItem`
+    * `IshBaselineItem` respecting `IshTypeFieldSetup`, see [ISHREMOTE-017]
+    * Returns all columns/attributes of the <baseline><object> items
+	* `IshBaselineItem.IshBaselineReportItem[]`, so no explicit `Get-` cmdlet but still an object with matching `ISHRemote.Format.ps1xml` because <object> returns child <reportitem> entries for reports 
+	* `IshBaselineItem` can also be used to update baselines as the API asks these items to be wrapped by <modifications>
+* None-scope is Creating/Updating/Deleting `IshBaseline`
+* None-scope is Creating/Updating/Deleting `IshBaselineItem`
 	
 # <a name="ISHREMOTE-999"></a>ISHREMOTE-999
