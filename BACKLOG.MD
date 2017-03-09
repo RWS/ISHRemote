@@ -1,8 +1,8 @@
 # BACKLOG ORDER	
 
-1. [ISHREMOTE-052] Add `Get-IshBaseline`, `Find-IshBaseline` and `Get-IshBaselineItem` for metrics/insights purposes
+1. [ISHREMOTE-052] Add `Get-IshBaseline`, `Find-IshBaseline` and `Get-IshBaselineItem` for metrics/insights purposes ISSUE #2
 1. [ISHREMOTE-011] `IshField` promotion to properties
-1. [ISHREMOTE-022] Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones
+1. [ISHREMOTE-022] Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones ISSUE #3
 1. [ISHREMOTE-047] `Set-IshMetadataField`/`Set-IshMetadataFilterField` take `object[]` instead of `string` and convert internally
 1. [ISHREMOTE-049] Overload `Set-IshRequestedMetadataField` to accept `IshTypeFieldDefinition[]` to generate `IshMetadataField[]`
 1. [ISHREMOTE-040] Support ExecutionPolicy AllSigned (SignAndPublish.ps1)
@@ -13,7 +13,7 @@
 1. [ISHREMOTE-025] Add `Get-IshField` that returns `<ishfields>` based `ISHType[]` and switch flags
 1. [ISHREMOTE-020] Overload all `-RequestedMetadata` on `Find-`/`Get-` cmdlets using `IshTypeFieldSetup`
 1. [ISHREMOTE-024] Add `Filter-IshValueField`, actually `Filter-IshMetadataField`
-1. [ISHREMOTE-001] Prepare for OpenSourceSoftware and Continues Integration
+1. [ISHREMOTE-001] Prepare for OpenSourceSoftware and Continues Integration ISSUE #1
 1. [ISHREMOTE-002] Performance boost for legacy imports to avoid Retrieve API calls to feed the pipeline
 1. [ISHREMOTE-048] Merge `Find-` cmdlets into a parameter group on the `Get-` cmdlets. So `Get-` allows retrieval with identifiers and based on Find criterias.
 1. [ISHREMOTE-008] Add `Unlock-IshUser`
@@ -160,7 +160,7 @@ DocumentObj data migration cmdlets like `Get-IshDocumentObjData`, `Save-IshDocum
     1. decorated(psobject-noteproperty) ... is about the promotion to properties for easy usage in Out-GridView (see Stop-IshPublicationOutput sample)
 * Promote `IshObject` results to `IshDocumentObj` for `Get-IshDocumentObj` or `IshUser` for `Get-IshUser` (and `IshEvent` for `Get-IshEvent`), so matching the cmdlet noun. This would allow easier printing, nicer table printing through specialized  `ISHRemote.Format.ps1xml` entries, especially in interactive mode. This probably requires a fancy factory implementation compared to the current IshObject(xml) function.
     * IshDocumentObj groups MasterDoc/Module/.../Template, can print Resolution only for images
-	* IshPublicationOutput ilke IshDocumentObj is a multi-level card hierarchy
+	* IshPublicationOutput like IshDocumentObj is a multi-level card hierarchy
 	* IshEDT, IshOutputFormat, IshUser, IshUserGroup, IshUserRole, IshOutputFormat (future IshTranslationJob) derive from IshObject
 	* Note that IshConfiguration returns an IshField[] currently
 	* Set-IshField/Set-IshMetadataField should get aliases on IshObject. Make sure the property and IshObject class documentation is elaborate.
@@ -283,6 +283,8 @@ Extend parameter `-FolderPath` with intellisense
 
 ## <a name="ISHREMOTE-032"></a>[ISHREMOTE-032]
 Implement Provider for ISH:// usage (like IIS:// or HKLM://) allowing item/container browsing like Remove-Item/Set-Item
+
+Get inspired on the consul.io one, see https://github.com/ntent-ad/consul-ps-provider
 
 ## <a name="ISHREMOTE-033"></a>[ISHREMOTE-033]
 Add `Get-IshTranslationTemplate`, `Remove-IshTranslationTemplate` and `Add-IshTranslationTemplate` which in turn requires `IshTranslationJobTemplates`
