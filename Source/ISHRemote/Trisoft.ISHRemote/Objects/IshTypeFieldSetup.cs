@@ -96,16 +96,6 @@ namespace Trisoft.ISHRemote.Objects
         //   What: descriptive (inc FTITLE?), all
 
 
-       //private IshFields GenerateMetadataFields(IshFields ishFields)
-       //{
-       //    IshFields metadataFields = new IshFields();
-       //    foreach (IshField ishField in ishFields.Fields())
-       //    {
-       //        metadataFields.AddField(ishField.ToMetadataField());
-       //    }
-       //    return metadataFields;
-       //}
-
         private IshFields AddDescriptiveFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
         {
             return null;
@@ -116,6 +106,7 @@ namespace Trisoft.ISHRemote.Objects
         /// </summary>
         private IshFields RemoveUnallowedActionFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
         {
+            // 20170310/ddemeyer I wonder if we need this assist function...
             return null;
         }
 
@@ -130,11 +121,51 @@ namespace Trisoft.ISHRemote.Objects
         /// <param name="actionMode">RequestedMetadataFields only has value for read operations like Read, Find, Search,...</param>
         public IshFields ToIshRequestedMetadataFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
         {
-            // for loop over types, switch statement to ignore incoming ISHNone/ISHNotFound
-            //  checks AllowOnRead (covers Read/Find/Search, ignore Create/Update/Delete actions)
-            //  merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet
-            //  returns IshMetadataField entries as IshFields (plural) so covers ToRequestedFields and RemoveSystemFields conversion
-            return null;
+            IshFields requestedMetadataFields = new IshFields();
+            foreach (Enumerations.ISHType ishType in ishTypes)
+            {
+                // Check incoming IshField with IshTypeFieldDefinitions
+                foreach (IshMetadataField ishField in ishFields.Fields())
+                {
+                    var key = Enumerations.Key(ishType, ishField.Level, ishField.Name);
+                    if (!_ishTypeFieldDefinitions.ContainsKey(key))
+                    {
+                        _logger.WriteDebug($"ToIshRequestedMetadataFields unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                        continue;
+                    }
+                    switch (actionMode)
+                    {
+                        case Enumerations.ActionMode.Read:
+                        case Enumerations.ActionMode.Find:
+                            if (!_ishTypeFieldDefinitions[key].AllowOnRead)
+                            {
+                                _logger.WriteDebug($"ToIshRequestedMetadataFields AllowOnRead removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                            }
+                            else
+                            {
+                                requestedMetadataFields.AddField(ishField.ToRequestedMetadataField());
+                            }
+                            break;
+                        case Enumerations.ActionMode.Search:
+                            if (!_ishTypeFieldDefinitions[key].AllowOnSearch)
+                            {
+                                _logger.WriteDebug($"ToIshRequestedMetadataFields AllowOnSearch removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                            }
+                            else
+                            {
+                                requestedMetadataFields.AddField(ishField.ToRequestedMetadataField());
+                            }
+                            break;
+                        default:
+                            _logger.WriteDebug($"ToIshRequestedMetadataFields called for actionMode[{actionMode}], skipping");
+                            break;
+                    }
+                }
+                //TODO [Should] Add IsDescriptive fields for the incoming IshType to allow basic descriptive/minimal object initialization
+                //Probably private assist function required in this class
+                //Merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet
+            }
+            return requestedMetadataFields;
         }
 
         /// <summary>

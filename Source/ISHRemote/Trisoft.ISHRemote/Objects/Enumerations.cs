@@ -138,7 +138,7 @@ namespace Trisoft.ISHRemote.Objects
         /// <summary>
         /// <para type="description">Used by RemoveSystemFields to know which fields to filter. E.g. at creation time of a user PASSWORD is allowed, but not at retrieval time.</para>
         /// </summary>
-        internal enum ActionMode
+        public enum ActionMode
         {
             Create,
             Read,
