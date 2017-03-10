@@ -20,7 +20,7 @@
 1. [ISHREMOTE-029] Overload `Set-IshValueField` to accept IshObject/IshFolder
 1. [ISHREMOTE-035] Add `Get-IshSettingWorkflow` which in turn requires `IshSettingWorkflowSetup` and `IshSettingWorkflowTransition`
 1. [ISHREMOTE-031] Extend parameter `-FolderPath` with intellisense
-1. [ISHREMOTE-006] Add Missing/Legacy Pester tests
+1. [ISHREMOTE-006] Add Missing/Legacy Pester tests Issue #4
 1. [ISHREMOTE-016] Add `Filter-IshObject` cmdlet taking MetadataFilter parameter to do client-side object filtering
 1. [ISHREMOTE-014] Add `Test-IshFolder`
 1. [ISHREMOTE-027] Add `Test-IshDocumentObj` and `Test-PublicationOutput`
