@@ -30,8 +30,20 @@ Describe "Add-IshUserRole" -Tags "Create" {
 			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FDESCRIPTION" -Level None -Value "Description of $userRoleName"
 			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata
-			#(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should Be $true
-			#(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERROLENAME -Level None).Length -gt 1 | Should Be $true
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should Be $true
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERROLENAME -Level None).Length -gt 1 | Should Be $true
+		}
+		It "Parameter Metadata StrictMetadataPreference=Off" {
+			$strictMetadataPreference = $ishSession.StrictMetadataPreference
+			$ishSession.StrictMetadataPreference = "Off"
+			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
+			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "CREATED-ON" -Level None -Value "12/03/2017" | 
+						Set-IshMetadataField -IshSession $ishSession -Name "MODIFIED-ON" -Level None -Value "12/03/2017" |
+						Set-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -Level None -Value "SomethingReadAccess"  |
+						Set-IshMetadataField -IshSession $ishSession -Name "OWNER" -Level None -Value "SomethingOwner" |
+						Set-IshMetadataField -IshSession $ishSession -Name "INVALIDFIELDNAME" -Level None -Value "SomethingInvalidFieldName"
+			{ Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata } | Should Not Throw
+			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}
 

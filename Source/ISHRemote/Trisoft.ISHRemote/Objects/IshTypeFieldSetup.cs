@@ -273,6 +273,7 @@ namespace Trisoft.ISHRemote.Objects
                             else
                             {
                                 metadataFields.AddField(ishField.ToMetadataField());
+                                //TODO [Should] IshTypeFieldSetup - Potential conflict if ishField having multiple ishvaluetype have conflicting entries for id/element/value
                             }
                             break;
                         default:
