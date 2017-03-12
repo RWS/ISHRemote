@@ -36,6 +36,10 @@ namespace Trisoft.ISHRemote.Objects
         /// Lookup dictionary based on field identifier (like ISHType, Level, Name concatenation)
         /// </summary>
         private SortedDictionary<string, IshTypeFieldDefinition> _ishTypeFieldDefinitions;
+        /// <summary>
+        /// Client side filtering of nonexisting or unallowed metadata can be done silently, with warning or not at all.
+        /// </summary>
+        private Enumerations.StrictMetadataPreference _strictMetadataPreference = Enumerations.StrictMetadataPreference.Continue;
 
         /// <summary>
         /// Creates a management object to work with the ISHType and FieldDefinitions.
@@ -87,6 +91,15 @@ namespace Trisoft.ISHRemote.Objects
             return null;
         }
 
+        /// <summary>
+        /// Client side filtering of nonexisting or unallowed metadata can be done silently, with warning or not at all. 
+        /// </summary>
+        public Enumerations.StrictMetadataPreference StrictMetadataPreference
+        {
+            get { return _strictMetadataPreference; }
+            set { _strictMetadataPreference = value; }
+        }
+
 
         #region Assist functions on allowed field usage based on IshFieldDefinition[]
 
@@ -94,7 +107,14 @@ namespace Trisoft.ISHRemote.Objects
         //   Enumerations.Level.None, 
         //   removal of certain value types, or all like Enumerations.ValueType.All
         //   What: descriptive (inc FTITLE?), all
-
+        /// <summary>
+        /// Remove IshField entries that are not matching with the provided actionMode - based on IshFieldDefinition.AllowOn...
+        /// </summary>
+        private IshFields RemoveUnallowedActionFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        {
+            // 20170310/ddemeyer I wonder if we need this assist function...
+            return null;
+        }
 
         /// <summary>
         /// Reverse lookup for all fields that are marked descriptive for the incoming ishTypes; then add them to ishFields.
@@ -110,15 +130,6 @@ namespace Trisoft.ISHRemote.Objects
                 }
             }
             return ishFields;
-        }
-
-        /// <summary>
-        /// Remove IshField entries that are not matching with the provided actionMode - based on IshFieldDefinition.AllowOn...
-        /// </summary>
-        private IshFields RemoveUnallowedActionFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
-        {
-            // 20170310/ddemeyer I wonder if we need this assist function...
-            return null;
         }
 
         /// <summary>
@@ -141,8 +152,19 @@ namespace Trisoft.ISHRemote.Objects
                     var key = Enumerations.Key(ishType, ishField.Level, ishField.Name);
                     if (!_ishTypeFieldDefinitions.ContainsKey(key))
                     {
-                        _logger.WriteDebug($"ToIshRequestedMetadataFields unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
-                        continue;
+                        switch (_strictMetadataPreference)
+                        {
+                            case Enumerations.StrictMetadataPreference.SilentlyContinue:
+                                _logger.WriteDebug($"ToIshRequestedMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                break;
+                            case Enumerations.StrictMetadataPreference.Continue:
+                                _logger.WriteVerbose($"ToIshRequestedMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                break;
+                            case Enumerations.StrictMetadataPreference.Off:
+                                requestedMetadataFields.AddField(ishField.ToRequestedMetadataField());
+                                break;
+                        }
+                        continue; // move to next ishField
                     }
                     switch (actionMode)
                     {
@@ -150,7 +172,12 @@ namespace Trisoft.ISHRemote.Objects
                         case Enumerations.ActionMode.Find:
                             if (!_ishTypeFieldDefinitions[key].AllowOnRead)
                             {
-                                _logger.WriteDebug($"ToIshRequestedMetadataFields AllowOnRead removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                switch (_strictMetadataPreference)
+                                {
+                                    case Enumerations.StrictMetadataPreference.Continue:
+                                        _logger.WriteVerbose($"ToIshRequestedMetadataFields AllowOnRead removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                        break;
+                                }
                             }
                             else
                             {
@@ -160,7 +187,12 @@ namespace Trisoft.ISHRemote.Objects
                         case Enumerations.ActionMode.Search:
                             if (!_ishTypeFieldDefinitions[key].AllowOnSearch)
                             {
-                                _logger.WriteDebug($"ToIshRequestedMetadataFields AllowOnSearch removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                switch (_strictMetadataPreference)
+                                {
+                                    case Enumerations.StrictMetadataPreference.Continue:
+                                        _logger.WriteVerbose($"ToIshRequestedMetadataFields AllowOnSearch removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                        break;
+                                }
                             }
                             else
                             {
@@ -197,15 +229,31 @@ namespace Trisoft.ISHRemote.Objects
                     var key = Enumerations.Key(ishType, ishField.Level, ishField.Name);
                     if (!_ishTypeFieldDefinitions.ContainsKey(key))
                     {
-                        _logger.WriteDebug($"ToIshMetadataFields unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
-                        continue;
+                        switch (_strictMetadataPreference)
+                        {
+                            case Enumerations.StrictMetadataPreference.SilentlyContinue:
+                                _logger.WriteDebug($"ToIshMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                break;
+                            case Enumerations.StrictMetadataPreference.Continue:
+                                _logger.WriteVerbose($"ToIshMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                break;
+                            case Enumerations.StrictMetadataPreference.Off:
+                                metadataFields.AddField(ishField.ToRequestedMetadataField());
+                                break;
+                        }
+                        continue; // move to next ishField
                     }
                     switch (actionMode)
                     {
                         case Enumerations.ActionMode.Create:
                             if (!_ishTypeFieldDefinitions[key].AllowOnCreate)
                             {
-                                _logger.WriteDebug($"ToIshMetadataFields AllowOnCreate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                switch (_strictMetadataPreference)
+                                {
+                                    case Enumerations.StrictMetadataPreference.Continue:
+                                        _logger.WriteVerbose($"ToIshMetadataFields AllowOnCreate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                        break;
+                                }
                             }
                             else
                             {
@@ -215,7 +263,12 @@ namespace Trisoft.ISHRemote.Objects
                         case Enumerations.ActionMode.Update:
                             if (!_ishTypeFieldDefinitions[key].AllowOnUpdate)
                             {
-                                _logger.WriteDebug($"ToIshMetadataFields AllowOnUpdate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
+                                switch (_strictMetadataPreference)
+                                {
+                                    case Enumerations.StrictMetadataPreference.Continue:
+                                        _logger.WriteVerbose($"ToIshMetadataFields AllowOnUpdate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
+                                        break;
+                                }
                             }
                             else
                             {

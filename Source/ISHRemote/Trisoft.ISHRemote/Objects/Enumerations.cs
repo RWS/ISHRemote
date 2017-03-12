@@ -73,10 +73,34 @@ namespace Trisoft.ISHRemote.Objects
             /// All is used when the valuetype is irrelevant.
             /// For example when a field needs to be removed and you do not want to loop all different value types.
             /// </summary>
-            /// TODO [Must] Remove confuzing value 'All' for ValueType usage, can be done once IshSession.IshTypeFieldSetup is implemented (see [ISHREMOTE-017])
+            /// TODO [Must] IshTypeFieldSetup - Remove confuzing value 'All' for ValueType usage, can be done once IshSession.IshTypeFieldSetup is implemented (see [ISHREMOTE-017])
             [StringValue("")]
             All
         }
+
+        /// <summary>
+        /// <para type="description">Allows tuning client-side metadata handling/warning since the IshTypeFieldSetup introduction.</para>
+        /// </summary>
+        public enum StrictMetadataPreference
+        {
+            /// <summary>
+            /// Client-side silent filtering of nonexisting and unallowed fields. (e.g Nice for repository folder syncing with mismatching metadata setup)
+            /// </summary>
+            [StringValue("silentlycontinue")]
+            SilentlyContinue,
+            /// <summary>
+            /// Client-side filtering of nonexisting and unallowed fields displaying a Write-Verbose message but still continues.
+            /// </summary>
+            [StringValue("continue")]
+            Continue,
+            /// <summary>
+            ///  Client-side filtering of nonexisting and unallowed fields is turned off. No handling but simply executes the API call, most 
+            ///  likely resulting in a Write-Error. This allows api/pester tests like IshUser PASSWORD field should not allowed to be read.
+            /// </summary>
+            [StringValue("off")]
+            Off
+        }
+
 
         /// <summary>
         /// <para type="description">List of value like Events can be hidden upon Find/Retrieval with these filters</para>
