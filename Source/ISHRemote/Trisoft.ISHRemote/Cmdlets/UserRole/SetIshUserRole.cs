@@ -116,7 +116,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                     WriteDebug("Retrieving");
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields.ToRequestedFields());
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
 
                     string xmlIshObjects = IshSession.UserRole25.RetrieveMetadata(
                         returnUserRoles.ToArray(),

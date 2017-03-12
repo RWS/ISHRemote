@@ -26,6 +26,13 @@ Describe "Add-IshUserRole" -Tags "Create" {
 			$ishObject.Count | Should Be 1
 			$ishObject.IshRef -Like "VUSER*" | Should Be $true
 		}
+		It "Parameter Metadata return descriptive metadata" {
+			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
+			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FDESCRIPTION" -Level None -Value "Description of $userRoleName"
+			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata
+			#(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should Be $true
+			#(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERROLENAME -Level None).Length -gt 1 | Should Be $true
+		}
 	}
 
 	Context "Add-IshUserRole IshObjectsGroup" {

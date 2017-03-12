@@ -36,6 +36,8 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHUSERROLENAME", Enumerations.Level.None, Enumerations.ValueType.Value));
             return currentFields;
         }
@@ -45,6 +47,8 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
         /// </summary>
         internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 throw new InvalidOperationException(

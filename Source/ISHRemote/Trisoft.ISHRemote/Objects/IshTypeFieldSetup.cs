@@ -33,7 +33,7 @@ namespace Trisoft.ISHRemote.Objects
     {
         private readonly ILogger _logger;
         /// <summary>
-        /// Returning list of definitions
+        /// Lookup dictionary based on field identifier (like ISHType, Level, Name concatenation)
         /// </summary>
         private SortedDictionary<string, IshTypeFieldDefinition> _ishTypeFieldDefinitions;
 
@@ -96,9 +96,20 @@ namespace Trisoft.ISHRemote.Objects
         //   What: descriptive (inc FTITLE?), all
 
 
+        /// <summary>
+        /// Reverse lookup for all fields that are marked descriptive for the incoming ishTypes; then add them to ishFields.
+        /// </summary>
         private IshFields AddDescriptiveFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
         {
-            return null;
+            foreach (Enumerations.ISHType ishType in ishTypes)
+            {
+                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.IsDescriptive == true))
+                {
+                    //TODO [Could] IshTypeFieldSetup adding descriptive fields potentially has an issue with removing to many ValueType entries
+                    ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value));
+                }
+            }
+            return ishFields;
         }
 
         /// <summary>
@@ -125,7 +136,7 @@ namespace Trisoft.ISHRemote.Objects
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
                 // Check incoming IshField with IshTypeFieldDefinitions
-                foreach (IshMetadataField ishField in ishFields.Fields())
+                foreach (IshField ishField in ishFields.Fields())
                 {
                     var key = Enumerations.Key(ishType, ishField.Level, ishField.Name);
                     if (!_ishTypeFieldDefinitions.ContainsKey(key))
@@ -161,9 +172,9 @@ namespace Trisoft.ISHRemote.Objects
                             break;
                     }
                 }
-                //TODO [Should] Add IsDescriptive fields for the incoming IshType to allow basic descriptive/minimal object initialization
-                //Probably private assist function required in this class
-                //Merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet
+                //Add IsDescriptive fields for the incoming IshType to allow basic descriptive/minimal object initialization
+                requestedMetadataFields = AddDescriptiveFields(ishTypes, requestedMetadataFields, actionMode);
+                //TODO [Should] Merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet. Server-side they are retrieved anyway, so the only penalty is xml transfer size.
             }
             return requestedMetadataFields;
         }
@@ -181,7 +192,7 @@ namespace Trisoft.ISHRemote.Objects
             IshFields metadataFields = new IshFields();
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
-                foreach (IshMetadataField ishField in ishFields.Fields())
+                foreach (IshField ishField in ishFields.Fields())
                 {
                     var key = Enumerations.Key(ishType, ishField.Level, ishField.Name);
                     if (!_ishTypeFieldDefinitions.ContainsKey(key))
