@@ -42,7 +42,7 @@ Describe "Add-IshUserRole" -Tags "Create" {
 						Set-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -Level None -Value "SomethingReadAccess"  |
 						Set-IshMetadataField -IshSession $ishSession -Name "OWNER" -Level None -Value "SomethingOwner" |
 						Set-IshMetadataField -IshSession $ishSession -Name "INVALIDFIELDNAME" -Level None -Value "SomethingInvalidFieldName"
-			{ Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata } | Should Not Throw
+			{ Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata } | Should Throw
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}

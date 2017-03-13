@@ -1069,6 +1069,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cmdlets\User\AddIshUser.Tests.ps1" />
     <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />

@@ -85,7 +85,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                     // General date fields
                     ishFields.RemoveField(FieldElements.CreationDate, level, valueType);
                     ishFields.RemoveField(FieldElements.ModificationDate, level, valueType);
-                }
+                }   
                 // General security fields
                 ishFields.RemoveField(FieldElements.ReadAccess, level, valueType);
                 ishFields.RemoveField(FieldElements.ModifyAccess, level, valueType);
