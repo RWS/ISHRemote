@@ -108,7 +108,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                 {
                     var activityFilter =  EnumConverter.ToActivityFilter<UserGroup25ServiceReference.ActivityFilter>(ActivityFilter);
                     IshFields metadataFilter = new IshFields(MetadataFilter);
-                    IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                     var ids = (IshObject != null) ? new IshObjects(IshObject).Ids : Id;
                     WriteDebug($"Retrieving Id.length[{ids.Length}] ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                     string xmlIshObjects = IshSession.UserGroup25.RetrieveMetadata(

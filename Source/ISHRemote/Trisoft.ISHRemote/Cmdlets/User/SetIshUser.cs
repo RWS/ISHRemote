@@ -87,7 +87,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                         foreach (IshObject ishObject in IshObject)
                         {
                             WriteDebug($"Id[{ishObject.IshRef}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            var metadata = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Update);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
                             if (ShouldProcess(ishObject.IshRef))
                             {
                                 IshSession.User25.Update(
@@ -103,7 +103,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                     else
                     {
                         // 1a. Using Id and Metadata
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Update);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
                         WriteDebug($"Id[{Id}] metadata.length[{metadata.ToXml().Length}]");
                         if (ShouldProcess(Id))
                         {
@@ -123,7 +123,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                     // Remove Password field explicitly, as we are not allowed to read it
                     returnFields.RemoveField(FieldElements.Password, Enumerations.Level.None, Enumerations.ValueType.All);
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields.ToRequestedFields());
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.User25.RetrieveMetadata(
                         returnUsers.ToArray(),
                         User25ServiceReference.ActivityFilter.None,

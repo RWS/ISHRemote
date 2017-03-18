@@ -24,6 +24,11 @@ namespace Trisoft.ISHRemote.Cmdlets.User
 {
     public abstract class UserCmdlet : TrisoftCmdlet
     {
+        public Enumerations.ISHType[] ISHType
+        {
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHUser }; }
+        }
+
         /// <summary>
         /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
         /// </summary>
@@ -31,6 +36,8 @@ namespace Trisoft.ISHRemote.Cmdlets.User
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value));
             return currentFields;
         }
@@ -40,6 +47,8 @@ namespace Trisoft.ISHRemote.Cmdlets.User
         /// </summary>
         internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 throw new InvalidOperationException(

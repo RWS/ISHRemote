@@ -125,7 +125,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                     // 2b. Retrieve the material
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.UserGroup25.RetrieveMetadata(
                         returnUserGroups.ToArray(),
                         UserGroup25ServiceReference.ActivityFilter.None,

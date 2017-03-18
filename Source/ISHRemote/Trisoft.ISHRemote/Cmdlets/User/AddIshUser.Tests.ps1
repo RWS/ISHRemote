@@ -38,9 +38,9 @@ Describe "Add-IshUser" -Tags "Create" {
                         Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "SomethingSecret"
 			$ishObject = Add-IshUser -IshSession $ishSession -Name $userName -Metadata $metadata
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERLANGUAGE -Level None -ValueType Element).Length -gt 1 | Should Be $true # added user field by element name
-			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERLANGUAGE -Level None -ValueType Value).Length -eq 0 | Should Be $true # added user field by element name, so value not returned
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERLANGUAGE -Level None -ValueType Value).Length -gt 1 | Should Be $true # added user field by element name, value added by AddDescriptiveFields
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FUSERGROUP -Level None -ValueType Element).Length -gt 1 | Should Be $true # added user field by element name
-			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FUSERGROUP -Level None -ValueType Value).Length -eq 0 | Should Be $true # added user field by element name, so value not returned
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FUSERGROUP -Level None -ValueType Value).Length -gt 1 | Should Be $true # added user field by element name, value added by AddDescriptiveFields
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name USERNAME -Level None).Length -gt 1 | Should Be $true
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off with INVALIDFIELDNAME" {
@@ -102,12 +102,16 @@ Describe "Add-IshUser" -Tags "Create" {
 						Set-IshMetadataField -IshSession $ishSession -Name "RIGHTS" -Level None -Value "SomethingInvalidFieldName" | # RemoveSystemFields always removed upon Create
 						Set-IshMetadataField -IshSession $ishSession -Name "CREATED-ON" -Level None -Value "12/03/2017" | # RemoveSystemFields always removed upon Create
                         Set-IshMetadataField -IshSession $ishSession -Name "MODIFIED-ON" -Level None -Value "12/03/2017" | # RemoveSystemFields always removed upon Create
-						Set-IshMetadataField -IshSession $ishSession -Name "FISHPASSWORDMODIFIEDON" -Level None -Value "12/03/2017" | # RemoveSystemFields always removed upon Create since Kojak/13.0.0
-						Set-IshMetadataField -IshSession $ishSession -Name "FISHLOCKEDSINCE" -Level None -Value "12/03/2017" | # RemoveSystemFields always removed upon Create since Kojak/13.0.0
-						Set-IshMetadataField -IshSession $ishSession -Name "FISHPASSWORDHISTORY" -Level None -Value "NoHistory" | # RemoveSystemFields always removed upon Create since Kojak/13.0.0
-						Set-IshMetadataField -IshSession $ishSession -Name "FISHFAILEDATTEMPTS" -Level None -Value "10" | # RemoveSystemFields always removed upon Create since Kojak/13.0.0
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHFAVORITES" -Level None -Value "23" # RemoveSystemFields always removed upon Create
-			{ Add-IshUser -IshSession $ishSession -Name $userName -Metadata $metadata } | Should Not Throw # changes to Throw after IshTypeFieldSetup implementation
+			if (([Version]$ishSession.ServerVersion).Major -ge 13)
+			{
+			  $metadata = $metadata |
+			              Set-IshMetadataField -IshSession $ishSession -Name "FISHPASSWORDMODIFIEDON" -Level None -Value "12/03/2017" | # RemoveSystemFields always removed upon Create since Kojak/13.0.0
+						  Set-IshMetadataField -IshSession $ishSession -Name "FISHLOCKEDSINCE" -Level None -Value "12/03/2017" | # RemoveSystemFields always removed upon Create since Kojak/13.0.0
+						  Set-IshMetadataField -IshSession $ishSession -Name "FISHPASSWORDHISTORY" -Level None -Value "NoHistory" | # RemoveSystemFields always removed upon Create since Kojak/13.0.0
+						  Set-IshMetadataField -IshSession $ishSession -Name "FISHFAILEDATTEMPTS" -Level None -Value "10"  # RemoveSystemFields always removed upon Create since Kojak/13.0.0
+			}
+			{ Add-IshUser -IshSession $ishSession -Name $userName -Metadata $metadata } | Should Throw
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}

@@ -104,7 +104,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                                         Enumerations.ValueType.Value)[0];
                             string userName = userNameValueField.Value;
                             WriteDebug($"UserName[{userName}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            var metadata = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Create);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(userName))
                             {
                                 string userId = IshSession.User25.Create(
@@ -120,7 +120,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                     else
                     {
                         // 1a. Using Id and Metadata
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Create);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
                         WriteVerbose("Name[" + Name + "] metadata.length[" + metadata.ToXml().Length + "]");
                         if (ShouldProcess(Name))
                         {
@@ -140,7 +140,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                     // Remove Password field explicitly, as we are not allowe to read it
                     returnFields.RemoveField(FieldElements.Password, Enumerations.Level.None, Enumerations.ValueType.All);
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.User25.RetrieveMetadata(
                         returnUsers.ToArray(),
                         User25ServiceReference.ActivityFilter.None,

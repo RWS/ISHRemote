@@ -98,8 +98,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
 
             try
             {                
-                IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());
-
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                 List<IshObject> returnedObjects = new List<IshObject>();
 
                 if (IshObject != null && IshObject.Length == 0)
