@@ -24,11 +24,18 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
 {
     public abstract class SettingsCmdlet : TrisoftCmdlet
     {
+        public Enumerations.ISHType[] ISHType
+        {
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHConfiguration }; }
+        }
+
         /// <summary>
         /// Removes the SYSTEM fields from the given IshFields container. Making the fields ready for an update/write operation. 
         /// </summary>
         internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 throw new InvalidOperationException(
