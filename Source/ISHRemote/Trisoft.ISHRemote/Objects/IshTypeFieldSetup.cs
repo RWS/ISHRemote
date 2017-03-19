@@ -172,12 +172,10 @@ namespace Trisoft.ISHRemote.Objects
                         switch (_strictMetadataPreference)
                         {
                             case Enumerations.StrictMetadataPreference.SilentlyContinue:
-                                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                                //_logger.WriteDebug($"ToIshRequestedMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                _logger.WriteDebug($"ToIshRequestedMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                 break;
                             case Enumerations.StrictMetadataPreference.Continue:
-                                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                                //_logger.WriteVerbose($"ToIshRequestedMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                _logger.WriteVerbose($"ToIshRequestedMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                 break;
                             case Enumerations.StrictMetadataPreference.Off:
                                 requestedMetadataFields.AddField(ishField.ToRequestedMetadataField());
@@ -194,8 +192,7 @@ namespace Trisoft.ISHRemote.Objects
                                 switch (_strictMetadataPreference)
                                 {
                                     case Enumerations.StrictMetadataPreference.Continue:
-                                        //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                                        //_logger.WriteVerbose($"ToIshRequestedMetadataFields AllowOnRead removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                        _logger.WriteVerbose($"ToIshRequestedMetadataFields AllowOnRead removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                         break;
                                 }
                             }
@@ -210,8 +207,7 @@ namespace Trisoft.ISHRemote.Objects
                                 switch (_strictMetadataPreference)
                                 {
                                     case Enumerations.StrictMetadataPreference.Continue:
-                                        //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                                        //_logger.WriteVerbose($"ToIshRequestedMetadataFields AllowOnSearch removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                        _logger.WriteVerbose($"ToIshRequestedMetadataFields AllowOnSearch removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                         break;
                                 }
                             }
@@ -221,8 +217,7 @@ namespace Trisoft.ISHRemote.Objects
                             }
                             break;
                         default:
-                            //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                            //_logger.WriteDebug($"ToIshRequestedMetadataFields called for actionMode[{actionMode}], skipping");
+                            _logger.WriteDebug($"ToIshRequestedMetadataFields called for actionMode[{actionMode}], skipping");
                             break;
                     }
                 }
@@ -254,12 +249,10 @@ namespace Trisoft.ISHRemote.Objects
                         switch (_strictMetadataPreference)
                         {
                             case Enumerations.StrictMetadataPreference.SilentlyContinue:
-                                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                                //_logger.WriteDebug($"ToIshMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                _logger.WriteDebug($"ToIshMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                 break;
                             case Enumerations.StrictMetadataPreference.Continue:
-                                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                                //_logger.WriteVerbose($"ToIshMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                _logger.WriteVerbose($"ToIshMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                 break;
                             case Enumerations.StrictMetadataPreference.Off:
                                 metadataFields.AddField(ishField.ToRequestedMetadataField());
@@ -275,8 +268,7 @@ namespace Trisoft.ISHRemote.Objects
                                 switch (_strictMetadataPreference)
                                 {
                                     case Enumerations.StrictMetadataPreference.Continue:
-                                        //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                                        //_logger.WriteVerbose($"ToIshMetadataFields AllowOnCreate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
+                                        _logger.WriteVerbose($"ToIshMetadataFields AllowOnCreate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                         break;
                                 }
                             }
@@ -291,8 +283,7 @@ namespace Trisoft.ISHRemote.Objects
                                 switch (_strictMetadataPreference)
                                 {
                                     case Enumerations.StrictMetadataPreference.Continue:
-                                        //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                                        //_logger.WriteVerbose($"ToIshMetadataFields AllowOnUpdate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
+                                        _logger.WriteVerbose($"ToIshMetadataFields AllowOnUpdate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
                                         break;
                                 }
                             }
@@ -303,8 +294,7 @@ namespace Trisoft.ISHRemote.Objects
                             }
                             break;
                         default:
-                            //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                            //_logger.WriteDebug($"ToIshMetadataFields called for actionMode[{actionMode}], skipping");
+                            _logger.WriteDebug($"ToIshMetadataFields called for actionMode[{actionMode}], skipping");
                             break;
                     }
                 }
@@ -313,13 +303,11 @@ namespace Trisoft.ISHRemote.Objects
             switch (_strictMetadataPreference)
             {
                 case Enumerations.StrictMetadataPreference.SilentlyContinue:
-                    //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                    //_logger.WriteDebug($"Removing duplicate IshField entries");
+                    _logger.WriteDebug($"Removing duplicate IshField entries");
                     metadataFields = RemoveDuplicateFields(metadataFields);
                     break;
                 case Enumerations.StrictMetadataPreference.Continue:
-                    //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                    //_logger.WriteVerbose($"Removing duplicate IshField entries");
+                    _logger.WriteVerbose($"Removing duplicate IshField entries");
                     metadataFields = RemoveDuplicateFields(metadataFields);
                     break;
                 case Enumerations.StrictMetadataPreference.Off:
