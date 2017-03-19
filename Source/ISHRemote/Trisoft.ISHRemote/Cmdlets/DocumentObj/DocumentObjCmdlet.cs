@@ -158,7 +158,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
             IshFields returnIshFields = new IshFields();
 
             // Version
-            IshField ishFieldVersion = ishFields.RetrieveFirst("VERSION", Enumerations.Level.Version.ToString());
+            IshField ishFieldVersion = ishFields.RetrieveFirst("VERSION", Enumerations.Level.Version, Enumerations.ValueType.Value);
             if (ishFieldVersion != null)
             {
                 returnIshFields.AddField(ishFieldVersion);
@@ -179,7 +179,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
             }
             else
             {
-                ishFieldLanguage = ishFields.RetrieveFirst("DOC-LANGUAGE", Enumerations.Level.Lng.ToString());
+                ishFieldLanguage = ishFields.RetrieveFirst("DOC-LANGUAGE", Enumerations.Level.Lng, Enumerations.ValueType.Value);
                 if (ishFieldLanguage != null)
                 {
                     returnIshFields.AddField(ishFieldLanguage);
@@ -187,7 +187,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
             }
            
             // Resolution
-            IshField ishFieldResolution = ishFields.RetrieveFirst("FRESOLUTION", Enumerations.Level.Lng.ToString());
+            IshField ishFieldResolution = ishFields.RetrieveFirst("FRESOLUTION", Enumerations.Level.Lng, Enumerations.ValueType.Value);
             if (ishFieldResolution != null)
             {
                 returnIshFields.AddField(ishFieldResolution);

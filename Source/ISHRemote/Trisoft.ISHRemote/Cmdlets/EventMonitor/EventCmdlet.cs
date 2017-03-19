@@ -61,8 +61,8 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
             IshFields returnIshFields = new IshFields();
 
             // Progress
-            IshField ishFieldEventId = ishFields.RetrieveFirst("EVENTID", Enumerations.Level.Progress.ToString());
-            IshField ishFieldEventType = ishFields.RetrieveFirst("EVENTTYPE", Enumerations.Level.Progress.ToString());
+            IshField ishFieldEventId = ishFields.RetrieveFirst("EVENTID", Enumerations.Level.Progress, Enumerations.ValueType.Value);
+            IshField ishFieldEventType = ishFields.RetrieveFirst("EVENTTYPE", Enumerations.Level.Progress, Enumerations.ValueType.Value);
             if (ishFieldEventId != null)
             {
                 returnIshFields.AddField(ishFieldEventId);
