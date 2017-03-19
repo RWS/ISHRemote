@@ -294,6 +294,7 @@
     </Compile>
     <Compile Include="Objects\Public\IshVersion.cs" />
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
+    <None Include="Cmdlets\OutputFormat\AddIshOutputFormat.Tests.ps1" />
     <None Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.Tests.ps1" />
     <None Include="Cmdlets\UserGroup\AddIshUserGroup.Tests.ps1" />
     <None Include="Cmdlets\UserRole\AddIshUserRole.Tests.ps1" />

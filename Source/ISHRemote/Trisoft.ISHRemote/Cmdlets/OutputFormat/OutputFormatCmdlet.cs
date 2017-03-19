@@ -27,6 +27,11 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
 {
     public abstract class OutputFormatCmdlet : TrisoftCmdlet
     {
+        public Enumerations.ISHType[] ISHType
+        {
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHOutputFormat }; }
+        }
+
         /// <summary>
         /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
         /// </summary>
@@ -34,6 +39,9 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
+            currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHOUTPUTFORMATNAME", Enumerations.Level.None, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHSINGLEFILE", Enumerations.Level.None, Enumerations.ValueType.Element));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHCLEANUP", Enumerations.Level.None, Enumerations.ValueType.Element));
@@ -49,6 +57,8 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// </summary>
         internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 throw new InvalidOperationException(

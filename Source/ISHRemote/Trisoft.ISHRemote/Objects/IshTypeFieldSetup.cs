@@ -144,6 +144,10 @@ namespace Trisoft.ISHRemote.Objects
                 {
                     //TODO [Could] IshTypeFieldSetup adding descriptive fields potentially has an issue with removing to many ValueType entries
                     ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value));
+                    if (ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHLov || ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHType)
+                    {
+                        ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Element));
+                    }
                 }
             }
             return ishFields;
