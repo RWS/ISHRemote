@@ -668,7 +668,6 @@
     <None Include="Cmdlets\Folder\SetIshFolder.Tests.ps1" />
     <None Include="Cmdlets\ListOfValues\AddIshLovValue.Tests.ps1" />
     <None Include="Cmdlets\PublicationOutput\GetPublicationOutputFolderLocation.Tests.ps1" />
-    <None Include="Cmdlets\PublicationOutput\StopIshPublicationOutput.Tests.ps1" />
     <None Include="Cmdlets\Session\NewIshSession.Tests.ps1" />
     <None Include="Cmdlets\Settings\GetIshSetting.Tests.ps1" />
     <None Include="Cmdlets\Settings\GetIshTimeZone.Tests.ps1" />

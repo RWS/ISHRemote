@@ -29,6 +29,11 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// <remarks>Inherits from <see cref="TrisoftCmdlet"/>.</remarks>
     public abstract class PublicationOutputCmdlet : TrisoftCmdlet
     {
+        public Enumerations.ISHType[] ISHType
+        {
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHPublication }; }
+        }
+
         /// <summary>
         /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
         /// </summary>
@@ -36,6 +41,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup.");
+
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHPUBLNGCOMBINATION", Enumerations.Level.Lng,Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Element));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Value));
@@ -52,6 +59,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <returns>A <see cref="IshFields"/> object with the identifier fields.</returns>
         public virtual IshFields GetIdentifierFields(IshFields fieldList)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup. Never used even.");
+
             IshFields returnFields = new IshFields();
             returnFields.AddField(fieldList.RetrieveFirst("VERSION", Enumerations.Level.Version, Enumerations.ValueType.Value));
             returnFields.AddField(fieldList.RetrieveFirst("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Element));           
@@ -64,6 +73,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// </summary>
         internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup.");
+
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 throw new InvalidOperationException(

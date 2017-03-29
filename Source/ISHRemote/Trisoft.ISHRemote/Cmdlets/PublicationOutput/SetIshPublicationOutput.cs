@@ -140,8 +140,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             WriteDebug($"Id[{ishObject.IshRef}] {++current}/{IshObject.Length}");
                             // Get language ref
                             long lngRef = Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]);
-                            var metadata = ishObject.IshFields;
-                            metadata = RemoveSystemFields(metadata, Enumerations.ActionMode.Update);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
                             if (ShouldProcess(Convert.ToString(lngRef)))
                             {
                                 IshSession.PublicationOutput25.SetMetadataByIshLngRef(
@@ -153,17 +152,15 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                         }
                         var returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
-                        string requestedMetadata = AddRequiredFields(returnFields).ToXml();
-                        string xmlIshObjects =
-                            IshSession.PublicationOutput25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(),
-                                requestedMetadata);
+                            : IshObject[0].IshFields;
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                        string xmlIshObjects = IshSession.PublicationOutput25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(), requestedMetadata.ToXml());
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                     else
                     {
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Update);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
                         PublicationOutput25ServiceReference.SetMetadataResponse response = null;
                         if (ShouldProcess(LogicalId + "=" + Version + "=" + LanguageCombination + "=" + OutputFormat))
                         {
@@ -175,10 +172,10 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             metadata.ToXml(),
                             requiredCurrentMetadata.ToXml()));
                         }
-                        string requestedMetadata = AddRequiredFields(metadata.ToRequestedFields()).ToXml();
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
                         var response2 = IshSession.PublicationOutput25.GetMetadata(new GetMetadataRequest(
                             LogicalId, response.version, OutputFormat, LanguageCombination,
-                            requestedMetadata));
+                            requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
