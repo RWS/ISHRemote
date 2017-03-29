@@ -158,7 +158,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 foldersToRetrieve.Add(folderId);
                             }
                         }
-                        returnFields = (IshFolder[0] == null) ? new IshFields() : IshFolder[0].IshFields.ToRequestedFields();
+                        returnFields = (IshFolder[0] == null) ? new IshFields() : IshFolder[0].IshFields;
                     }
                     else
                     {

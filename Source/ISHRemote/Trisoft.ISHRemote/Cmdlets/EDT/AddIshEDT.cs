@@ -121,7 +121,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
@@ -135,7 +135,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                                 metadata.ToXml());
                             EDTIds.Add(EDTId);
                         }
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 3a. Retrieve added EDT and write it out

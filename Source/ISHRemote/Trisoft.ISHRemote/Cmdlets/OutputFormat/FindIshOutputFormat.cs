@@ -95,7 +95,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                 string xmlIshObjects = IshSession.OutputFormat25.Find(
                     activityFilter,
                     metadataFilter.ToXml(),
-                    requestedMetadata.ToRequestedFields().ToXml());
+                    requestedMetadata.ToXml());
                 WriteVerbose("xmlIshObjects.length[" + xmlIshObjects.Length + "]");
 
                 // 3. Write it

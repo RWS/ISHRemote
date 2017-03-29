@@ -224,7 +224,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             string xmlIshFolder = ishSession.Folder25.GetMetadata(
                 baseFolder,
                 new string[] { },  // Use empty folder path so we can just get the basefolder name
-                requestedMetadata.ToRequestedFields().ToXml());
+                requestedMetadata.ToXml());
             XmlDocument result = new XmlDocument();
             result.LoadXml(xmlIshFolder);
             XmlElement xmlIshFolderElement = (XmlElement)result.SelectSingleNode("ishfolder");

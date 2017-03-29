@@ -102,7 +102,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
@@ -116,7 +116,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                                 metadata.ToXml());
                             returnUserGroups.Add(userGroupId);
                         }
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 2. Retrieve the updated material from the database and write it out

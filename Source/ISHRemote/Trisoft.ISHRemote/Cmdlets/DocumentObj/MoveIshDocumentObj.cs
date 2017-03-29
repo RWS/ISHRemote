@@ -199,7 +199,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         // Process language card ids in batches
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
                             lngCardIdBatch.ToArray(),
-                            requestedMetadata.ToRequestedFields().ToXml());
+                            requestedMetadata.ToXml());
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLngCardIdCount += lngCardIdBatch.Count;
@@ -216,7 +216,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     foreach (List<string> logicalIdBatch in devidedlogicalIdsList)
                     {
                         // Process language card ids in batches
-                        string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, "", requestedMetadata.ToRequestedFields().ToXml());
+                        string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, "", requestedMetadata.ToXml());
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLogicalIdCount += logicalIdBatch.Count;

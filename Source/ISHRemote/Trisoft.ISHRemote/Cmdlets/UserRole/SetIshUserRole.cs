@@ -97,7 +97,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
@@ -109,7 +109,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                             IshSession.UserRole25.Update(Id, metadata.ToXml());
                         }
                         returnUserRoles.Add(Id);
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 2. Retrieve the updated material from the database and write it out
