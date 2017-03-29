@@ -27,6 +27,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 {
     public abstract class FolderCmdlet : TrisoftCmdlet
     {
+        public Enumerations.ISHType[] ISHType
+        {
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHFolder }; }
+        }
+
         /// <summary>
         /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
         /// </summary>
@@ -34,6 +39,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("READ-ACCESS", Enumerations.Level.None, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FUSERGROUP", Enumerations.Level.None, Enumerations.ValueType.Value));
@@ -74,6 +81,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// </summary>
         internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 throw new InvalidOperationException(
