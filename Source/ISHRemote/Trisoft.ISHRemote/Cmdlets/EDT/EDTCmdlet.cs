@@ -27,14 +27,20 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
 {
     public abstract class EDTCmdlet : TrisoftCmdlet
     {
+        public Enumerations.ISHType[] ISHType
+        {
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHEDT }; }
+        }
+
         /// <summary>
         /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
         /// </summary>
         /// <param name="currentFields">The current <see cref="IshFields"/> object to append.</param>
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
-        
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("EDT-MIME-TYPE", Enumerations.Level.None, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("EDT-FILE-EXTENSION", Enumerations.Level.None, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("NAME", Enumerations.Level.None, Enumerations.ValueType.Value));
@@ -50,7 +56,8 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
         /// </summary>
         internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
         {
-          
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 throw new InvalidOperationException(

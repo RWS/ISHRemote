@@ -119,12 +119,11 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                         {
                             // Get values
                             WriteDebug($"Id[{ishObject.IshRef}] {++current}/{IshObject.Length}");
-                            IshFields metadata = ishObject.IshFields ?? new IshFields();
                             var nameMetadataField = ishObject.IshFields.RetrieveFirst("FISHOUTPUTFORMATNAME", Enumerations.Level.None).ToMetadataField() as IshMetadataField;
                             string name = nameMetadataField.Value;
                             var edtMetadataField = ishObject.IshFields.RetrieveFirst("FISHOUTPUTEDT", Enumerations.Level.None).ToMetadataField() as IshMetadataField;
                             string edt = edtMetadataField.Value;
-                            metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(name))
                             {
                                 string outputFormatId = IshSession.OutputFormat25.Create(
