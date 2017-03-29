@@ -300,8 +300,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         //TODO: [Should] Respect LanguageApplicability, which means take the first entry from the ishfield DOC-LANGUAGE value
                         string ishObjectLanguage = ishObject.IshFields.GetFieldValue("DOC-LANGUAGE", Enumerations.Level.Lng, Enumerations.ValueType.Value);
                         string ishObjectResolution = ishObject.IshFields.GetFieldValue("FRESOLUTION", Enumerations.Level.Lng, Enumerations.ValueType.Value);
-                        IshFields metadata = (ishObject.IshFields ?? new IshFields());
-
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
+                        
                         // Add
                         WriteDebug($"LogicalId[{logicalId}] Version[{ishObjectVersion}] Lng[{ishObjectLanguage}] Resolution[{ishObjectResolution}] Metadata.length[{metadata.ToXml().Length}] dataSize[{ishObject.IshData.Size()}]");
                         DocumentObj25ServiceReference.CreateResponse response = null;
@@ -314,16 +314,15 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     ishObjectVersion,
                                     ishObjectLanguage,
                                     ishObjectResolution,
-                                    RemoveSystemFields(metadata, Enumerations.ActionMode.Create).ToXml(),
+                                    metadata.ToXml(),
                                     ishObject.IshData.Edt,
                                     ishObject.IshData.ByteArray));
                         }
 
-                        string requestedMetadata = AddRequiredFields(metadata.ToRequestedFields()).ToXml();
-
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
                         var response2 = IshSession.DocumentObj25.GetMetadata(new DocumentObj25ServiceReference.GetMetadataRequest(
                             response.logicalId, response.version, ishObjectLanguage, ishObjectResolution,
-                            requestedMetadata));
+                            requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
@@ -333,8 +332,6 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 else
                 {
                     string resolution = Resolution ?? "";
-                    IshFields metadata = new IshFields(Metadata);
-
                     if ((FileContent != null) && (FilePath == null))
                     {
                         if (!_edt.Equals("EDTXML", StringComparison.Ordinal))
@@ -347,12 +344,12 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         doc.Save(ms, SaveOptions.DisableFormatting);
                         _ishData = new IshData(_edt, ms.ToArray());
                     }
-
                     if ((FileContent == null) && (FilePath != null))
                     {
                         _ishData = new IshData(_edt, FilePath);
                     }
 
+                    var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
                     WriteDebug($"LogicalId[{LogicalId}] Version[{Version}] Lng[{Lng}] Resolution[{resolution}] Metadata.length[{metadata.ToXml().Length}] byteArray[{_ishData.Size()}]");
                     DocumentObj25ServiceReference.CreateResponse response = null;
                     if (ShouldProcess(LogicalId + "=" + Version + "=" + Lng + "=" + resolution))
@@ -364,15 +361,15 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             Version,
                             Lng,
                             resolution,
-                            RemoveSystemFields(metadata, Enumerations.ActionMode.Create).ToXml(),
+                            metadata.ToXml(),
                             _ishData.Edt,
                             _ishData.ByteArray));
                     }
 
-                    string requestedMetadata = AddRequiredFields(metadata.ToRequestedFields()).ToXml();
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
                     var response2 = IshSession.DocumentObj25.GetMetadata(new DocumentObj25ServiceReference.GetMetadataRequest(
                         response.logicalId, response.version, Lng, resolution,
-                        requestedMetadata));
+                        requestedMetadata.ToXml()));
                     string xmlIshObjects = response2.xmlObjectList;
                     IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                     returnIshObjects.AddRange(retrievedObjects.Objects);

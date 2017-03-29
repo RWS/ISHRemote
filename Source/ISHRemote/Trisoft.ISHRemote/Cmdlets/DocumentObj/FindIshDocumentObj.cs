@@ -91,7 +91,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
             try
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 string ishTypeFilter = (IshTypeFilter != null) ? String.Join(IshSession.Seperator, IshTypeFilter) : "";
                 var statusFilter = EnumConverter.ToStatusFilter<DocumentObj25ServiceReference.StatusFilter>(StatusFilter);
 

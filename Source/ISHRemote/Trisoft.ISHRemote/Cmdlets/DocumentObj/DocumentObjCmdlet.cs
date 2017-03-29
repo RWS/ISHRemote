@@ -25,6 +25,11 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 {
     public abstract class DocumentObjCmdlet : TrisoftCmdlet
     {
+        public Enumerations.ISHType[] ISHType
+        {
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHIllustration, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHTemplate }; }
+        }
+
         /// <summary>
         /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
         /// </summary>
@@ -32,6 +37,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FTITLE", Enumerations.Level.Logical, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("VERSION", Enumerations.Level.Version, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("DOC-LANGUAGE", Enumerations.Level.Lng, Enumerations.ValueType.Value));
@@ -44,6 +51,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
+
             if (actionMode == Enumerations.ActionMode.Read)
             {
                 throw new InvalidOperationException(
@@ -155,6 +164,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         protected IshFields RemoveNonIdentifierFields(IshFields ishFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup. Never used even.");
+
             IshFields returnIshFields = new IshFields();
 
             // Version

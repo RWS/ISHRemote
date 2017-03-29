@@ -142,8 +142,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 else
                 {
                     WriteDebug("Retrieving");
-
-                    IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
                     if (IshObject != null)
                     {
