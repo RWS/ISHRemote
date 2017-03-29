@@ -1,7 +1,7 @@
 # BACKLOG ORDER	
 
 1. [ISHREMOTE-011] `IshField` promotion to properties
-1. [ISHREMOTE-022] Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones
+1. [ISHREMOTE-022] Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones #3
 1. [ISHREMOTE-047] `Set-IshMetadataField`/`Set-IshMetadataFilterField` take `object[]` instead of `string` and convert internally
 1. [ISHREMOTE-049] Overload `Set-IshRequestedMetadataField` to accept `IshTypeFieldDefinition[]` to generate `IshMetadataField[]`
 1. [ISHREMOTE-040] Support ExecutionPolicy AllSigned (SignAndPublish.ps1)
@@ -225,7 +225,7 @@ Rename `Set-IshValueField`, `Set-IshFilterField` and `Set-IshField` to `Set-IshM
 	* Part of breaking compatibility with the past, and make it cleaner for first-time users. See also [ISHREMOTE-011] and [ISHREMOTE-026]
 	* This change could match up with the mandatory `-IshSession` parameter introduction, see [ISHREMOTE-023].
 
-## <a name="ISHREMOTE-022"></a>[ISHREMOTE-022]
+## <a name="ISHREMOTE-022"></a>[ISHREMOTE-022]  *DONE*
 Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones. Requires [ISHREMOTE-017].
 * ISHRemote abstract class cmdlet offers RemoveSystemFields, AddRequiredFields, AddRequiredDocumentObjFields, AddRequiredPublicationOutputFields
 * Functions like `RemoveNonIdentifierFields`/`AddRequiredFields`/`RemoveSystemFields` respect metadata-requests for only logical or version... and the ActionMode
