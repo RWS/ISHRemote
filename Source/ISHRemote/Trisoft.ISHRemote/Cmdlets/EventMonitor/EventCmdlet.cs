@@ -38,40 +38,6 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
         }
 
         /// <summary>
-        /// Removes the SYSTEM fields from the given IshFields container. Making the fields ready for an update/write operation. 
-        /// </summary>
-        internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
-        {
-            if (actionMode == Enumerations.ActionMode.Read)
-            {
-                throw new InvalidOperationException("We will not remove system fields for read operations anymore as part of TS-9581");
-            }
-            if (actionMode == Enumerations.ActionMode.Create || actionMode == Enumerations.ActionMode.Update)
-            {
-                //  These fields can be retrieved BUT cannot be set 
-            }
-            return ishFields;
-        }
-
-        /// <summary>
-        /// Returns IshFields container containing EVENTID retrieved from the provided IshFields container
-        /// </summary>
-        protected IshFields RemoveNonIdentifierFields(IshFields ishFields)
-        {
-            IshFields returnIshFields = new IshFields();
-
-            // Progress
-            IshField ishFieldEventId = ishFields.RetrieveFirst("EVENTID", Enumerations.Level.Progress, Enumerations.ValueType.Value);
-            IshField ishFieldEventType = ishFields.RetrieveFirst("EVENTTYPE", Enumerations.Level.Progress, Enumerations.ValueType.Value);
-            if (ishFieldEventId != null)
-            {
-                returnIshFields.AddField(ishFieldEventId);
-            }
-            // Detail is not required, compared to DocumentObj were are not enforcing language level on EventMonitor Eventsy
-            return returnIshFields;
-        }
-
-        /// <summary>
         /// Wrap incoming objects as PSObjects and extend with PSNoteProperties for every IshField value entry
         /// </summary>
         /// <param name="ishEvents">Object to wrap and return as PSObject</param>

@@ -170,21 +170,6 @@ namespace Trisoft.ISHRemote.Cmdlets
         }
 
         /// <summary>
-        /// Removes the SYSTEM fields from the given IshFields container. Making the fields ready for an update/write operation. 
-        /// e.g. During create the USERNAME is not allowed to be specified.
-        /// </summary>
-        internal virtual IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
-        {
-            if (actionMode == Enumerations.ActionMode.Read)
-            {
-                throw new InvalidOperationException(
-                    "We will not remove system fields for read operations anymore as part of TS-9581");
-            }
-
-            return ishFields;
-        }
-
-        /// <summary>
         /// Convert base folder label into a BaseFolder enumeration value
         /// </summary>
         /// <param name="ishSession">The <see cref="IshSession"/>.</param>

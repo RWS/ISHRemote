@@ -28,40 +28,5 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         {
             get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHConfiguration }; }
         }
-
-        /// <summary>
-        /// Removes the SYSTEM fields from the given IshFields container. Making the fields ready for an update/write operation. 
-        /// </summary>
-        internal override IshFields RemoveSystemFields(IshFields ishFields, Enumerations.ActionMode actionMode)
-        {
-            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup");
-
-            if (actionMode == Enumerations.ActionMode.Read)
-            {
-                throw new InvalidOperationException(
-                    "We will not remove system fields for read operations anymore as part of TS-9581");
-            }
-
-            const Enumerations.Level level = Enumerations.Level.None;
-            const Enumerations.ValueType valueType = Enumerations.ValueType.All;
-
-            if (actionMode != Enumerations.ActionMode.Read)
-            {
-                //  These fields can be retrieved BUT cannot be set 
-                ishFields.RemoveField(FieldElements.Name, level, valueType);
-
-                // General date fields
-                ishFields.RemoveField(FieldElements.CreationDate, level, valueType);
-                ishFields.RemoveField(FieldElements.ModificationDate, level, valueType);
-            }
-
-            // General security fields
-            ishFields.RemoveField(FieldElements.ReadAccess, level, valueType);
-            ishFields.RemoveField(FieldElements.ModifyAccess, level, valueType);
-            ishFields.RemoveField(FieldElements.DeleteAccess, level, valueType);
-            ishFields.RemoveField(FieldElements.Owner, level, valueType);
-
-            return ishFields;
-        }
     }
 }
