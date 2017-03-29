@@ -204,7 +204,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     .ToList();
                         if (documentLogicalIds.Any())
                         {
-                            var requestedMetadata = AddRequiredDocumentObjFields(new IshFields());
+                            Enumerations.ISHType[] ISHDocumentTypes = { Enumerations.ISHType.ISHIllustration, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHTemplate };
+                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHDocumentTypes, new IshFields(), Enumerations.ActionMode.Read);
+
                             xmlIshObjects = IshSession.DocumentObj25.RetrieveLanguageMetadata(documentLogicalIds.ToArray(),
                                 VersionFilter, LanguagesFilter,
                                 new string[0], DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, requestedMetadata.ToXml());
@@ -220,7 +222,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     .ToList();
                         if (publicationLogicalIds.Any())
                         {
-                            var requestedMetadata = AddRequiredPublicationOutputFields(new IshFields());
+                            Enumerations.ISHType[] ISHPublicationTypes = { Enumerations.ISHType.ISHPublication };
+                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHPublicationTypes, new IshFields(), Enumerations.ActionMode.Read);
                             xmlIshObjects = IshSession.PublicationOutput25.RetrieveVersionMetadata(publicationLogicalIds.ToArray(),
                                 VersionFilter, "");
                             var publicationIshObjects = new IshObjects(xmlIshObjects);

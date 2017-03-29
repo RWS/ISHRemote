@@ -54,6 +54,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredDocumentObjFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup, probably retrieving more now to allow future enhanced IshObject creation");
+
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FTITLE", Enumerations.Level.Logical, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("VERSION", Enumerations.Level.Version, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("DOC-LANGUAGE", Enumerations.Level.Lng, Enumerations.ValueType.Value));
@@ -68,6 +70,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredPublicationOutputFields(IshFields currentFields)
         {
+            throw new NotSupportedException("Replaced by IshSession.IshTypeFieldSetup, probably retrieving more now to allow future enhanced IshObject creation");
+
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHPUBLNGCOMBINATION", Enumerations.Level.Lng, Enumerations.ValueType.Value));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Element));
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Value));
