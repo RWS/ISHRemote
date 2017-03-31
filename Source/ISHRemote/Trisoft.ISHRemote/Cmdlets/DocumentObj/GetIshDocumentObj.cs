@@ -142,8 +142,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 else
                 {
                     WriteDebug("Retrieving");
-
-                    IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
                     if (IshObject != null)
                     {
@@ -164,7 +163,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                 // Process language card ids in batches
                                 string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
                                     lngCardIdBatch.ToArray(),
-                                    requestedMetadata.ToRequestedFields().ToXml());
+                                    requestedMetadata.ToXml());
                                 IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLngCardIdCount += lngCardIdBatch.Count;
@@ -185,7 +184,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                 string xmlIshObjects = IshSession.DocumentObj25.RetrieveObjectsByIshLngRefs(
                                     lngCardIdBatch.ToArray(),
                                     productDefinitionFeatures.ToXml(),
-                                    requestedMetadata.ToRequestedFields().ToXml());
+                                    requestedMetadata.ToXml());
                                 IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLngCardIdCount += lngCardIdBatch.Count;
@@ -212,7 +211,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     logicalIdBatch.ToArray(),
                                     statusFilter,
                                     metadataFilter.ToXml(),
-                                    requestedMetadata.ToRequestedFields().ToXml());
+                                    requestedMetadata.ToXml());
                                 IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLogicalIdCount += logicalIdBatch.Count;
@@ -235,7 +234,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     statusFilter,
                                     metadataFilter.ToXml(),
                                     productDefinitionFeatures.ToXml(),
-                                    requestedMetadata.ToRequestedFields().ToXml());
+                                    requestedMetadata.ToXml());
                                 IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLogicalIdCount += logicalIdBatch.Count;

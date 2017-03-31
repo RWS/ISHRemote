@@ -167,14 +167,15 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                         // Get values
                         WriteDebug($"Id[{ishObject.IshRef}] {++current}/{IshObject.Length}");
                         string logicalId = ishObject.IshRef;
-                        string version = ishObject.IshFields.GetFieldValue("VERSION", Enumerations.Level.Version,
-                            Enumerations.ValueType.Value);
-                        string outputFormat = ishObject.IshFields.GetFieldValue("FISHOUTPUTFORMATREF",
-                            Enumerations.Level.Lng, Enumerations.ValueType.Element);
-                        string languageCombination = ishObject.IshFields.GetFieldValue("FISHPUBLNGCOMBINATION",
-                            Enumerations.Level.Lng, Enumerations.ValueType.Value);
-                        IshFields metadata = (ishObject.IshFields ?? new IshFields());
-
+                        //Remember that RetrieveFirst prefers id over element over value ishfields
+                        var versionMetadataField = ishObject.IshFields.RetrieveFirst("VERSION", Enumerations.Level.Version).ToMetadataField() as IshMetadataField;
+                        string version = versionMetadataField.Value;
+                        var outputFormatMetadataField = ishObject.IshFields.RetrieveFirst("FISHOUTPUTFORMATREF", Enumerations.Level.Lng).ToMetadataField() as IshMetadataField;
+                        string outputFormat = outputFormatMetadataField.Value;
+                        var languageCombinationMetadataField = ishObject.IshFields.RetrieveFirst("FISHPUBLNGCOMBINATION", Enumerations.Level.Lng).ToMetadataField() as IshMetadataField;
+                        string languageCombination = languageCombinationMetadataField.Value;
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
+                        
                         PublicationOutput25ServiceReference.CreateResponse response = null;
                         if (ShouldProcess(logicalId + "=" + version + "=" + languageCombination + "=" + outputFormat))
                         {
@@ -186,15 +187,15 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                     version,
                                     outputFormat,
                                     languageCombination,
-                                    RemoveSystemFields(metadata, Enumerations.ActionMode.Create).ToXml()));
+                                    metadata.ToXml()));
                         }
 
-                        string requestedMetadata = AddRequiredFields(metadata.ToRequestedFields()).ToXml();
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
                         var response2 =
                             IshSession.PublicationOutput25.GetMetadata(new PublicationOutput25ServiceReference.
                                 GetMetadataRequest(
                                 response.logicalId, response.version, outputFormat, languageCombination,
-                                requestedMetadata));
+                                requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
@@ -203,7 +204,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                 }
                 else
                 {
-                    IshFields metadata = new IshFields(Metadata);
+                    var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
 
                     PublicationOutput25ServiceReference.CreateResponse response = null;
                     if (ShouldProcess(LogicalId + "=" + Version + "=" + LanguageCombination + "=" + OutputFormat))
@@ -216,15 +217,15 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             Version,
                             OutputFormat,
                             LanguageCombination,
-                            RemoveSystemFields(metadata, Enumerations.ActionMode.Create).ToXml()));
+                            metadata.ToXml()));
                     }
 
-                    string requestedMetadata = AddRequiredFields(metadata.ToRequestedFields()).ToXml();
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
                     var response2 =
                         IshSession.PublicationOutput25.GetMetadata(new PublicationOutput25ServiceReference.
                             GetMetadataRequest(
                             response.logicalId, response.version, OutputFormat, LanguageCombination,
-                            requestedMetadata));
+                            requestedMetadata.ToXml()));
                     string xmlIshObjects = response2.xmlObjectList;
                     IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                     returnedObjects.AddRange(retrievedObjects.Objects);

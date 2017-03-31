@@ -711,10 +711,11 @@ namespace Trisoft.ISHRemote.HelperClasses
         private void CorrectISHOutputFormat()
         {
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHOUTPUTEDT")].IsBasic = true;
+            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHOUTPUTEDT")].IsDescriptive = true;
+            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHOUTPUTEDT")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHCLEANUP")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHKEEPDTDSYSTEMID")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHKEEPFIXEDATTRIBUTES")].IsSystem = true;
-            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHOUTPUTEDT")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHPUBRESOLVEVARIABLES")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHRESOLUTIONS")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHSINGLEFILE")].IsSystem = true;

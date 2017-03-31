@@ -88,35 +88,35 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                         foreach (IshObject ishObject in IshObject)
                         {
                             WriteDebug($"Id[{ishObject.IshRef}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            ishObject.IshFields = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Update);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
                             if (ShouldProcess(ishObject.IshRef))
                             {
-                                IshSession.UserGroup25.Update(ishObject.IshRef, ishObject.IshFields.ToXml());
+                                IshSession.UserGroup25.Update(ishObject.IshRef, metadata.ToXml());
                             }
                             returnUserGroups.Add(ishObject.IshRef);
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
                         // 1a. Using Id and Metadata
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Update);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
                         WriteDebug($"Id[{Id}] metadata.length[{metadata.ToXml().Length}]");
                         if (ShouldProcess(Id))
                         {
                             IshSession.UserGroup25.Update(Id, metadata.ToXml());
                         }
                         returnUserGroups.Add(Id);
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 2. Retrieve the updated material from the database and write it out
                     WriteDebug("Retrieving");
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields.ToRequestedFields());
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.UserGroup25.RetrieveMetadata(
                         returnUserGroups.ToArray(),
                         UserGroup25ServiceReference.ActivityFilter.None,

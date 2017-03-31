@@ -294,7 +294,10 @@
     </Compile>
     <Compile Include="Objects\Public\IshVersion.cs" />
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
+    <None Include="Cmdlets\OutputFormat\AddIshOutputFormat.Tests.ps1" />
     <None Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.Tests.ps1" />
+    <None Include="Cmdlets\UserGroup\AddIshUserGroup.Tests.ps1" />
+    <None Include="Cmdlets\UserRole\AddIshUserRole.Tests.ps1" />
     <None Include="Objects\_ObjectsDiagram.cd" />
     <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\basemap.dtd" />
     <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\basetopic.dtd" />
@@ -665,7 +668,6 @@
     <None Include="Cmdlets\Folder\SetIshFolder.Tests.ps1" />
     <None Include="Cmdlets\ListOfValues\AddIshLovValue.Tests.ps1" />
     <None Include="Cmdlets\PublicationOutput\GetPublicationOutputFolderLocation.Tests.ps1" />
-    <None Include="Cmdlets\PublicationOutput\StopIshPublicationOutput.Tests.ps1" />
     <None Include="Cmdlets\Session\NewIshSession.Tests.ps1" />
     <None Include="Cmdlets\Settings\GetIshSetting.Tests.ps1" />
     <None Include="Cmdlets\Settings\GetIshTimeZone.Tests.ps1" />
@@ -1067,6 +1069,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Cmdlets\User\AddIshUser.Tests.ps1" />
     <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />

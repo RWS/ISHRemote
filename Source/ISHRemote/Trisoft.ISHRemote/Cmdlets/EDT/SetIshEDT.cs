@@ -134,8 +134,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                         foreach (IshObject ishObject in ishObjects.Objects)
                         {
                             WriteDebug($"Id[{ishObject.IshRef}] {++current}/{IshObject.Length}");
-                            var metadata = ishObject.IshFields;
-                            metadata = RemoveSystemFields(metadata, Enumerations.ActionMode.Update);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
                             if (ShouldProcess(ishObject.IshRef))
                             {
                                 IshSession.EDT25.Update(
@@ -147,11 +146,11 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Update);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
                         if (ShouldProcess(Id))
                         {
                             IshSession.EDT25.Update(
@@ -160,14 +159,14 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                                 requiredCurrentMetadata.ToXml());
                             EDTIdsToRetrieve.Add(Id);
                         }
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 3a. Retrieve updated EDT(s) from the database and write them out
                     WriteDebug("Retrieving");
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.EDT25.RetrieveMetadata(
                        EDTIdsToRetrieve.ToArray(),
                        EDT25ServiceReference.ActivityFilter.None,

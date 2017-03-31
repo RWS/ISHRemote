@@ -138,7 +138,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                return ISHType + "=" + (int)Level + Level + "=" + Name;
+                return Enumerations.Key(ISHType, Level, Name);
             }
         }
 

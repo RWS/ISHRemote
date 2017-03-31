@@ -91,23 +91,23 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                                         Enumerations.ValueType.Value);
                             string userRoleName = userRoleNameValueField.Value;
                             WriteDebug($"UserRoleName[{userRoleName}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            ishObject.IshFields = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Create);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(userRoleName))
                             {
                                 var userRoleId = IshSession.UserRole25.Create(
                                     userRoleName,
-                                    ishObject.IshFields.ToXml());
+                                    metadata.ToXml());
                                 returnUserRoles.Add(userRoleId);
                             }
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
                         // 1a. Using Id and Metadata
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Create);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
                         WriteVerbose("Id[" + Name + "] metadata.length[" + metadata.ToXml().Length + "]");
                         if (ShouldProcess(Name))
                         {
@@ -116,7 +116,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                                 metadata.ToXml());
                             returnUserRoles.Add(userRoleId);
                         }
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 2. Retrieve the updated material from the database and write it out
@@ -125,7 +125,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                     // 2b. Retrieve the material
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.UserRole25.RetrieveMetadata(
                         returnUserRoles.ToArray(),
                         UserRole25ServiceReference.ActivityFilter.None,

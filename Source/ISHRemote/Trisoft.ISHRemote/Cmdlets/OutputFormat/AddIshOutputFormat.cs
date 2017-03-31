@@ -119,12 +119,11 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                         {
                             // Get values
                             WriteDebug($"Id[{ishObject.IshRef}] {++current}/{IshObject.Length}");
-                            IshFields metadata = ishObject.IshFields ?? new IshFields();
-                            string name = ishObject.IshFields.GetFieldValue("FISHOUTPUTFORMATNAME",
-                                Enumerations.Level.None, Enumerations.ValueType.Value);
-                            string edt = ishObject.IshFields.GetFieldValue("FISHOUTPUTEDT", Enumerations.Level.None,
-                                Enumerations.ValueType.Value);
-                            metadata = RemoveSystemFields(metadata, Enumerations.ActionMode.Create);
+                            var nameMetadataField = ishObject.IshFields.RetrieveFirst("FISHOUTPUTFORMATNAME", Enumerations.Level.None).ToMetadataField() as IshMetadataField;
+                            string name = nameMetadataField.Value;
+                            var edtMetadataField = ishObject.IshFields.RetrieveFirst("FISHOUTPUTEDT", Enumerations.Level.None).ToMetadataField() as IshMetadataField;
+                            string edt = edtMetadataField.Value;
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(name))
                             {
                                 string outputFormatId = IshSession.OutputFormat25.Create(
@@ -136,12 +135,12 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
                         // 2a. Add using provided parameters
-                        IshFields metadata = new IshFields(Metadata);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
                         string edt = Edt ?? "";
                         WriteDebug($"Name[{Name}] EDT[{edt}] Metadata.Length[{metadata.ToXml().Length}]");
                         if (ShouldProcess(Name))
@@ -149,10 +148,10 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                             string outputFormatId = IshSession.OutputFormat25.Create(
                                 Name,
                                 edt,
-                                RemoveSystemFields(metadata, Enumerations.ActionMode.Create).ToXml());
+                                metadata.ToXml());
                             outputFormatIds.Add(outputFormatId);
                         }
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 3a. Retrieve added OutputFormat and write it out
@@ -163,7 +162,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                     returnFields.RemoveField(FieldElements.DitaDeliveryClientSecret, Enumerations.Level.None, Enumerations.ValueType.All);
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.OutputFormat25.RetrieveMetadata(
                         outputFormatIds.ToArray(),
                         OutputFormat25ServiceReference.ActivityFilter.None,

@@ -255,12 +255,22 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
-        /// Retrieves the first occurance out of the list of matching IshFields
+        /// Retrieves the first occurance out of the list of matching IshFields; preferring Id over Element and then Value.
+        /// So first Id '4484', if not present then Element 'VUSERADMIN', again if not present Value 'Admin'.
         /// </summary>
         /// <returns>The first <see cref="IshField"/> in the current list.</returns>
-        public IshField RetrieveFirst(string fieldName, string fieldLevel)
+        public IshField RetrieveFirst(string fieldName, Enumerations.Level fieldLevel)
         {
-            return RetrieveFirst(fieldName, fieldLevel, "value");
+            IshField ishField = RetrieveFirst(fieldName, fieldLevel, Enumerations.ValueType.Id);
+            if (ishField == null)
+            {
+                ishField = RetrieveFirst(fieldName, fieldLevel, Enumerations.ValueType.Element);
+            }
+            if (ishField == null)
+            {
+                ishField = RetrieveFirst(fieldName, fieldLevel, Enumerations.ValueType.Value);
+            }
+            return ishField;
         }
 
         /// <summary>

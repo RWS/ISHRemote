@@ -186,7 +186,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 WriteDebug("Retrieving");
                 var returnIshObjects = new List<IshObject>();
                 // Add the required fields (needed for pipe operations)
-                IshFields requestedMetadata = AddRequiredFields(new IshFields());
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(), Enumerations.ActionMode.Read);
                 if (_retrievedIshObjects.Count > 0)
                 {
                     var lngCardIds =_retrievedIshObjects.Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng])).ToList();
@@ -199,7 +199,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         // Process language card ids in batches
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
                             lngCardIdBatch.ToArray(),
-                            requestedMetadata.ToRequestedFields().ToXml());
+                            requestedMetadata.ToXml());
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLngCardIdCount += lngCardIdBatch.Count;
@@ -216,7 +216,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     foreach (List<string> logicalIdBatch in devidedlogicalIdsList)
                     {
                         // Process language card ids in batches
-                        string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, "", requestedMetadata.ToRequestedFields().ToXml());
+                        string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, "", requestedMetadata.ToXml());
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLogicalIdCount += logicalIdBatch.Count;

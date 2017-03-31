@@ -310,6 +310,7 @@ namespace Trisoft.ISHRemote
 			get
 			{
                 bool result = IssuedToken.ValidTo.ToUniversalTime() >= DateTime.UtcNow;
+                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
                 // Besides single-thread execution of New-IshSession, logging here will typically cause error:
                 // PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing methods, and they can only be called from within the same thread.Validate that the cmdlet makes these calls correctly, or contact Microsoft Customer Support Services.
                 //_logger.WriteDebug($"Token still valid? {result} ({IssuedToken.ValidTo.ToUniversalTime()} >= {DateTime.UtcNow})");

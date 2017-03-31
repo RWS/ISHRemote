@@ -155,11 +155,11 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             // Get values
                             long lngRef = Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]);
                             WriteDebug($"lngRef[{lngRef}] {++current}/{IshObject.Length}");
-                            publishMetadata = RemoveSystemFields(publishMetadata, Enumerations.ActionMode.Update);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, publishMetadata, Enumerations.ActionMode.Update);
                             if (ShouldProcess(Convert.ToString(lngRef)))
                             {
                                 IshSession.PublicationOutput25.SetMetadataByIshLngRef(lngRef,
-                                    publishMetadata.ToXml(),
+                                    metadata.ToXml(),
                                     requiredCurrentMetadata.ToXml());
                             }
                             lngCardIds.Add(lngRef);
@@ -167,18 +167,16 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
 
                         var returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
-                        string requestedMetadata = AddRequiredFields(returnFields).ToXml();
-                        string xmlIshObjects =
-                            IshSession.PublicationOutput25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(),
-                                requestedMetadata);
+                            : IshObject[0].IshFields;
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                        string xmlIshObjects = IshSession.PublicationOutput25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(), requestedMetadata.ToXml());
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
 
                     }
                     else
                     {
-                        publishMetadata = RemoveSystemFields(publishMetadata, Enumerations.ActionMode.Update);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, publishMetadata, Enumerations.ActionMode.Update);
                         string version = Version;
                         PublicationOutput25ServiceReference.SetMetadataResponse response = null;
                         if (ShouldProcess(LogicalId + "=" + version + "=" + LanguageCombination + "=" + OutputFormat))
@@ -188,15 +186,15 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                 version,
                                 OutputFormat,
                                 LanguageCombination,
-                                publishMetadata.ToXml(),
+                                metadata.ToXml(),
                                 requiredCurrentMetadata.ToXml()));
                         }
 
                         // Get the metadata of the object
-                        string requestedMetadata = AddRequiredFields(publishMetadata.ToRequestedFields()).ToXml();
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, publishMetadata, Enumerations.ActionMode.Read);
                         var response2 = IshSession.PublicationOutput25.GetMetadata(new GetMetadataRequest(
                             LogicalId, response.version, OutputFormat, LanguageCombination,
-                            requestedMetadata));
+                            requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);

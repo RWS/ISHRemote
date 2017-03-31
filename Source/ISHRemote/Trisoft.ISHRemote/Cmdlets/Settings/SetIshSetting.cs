@@ -108,8 +108,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                 }
                 else if (Value != null)
                 {
-                    metadata.AddField(new IshMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value,
-                        Value));
+                    metadata.AddField(new IshMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value, Value));
                 }
                 else if (FilePath != null)
                 {
@@ -136,15 +135,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
 
                 if (ShouldProcess("CTCONFIGURATION"))
                 {
-                    IshSession.Settings25.SetMetadata3(
-                        metadata.ToXml(),
-                        requiredCurrentMetadata.ToXml());
+                    metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, metadata, Enumerations.ActionMode.Update);
+                    requiredCurrentMetadata = IshSession.IshTypeFieldSetup.ToIshRequiredCurrentMetadataFields(ISHType, requiredCurrentMetadata, Enumerations.ActionMode.Update);
+                    IshSession.Settings25.SetMetadata3(metadata.ToXml(), requiredCurrentMetadata.ToXml());
                 }
                            
                 // 2. Retrieve the updated material from the database and write it out
                 WriteDebug("Retrieving");
-
-                IshFields requestedMetadata = metadata.ToRequestedFields();
+                var requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
                 string xmlIshObjects = IshSession.Settings25.GetMetadata(requestedMetadata.ToXml());
                 var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
 
