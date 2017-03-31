@@ -21,7 +21,7 @@
 1. [ISHREMOTE-029] Overload `Set-IshValueField` to accept IshObject/IshFolder
 1. [ISHREMOTE-035] Add `Get-IshSettingWorkflow` which in turn requires `IshSettingWorkflowSetup` and `IshSettingWorkflowTransition`
 1. [ISHREMOTE-031] Extend parameter `-FolderPath` with intellisense
-1. [ISHREMOTE-006] Add Missing/Legacy Pester tests
+1. [ISHREMOTE-006] Add Missing/Legacy Pester tests ISSUE #4
 1. [ISHREMOTE-016] Add `Filter-IshObject` cmdlet taking MetadataFilter parameter to do client-side object filtering
 1. [ISHREMOTE-014] Add `Test-IshFolder`
 1. [ISHREMOTE-027] Add `Test-IshDocumentObj` and `Test-PublicationOutput`
@@ -227,7 +227,7 @@ Rename `Set-IshValueField`, `Set-IshFilterField` and `Set-IshField` to `Set-IshM
 	* Part of breaking compatibility with the past, and make it cleaner for first-time users. See also [ISHREMOTE-011] and [ISHREMOTE-026]
 	* This change could match up with the mandatory `-IshSession` parameter introduction, see [ISHREMOTE-023].
 
-## <a name="ISHREMOTE-022"></a>[ISHREMOTE-022]
+## <a name="ISHREMOTE-022"></a>[ISHREMOTE-022]  *DONE*
 Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones. Requires [ISHREMOTE-017].
 * ISHRemote abstract class cmdlet offers RemoveSystemFields, AddRequiredFields, AddRequiredDocumentObjFields, AddRequiredPublicationOutputFields
 * Functions like `RemoveNonIdentifierFields`/`AddRequiredFields`/`RemoveSystemFields` respect metadata-requests for only logical or version... and the ActionMode

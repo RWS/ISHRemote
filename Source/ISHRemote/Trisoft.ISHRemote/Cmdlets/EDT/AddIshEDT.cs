@@ -108,10 +108,9 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                         {
                             // Get values
                             WriteDebug($"Id[{ishObject.IshRef}] {++current}/{IshObject.Length}");
-                            IshFields metadata = ishObject.IshFields ?? new IshFields();
-                            string name = ishObject.IshFields.GetFieldValue("FISHEDTNAME",
-                                Enumerations.Level.None, Enumerations.ValueType.Value);
-                            metadata = RemoveSystemFields(metadata, Enumerations.ActionMode.Create);
+                            var nameMetadataField = ishObject.IshFields.RetrieveFirst("FISHEDTNAME", Enumerations.Level.None).ToMetadataField() as IshMetadataField;
+                            string name = nameMetadataField.Value;
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(name))
                             {
                                 string EDTId = IshSession.EDT25.Create(
@@ -122,28 +121,28 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
                         // 2a. Add using provided parameters
-                        IshFields metadata = new IshFields(Metadata);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
                         WriteDebug($"Name[{Name}] Metadata.Length[{metadata.ToXml().Length}]");
                         if (ShouldProcess(Name))
                         {
                             string EDTId = IshSession.EDT25.Create(
                                 Name,
-                                RemoveSystemFields(metadata, Enumerations.ActionMode.Create).ToXml());
+                                metadata.ToXml());
                             EDTIds.Add(EDTId);
                         }
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 3a. Retrieve added EDT and write it out
                     WriteDebug("Retrieving");
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.EDT25.RetrieveMetadata(
                         EDTIds.ToArray(),
                        EDT25ServiceReference.ActivityFilter.None,

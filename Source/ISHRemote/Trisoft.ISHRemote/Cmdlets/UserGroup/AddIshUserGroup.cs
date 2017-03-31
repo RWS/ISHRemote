@@ -91,23 +91,23 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                                         Enumerations.ValueType.Value)[0];
                             string userGroupName = userGroupNameValueField.Value;
                             WriteDebug($"UserGroupName[{userGroupName}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            ishObject.IshFields = RemoveSystemFields(ishObject.IshFields, Enumerations.ActionMode.Create);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(userGroupName))
                             {
                                 var userGroupId = IshSession.UserGroup25.Create(
                                     userGroupName,
-                                    ishObject.IshFields.ToXml());
+                                    metadata.ToXml());
                                 returnUserGroups.Add(userGroupId);
                             }
                         }
                         returnFields = (IshObject[0] == null)
                             ? new IshFields()
-                            : IshObject[0].IshFields.ToRequestedFields();
+                            : IshObject[0].IshFields;
                     }
                     else
                     {
                         // 1a. Using Id and Metadata
-                        var metadata = RemoveSystemFields(new IshFields(Metadata), Enumerations.ActionMode.Update);
+                        var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
                         WriteVerbose("Id[" + Name + "] metadata.length[" + metadata.ToXml().Length + "]");
                         if (ShouldProcess(Name))
                         {
@@ -116,7 +116,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                                 metadata.ToXml());
                             returnUserGroups.Add(userGroupId);
                         }
-                        returnFields = metadata.ToRequestedFields();
+                        returnFields = metadata;
                     }
 
                     // 2. Retrieve the updated material from the database and write it out
@@ -125,7 +125,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                     // 2b. Retrieve the material
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(returnFields);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.UserGroup25.RetrieveMetadata(
                         returnUserGroups.ToArray(),
                         UserGroup25ServiceReference.ActivityFilter.None,

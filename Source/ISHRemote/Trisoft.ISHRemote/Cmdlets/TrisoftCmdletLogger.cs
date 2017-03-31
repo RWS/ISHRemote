@@ -75,15 +75,6 @@ namespace Trisoft.ISHRemote.Cmdlets
         }
 
         /// <summary>
-        /// Writes verbose message.
-        /// </summary>
-        /// <param name="message">Verbose message.</param>
-        public void WriteVerbose(string message)
-        {
-            _cmdlet.WriteVerbose(message);
-        }
-
-        /// <summary>
         /// Writes message as Write-Host wrapper.
         /// </summary>
         /// <param name="message">Verbose message.</param>
@@ -111,7 +102,14 @@ namespace Trisoft.ISHRemote.Cmdlets
             _progressRecord.StatusDescription = statusDescription;
             _progressRecord.PercentComplete = percentComplete;
 
-            _cmdlet.WriteProgress(_progressRecord);
+            try
+            {
+                _cmdlet.WriteProgress(_progressRecord);
+            }
+            catch (PSInvalidOperationException exception)
+            {
+                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
+            }
         }
 
         /// <summary>
@@ -131,16 +129,47 @@ namespace Trisoft.ISHRemote.Cmdlets
             _parentProgressRecord.StatusDescription = statusDescription;
             _parentProgressRecord.PercentComplete = percentComplete;
 
-            _cmdlet.WriteProgress(_parentProgressRecord);
+            try
+            {
+                _cmdlet.WriteProgress(_parentProgressRecord);
+            }
+            catch (PSInvalidOperationException exception)
+            {
+                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
+            }
         }
 
+
+        /// <summary>
+        /// Writes verbose message.
+        /// </summary>
+        /// <param name="message">Verbose message.</param>
+        public void WriteVerbose(string message)
+        {
+            try
+            {
+                _cmdlet.WriteVerbose(message);
+            }
+            catch (PSInvalidOperationException exception)
+            {
+                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
+            }
+        }
+        
         /// <summary>
         /// Writes debug-useful information.
         /// </summary>
         /// <param name="message">Debug message.</param>
         public void WriteDebug(string message)
         {
-            _cmdlet.WriteDebug(message);
+            try
+            {
+                _cmdlet.WriteDebug(message);
+            }
+            catch (PSInvalidOperationException exception)
+            {
+                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
+            }
         }
 
         /// <summary>
@@ -149,7 +178,14 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// <param name="message">Warning message.</param>
         public void WriteWarning(string message)
         {
-            _cmdlet.WriteWarning(message);
+            try
+            {
+                _cmdlet.WriteWarning(message);
+            }
+            catch (PSInvalidOperationException exception)
+            {
+                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
+            }
         }
 
         /// <summary>
@@ -159,7 +195,14 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// <param name="errorObject">Object that caused error.</param>
         public void WriteError(Exception ex, object errorObject = null)
         {
-            _cmdlet.WriteError(new ErrorRecord(ex, string.Empty, ErrorCategory.NotSpecified, errorObject));
+            try
+            {
+                _cmdlet.WriteError(new ErrorRecord(ex, string.Empty, ErrorCategory.NotSpecified, errorObject));
+            }
+            catch (PSInvalidOperationException exception)
+            {
+                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
+            }
         }
     }
 }

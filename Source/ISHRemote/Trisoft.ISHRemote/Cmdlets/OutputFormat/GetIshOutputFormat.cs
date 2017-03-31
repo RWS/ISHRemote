@@ -125,7 +125,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                 {
                     OutputFormat25ServiceReference.ActivityFilter activityFilter = EnumConverter.ToActivityFilter<OutputFormat25ServiceReference.ActivityFilter>(ActivityFilter);
                     IshFields metadataFilter = new IshFields(MetadataFilter);
-                    IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
                     var ids = (IshObject != null) ? new IshObjects(IshObject).Ids : Id;                    
                     WriteDebug($"Retrieving for Id.length[{ids.Length}] ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");

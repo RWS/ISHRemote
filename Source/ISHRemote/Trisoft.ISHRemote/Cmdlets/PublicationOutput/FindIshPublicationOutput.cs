@@ -99,14 +99,13 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                 string xmlIshObjects = "";
                 PublicationOutput25ServiceReference.StatusFilter statusFilter = EnumConverter.ToStatusFilter<PublicationOutput25ServiceReference.StatusFilter>(StatusFilter);
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = new IshFields(RequestedMetadata);
                 // Add the required fields (needed for pipe operations)
-                requestedMetadata = AddRequiredFields(requestedMetadata);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                 WriteDebug($"Finding StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 xmlIshObjects = IshSession.PublicationOutput25.Find(
                     statusFilter, 
                     metadataFilter.ToXml(), 
-                    requestedMetadata.ToRequestedFields().ToXml());
+                    requestedMetadata.ToXml());
 
                 var returnedObjects = new IshObjects(xmlIshObjects).Objects;
                 WriteVerbose("returned object count[" + returnedObjects.Length + "]");

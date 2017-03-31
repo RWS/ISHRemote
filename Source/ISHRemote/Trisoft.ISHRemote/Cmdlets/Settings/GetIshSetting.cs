@@ -133,7 +133,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                     requestedMetadata.AddField(new IshRequestedMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value));
                 }
 
-                string xmlIshObjects = IshSession.Settings25.GetMetadata(requestedMetadata.ToXml());
+                var metadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, requestedMetadata, Enumerations.ActionMode.Read);
+                string xmlIshObjects = IshSession.Settings25.GetMetadata(metadata.ToXml());
                 var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
                 if (RequestedMetadata != null)
                 {

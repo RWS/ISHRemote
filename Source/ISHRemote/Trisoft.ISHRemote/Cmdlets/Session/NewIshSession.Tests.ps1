@@ -124,6 +124,9 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.TimeoutService" {
 			$ishSession.TimeoutService.TotalMilliseconds -gt 0 | Should Be $true
 		}
+		It "IshSession.StrictMetadataPreference" {
+			$ishSession.StrictMetadataPreference | Should Be "Continue"
+		}
 		It "IshSession.WebServicesBaseUrl" {
 			$ishSession.WebServicesBaseUrl | Should Not BeNullOrEmpty
 		}

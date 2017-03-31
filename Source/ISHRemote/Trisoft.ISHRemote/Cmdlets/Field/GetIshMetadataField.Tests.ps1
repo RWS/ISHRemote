@@ -81,6 +81,28 @@ Describe “Get-IshMetadataField" -Tags "Read" {
 			(Get-IshEvent -IshSession $ishSession -ModifiedSince (Get-Date).AddMonths(-3) | Get-IshMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level Progress).Count -ge 0 | Should Be $true
 		}
 	}
+
+	Context "Get-IshMetadataField IshFields.ToXml() for API Testing" {
+		It "Trisoft.ISHRemote.Objects.IShFields is public" {
+			{ New-Object -TypeName Trisoft.ISHRemote.Objects.IShFields } | Should Not Throw
+		}
+		It "Trisoft.ISHRemote.Objects.IShFields.AddField() is public" {
+			{ (New-Object -TypeName Trisoft.ISHRemote.Objects.IShFields).AddField((Set-IshRequestedMetadataField -IshSession $ishSession -Name "USERNAME")).ToXml() } | Should Not Throw
+		}
+		It "Trisoft.ISHRemote.Objects.IShFields.ToXml() xml content single" {
+			$ishFields = New-Object -TypeName Trisoft.ISHRemote.Objects.IShFields
+			$ishFields.AddField((Set-IshRequestedMetadataField -IshSession $ishSession -Name "USERNAME"))
+			$result = '<?xml version="1.0" encoding="utf-16"?><ishfields><ishfield name="USERNAME" level="none" ishvaluetype="value" /></ishfields>'
+			$ishFields.ToXML() -eq $result | Should Be $true
+		}
+		It "Trisoft.ISHRemote.Objects.IShFields.ToXml() xml content multiple" {
+			$ishFields = New-Object -TypeName Trisoft.ISHRemote.Objects.IShFields
+			$ishFields.AddField((Set-IshRequestedMetadataField -IshSession $ishSession -Name "USERNAME"))
+			$ishFields.AddField((Set-IshRequestedMetadataField -IshSession $ishSession -Name "FUSERGROUP"))
+			$result = '<?xml version="1.0" encoding="utf-16"?><ishfields><ishfield name="USERNAME" level="none" ishvaluetype="value" /><ishfield name="FUSERGROUP" level="none" ishvaluetype="value" /></ishfields>'
+			$ishFields.ToXML() -eq $result | Should Be $true
+		}
+	}
 }
 
 

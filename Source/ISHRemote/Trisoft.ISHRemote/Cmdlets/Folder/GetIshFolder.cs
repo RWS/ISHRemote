@@ -191,8 +191,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 
                 // 2. Doing Retrieve
                 WriteDebug("Retrieving");
-
-                _requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());
+                _requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
                 if (_retrievedIshFolders.Count > 0)
                 {

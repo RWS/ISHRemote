@@ -46,6 +46,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private IshVersion _serverVersion;
         private IshVersion _clientVersion;
         private IshTypeFieldSetup _ishTypeFieldSetup;
+        private Enumerations.StrictMetadataPreference _strictMetadataPreference = Enumerations.StrictMetadataPreference.Continue;
 
         private int _chunkSize = 10485760;
         private int _metadataBatchSize = 1000;
@@ -156,6 +157,30 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         }
 
+        internal IshTypeFieldSetup IshTypeFieldSetup
+        {
+            get
+            {
+                if (_ishTypeFieldSetup == null)
+                {
+                    if (_serverVersion.MajorVersion >= 13)
+                    {
+                        _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
+                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null));
+                        _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
+                    }
+                    else
+                    {
+                        _logger.WriteDebug($"Loading TriDKXmlSetupFullExport_12_00_01...");
+                        var triDKXmlSetupHelper = new TriDKXmlSetupHelper(_logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
+                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition);
+                        _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
+                    }
+                }
+                return _ishTypeFieldSetup;
+            }
+        }
+
         public string WebServicesBaseUrl
         {
             get { return _webServicesBaseUri.ToString(); }
@@ -213,21 +238,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                if (_ishTypeFieldSetup == null)
-                {
-                    if (_serverVersion.MajorVersion >= 13)
-                    {
-                        _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
-                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null));
-                    }
-                    else
-                    {
-                        _logger.WriteDebug($"Loading TriDKXmlSetupFullExport_12_00_01...");
-                        var triDKXmlSetupHelper = new TriDKXmlSetupHelper(_logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
-                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition);
-                    }
-                }
-                return _ishTypeFieldSetup.IshTypeFieldDefinition;
+                return IshTypeFieldSetup.IshTypeFieldDefinition;
             }
             internal set
             {
@@ -290,6 +301,19 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get { return _metadataBatchSize; }
             set { _metadataBatchSize = value; }
+        }
+
+        /// <summary>
+        /// Client side filtering of nonexisting or unallowed metadata can be done silently, with warning or not at all. 
+        /// </summary>
+        public Enumerations.StrictMetadataPreference StrictMetadataPreference
+        {
+            get { return _strictMetadataPreference; }
+            set
+            {
+                _strictMetadataPreference = value;
+                IshTypeFieldSetup.StrictMetadataPreference = value;
+            }
         }
 
         /// <summary>

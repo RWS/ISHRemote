@@ -125,11 +125,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     WriteDebug("Retrieving");
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = AddRequiredFields(new IshFields());
-
-                    string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(
-                        foldersToRetrieve.ToArray(),
-                        requestedMetadata.ToXml());
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(), Enumerations.ActionMode.Read);
+                    string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(foldersToRetrieve.ToArray(), requestedMetadata.ToXml());
 
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
                     returnedFolders.AddRange(retrievedFolders.Folders);

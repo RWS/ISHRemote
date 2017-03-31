@@ -87,16 +87,15 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
 
                 var activityFilter = EnumConverter.ToActivityFilter<OutputFormat25ServiceReference.ActivityFilter>(ActivityFilter);
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = new IshFields(RequestedMetadata);
                 // add more fields required for pipe operations
-                requestedMetadata = AddRequiredFields(requestedMetadata);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
 
                 // 2. Finding 
                 WriteDebug($"Finding ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 string xmlIshObjects = IshSession.OutputFormat25.Find(
                     activityFilter,
                     metadataFilter.ToXml(),
-                    requestedMetadata.ToRequestedFields().ToXml());
+                    requestedMetadata.ToXml());
                 WriteVerbose("xmlIshObjects.length[" + xmlIshObjects.Length + "]");
 
                 // 3. Write it

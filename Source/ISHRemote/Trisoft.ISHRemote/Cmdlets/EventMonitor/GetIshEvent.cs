@@ -192,7 +192,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
         {
             try
             {
-                IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());
+                IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());  // ToRequestedFields() should not be required if TableType like CardTypes pass IshTypeFieldSetup
                 string xmlIshEvents;
                 if (_retrievedIshEvents.Count == 0)
                 {

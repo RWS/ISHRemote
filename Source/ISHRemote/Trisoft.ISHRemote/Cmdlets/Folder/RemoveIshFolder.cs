@@ -126,7 +126,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     }
                     else
                     {
-                        string xmlIshFolder = IshSession.Folder25.GetMetadataByIshFolderRef(folderId, AddRequiredFields(new IshFields()).ToXml());
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(), Enumerations.ActionMode.Read);
+                        string xmlIshFolder = IshSession.Folder25.GetMetadataByIshFolderRef(folderId, requestedMetadata.ToXml());
                         IshFolders ishFolders = new IshFolders(xmlIshFolder, "ishfolder");
                         DeleteRecursive(ishFolders.Folders[0], 0);
                     }
@@ -196,7 +197,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             IshFolders retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder/ishfolder");
             if (retrievedFolders.Ids.Length > 0)
             {
-                xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids, AddRequiredFields(new IshFields()).ToXml());
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(), Enumerations.ActionMode.Read);
+                xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids, requestedMetadata.ToXml());
                 retrievedFolders = new IshFolders(xmlIshFolders);
                 // sort them
                 ++currentDepth;
