@@ -158,6 +158,7 @@
     <Compile Include="Cmdlets\User\RemoveIshUser.cs" />
     <Compile Include="Cmdlets\User\SetIshUser.cs" />
     <Compile Include="Cmdlets\User\UserCmdlet.cs" />
+    <Compile Include="HelperClasses\ServicePointManagerHelper.cs" />
     <Compile Include="Objects\FieldElements.cs" />
     <Compile Include="HelperClasses\CertificateValidationHelper.cs" />
     <Compile Include="HelperClasses\EnumConverter.cs" />
