@@ -139,7 +139,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private void CreateConnection()
         {
             //prepare connection for authentication/authorization
-            var connectionParameters = new InfoShareWcfConnectionParameters()
+            var connectionParameters = new InfoShareWcfConnectionParameters
             {
                 Credential = _ishSecurePassword == null ? new NetworkCredential() : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
                 Timeout = _timeout,

@@ -345,13 +345,11 @@ namespace Trisoft.ISHRemote.Objects
         /// Used on the OutputFormat to indicate the EDT of the output
         /// </summary>
         public const string OutputEDType = "FISHOUTPUTEDT";
-
         /// <summary>
         /// The element of the Field FISHDITADLVRCLIENTSECRET.
         /// The client secret used for oAuth authentication to connect to Dita Delivery services.
         /// </summary>
-        public const string ClientSecret = "FISHDITADLVRCLIENTSECRET";
-
+        public const string DitaDeliveryClientSecret = "FISHDITADLVRCLIENTSECRET";
         #endregion
 
         #region Revision fields

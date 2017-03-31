@@ -151,6 +151,9 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                     // 3a. Retrieve updated OutputFormat(s) from the database and write them out
                     WriteDebug("Retrieving");
 
+                    // Remove FISHDITADLVRCLIENTSECRET field explicitly, as we are not allowed to read it
+                    returnFields.RemoveField(FieldElements.DitaDeliveryClientSecret, Enumerations.Level.None, Enumerations.ValueType.All);
+
                     // Add the required fields (needed for pipe operations)
                     IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.OutputFormat25.RetrieveMetadata(
