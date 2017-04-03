@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Imports">
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Application.svc?xsd=xsd0" namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Application.svc?xsd=xsd2" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Application.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="Application_GetVersion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersion" />
+  </wsdl:message>
+  <wsdl:message name="Application_GetVersion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="Application_GetVersion_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Application_Authenticate2_InputMessage">
+    <wsdl:part name="parameters" element="tns:Authenticate2" />
+  </wsdl:message>
+  <wsdl:message name="Application_Authenticate2_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Authenticate2Response" />
+  </wsdl:message>
+  <wsdl:message name="Application_Authenticate2_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:portType name="Application">
+    <wsdl:operation name="GetVersion">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Application/GetVersion" message="tns:Application_GetVersion_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Application/GetVersionResponse" message="tns:Application_GetVersion_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Application/GetVersionInfoShareFault" name="InfoShareFault" message="tns:Application_GetVersion_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Authenticate2">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Application/Authenticate2" message="tns:Application_Authenticate2_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Application/Authenticate2Response" message="tns:Application_Authenticate2_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Application/Authenticate2InfoShareFault" name="InfoShareFault" message="tns:Application_Authenticate2_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

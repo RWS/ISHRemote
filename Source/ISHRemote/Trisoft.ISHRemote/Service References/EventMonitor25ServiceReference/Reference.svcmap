@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="dcfce54d-0d6c-49df-b79a-140cfdae3a68" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="EventMonitor.wsdl" MetadataType="Wsdl" ID="afd77785-57b8-4976-89fc-58e3781a799c" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="EventMonitor4.xsd" MetadataType="Schema" ID="b59615a0-2e2f-4063-96bc-711c3a6d10e8" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd2" />
+    <MetadataFile FileName="EventMonitor.disco" MetadataType="Disco" ID="5bc662ba-579f-498e-8446-4f85e15fd4bd" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?disco" />
+    <MetadataFile FileName="EventMonitor1.xsd" MetadataType="Schema" ID="458d6001-125a-4523-8093-591005092d21" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd0" />
+    <MetadataFile FileName="EventMonitor2.xsd" MetadataType="Schema" ID="7b59092f-fdf1-4e70-8277-d5f3cd62624d" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd3" />
+    <MetadataFile FileName="EventMonitor.xsd" MetadataType="Schema" ID="118cfce9-a6d7-4d4a-9af5-e5bf99cdad37" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd1" />
+    <MetadataFile FileName="EventMonitor1.wsdl" MetadataType="Wsdl" ID="73ea71d5-8728-4b1f-a556-cf58706a581d" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?wsdl" />
+    <MetadataFile FileName="EventMonitor3.xsd" MetadataType="Schema" ID="7e3c69b6-798b-4b1b-aeda-25b3dd9733a4" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd4" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" elementFormDefault="qualified" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="BaselineAutoCompleteMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ISHFirstVersion" />
+      <xs:enumeration value="ISHLatestReleased" />
+      <xs:enumeration value="ISHLatestAvailable" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="BaselineAutoCompleteMode" nillable="true" type="tns:BaselineAutoCompleteMode" />
+</xs:schema>

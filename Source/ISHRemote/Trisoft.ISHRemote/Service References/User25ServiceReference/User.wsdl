@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Imports">
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd0" namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd2" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd4" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="User_GetMetadataByIshUserRef_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadataByIshUserRef" />
+  </wsdl:message>
+  <wsdl:message name="User_GetMetadataByIshUserRef_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadataByIshUserRefResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_GetMetadataByIshUserRef_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_GetMetadata_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadata" />
+  </wsdl:message>
+  <wsdl:message name="User_GetMetadata_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadataResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_GetMetadata_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_GetMyMetadata_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMyMetadata" />
+  </wsdl:message>
+  <wsdl:message name="User_GetMyMetadata_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMyMetadataResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_GetMyMetadata_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrieveMetadata_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadata" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrieveMetadata_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadataResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrieveMetadata_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q4:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrieveMetadataByIshUserRefs_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadataByIshUserRefs" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrieveMetadataByIshUserRefs_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadataByIshUserRefsResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrieveMetadataByIshUserRefs_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q5:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_Find_InputMessage">
+    <wsdl:part name="parameters" element="tns:Find" />
+  </wsdl:message>
+  <wsdl:message name="User_Find_OutputMessage">
+    <wsdl:part name="parameters" element="tns:FindResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_Find_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q6:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_Create_InputMessage">
+    <wsdl:part name="parameters" element="tns:Create" />
+  </wsdl:message>
+  <wsdl:message name="User_Create_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_Create_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q7="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q7:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_Update_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="User_Update_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_Update_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q8="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q8:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="User_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_Delete_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q9="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q9:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_ChangePassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangePassword" />
+  </wsdl:message>
+  <wsdl:message name="User_ChangePassword_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangePasswordResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_ChangePassword_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q10="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q10:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_SetPreferences_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetPreferences" />
+  </wsdl:message>
+  <wsdl:message name="User_SetPreferences_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetPreferencesResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_SetPreferences_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q11="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q11:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrievePreferences_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrievePreferences" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrievePreferences_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrievePreferencesResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_RetrievePreferences_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q12="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q12:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_FindPreferences_InputMessage">
+    <wsdl:part name="parameters" element="tns:FindPreferences" />
+  </wsdl:message>
+  <wsdl:message name="User_FindPreferences_OutputMessage">
+    <wsdl:part name="parameters" element="tns:FindPreferencesResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_FindPreferences_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q13="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q13:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="User_DeletePreference_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreference" />
+  </wsdl:message>
+  <wsdl:message name="User_DeletePreference_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeletePreferenceResponse" />
+  </wsdl:message>
+  <wsdl:message name="User_DeletePreference_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q14="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q14:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:portType name="User">
+    <wsdl:operation name="GetMetadataByIshUserRef">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMetadataByIshUserRef" message="tns:User_GetMetadataByIshUserRef_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMetadataByIshUserRefResponse" message="tns:User_GetMetadataByIshUserRef_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMetadataByIshUserRefInfoShareFault" name="InfoShareFault" message="tns:User_GetMetadataByIshUserRef_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMetadata">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMetadata" message="tns:User_GetMetadata_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMetadataResponse" message="tns:User_GetMetadata_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMetadataInfoShareFault" name="InfoShareFault" message="tns:User_GetMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMyMetadata">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMyMetadata" message="tns:User_GetMyMetadata_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMyMetadataResponse" message="tns:User_GetMyMetadata_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/GetMyMetadataInfoShareFault" name="InfoShareFault" message="tns:User_GetMyMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveMetadata">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrieveMetadata" message="tns:User_RetrieveMetadata_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrieveMetadataResponse" message="tns:User_RetrieveMetadata_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrieveMetadataInfoShareFault" name="InfoShareFault" message="tns:User_RetrieveMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveMetadataByIshUserRefs">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrieveMetadataByIshUserRefs" message="tns:User_RetrieveMetadataByIshUserRefs_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrieveMetadataByIshUserRefsResponse" message="tns:User_RetrieveMetadataByIshUserRefs_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrieveMetadataByIshUserRefsInfoShareFault" name="InfoShareFault" message="tns:User_RetrieveMetadataByIshUserRefs_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Find">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/Find" message="tns:User_Find_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/FindResponse" message="tns:User_Find_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/FindInfoShareFault" name="InfoShareFault" message="tns:User_Find_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Create">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/Create" message="tns:User_Create_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/CreateResponse" message="tns:User_Create_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/CreateInfoShareFault" name="InfoShareFault" message="tns:User_Create_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/Update" message="tns:User_Update_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/UpdateResponse" message="tns:User_Update_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/UpdateInfoShareFault" name="InfoShareFault" message="tns:User_Update_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/Delete" message="tns:User_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/DeleteResponse" message="tns:User_Delete_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/DeleteInfoShareFault" name="InfoShareFault" message="tns:User_Delete_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangePassword">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/ChangePassword" message="tns:User_ChangePassword_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/ChangePasswordResponse" message="tns:User_ChangePassword_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/ChangePasswordInfoShareFault" name="InfoShareFault" message="tns:User_ChangePassword_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetPreferences">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/SetPreferences" message="tns:User_SetPreferences_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/SetPreferencesResponse" message="tns:User_SetPreferences_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/SetPreferencesInfoShareFault" name="InfoShareFault" message="tns:User_SetPreferences_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrievePreferences">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrievePreferences" message="tns:User_RetrievePreferences_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrievePreferencesResponse" message="tns:User_RetrievePreferences_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/RetrievePreferencesInfoShareFault" name="InfoShareFault" message="tns:User_RetrievePreferences_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="FindPreferences">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/FindPreferences" message="tns:User_FindPreferences_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/FindPreferencesResponse" message="tns:User_FindPreferences_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/FindPreferencesInfoShareFault" name="InfoShareFault" message="tns:User_FindPreferences_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeletePreference">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/DeletePreference" message="tns:User_DeletePreference_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/DeletePreferenceResponse" message="tns:User_DeletePreference_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/User/DeletePreferenceInfoShareFault" name="InfoShareFault" message="tns:User_DeletePreference_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

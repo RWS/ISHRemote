@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Imports">
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd0" namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd2" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd3" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="Settings_GetTimeZone_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeZone" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetTimeZone_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeZoneResponse" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetTimeZone_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetMetadata_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadata" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetMetadata_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadataResponse" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetMetadata_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Settings_SetMetadata3_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetMetadata3" />
+  </wsdl:message>
+  <wsdl:message name="Settings_SetMetadata3_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetMetadata3Response" />
+  </wsdl:message>
+  <wsdl:message name="Settings_SetMetadata3_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetPossibleTargetStatuses_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPossibleTargetStatuses" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetPossibleTargetStatuses_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPossibleTargetStatusesResponse" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetPossibleTargetStatuses_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q4:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetTranslationStatuses_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTranslationStatuses" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetTranslationStatuses_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTranslationStatusesResponse" />
+  </wsdl:message>
+  <wsdl:message name="Settings_GetTranslationStatuses_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q5:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Settings_RetrieveFieldSetupByIshType_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveFieldSetupByIshType" />
+  </wsdl:message>
+  <wsdl:message name="Settings_RetrieveFieldSetupByIshType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveFieldSetupByIshTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="Settings_RetrieveFieldSetupByIshType_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q6:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:portType name="Settings">
+    <wsdl:operation name="GetTimeZone">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetTimeZone" message="tns:Settings_GetTimeZone_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetTimeZoneResponse" message="tns:Settings_GetTimeZone_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetTimeZoneInfoShareFault" name="InfoShareFault" message="tns:Settings_GetTimeZone_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMetadata">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetMetadata" message="tns:Settings_GetMetadata_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetMetadataResponse" message="tns:Settings_GetMetadata_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetMetadataInfoShareFault" name="InfoShareFault" message="tns:Settings_GetMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetMetadata3">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/SetMetadata3" message="tns:Settings_SetMetadata3_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/SetMetadata3Response" message="tns:Settings_SetMetadata3_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/SetMetadata3InfoShareFault" name="InfoShareFault" message="tns:Settings_SetMetadata3_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPossibleTargetStatuses">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetPossibleTargetStatuses" message="tns:Settings_GetPossibleTargetStatuses_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetPossibleTargetStatusesResponse" message="tns:Settings_GetPossibleTargetStatuses_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetPossibleTargetStatusesInfoShareFault" name="InfoShareFault" message="tns:Settings_GetPossibleTargetStatuses_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTranslationStatuses">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetTranslationStatuses" message="tns:Settings_GetTranslationStatuses_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetTranslationStatusesResponse" message="tns:Settings_GetTranslationStatuses_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/GetTranslationStatusesInfoShareFault" name="InfoShareFault" message="tns:Settings_GetTranslationStatuses_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveFieldSetupByIshType">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/RetrieveFieldSetupByIshType" message="tns:Settings_RetrieveFieldSetupByIshType_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/RetrieveFieldSetupByIshTypeResponse" message="tns:Settings_RetrieveFieldSetupByIshType_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Settings/RetrieveFieldSetupByIshTypeInfoShareFault" name="InfoShareFault" message="tns:Settings_RetrieveFieldSetupByIshType_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

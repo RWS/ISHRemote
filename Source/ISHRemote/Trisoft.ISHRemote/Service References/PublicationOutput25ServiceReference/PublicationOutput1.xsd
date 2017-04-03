@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" elementFormDefault="qualified" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="StatusFilter">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ISHReleasedStates" />
+      <xs:enumeration value="ISHReleasedOrDraftStates" />
+      <xs:enumeration value="ISHOutOfDateOrReleasedStates" />
+      <xs:enumeration value="ISHNoStatusFilter" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="StatusFilter" nillable="true" type="tns:StatusFilter" />
+  <xs:simpleType name="BaseFolder">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Data" />
+      <xs:enumeration value="System" />
+      <xs:enumeration value="Favorites" />
+      <xs:enumeration value="EditorTemplate" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="BaseFolder" nillable="true" type="tns:BaseFolder" />
+</xs:schema>

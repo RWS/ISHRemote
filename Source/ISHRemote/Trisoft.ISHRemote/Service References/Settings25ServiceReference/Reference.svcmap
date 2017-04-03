@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="3714892a-9cf0-4c43-99d1-cc2a8180179f" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Settings21.wsdl" MetadataType="Wsdl" ID="45f3be6e-a910-4116-8ea4-90b7d22a4ce3" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="Settings5.xsd" MetadataType="Schema" ID="15e9d8bd-be25-476c-8584-3caebc6d2df3" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd2" />
+    <MetadataFile FileName="Settings2.wsdl" MetadataType="Wsdl" ID="81305481-8b09-4418-bc77-6adfec673a17" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?wsdl" />
+    <MetadataFile FileName="Settings52.xsd" MetadataType="Schema" ID="4a1e3e15-98f2-47ce-a1a2-96522811b353" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd1" />
+    <MetadataFile FileName="Settings53.xsd" MetadataType="Schema" ID="5cec678e-c23f-4713-9d27-73ae5209bd95" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd4" />
+    <MetadataFile FileName="Settings51.xsd" MetadataType="Schema" ID="ad451518-b5c5-48cf-8187-568fc2f51f18" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd0" />
+    <MetadataFile FileName="Settings1.disco" MetadataType="Disco" ID="48867d7d-7977-4979-b79a-ac43201ec3f7" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?disco" />
+    <MetadataFile FileName="Settings54.xsd" MetadataType="Schema" ID="0e516149-0ddb-401d-86d3-75142121cfe2" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Settings.svc?xsd=xsd3" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

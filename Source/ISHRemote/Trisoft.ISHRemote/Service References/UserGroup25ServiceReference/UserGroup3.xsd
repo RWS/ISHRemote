@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" elementFormDefault="qualified" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="ActivityFilter">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Active" />
+      <xs:enumeration value="Inactive" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ActivityFilter" nillable="true" type="tns:ActivityFilter" />
+</xs:schema>

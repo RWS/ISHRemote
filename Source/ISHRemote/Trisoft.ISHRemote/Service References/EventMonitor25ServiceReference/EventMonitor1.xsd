@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" elementFormDefault="qualified" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd4" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" />
+  <xs:element name="GetProgressId">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="eventId" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetProgressIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="returnValue" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetEventDetail">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="detailId" type="xs:long" />
+        <xs:element minOccurs="0" name="xmlRequestedMetadata" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="includeData" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetEventDetailResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlEventList" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetNextEventDetailDataChunk">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="detailId" type="xs:long" />
+        <xs:element minOccurs="0" name="offSet" type="xs:long" />
+        <xs:element minOccurs="0" name="size" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetNextEventDetailDataChunkResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="offSet" type="xs:long" />
+        <xs:element minOccurs="0" name="size" type="xs:int" />
+        <xs:element minOccurs="0" name="bytes" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartEvent">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="eventType" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="parentProgressId" type="xs:long" />
+        <xs:element minOccurs="0" name="maximumProgress" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartEventResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="eventId" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="progressId" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteByProgressId">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="progressId" type="xs:long" />
+        <xs:element minOccurs="0" name="deleteFailedEvents" type="xs:boolean" />
+        <xs:element minOccurs="0" name="deleteBusyEvents" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteByProgressIdResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RetrieveEventsByProgressIds">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="progressIds" nillable="true" type="q1:ArrayOflong" />
+        <xs:element xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="level" type="q2:EventLevel" />
+        <xs:element minOccurs="0" name="lastDetailId" type="xs:long" />
+        <xs:element minOccurs="0" name="xmlMetadataFilter" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="xmlRequestedMetadata" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RetrieveEventsByProgressIdsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlEventList" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RetrieveEventsByParentProgressIds">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="parentProgressIds" nillable="true" type="q3:ArrayOflong" />
+        <xs:element xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="levelFilter" type="q4:EventLevel" />
+        <xs:element minOccurs="0" name="lastDetailId" type="xs:long" />
+        <xs:element minOccurs="0" name="xmlMetadataFilter" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="xmlRequestedMetadata" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RetrieveEventsByParentProgressIdsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlEventList" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RetrieveEventOverview">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="eventTypes" nillable="true" type="q5:ArrayOfstring" />
+        <xs:element xmlns:q6="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="statusFilter" type="q6:ProgressStatusFilter" />
+        <xs:element minOccurs="0" name="modifiedSince" type="xs:dateTime" />
+        <xs:element xmlns:q7="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="userFilter" type="q7:UserFilter" />
+        <xs:element minOccurs="0" name="xmlRequestedMetadata" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RetrieveEventOverviewResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlEventList" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EndEvent">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="progressId" type="xs:long" />
+        <xs:element xmlns:q8="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="status" type="q8:ProgressStatus" />
+        <xs:element minOccurs="0" name="currentProgress" type="xs:int" />
+        <xs:element minOccurs="0" name="maximumProgress" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EndEventResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddEventDetail">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="progressId" type="xs:long" />
+        <xs:element xmlns:q9="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="level" type="q9:EventLevel" />
+        <xs:element minOccurs="0" name="action" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element xmlns:q10="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="status" type="q10:DetailStatus" />
+        <xs:element xmlns:q11="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="dataType" type="q11:EventDataType" />
+        <xs:element minOccurs="0" name="data" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddEventDetailResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="detailId" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddEventDetailWithProgress">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="progressId" type="xs:long" />
+        <xs:element xmlns:q12="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="level" type="q12:EventLevel" />
+        <xs:element minOccurs="0" name="action" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element xmlns:q13="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="status" type="q13:DetailStatus" />
+        <xs:element xmlns:q14="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" minOccurs="0" name="dataType" type="q14:EventDataType" />
+        <xs:element minOccurs="0" name="data" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="currentProgress" type="xs:int" />
+        <xs:element minOccurs="0" name="maximumProgress" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddEventDetailWithProgressResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="detailId" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
