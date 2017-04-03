@@ -12,7 +12,7 @@
   <Target Name="ModuleManifest">
     <PropertyGroup>
       <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">$(WINDIR)\System32\WindowsPowerShell\v1.0\powershell.exe</PowerShellExe>
-      <ManifestPath>$(MSBuildProjectDirectory)\$(ModuleName).psd1</ManifestPath>
+      <ManifestPath>$(TargetDir)\$(ModuleName).psd1</ManifestPath>
       <RootModule>$(ModuleName).psm1</RootModule>
       <NestedModules>&apos;$(ModuleName).dll&apos;</NestedModules>
       <ModuleVersion>$(FullModuleBuildVersion)</ModuleVersion>
