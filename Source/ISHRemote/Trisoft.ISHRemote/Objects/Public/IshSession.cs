@@ -125,7 +125,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             { 
                 CertificateValidationHelper.OverrideCertificateValidation();
             }
-
+            ServicePointManagerHelper.RestoreCertificateValidation();
             // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl+"/");
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
