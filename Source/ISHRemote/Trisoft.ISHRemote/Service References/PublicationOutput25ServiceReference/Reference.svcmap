@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="9ed70493-0d24-4ebb-a756-150a947c6c40" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="PublicationOutput2.xsd" MetadataType="Schema" ID="157c3c7f-8f62-417e-8515-e829de751244" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc?xsd=xsd0" />
+    <MetadataFile FileName="PublicationOutput4.xsd" MetadataType="Schema" ID="2f46296f-6de1-4f9a-b5eb-cb7cfec4364a" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc?xsd=xsd2" />
+    <MetadataFile FileName="PublicationOutput.disco" MetadataType="Disco" ID="91485d40-abd8-4448-b5d1-46584503c997" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc?disco" />
+    <MetadataFile FileName="PublicationOutput3.xsd" MetadataType="Schema" ID="8593b75d-7df3-464e-9da5-cdf90b888589" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc?xsd=xsd1" />
+    <MetadataFile FileName="PublicationOutput1.xsd" MetadataType="Schema" ID="279c4bd4-35a5-4d50-a7f1-598f53da8938" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc?xsd=xsd4" />
+    <MetadataFile FileName="PublicationOutput1.wsdl" MetadataType="Wsdl" ID="e5e020fb-2e6d-4d37-88a3-a6165e3cab24" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc?wsdl" />
+    <MetadataFile FileName="PublicationOutput.xsd" MetadataType="Schema" ID="389f2513-a43d-4fb7-a0fe-ef9dedb9c478" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc?xsd=xsd3" />
+    <MetadataFile FileName="PublicationOutput.wsdl" MetadataType="Wsdl" ID="72fdfa24-f6ae-4003-921d-919826f40671" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/PublicationOutput.svc?wsdl=wsdl0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

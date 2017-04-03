@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Imports">
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc?xsd=xsd0" namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc?xsd=xsd3" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc?xsd=xsd4" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="Baseline_RetrieveMetadata_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadata" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_RetrieveMetadata_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadataResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_RetrieveMetadata_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetMetadata_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadata" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetMetadata_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMetadataResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetMetadata_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetList" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetListResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetList_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaselineName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBaselineName" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaselineName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBaselineNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaselineName_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q4:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaselineId_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBaselineId" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaselineId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBaselineIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaselineId_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q5:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Containing_InputMessage">
+    <wsdl:part name="parameters" element="tns:Containing" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Containing_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ContainingResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Containing_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q6:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaseline_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBaseline" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaseline_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBaselineResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetBaseline_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q7="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q7:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetReport_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetReport" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetReport_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetReportResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_GetReport_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q8="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q8:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExpandBaseline_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExpandBaseline" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExpandBaseline_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExpandBaselineResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExpandBaseline_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q9="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q9:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExpandReport_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExpandReport" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExpandReport_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExpandReportResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExpandReport_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q10="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q10:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteBaselineByMode_InputMessage">
+    <wsdl:part name="parameters" element="tns:CompleteBaselineByMode" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteBaselineByMode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CompleteBaselineByModeResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteBaselineByMode_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q11="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q11:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteReportByMode_InputMessage">
+    <wsdl:part name="parameters" element="tns:CompleteReportByMode" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteReportByMode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CompleteReportByModeResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteReportByMode_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q12="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q12:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteBaselineByCandidateAndMode_InputMessage">
+    <wsdl:part name="parameters" element="tns:CompleteBaselineByCandidateAndMode" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteBaselineByCandidateAndMode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CompleteBaselineByCandidateAndModeResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteBaselineByCandidateAndMode_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q13="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q13:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteReportByCandidateAndMode_InputMessage">
+    <wsdl:part name="parameters" element="tns:CompleteReportByCandidateAndMode" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteReportByCandidateAndMode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CompleteReportByCandidateAndModeResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CompleteReportByCandidateAndMode_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q14="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q14:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExtendReportByBaseline_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExtendReportByBaseline" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExtendReportByBaseline_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExtendReportByBaselineResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExtendReportByBaseline_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q15="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q15:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExtendReportByCandidate_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExtendReportByCandidate" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExtendReportByCandidate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExtendReportByCandidateResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_ExtendReportByCandidate_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q16="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q16:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Create_InputMessage">
+    <wsdl:part name="parameters" element="tns:Create" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Create_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Create_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q17="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q17:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Delete_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q18="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q18:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Update_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Update_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Update_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q19="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q19:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_SetMetadata_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetMetadata" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_SetMetadata_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetMetadataResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_SetMetadata_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q20="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q20:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Freeze_InputMessage">
+    <wsdl:part name="parameters" element="tns:Freeze" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Freeze_OutputMessage">
+    <wsdl:part name="parameters" element="tns:FreezeResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Freeze_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q21="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q21:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CanBeFrozen_InputMessage">
+    <wsdl:part name="parameters" element="tns:CanBeFrozen" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CanBeFrozen_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CanBeFrozenResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CanBeFrozen_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q22="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q22:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CleanUp_InputMessage">
+    <wsdl:part name="parameters" element="tns:CleanUp" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CleanUp_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CleanUpResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_CleanUp_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q23="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q23:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Copy_InputMessage">
+    <wsdl:part name="parameters" element="tns:Copy" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Copy_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CopyResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Copy_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q24="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q24:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:portType name="Baseline">
+    <wsdl:operation name="RetrieveMetadata">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadata" message="tns:Baseline_RetrieveMetadata_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadataResponse" message="tns:Baseline_RetrieveMetadata_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadataInfoShareFault" name="InfoShareFault" message="tns:Baseline_RetrieveMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMetadata">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetMetadata" message="tns:Baseline_GetMetadata_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetMetadataResponse" message="tns:Baseline_GetMetadata_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetMetadataInfoShareFault" name="InfoShareFault" message="tns:Baseline_GetMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetList">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetList" message="tns:Baseline_GetList_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetListResponse" message="tns:Baseline_GetList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetListInfoShareFault" name="InfoShareFault" message="tns:Baseline_GetList_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBaselineName">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaselineName" message="tns:Baseline_GetBaselineName_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaselineNameResponse" message="tns:Baseline_GetBaselineName_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaselineNameInfoShareFault" name="InfoShareFault" message="tns:Baseline_GetBaselineName_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBaselineId">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaselineId" message="tns:Baseline_GetBaselineId_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaselineIdResponse" message="tns:Baseline_GetBaselineId_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaselineIdInfoShareFault" name="InfoShareFault" message="tns:Baseline_GetBaselineId_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Containing">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Containing" message="tns:Baseline_Containing_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ContainingResponse" message="tns:Baseline_Containing_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ContainingInfoShareFault" name="InfoShareFault" message="tns:Baseline_Containing_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBaseline">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaseline" message="tns:Baseline_GetBaseline_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaselineResponse" message="tns:Baseline_GetBaseline_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetBaselineInfoShareFault" name="InfoShareFault" message="tns:Baseline_GetBaseline_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetReport">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetReport" message="tns:Baseline_GetReport_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetReportResponse" message="tns:Baseline_GetReport_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetReportInfoShareFault" name="InfoShareFault" message="tns:Baseline_GetReport_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpandBaseline">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExpandBaseline" message="tns:Baseline_ExpandBaseline_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExpandBaselineResponse" message="tns:Baseline_ExpandBaseline_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExpandBaselineInfoShareFault" name="InfoShareFault" message="tns:Baseline_ExpandBaseline_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExpandReport">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExpandReport" message="tns:Baseline_ExpandReport_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExpandReportResponse" message="tns:Baseline_ExpandReport_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExpandReportInfoShareFault" name="InfoShareFault" message="tns:Baseline_ExpandReport_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CompleteBaselineByMode">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteBaselineByMode" message="tns:Baseline_CompleteBaselineByMode_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteBaselineByModeResponse" message="tns:Baseline_CompleteBaselineByMode_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteBaselineByModeInfoShareFault" name="InfoShareFault" message="tns:Baseline_CompleteBaselineByMode_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CompleteReportByMode">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteReportByMode" message="tns:Baseline_CompleteReportByMode_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteReportByModeResponse" message="tns:Baseline_CompleteReportByMode_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteReportByModeInfoShareFault" name="InfoShareFault" message="tns:Baseline_CompleteReportByMode_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CompleteBaselineByCandidateAndMode">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteBaselineByCandidateAndMode" message="tns:Baseline_CompleteBaselineByCandidateAndMode_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteBaselineByCandidateAndModeResponse" message="tns:Baseline_CompleteBaselineByCandidateAndMode_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteBaselineByCandidateAndModeInfoShareFault" name="InfoShareFault" message="tns:Baseline_CompleteBaselineByCandidateAndMode_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CompleteReportByCandidateAndMode">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteReportByCandidateAndMode" message="tns:Baseline_CompleteReportByCandidateAndMode_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteReportByCandidateAndModeResponse" message="tns:Baseline_CompleteReportByCandidateAndMode_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CompleteReportByCandidateAndModeInfoShareFault" name="InfoShareFault" message="tns:Baseline_CompleteReportByCandidateAndMode_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExtendReportByBaseline">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExtendReportByBaseline" message="tns:Baseline_ExtendReportByBaseline_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExtendReportByBaselineResponse" message="tns:Baseline_ExtendReportByBaseline_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExtendReportByBaselineInfoShareFault" name="InfoShareFault" message="tns:Baseline_ExtendReportByBaseline_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExtendReportByCandidate">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExtendReportByCandidate" message="tns:Baseline_ExtendReportByCandidate_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExtendReportByCandidateResponse" message="tns:Baseline_ExtendReportByCandidate_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/ExtendReportByCandidateInfoShareFault" name="InfoShareFault" message="tns:Baseline_ExtendReportByCandidate_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Create">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Create" message="tns:Baseline_Create_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CreateResponse" message="tns:Baseline_Create_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CreateInfoShareFault" name="InfoShareFault" message="tns:Baseline_Create_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Delete" message="tns:Baseline_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/DeleteResponse" message="tns:Baseline_Delete_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/DeleteInfoShareFault" name="InfoShareFault" message="tns:Baseline_Delete_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Update" message="tns:Baseline_Update_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/UpdateResponse" message="tns:Baseline_Update_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/UpdateInfoShareFault" name="InfoShareFault" message="tns:Baseline_Update_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetMetadata">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/SetMetadata" message="tns:Baseline_SetMetadata_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/SetMetadataResponse" message="tns:Baseline_SetMetadata_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/SetMetadataInfoShareFault" name="InfoShareFault" message="tns:Baseline_SetMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Freeze">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Freeze" message="tns:Baseline_Freeze_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/FreezeResponse" message="tns:Baseline_Freeze_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/FreezeInfoShareFault" name="InfoShareFault" message="tns:Baseline_Freeze_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CanBeFrozen">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CanBeFrozen" message="tns:Baseline_CanBeFrozen_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CanBeFrozenResponse" message="tns:Baseline_CanBeFrozen_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CanBeFrozenInfoShareFault" name="InfoShareFault" message="tns:Baseline_CanBeFrozen_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CleanUp">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CleanUp" message="tns:Baseline_CleanUp_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CleanUpResponse" message="tns:Baseline_CleanUp_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CleanUpInfoShareFault" name="InfoShareFault" message="tns:Baseline_CleanUp_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Copy">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Copy" message="tns:Baseline_Copy_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CopyResponse" message="tns:Baseline_Copy_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/CopyInfoShareFault" name="InfoShareFault" message="tns:Baseline_Copy_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

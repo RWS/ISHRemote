@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Imports">
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd0" namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd2" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/EventMonitor.svc?xsd=xsd4" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="EventMonitor_GetProgressId_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProgressId" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_GetProgressId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProgressIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_GetProgressId_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_GetEventDetail_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetEventDetail" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_GetEventDetail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetEventDetailResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_GetEventDetail_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_GetNextEventDetailDataChunk_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNextEventDetailDataChunk" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_GetNextEventDetailDataChunk_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNextEventDetailDataChunkResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_GetNextEventDetailDataChunk_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_StartEvent_InputMessage">
+    <wsdl:part name="parameters" element="tns:StartEvent" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_StartEvent_OutputMessage">
+    <wsdl:part name="parameters" element="tns:StartEventResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_StartEvent_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q4:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_DeleteByProgressId_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteByProgressId" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_DeleteByProgressId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteByProgressIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_DeleteByProgressId_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q5:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventsByProgressIds_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveEventsByProgressIds" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventsByProgressIds_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveEventsByProgressIdsResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventsByProgressIds_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q6:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventsByParentProgressIds_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveEventsByParentProgressIds" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventsByParentProgressIds_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveEventsByParentProgressIdsResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventsByParentProgressIds_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q7="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q7:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventOverview_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveEventOverview" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventOverview_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveEventOverviewResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_RetrieveEventOverview_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q8="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q8:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_EndEvent_InputMessage">
+    <wsdl:part name="parameters" element="tns:EndEvent" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_EndEvent_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EndEventResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_EndEvent_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q9="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q9:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_AddEventDetail_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddEventDetail" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_AddEventDetail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddEventDetailResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_AddEventDetail_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q10="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q10:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_AddEventDetailWithProgress_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddEventDetailWithProgress" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_AddEventDetailWithProgress_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddEventDetailWithProgressResponse" />
+  </wsdl:message>
+  <wsdl:message name="EventMonitor_AddEventDetailWithProgress_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q11="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q11:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:portType name="EventMonitor">
+    <wsdl:operation name="GetProgressId">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetProgressId" message="tns:EventMonitor_GetProgressId_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetProgressIdResponse" message="tns:EventMonitor_GetProgressId_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetProgressIdInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_GetProgressId_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetEventDetail">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetEventDetail" message="tns:EventMonitor_GetEventDetail_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetEventDetailResponse" message="tns:EventMonitor_GetEventDetail_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetEventDetailInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_GetEventDetail_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNextEventDetailDataChunk">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetNextEventDetailDataChunk" message="tns:EventMonitor_GetNextEventDetailDataChunk_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetNextEventDetailDataChunkResponse" message="tns:EventMonitor_GetNextEventDetailDataChunk_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/GetNextEventDetailDataChunkInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_GetNextEventDetailDataChunk_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StartEvent">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/StartEvent" message="tns:EventMonitor_StartEvent_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/StartEventResponse" message="tns:EventMonitor_StartEvent_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/StartEventInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_StartEvent_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteByProgressId">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/DeleteByProgressId" message="tns:EventMonitor_DeleteByProgressId_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/DeleteByProgressIdResponse" message="tns:EventMonitor_DeleteByProgressId_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/DeleteByProgressIdInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_DeleteByProgressId_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveEventsByProgressIds">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventsByProgressIds" message="tns:EventMonitor_RetrieveEventsByProgressIds_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventsByProgressIdsResponse" message="tns:EventMonitor_RetrieveEventsByProgressIds_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventsByProgressIdsInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_RetrieveEventsByProgressIds_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveEventsByParentProgressIds">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventsByParentProgressIds" message="tns:EventMonitor_RetrieveEventsByParentProgressIds_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventsByParentProgressIdsResponse" message="tns:EventMonitor_RetrieveEventsByParentProgressIds_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventsByParentProgressIdsInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_RetrieveEventsByParentProgressIds_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveEventOverview">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventOverview" message="tns:EventMonitor_RetrieveEventOverview_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventOverviewResponse" message="tns:EventMonitor_RetrieveEventOverview_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/RetrieveEventOverviewInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_RetrieveEventOverview_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="EndEvent">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/EndEvent" message="tns:EventMonitor_EndEvent_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/EndEventResponse" message="tns:EventMonitor_EndEvent_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/EndEventInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_EndEvent_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddEventDetail">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/AddEventDetail" message="tns:EventMonitor_AddEventDetail_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/AddEventDetailResponse" message="tns:EventMonitor_AddEventDetail_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/AddEventDetailInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_AddEventDetail_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddEventDetailWithProgress">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/AddEventDetailWithProgress" message="tns:EventMonitor_AddEventDetailWithProgress_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/AddEventDetailWithProgressResponse" message="tns:EventMonitor_AddEventDetailWithProgress_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/EventMonitor/AddEventDetailWithProgressInfoShareFault" name="InfoShareFault" message="tns:EventMonitor_AddEventDetailWithProgress_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

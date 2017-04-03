@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" elementFormDefault="qualified" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="BaseFolder">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Data" />
+      <xs:enumeration value="System" />
+      <xs:enumeration value="Favorites" />
+      <xs:enumeration value="EditorTemplate" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="BaseFolder" nillable="true" type="tns:BaseFolder" />
+  <xs:simpleType name="IshFolderType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ISHNone" />
+      <xs:enumeration value="ISHModule" />
+      <xs:enumeration value="ISHMasterDoc" />
+      <xs:enumeration value="ISHLibrary" />
+      <xs:enumeration value="ISHTemplate" />
+      <xs:enumeration value="ISHIllustration" />
+      <xs:enumeration value="ISHPublication" />
+      <xs:enumeration value="ISHReference" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="IshFolderType" nillable="true" type="tns:IshFolderType" />
+</xs:schema>

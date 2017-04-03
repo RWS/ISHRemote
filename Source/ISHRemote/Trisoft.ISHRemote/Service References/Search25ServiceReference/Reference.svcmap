@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="0430c3f3-a2af-44f4-bd4f-1603a570a566" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://ish.example.com/ISHWS/Wcf/API25/Search.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Search3.xsd" MetadataType="Schema" ID="edbb1a4a-78c7-4398-af04-626cb0ee239e" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Search.svc?xsd=xsd1" />
+    <MetadataFile FileName="Search1.xsd" MetadataType="Schema" ID="4e49b5b2-a7e7-416a-912b-46d286958640" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Search.svc?xsd=xsd2" />
+    <MetadataFile FileName="Search2.xsd" MetadataType="Schema" ID="44623f80-a62b-46e2-a0fb-7686d31e83f9" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Search.svc?xsd=xsd3" />
+    <MetadataFile FileName="Search.xsd" MetadataType="Schema" ID="4b3c4ee5-180d-49aa-9ce6-47262a488b2f" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Search.svc?xsd=xsd0" />
+    <MetadataFile FileName="Search1.wsdl" MetadataType="Wsdl" ID="94828081-5af8-4be7-a07a-b2fcd502bc4c" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Search.svc?wsdl" />
+    <MetadataFile FileName="Search.disco" MetadataType="Disco" ID="3e9da10c-87b1-4cbd-88dd-6a9277945fb9" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Search.svc?disco" />
+    <MetadataFile FileName="Search.wsdl" MetadataType="Wsdl" ID="09fadec1-eb7e-48e6-9b2c-7f91055121bf" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Search.svc?wsdl=wsdl0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

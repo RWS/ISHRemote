@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="09035a4a-935e-47e6-9eb1-dadc04fbc2f0" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://ish.example.com/ISHWS/Wcf/API25/User.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="User1.wsdl" MetadataType="Wsdl" ID="fcdb572c-3fa2-459f-9494-c4758cd803eb" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/User.svc?wsdl" />
+    <MetadataFile FileName="User3.xsd" MetadataType="Schema" ID="b46708e0-81f5-4a58-87e7-b59cb842d485" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd3" />
+    <MetadataFile FileName="User.xsd" MetadataType="Schema" ID="b0c3f9fd-f6fc-496f-b832-d40a599c683e" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd2" />
+    <MetadataFile FileName="User.disco" MetadataType="Disco" ID="471d5a06-8723-4367-ac40-d8baef782378" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/User.svc?disco" />
+    <MetadataFile FileName="User4.xsd" MetadataType="Schema" ID="71e15ec8-e34d-43c5-afcf-11926cbc8461" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd4" />
+    <MetadataFile FileName="User1.xsd" MetadataType="Schema" ID="da6df013-2f85-4059-9d11-0a3b3001200f" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd1" />
+    <MetadataFile FileName="User.wsdl" MetadataType="Wsdl" ID="94fdf464-418b-4c5b-8d00-78ea6a27ce92" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/User.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="User2.xsd" MetadataType="Schema" ID="95b7495d-8fe6-482e-9a9c-77ffa1ed2b91" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/User.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Imports">
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/MetadataBinding.svc?xsd=xsd0" namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/MetadataBinding.svc?xsd=xsd2" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/MetadataBinding.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="MetadataBinding_ResolveIds_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResolveIds" />
+  </wsdl:message>
+  <wsdl:message name="MetadataBinding_ResolveIds_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResolveIdsResponse" />
+  </wsdl:message>
+  <wsdl:message name="MetadataBinding_ResolveIds_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="MetadataBinding_RetrieveTags_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveTags" />
+  </wsdl:message>
+  <wsdl:message name="MetadataBinding_RetrieveTags_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveTagsResponse" />
+  </wsdl:message>
+  <wsdl:message name="MetadataBinding_RetrieveTags_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="MetadataBinding_RetrieveTagStructure_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveTagStructure" />
+  </wsdl:message>
+  <wsdl:message name="MetadataBinding_RetrieveTagStructure_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveTagStructureResponse" />
+  </wsdl:message>
+  <wsdl:message name="MetadataBinding_RetrieveTagStructure_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:portType name="MetadataBinding">
+    <wsdl:operation name="ResolveIds">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/ResolveIds" message="tns:MetadataBinding_ResolveIds_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/ResolveIdsResponse" message="tns:MetadataBinding_ResolveIds_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/ResolveIdsInfoShareFault" name="InfoShareFault" message="tns:MetadataBinding_ResolveIds_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveTags">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/RetrieveTags" message="tns:MetadataBinding_RetrieveTags_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/RetrieveTagsResponse" message="tns:MetadataBinding_RetrieveTags_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/RetrieveTagsInfoShareFault" name="InfoShareFault" message="tns:MetadataBinding_RetrieveTags_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveTagStructure">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/RetrieveTagStructure" message="tns:MetadataBinding_RetrieveTagStructure_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/RetrieveTagStructureResponse" message="tns:MetadataBinding_RetrieveTagStructure_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/RetrieveTagStructureInfoShareFault" name="InfoShareFault" message="tns:MetadataBinding_RetrieveTagStructure_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>
