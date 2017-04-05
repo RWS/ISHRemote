@@ -23,15 +23,15 @@ using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
 
-namespace Trisoft.ISHRemote.Cmdlets.UserGroup
+namespace Trisoft.ISHRemote.Cmdlets.Baseline
 {
     /// <summary>
-    /// <para type="synopsis">The Get-IshUserGroup cmdlet retrieves the metadat of user groups that are passed through the pipeline or determined via provided parameters</para>
-    /// <para type="description">The Get-IshUserGroup cmdlet retrieves the metadat of user groups that are passed through the pipeline or determined via provided parameters</para>
+    /// <para type="synopsis">The Get-IshBaseline cmdlet retrieves the metadat of baselines that are passed through the pipeline or determined via provided parameters</para>
+    /// <para type="description">The Get-IshBaseline cmdlet retrieves the metadat of baselines that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "IshUserGroup", SupportsShouldProcess = false)]
+    [Cmdlet(VerbsCommon.Get, "IshBaseline", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
-    public sealed class GetIshUserGroup : UserGroupCmdlet
+    public sealed class GetIshBaseline : BaselineCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
@@ -42,19 +42,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
         public IshSession IshSession { get; set; }
 
         /// <summary>
-        /// <para type="description">The activity filter to limit the amount of objects returned. Default is no filtering.</para>
-        /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
-        [ValidateNotNullOrEmpty]
-        public Enumerations.ActivityFilter ActivityFilter
-        {
-            get { return _activityFilter; }
-            set { _activityFilter = value; }
-        }
-
-        /// <summary>
-        /// <para type="description">The user group identifiers for which to retrieve the metadata</para>
+        /// <para type="description">The baseline identifiers for which to retrieve the metadata</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup"), ValidateNotNullOrEmpty]
         public string[] Id { get; set; }
@@ -76,21 +64,12 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
         public IshField[] RequestedMetadata { get; set; }
 
         /// <summary>
-        /// <para type="description">Array with the user groups for which to retrieve the metadata. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
+        /// <para type="description">Array with the baselines for which to retrieve the metadata. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
-
-
-
-        #region Private fields
-        /// <summary>
-        /// Private field to store the IshType and provide a default for non-mandatory parameters
-        /// </summary>
-        private Enumerations.ActivityFilter _activityFilter = Enumerations.ActivityFilter.None;
-        #endregion
-
+		
 
         protected override void ProcessRecord()
         {
@@ -106,14 +85,12 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                 }
                 else
                 {
-                    var activityFilter =  EnumConverter.ToActivityFilter<UserGroup25ServiceReference.ActivityFilter>(ActivityFilter);
                     IshFields metadataFilter = new IshFields(MetadataFilter);
                     IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                     var ids = (IshObject != null) ? new IshObjects(IshObject).Ids : Id;
-                    WriteDebug($"Retrieving Id.length[{ids.Length}] ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
-                    string xmlIshObjects = IshSession.UserGroup25.RetrieveMetadata(
+                    WriteDebug($"Retrieving Id.length[{ids.Length}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
+                    string xmlIshObjects = IshSession.Baseline25.RetrieveMetadata(
                         ids,
-                        activityFilter,
                         metadataFilter.ToXml(),
                         requestedMetadata.ToXml());
 
