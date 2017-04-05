@@ -195,8 +195,8 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.ServerVersion | Should Not BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should Be 4
 		}
-		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" {
-			# replace hostname like machinename.somedomain.com to machinename only
+		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -skip {
+			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
 			$slash1Position = $webServicesBaseUrl.IndexOf("/")
 			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
 			$slash3Position = $webServicesBaseUrl.IndexOf("/",$slash2Position+1)

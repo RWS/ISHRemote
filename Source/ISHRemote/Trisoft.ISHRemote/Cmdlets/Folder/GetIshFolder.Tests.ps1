@@ -155,7 +155,7 @@ Describe “Get-IshFolder" -Tags "Read" {
 			$ishFolderEditorTemplateRecursive[0].GetType().Name | Should BeExactly "IshFolder"
 		}
 		It "Get-IshFolder ishFolderCmdlet Count" {
-			$ishFolderEditorTemplateRecursive.Count | Should Be 7
+			$ishFolderEditorTemplateRecursive.Count -ge 6 | Should Be $true
 		}
 		It "Get-IshFolder ishFolderCmdlet Count Depth=2" {
 			(Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -Recurse -Depth 2).Count | Should Be 3
