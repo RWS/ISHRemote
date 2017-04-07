@@ -194,18 +194,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] TimeoutIssue[{_timeoutIssue}] TimeoutService[{_timeoutService}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
                 var ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _timeoutIssue, _timeoutService, _ignoreSslPolicyErrors);
 
-                // Supported version check
-                //TODO: [Must] switch ISHRemote to proper semantic version, and create client/server compatibility table here to truly check...
-                /*
-                int supportedMajorVersion = Assembly.GetExecutingAssembly().GetName().Version.Major;
-                if (ishSession.GetServerVersion().MajorVersion != supportedMajorVersion)
-                {
-                    var nonSupportedException = new NotSupportedException(
-                        String.Format("Server version {0} is not supported. Supported version: {1}.x.x", ishSession.GetServerVersion(), supportedMajorVersion));
-                    //WriteError(new ErrorRecord(nonSupportedException, "-1", ErrorCategory.InvalidOperation, ishSession));
-                    WriteWarning(nonSupportedException.ToString());
-                }
-                */
+                // Do early load of IshTypeFieldSetup (either <13-TriDKXmlSetup-based or >=13-RetrieveFieldSetupByIshType-API-based) for
+                // usage by ToIshMetadataFields/.../ToIshRequestedMetadataFields and Expand-ISHParameter.ps1 parameter autocompletion
+                var ishTypeFieldSetup = ishSession.IshTypeFieldSetup;
 
                 WriteObject(ishSession);
             }

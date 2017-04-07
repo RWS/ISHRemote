@@ -652,6 +652,9 @@
     <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\xsd\xnalDomain.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Scripts\Public\Expand-ISHParameter.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Service References\Settings25ServiceReference\Settings1.disco" />
     <None Include="Cmdlets\Application\GetIshVersion.Tests.ps1" />
     <None Include="Cmdlets\DocumentObj\AddIshDocumentObj.Tests.ps1" />
@@ -1070,6 +1073,15 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Scripts\Private\Register-IshAuxParameterCompleter.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Private\New-IshAuxCompletionResult.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Private\Get-IshAuxParameterCompleter.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Cmdlets\User\AddIshUser.Tests.ps1" />
     <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />

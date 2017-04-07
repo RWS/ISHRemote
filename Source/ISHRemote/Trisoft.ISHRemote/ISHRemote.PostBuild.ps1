@@ -17,4 +17,5 @@ if ((Test-Path -path "$modulepath") -eq $True)
 	Copy-Item ($directory + "ISHRemote.dll-help.xml") "$modulepath/ISHRemote" -Force
 	Copy-Item ($directory + "ISHRemote.psd1") "$modulepath/ISHRemote/ISHRemote.psd1" -Force
 	Copy-Item ($directory + "ISHRemote.Format.ps1xml") "$modulepath/ISHRemote" -Force
+	Copy-Item -Path ($directory + "Scripts/") -Destination "$modulepath/ISHRemote" -Force -Recurse
 }
