@@ -133,6 +133,7 @@
     <Compile Include="Cmdlets\PublicationOutput\GetIshPublicationOutputData.cs" />
     <Compile Include="Cmdlets\PublicationOutput\SetIshPublicationOutput.cs" />
     <Compile Include="Cmdlets\Session\SessionCmdlet.cs" />
+    <Compile Include="Cmdlets\Session\TestIshSession.cs" />
     <Compile Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.cs" />
     <Compile Include="Cmdlets\Settings\GetIshSetting.cs" />
     <Compile Include="Cmdlets\Settings\GetIshTimeZone.cs" />
@@ -1083,6 +1084,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Cmdlets\User\AddIshUser.Tests.ps1" />
+    <None Include="Cmdlets\Session\TestIshSession.Tests.ps1" />
     <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />

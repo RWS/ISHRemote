@@ -820,6 +820,7 @@ namespace Trisoft.ISHRemote
             {
                 throw new InvalidOperationException("Issuer url not found in the connection configuration.");
             }
+            _logger.WriteVerbose($"Connecting to IssuerWSTrustUrl[{uriElement.Value}]");
             _logger.WriteDebug($"InitializeIssuerWSTrustEndpointUri uri[{uriElement.Value}]");
             return new Uri(uriElement.Value);
         }
