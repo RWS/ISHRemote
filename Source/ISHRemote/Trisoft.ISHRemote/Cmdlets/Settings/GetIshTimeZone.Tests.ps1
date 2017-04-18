@@ -18,8 +18,26 @@ Describe “Get-IshTimeZone" -Tags "Read" {
 		It "GetType()" {
 			$ishApplicationSetting.GetType().Name | Should BeExactly "IshApplicationSetting"
 		}
-		It "IshApplicationSetting.TimeZoneId" {
-			$ishApplicationSetting.TimeZoneId -ge 0 | Should Not BeNullOrEmpty
+		It "IshApplicationSetting.TimeElapsedDbServer" {
+			$ishApplicationSetting.TimeElapsedDbServer -ge 0 | Should Not BeNullOrEmpty
+		}
+		It "IshApplicationSetting.TimeElapsedAppServer" {
+			$ishApplicationSetting.TimeElapsedAppServer -ge 0 | Should Not BeNullOrEmpty
+		}
+		It "IshApplicationSetting.TimeElapsedWsCall" {
+			$ishApplicationSetting.TimeElapsedWsCall -ge 0 | Should Not BeNullOrEmpty
+		}
+		It "IshApplicationSetting.TimeZoneDisplayName" {
+			$ishApplicationSetting.TimeZoneDisplayName.Length -ge 0 | Should Not BeNullOrEmpty
+		}
+		It "IshApplicationSetting.TimeZoneUtcOffset" {
+			$ishApplicationSetting.TimeZoneUtcOffset -ge 0 | Should Not BeNullOrEmpty
+		}
+		It "IshApplicationSetting.TimeZoneIsdaylightsavingtime" {
+			{ $ishApplicationSetting.TimeZoneIsdaylightsavingtime } | Should Not Throw
+		}
+		It "IshApplicationSetting.AppServerComputerName" {
+			$ishApplicationSetting.AppServerComputerName.Length -ge 0 | Should Not BeNullOrEmpty
 		}
 	}
 

@@ -226,6 +226,72 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshApplicationSetting -->
+    <View>
+      <Name>IshApplicationSetting</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshApplicationSetting</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>TimeZoneDisplayName</Label>
+            <Width>25</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Offset</Label>
+            <Width>7</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>DST</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>AppServerName</Label>
+            <Width>35</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ClientElapsed</Label>
+            <Width>17</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>AppServerElapsed</Label>
+            <Width>17</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>DbServerElapsed</Label>
+            <Width>17</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>TimeZoneDisplayName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TimeZoneUtcOffset</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TimeZoneIsdaylightsavingtime</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>AppServerComputerName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TimeElapsedWsCall</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TimeElapsedAppServer</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TimeElapsedDbServer</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshApplicationSettings -->
     <View>
       <Name>IshApplicationSettings</Name>

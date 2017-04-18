@@ -29,23 +29,19 @@ namespace Trisoft.ISHRemote.Objects.Public
     public class IshApplicationSetting
     {
         #region Constructor
-        public IshApplicationSetting(DateTime startCall, DateTime endCall, XmlNode localDateTime, XmlNode appServer, XmlNode dbServer, XmlNode timeZoneInfo)
-        {
-            Init(startCall, endCall, localDateTime, appServer, dbServer, timeZoneInfo);
-        }
-
         public IshApplicationSetting(DateTime startCall, DateTime endCall, string xmlSettings)
         {
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xmlSettings);
             XmlNode localDatetime = xmlDocument.SelectSingleNode("ishsettings/ishapplicationsettings/serverconfiguration/cultureinfo/datetimeinfo/localdatetime");
+            XmlNode serverConfiguration = xmlDocument.SelectSingleNode("ishsettings/ishapplicationsettings/serverconfiguration");
             XmlNode appServer = xmlDocument.SelectSingleNode("ishsettings/ishapplicationsettings/timestamps/appserver");
             XmlNode dbServer = xmlDocument.SelectSingleNode("ishsettings/ishapplicationsettings/timestamps/dbserver");
             XmlNode timeZoneInfo = xmlDocument.SelectSingleNode("ishsettings/ishapplicationsettings/serverconfiguration/cultureinfo/datetimeinfo/localdatetime");
-            Init(startCall, endCall, localDatetime, appServer, dbServer, timeZoneInfo);
+            Init(startCall, endCall, localDatetime, appServer, dbServer, serverConfiguration, timeZoneInfo);
         }
 
-        private void Init(DateTime startCall, DateTime endCall, XmlNode localDateTime, XmlNode appServer, XmlNode dbServer, XmlNode timeZoneInfo)
+        private void Init(DateTime startCall, DateTime endCall, XmlNode localDateTime, XmlNode appServer, XmlNode dbServer, XmlNode serverConfiguration, XmlNode timeZoneInfo)
         {
             DateTime.TryParse(localDateTime.InnerText.ToString(), out _localDateTime);
             DateTime.TryParse(appServer.Attributes["start"].Value, out _appServerStartTime);
@@ -53,6 +49,9 @@ namespace Trisoft.ISHRemote.Objects.Public
             DateTime.TryParse(dbServer.Attributes["start"].Value, out _dbServerStartTime);
             DateTime.TryParse(dbServer.Attributes["end"].Value, out _dbServerEndTime);
             _timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneInfo.Attributes["timezoneid"].Value);
+            _timeZoneUtcOffset = timeZoneInfo.Attributes["timezoneutcoffset"].Value;
+            Boolean.TryParse(timeZoneInfo.Attributes["timezoneisdaylightsavingtime"].Value, out _timeZoneIsdaylightsavingtime);
+            _serverName = serverConfiguration.Attributes["servername"].Value;
             _startCallTime = startCall;
             _endCallTime = endCall;
         }
@@ -69,6 +68,9 @@ namespace Trisoft.ISHRemote.Objects.Public
         private DateTime _startCallTime;
         private DateTime _endCallTime;
         private TimeZoneInfo _timeZoneInfo;
+        private string _timeZoneUtcOffset;
+        private bool _timeZoneIsdaylightsavingtime;
+        private string _serverName;
 
         #endregion
 
@@ -102,11 +104,35 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        public string TimeZoneId
+        public string TimeZoneDisplayName
         {
             get
             {
-                return _timeZoneInfo.Id;
+                return _timeZoneInfo.DisplayName;
+            }
+        }
+
+        public string TimeZoneUtcOffset
+        {
+            get
+            {
+                return _timeZoneUtcOffset;
+            }
+        }
+
+        public bool TimeZoneIsdaylightsavingtime
+        {
+            get
+            {
+                return _timeZoneIsdaylightsavingtime;
+            }
+        }
+
+        public string AppServerComputerName
+        {
+            get
+            {
+                return _serverName;
             }
         }
         #endregion
