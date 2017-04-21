@@ -152,9 +152,22 @@ namespace Trisoft.ISHRemote.Objects
         /// Removes all previous fields and insert the given field
         /// </summary>
         /// <returns>The current list of <see cref="IshFields"/>.</returns>
-        public IshFields AddOrUpdateField(IshField ishField)
+        public IshFields AddOrUpdateField(IshField ishField, Enumerations.ActionMode actionMode)
         {
-            RemoveField(ishField);
+            switch (actionMode)
+            {
+                // Remove all value types to avoid ambiguity, no preference of element over value, so last one wins
+                case Enumerations.ActionMode.Create:
+                case Enumerations.ActionMode.Update:
+                    RemoveField(ishField.Name, ishField.Level, Enumerations.ValueType.All);
+                    break;
+                case Enumerations.ActionMode.Find:
+                case Enumerations.ActionMode.Search:
+                case Enumerations.ActionMode.Read:
+                default:
+                    RemoveField(ishField);
+                    break;
+            }
             AddField(ishField);
             return this;
         }

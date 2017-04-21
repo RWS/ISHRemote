@@ -147,7 +147,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
                 {
                     foreach (IshObject ishObject in IshObject)
                     {
-                        ishObject.IshFields.AddOrUpdateField(_ishMetadataField);
+                        ishObject.IshFields.AddOrUpdateField(_ishMetadataField, Enumerations.ActionMode.Update);
                         WriteObject(ishObject, true);
                     }
                 }
@@ -155,7 +155,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
                 {
                     foreach (IshFolder ishFolder in IshFolder)
                     {
-                        ishFolder.IshFields.AddOrUpdateField(_ishMetadataField);
+                        ishFolder.IshFields.AddOrUpdateField(_ishMetadataField, Enumerations.ActionMode.Update);
                         WriteObject(ishFolder, true);
                     }
                 }
@@ -163,7 +163,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
                 {
                     foreach (IshEvent ishEvent in IshEvent)
                     {
-                        ishEvent.IshFields.AddOrUpdateField(_ishMetadataField);
+                        ishEvent.IshFields.AddOrUpdateField(_ishMetadataField, Enumerations.ActionMode.Update);
                         WriteObject(ishEvent, true);
                     }
                 }
@@ -185,7 +185,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
                 if (IshObject == null && IshFolder == null && IshEvent == null)
                 {
                     IshFields ishFields = new IshFields(_incomingIshField);
-                    ishFields.AddOrUpdateField(_ishMetadataField);
+                    ishFields.AddOrUpdateField(_ishMetadataField, Enumerations.ActionMode.Update);
                     WriteObject(ishFields.Fields(), true);
                 }
             }

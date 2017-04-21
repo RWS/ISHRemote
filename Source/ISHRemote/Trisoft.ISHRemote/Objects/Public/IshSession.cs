@@ -174,7 +174,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         _logger.WriteDebug($"Loading TriDKXmlSetupFullExport_12_00_01...");
                         var triDKXmlSetupHelper = new TriDKXmlSetupHelper(_logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
                         _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition);
-                        _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
+                        _ishTypeFieldSetup.StrictMetadataPreference = Enumerations.StrictMetadataPreference.Off;    // Otherwise custom metadata fields are always removed as they are unknown for the default TriDKXmlSetup Resource
                     }
                 }
                 return _ishTypeFieldSetup;

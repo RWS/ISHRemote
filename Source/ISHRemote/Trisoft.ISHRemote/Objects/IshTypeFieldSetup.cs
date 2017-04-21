@@ -143,10 +143,10 @@ namespace Trisoft.ISHRemote.Objects
                 foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.IsDescriptive == true))
                 {
                     //TODO [Could] IshTypeFieldSetup adding descriptive fields potentially has an issue with removing to many ValueType entries
-                    ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value));
+                    ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
                     if (ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHLov || ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHType)
                     {
-                        ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Element));
+                        ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Element), Enumerations.ActionMode.Read);
                     }
                 }
             }
@@ -248,6 +248,7 @@ namespace Trisoft.ISHRemote.Objects
                 foreach (IshField ishField in ishFields.Fields())
                 {
                     var key = Enumerations.Key(ishType, ishField.Level, ishField.Name);
+                    // Any unknown field will be skipped, unless strict is Off
                     if (!_ishTypeFieldDefinitions.ContainsKey(key))
                     {
                         switch (_strictMetadataPreference)
@@ -259,11 +260,12 @@ namespace Trisoft.ISHRemote.Objects
                                 _logger.WriteVerbose($"ToIshMetadataFields skipping unknown ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                 break;
                             case Enumerations.StrictMetadataPreference.Off:
-                                metadataFields.AddField(ishField.ToRequestedMetadataField());
+                                metadataFields.AddOrUpdateField(ishField.ToMetadataField(), actionMode);
                                 break;
                         }
                         continue; // move to next ishField
                     }
+                    // Known field, however could be not allowed for current action
                     switch (actionMode)
                     {
                         case Enumerations.ActionMode.Create:
@@ -278,7 +280,18 @@ namespace Trisoft.ISHRemote.Objects
                             }
                             else
                             {
-                                metadataFields.AddField(ishField.ToMetadataField());
+                                switch (_strictMetadataPreference)
+                                {
+                                    case Enumerations.StrictMetadataPreference.SilentlyContinue:
+                                    case Enumerations.StrictMetadataPreference.Continue:
+                                        // Doing an Add, as a later RemoveDuplicateFields can be smarter to keep the 'best' metadata field
+                                        metadataFields.AddField(ishField.ToMetadataField());
+                                        break;
+                                    case Enumerations.StrictMetadataPreference.Off:
+                                        // Doing an AddOrUpdate (Replace), so only one ValueType is left to avoid ambiguity on a Create/Update API call
+                                        metadataFields.AddOrUpdateField(ishField.ToMetadataField(), actionMode);
+                                        break;
+                                }
                             }
                             break;
                         case Enumerations.ActionMode.Update:
@@ -293,13 +306,25 @@ namespace Trisoft.ISHRemote.Objects
                             }
                             else
                             {
-                                metadataFields.AddField(ishField.ToMetadataField());
+                                switch (_strictMetadataPreference)
+                                {
+                                    case Enumerations.StrictMetadataPreference.SilentlyContinue:
+                                    case Enumerations.StrictMetadataPreference.Continue:
+                                        // Doing an Add, as a later RemoveDuplicateFields can be smarter to keep the 'best' metadata field
+                                        metadataFields.AddField(ishField.ToMetadataField());
+                                        break;
+                                    case Enumerations.StrictMetadataPreference.Off:
+                                        // Doing an AddOrUpdate (Replace), so only one ValueType is left to avoid ambiguity on a Create/Update API call
+                                        metadataFields.AddOrUpdateField(ishField.ToMetadataField(), actionMode);
+                                        break;
+                                }
                                 //TODO [Should] IshTypeFieldSetup - Potential conflict if ishField having multiple ishvaluetype have conflicting entries for id/element/value
                                 // 1. For IshBaseline the name field is a controlled field, so FISHDOCUMENTRELEASE linked to DDOCUMENTRELEASE.
                                 //    Specifying the label FISHDOCUMENTRELEASE overrules the element name, because you are renaming
                                 // 2. For IshDocumentObj the author field is a controlled field, so FAUTHOR linked to USER
                                 //    Specifying the label "Admin" is less accurate than the element name "VUSERADMIN"
                                 // Two cases to illustrate that is not easy to fix. Workaround is to do Set-* cmdlets by -Id and -Metadata instead of -IshObject holding the new values
+                                // ==> For now solved by passing ActionMode to IshFields.AddOrUpdateField where for Create/Update all ValueTypes are removed, last one wins
                             }
                             break;
                         default:

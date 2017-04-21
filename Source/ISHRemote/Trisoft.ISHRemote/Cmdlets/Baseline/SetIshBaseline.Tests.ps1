@@ -40,24 +40,24 @@ Describe “Set-IshBaseline" -Tags "Create" {
 			{ Set-IshBaseline -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should Throw
 		}
 		It "Parameter IshObject Single" {
-			$ishObjectA = $ishObjectA | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value "Parameter IshObject Single RENAMED"
+			$ishObjectA = $ishObjectA | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A Parameter IshObject Single RENAMED")
 			$ishObjects = Set-IshBaseline -IshSession $ishSession -IshObject $ishObjectA
 			$ishObjects.Count | Should Be 1
 		}
 		It "Parameter IshObject Multiple" {
-			$ishObjectB = $ishObjectB | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value "Parameter IshObject Multiple RENAMED"
-			$ishObjectC = $ishObjectC | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value "Parameter IshObject Multiple RENAMED"
+			$ishObjectB = $ishObjectB | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " B Parameter IshObject Multiple RENAMED")
+			$ishObjectC = $ishObjectC | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " C Parameter IshObject Multiple RENAMED")
 			$ishObjects = Set-IshBaseline -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
 			$ishObjects.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {
-			$ishObjectD = $ishObjectD | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value "Pipeline IshObject Single RENAMED"
+			$ishObjectD = $ishObjectD | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " D Pipeline IshObject Single RENAMED")
 			$ishObjects = $ishObjectD | Set-IshBaseline -IshSession $ishSession
 			$ishObjects.Count | Should Be 1
 		}
 		It "Pipeline IshObject Multiple" {
-			$ishObjectE = $ishObjectE | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value "Pipeline IshObject Multiple RENAMED"
-			$ishObjectF = $ishObjectF | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value "Pipeline IshObject Multiple RENAMED"
+			$ishObjectE = $ishObjectE | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " E Pipeline IshObject Multiple RENAMED")
+			$ishObjectF = $ishObjectF | Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " F Pipeline IshObject Multiple RENAMED")
 			$ishObjects = @($ishObjectE,$ishObjectF) | Set-IshBaseline -IshSession $ishSession
 			$ishObjects.Count | Should Be 2
 		}

@@ -32,8 +32,8 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
-            currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTID", Enumerations.Level.Progress, Enumerations.ValueType.Value));
-            currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTTYPE", Enumerations.Level.Progress, Enumerations.ValueType.Value));
+            currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTID", Enumerations.Level.Progress, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
+            currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTTYPE", Enumerations.Level.Progress, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
             return currentFields;
         }
 
