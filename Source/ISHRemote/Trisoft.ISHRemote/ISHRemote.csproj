@@ -81,7 +81,11 @@
     <Compile Include="Cmdlets\Baseline\BaselineCmdlet.cs" />
     <Compile Include="Cmdlets\Baseline\FindIshBaseline.cs" />
     <Compile Include="Cmdlets\Baseline\GetIshBaseline.cs" />
+    <Compile Include="Cmdlets\Baseline\GetIshBaselineItem.cs" />
     <Compile Include="Cmdlets\Baseline\RemoveIshBaseline.cs" />
+    <Compile Include="Cmdlets\Baseline\RemoveIshBaselineItem.cs" />
+    <Compile Include="Cmdlets\Baseline\SetIshBaseline.cs" />
+    <Compile Include="Cmdlets\Baseline\SetIshBaselineItem.cs" />
     <Compile Include="Cmdlets\DocumentObj\AddIshDocumentObj.cs" />
     <Compile Include="Cmdlets\DocumentObj\MoveIshDocumentObj.cs" />
     <Compile Include="Cmdlets\DocumentObj\GetIshDocumentObjData.cs" />
@@ -172,6 +176,8 @@
     <Compile Include="InfoShareWcfConnection.cs" />
     <Compile Include="InfoShareWcfConnectionParameters.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Objects\IshBaselineItems.cs" />
+    <Compile Include="Objects\Public\IshBaselineItem.cs" />
     <Compile Include="Objects\Public\IshRequestedMetadataField.cs" />
     <Compile Include="Objects\Public\IshTypeFieldDefinition.cs" />
     <Compile Include="Objects\Public\IshTypeFieldDefinitionCompare.cs" />
@@ -302,6 +308,9 @@
     <None Include="Cmdlets\Baseline\AddIshBasline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\FindIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\GetIshBaseline.Tests.ps1" />
+    <None Include="Cmdlets\Baseline\GetIshBaselineItem.Tests.ps1" />
+    <None Include="Cmdlets\Baseline\SetIshBaseline.Tests.ps1" />
+    <None Include="Cmdlets\Baseline\SetIshBaselineItem.Tests.ps1" />
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
     <None Include="Cmdlets\OutputFormat\AddIshOutputFormat.Tests.ps1" />
     <None Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.Tests.ps1" />

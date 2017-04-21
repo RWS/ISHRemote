@@ -295,6 +295,11 @@ namespace Trisoft.ISHRemote.Objects
                             {
                                 metadataFields.AddField(ishField.ToMetadataField());
                                 //TODO [Should] IshTypeFieldSetup - Potential conflict if ishField having multiple ishvaluetype have conflicting entries for id/element/value
+                                // 1. For IshBaseline the name field is a controlled field, so FISHDOCUMENTRELEASE linked to DDOCUMENTRELEASE.
+                                //    Specifying the label FISHDOCUMENTRELEASE overrules the element name, because you are renaming
+                                // 2. For IshDocumentObj the author field is a controlled field, so FAUTHOR linked to USER
+                                //    Specifying the label "Admin" is less accurate than the element name "VUSERADMIN"
+                                // Two cases to illustrate that is not easy to fix. Workaround is to do Set-* cmdlets by -Id and -Metadata instead of -IshObject holding the new values
                             }
                             break;
                         default:
