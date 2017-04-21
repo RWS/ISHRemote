@@ -444,7 +444,7 @@ namespace Trisoft.ISHRemote.Objects
             /// <summary>
             /// Used to indicate that all events should be returned  
             /// </summary>
-            All  
+            All
         }
 
         /// <summary>
@@ -476,6 +476,27 @@ namespace Trisoft.ISHRemote.Objects
             /// Indicates that the event detail contains a debug message  
             /// </summary>
             Debug
+        }
+
+        /// <summary>
+        /// <para type="description">Possible values for the source enumeration of a baseline entry</para>
+        /// </summary>
+        public enum BaselineSourceEnumeration
+        {
+            SaveManual,
+            SaveLatestAvailable,
+            SaveLatestReleased,
+            SaveByBaseline,
+            SaveCandidate,
+            SaveFirstVersion,
+            SaveCopy,
+            Manual,
+            ExpandNone,
+            ExpandLatestAvailable,
+            ExpandLatestReleased,
+            ExpandByBaseline,
+            ExpandCandidate,
+            ExpandFirstVersion,
         }
 
         /// <summary>
@@ -580,6 +601,46 @@ namespace Trisoft.ISHRemote.Objects
                 case "CTREUSEOBJL":  // obsolete card type, but added for completeness
                 default:
                     return ISHType.ISHNotFound;
+            }
+        }
+
+        /// <summary>
+        /// Extracts the baseline source enumeration
+        /// </summary>
+        internal static BaselineSourceEnumeration ToBaselineSourceEnumeration(string source)
+        {
+            switch (source)
+            {
+                case "save:Manual":
+                    return BaselineSourceEnumeration.SaveManual;
+                case "save:LatestAvailable":
+                    return BaselineSourceEnumeration.SaveLatestAvailable;
+                case "save:LatestReleased":
+                    return BaselineSourceEnumeration.SaveLatestReleased;
+                case "save:ByBaseline":
+                    return BaselineSourceEnumeration.SaveByBaseline;
+                case "save:Candidate":
+                    return BaselineSourceEnumeration.SaveCandidate;
+                case "save:FirstVersion":
+                    return BaselineSourceEnumeration.SaveFirstVersion;
+                case "save:Copy":
+                    return BaselineSourceEnumeration.SaveCopy;
+                case "Manual":
+                    return BaselineSourceEnumeration.Manual;
+                case "expand:None":
+                    return BaselineSourceEnumeration.ExpandNone;
+                case "expand:LatestAvailable":
+                    return BaselineSourceEnumeration.ExpandLatestAvailable;
+                case "expand:LatestReleased":
+                    return BaselineSourceEnumeration.ExpandLatestReleased;
+                case "expand:ByBaseline":
+                    return BaselineSourceEnumeration.ExpandByBaseline;
+                case "expand:Candidate":
+                    return BaselineSourceEnumeration.ExpandCandidate;
+                case "expand:FirstVersion":
+                    return BaselineSourceEnumeration.ExpandFirstVersion;
+                default:
+                    return BaselineSourceEnumeration.Manual;
             }
         }
     }

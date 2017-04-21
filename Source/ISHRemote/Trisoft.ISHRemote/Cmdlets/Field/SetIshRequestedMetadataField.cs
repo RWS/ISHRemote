@@ -108,7 +108,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
                 IshFields ishFields = new IshFields(_incomingIshField);
                 // Check if enum values are set
                 IshField ishField = new IshRequestedMetadataField(Name, Level, ValueType);
-                ishFields.AddOrUpdateField(ishField);
+                ishFields.AddOrUpdateField(ishField, Enumerations.ActionMode.Read);
                 WriteObject(ishFields.Fields(), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)

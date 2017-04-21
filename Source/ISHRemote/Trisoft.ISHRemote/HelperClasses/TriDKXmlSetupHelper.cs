@@ -612,7 +612,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "FISHLABELRELEASED")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "FISHLABELRELEASED")].IsDescriptive = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "NAME")].IsDescriptive = true;
-            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "NAME")].AllowOnUpdate = true;
+            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "NAME")].AllowOnUpdate = false;
             _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "ED"));
             _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "CHECKED-OUT"));
             _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "CHECKED-OUT-BY"));
