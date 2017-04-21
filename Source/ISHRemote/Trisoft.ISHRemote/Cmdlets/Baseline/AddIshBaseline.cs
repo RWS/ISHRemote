@@ -28,6 +28,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para type="synopsis">The Add-IshBaseline cmdlet adds the new baselines that are passed through the pipeline or determined via provided parameters</para>
     /// <para type="description">The Add-IshBaseline cmdlet adds the new baselines that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// Add-IshBaseline -IshSession $ishSession -Name "My first baseline"
+    /// </code>
+    /// <para>Create a baseline ishobject, that holds no baseline entries</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Add, "IshBaseline", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
     public sealed class AddIshBaseline : BaselineCmdlet

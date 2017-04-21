@@ -31,6 +31,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para type="synopsis">The Set-IshBaselineItem cmdlet creates or updates the baseline entries of baselines that are passed through the pipeline or determined via provided parameters</para>
     /// <para type="description">The Set-IshBaselineItem cmdlet creates or updates the baseline entries of baselines that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $baselineIds = @("GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534","GUID-F1361489-66F3-4E27-A5D1-71C97025815A")
+    /// $ishObjects = Get-IshBaseline -IshSession $ishSession -Id $baselineIds
+    /// Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObjects -LogicalId "GUID-12345678-ABCD-EFGH-IJKL-1234567890AB" -Version "999"
+    /// </code>
+    /// <para>Add or update the version of the baseline entry identified by the given LogicalId for the identified baselines</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshBaselineItem", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class SetIshBaselineItem : BaselineCmdlet

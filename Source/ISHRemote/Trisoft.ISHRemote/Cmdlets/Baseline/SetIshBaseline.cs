@@ -29,6 +29,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para type="synopsis">The Set-IshBaseline cmdlet updates the baselines that are passed through the pipeline or determined via provided parameters</para>
     /// <para type="description">The Set-IshBaseline cmdlet updates the baselines that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $baselineId = "GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534"
+    /// Set-IshBaseline -IshSession $ishSession -Id $baselineId -Metadata (Set-IshMetadataField -IshSession $ishSession -Name "FISHBASELINEACTIVE" -ValueType Element -Value "FALSE")
+    /// </code>
+    /// <para>Make the identified baseline inactive</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshBaseline", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
     public sealed class SetIshBaseline : BaselineCmdlet

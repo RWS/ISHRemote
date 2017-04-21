@@ -27,6 +27,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para type="synopsis">The Remove-IshBaseline cmdlet removes the baselines that are passed through the pipeline or determined via provided parameters</para>
     /// <para type="description">The Remove-IshBaseline cmdlet removes the baselines that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $baselineId = "GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534"
+    /// Remove-IshBaseline -IshSession $ishSession -Id $baselineId
+    /// </code>
+    /// <para>Retrieve metadata from the identified baseline</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshBaseline", SupportsShouldProcess = true)]
     public sealed class RemoveIshBaseline : BaselineCmdlet
     {

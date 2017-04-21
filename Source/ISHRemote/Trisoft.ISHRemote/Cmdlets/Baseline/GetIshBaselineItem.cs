@@ -29,6 +29,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para type="synopsis">The Get-IshBaselineItem cmdlet retrieves the baseline entries of baselines that are passed through the pipeline or determined via provided parameters</para>
     /// <para type="description">The Get-IshBaselineItem cmdlet retrieves the baseline entries of baselines that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $baselineIds = @("GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534","GUID-F1361489-66F3-4E27-A5D1-71C97025815A")
+    /// Get-IshBaselineItem -IshSession $ishSession -Id $baselineIds
+    /// </code>
+    /// <para>Returns the baseline entries for the identified baselines including the baseline identifier</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshBaselineItem", SupportsShouldProcess = false)]
     [OutputType(typeof(IshBaselineItem))]
     public sealed class GetIshBaselineItem : BaselineCmdlet
