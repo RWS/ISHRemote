@@ -77,9 +77,11 @@
   <ItemGroup>
     <Compile Include="Cmdlets\Application\ApplicationCmdlet.cs" />
     <Compile Include="Cmdlets\Application\GetIshVersion.cs" />
+    <Compile Include="Cmdlets\Baseline\AddIshBaseline.cs" />
     <Compile Include="Cmdlets\Baseline\BaselineCmdlet.cs" />
     <Compile Include="Cmdlets\Baseline\FindIshBaseline.cs" />
     <Compile Include="Cmdlets\Baseline\GetIshBaseline.cs" />
+    <Compile Include="Cmdlets\Baseline\RemoveIshBaseline.cs" />
     <Compile Include="Cmdlets\DocumentObj\AddIshDocumentObj.cs" />
     <Compile Include="Cmdlets\DocumentObj\MoveIshDocumentObj.cs" />
     <Compile Include="Cmdlets\DocumentObj\GetIshDocumentObjData.cs" />
@@ -297,6 +299,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\Public\IshVersion.cs" />
+    <None Include="Cmdlets\Baseline\AddIshBasline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\FindIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\GetIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />

@@ -56,34 +56,34 @@ Describe "Get-IshBaseline" -Tags "Read" {
 		}
 	}
 
-	<#
 	Context "Get-IshBaseline IshObjectsGroup" {
-		# TODO [Could] When Add-IshBaseline is available, extend pipeline test by creating baselines here
+		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
+		$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName
+		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " B")
+		$ishObjectB = Add-IshBaseline -IshSession $ishSession -Name $baselineName
+		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " C")
+		$ishObjectC = Add-IshBaseline -IshSession $ishSession -Name $baselineName
+		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " D")
+		$ishObjectD = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 		It "Parameter IshObject invalid" {
 			{ Get-IshBaseline -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should Throw
 		}
 		It "Parameter IshObject Single" {
-			$ishObjects = Add-IshBaseline -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should Be 1
+			(Get-IshBaseline -IshSession $ishSession -IshObject $ishObjectA).IshRef.Length -ge 0 | Should Be $true
 		}
 		It "Parameter IshObject Multiple" {
-			$ishObjects = Add-IshBaseline -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
-			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should Be 2
+			(Get-IshBaseline -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)).Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {
-			$ishObjects = $ishObjectD | Add-IshBaseline -IshSession $ishSession
-			$ishObjects | Remove-IshBaseline -IshSession $ishSession
+			$ishObjects = $ishObjectD | Get-IshBaseline -IshSession $ishSession
 			$ishObjects.Count | Should Be 1
 		}
 		It "Pipeline IshObject Multiple" {
-			$ishObjects = @($ishObjectE,$ishObjectF) | Add-IshBaseline -IshSession $ishSession
-			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should Be 2
+			$ishSession.MetadataBatchSize = 2
+			$ishObjects = @($ishObjectA,$ishObjectB,$ishObjectC,$ishObjectD) | Get-IshBaseline -IshSession $ishSession
+			$ishObjects.Count | Should Be 4
 		}
 	}
-	#>
 }
 
 
@@ -92,4 +92,6 @@ Describe "Get-IshBaseline" -Tags "Read" {
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
 	try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse | Get-IshFolderContent -IshSession $ishSession | Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
 	try { Remove-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse } catch { }
+	$baselines = Find-IshBaseline -IshSession $ishSession -MetadataFilter (Set-IshMetadataFilterField -IshSession $ishSession -Name "NAME" -FilterOperator like -Value "$cmdletName%")
+	try { Remove-IshBaseline -IshSession $ishSession -IshObject $baselines } catch { }
 }
