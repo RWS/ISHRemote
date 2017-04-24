@@ -112,7 +112,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                         else
                         {
                             // when IshSession.ServerVersion < 13.0.0 use the most appropriate Resources entry
-                            WriteVerbose($"Importing best match resource entry in IshSession.ServerVersion[{IshSession.ServerVersion}]");
+                            WriteWarning($"Importing best match local resource entry for IshSession.ServerVersion[{IshSession.ServerVersion}]. Note that custom metadata fields will be missing, either use option -TriDKXmlSetupFilePath or upgrade to 13.0.0 where your setup can dynamically be retrieved using Settings25.RetrieveFieldSetupByIshType API call.");
                             var triDKXmlSetupHelper = new TriDKXmlSetupHelper(Logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
                             IshSession.IshTypeFieldDefinition = new IshTypeFieldSetup(Logger, triDKXmlSetupHelper.IshTypeFieldDefinition).IshTypeFieldDefinition;
                             WriteObject(IshSession.IshTypeFieldDefinition, true);
@@ -132,7 +132,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                     }
                     else
                     {
-                        WriteVerbose($"Importing TriDKXmlSetup from resources without IshSession");
+                        WriteWarning($"Importing best match local resource entry without IshSession. Note that custom metadata fields will be missing, either use option -TriDKXmlSetupFilePath or upgrade to 13.0.0 where your setup can dynamically be retrieved using Settings25.RetrieveFieldSetupByIshType API call.");
                         var triDKXmlSetupHelper = new TriDKXmlSetupHelper(Logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
                         WriteObject(triDKXmlSetupHelper.IshTypeFieldDefinition, true);
                         WriteVerbose($"returned object count[{triDKXmlSetupHelper.IshTypeFieldDefinition.Count()}]");
