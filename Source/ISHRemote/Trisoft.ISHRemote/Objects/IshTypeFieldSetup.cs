@@ -198,11 +198,14 @@ namespace Trisoft.ISHRemote.Objects
                                     case Enumerations.StrictMetadataPreference.Continue:
                                         _logger.WriteVerbose($"ToIshRequestedMetadataFields AllowOnRead removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                         break;
+                                    case Enumerations.StrictMetadataPreference.Off:
+                                        requestedMetadataFields.AddField(ishField.ToRequestedMetadataField());
+                                        break;
                                 }
                             }
                             else
                             {
-                                requestedMetadataFields.AddField(ishField.ToRequestedMetadataField());
+                                requestedMetadataFields.AddOrUpdateField(ishField.ToRequestedMetadataField(), actionMode);
                             }
                             break;
                         case Enumerations.ActionMode.Search:
@@ -213,11 +216,14 @@ namespace Trisoft.ISHRemote.Objects
                                     case Enumerations.StrictMetadataPreference.Continue:
                                         _logger.WriteVerbose($"ToIshRequestedMetadataFields AllowOnSearch removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                         break;
+                                    case Enumerations.StrictMetadataPreference.Off:
+                                        requestedMetadataFields.AddField(ishField.ToRequestedMetadataField());
+                                        break;
                                 }
                             }
                             else
                             {
-                                requestedMetadataFields.AddField(ishField.ToRequestedMetadataField());
+                                requestedMetadataFields.AddOrUpdateField(ishField.ToRequestedMetadataField(), actionMode);
                             }
                             break;
                         default:
@@ -225,10 +231,10 @@ namespace Trisoft.ISHRemote.Objects
                             break;
                     }
                 }
-                //Add IsDescriptive fields for the incoming IshType to allow basic descriptive/minimal object initialization
-                requestedMetadataFields = AddDescriptiveFields(ishTypes, requestedMetadataFields, actionMode);
-                //TODO [Should] Merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet. Server-side they are retrieved anyway, so the only penalty is xml transfer size.
             }
+            //Add IsDescriptive fields for the incoming IshType to allow basic descriptive/minimal object initialization
+            requestedMetadataFields = AddDescriptiveFields(ishTypes, requestedMetadataFields, actionMode);
+            //TODO [Should] Merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet. Server-side they are retrieved anyway, so the only penalty is xml transfer size.
             return requestedMetadataFields;
         }
 
