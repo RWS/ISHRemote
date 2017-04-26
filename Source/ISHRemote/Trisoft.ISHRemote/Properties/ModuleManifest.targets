@@ -24,9 +24,10 @@
       <PowerShellVersion>$(MinPowerShellVersion)</PowerShellVersion>
       <CLRVersion>$(MinCLRVersion)</CLRVersion>
       <DotNetFrameworkVersion>$(MinDotNetVersion)</DotNetFrameworkVersion>
-      <HelpInfoURI>$(DocPortalLink)</HelpInfoURI>
+      <LicenseUri>$(LicenseUri)</LicenseUri>
+      <ProjectUri>$(ProjectUri)</ProjectUri>
       <FormatsToProcessPath>$(ModuleName).Format.ps1xml</FormatsToProcessPath>
     </PropertyGroup>
-    <Exec Command='$(PowerShellExe) -NonInteractive -command "New-ModuleManifest -Path &apos;$(ManifestPath)&apos; -FormatsToProcess &apos;$(FormatsToProcessPath)&apos; -RootModule &apos;$(RootModule)&apos; -NestedModules @($(NestedModules)) -ModuleVersion &apos;$(ModuleVersion)&apos; -Guid &apos;$(Guid)&apos; -Author &apos;$(Author)&apos; -CompanyName &apos;$(CompanyName)&apos; -Copyright &apos;$(Copyright)&apos; -Description &apos;$(Description)&apos; -PowerShellVersion &apos;$(PowerShellVersion)&apos; -ClrVersion &apos;$(CLRVersion)&apos; -DotNetFrameworkVersion &apos;$(DotNetFrameworkVersion)&apos; -HelpInfoURI &apos;$(HelpInfoURI)&apos;"'/>
+    <Exec Command='$(PowerShellExe) -NonInteractive -command "New-ModuleManifest -Path &apos;$(ManifestPath)&apos; -FormatsToProcess &apos;$(FormatsToProcessPath)&apos; -RootModule &apos;$(RootModule)&apos; -NestedModules @($(NestedModules)) -ModuleVersion &apos;$(ModuleVersion)&apos; -Guid &apos;$(Guid)&apos; -Author &apos;$(Author)&apos; -CompanyName &apos;$(CompanyName)&apos; -Copyright &apos;$(Copyright)&apos; -Description &apos;$(Description)&apos; -PowerShellVersion &apos;$(PowerShellVersion)&apos; -ClrVersion &apos;$(CLRVersion)&apos; -DotNetFrameworkVersion &apos;$(DotNetFrameworkVersion)&apos; -HelpInfoURI &apos;$(HelpInfoURI)&apos; -LicenseUri &apos;$(LicenseUri)&apos;  -ProjectUri &apos;$(ProjectUri)&apos;"'/>
   </Target>
 </Project>

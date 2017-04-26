@@ -20,5 +20,8 @@
     <MinCLRVersion>4.0</MinCLRVersion>
     <MinDotNetVersion>4.5</MinDotNetVersion>
     <DocPortalLink>https://sdl.github.io/$(ProductName)/</DocPortalLink>
+    <DocPortalLink>https://sdl.github.io/$(ProductName)/</DocPortalLink>
+    <LicenseUri>https://github.com/sdl/$(ProductName)/blob/master/LICENSE.TXT</LicenseUri>
+    <ProjectUri>https://github.com/sdl/$(ProductName)/</ProjectUri>
   </PropertyGroup>
 </Project>
