@@ -119,6 +119,8 @@ synchronized with the code.
 [src1](http://www.powershellmagazine.com/2014/03/12/get-started-with-pester-powershell-unit-testing-framework/) [src2](http://www.powershellmagazine.com/2014/03/27/testing-your-powershell-scripts-with-pester-assertions-and-more/) [src3](https://www.simple-talk.com/sysadmin/powershell/practical-powershell-unit-testing-getting-started/) [src4](https://github.com/pester/Pester/wiki
 Prerequisites)
 
+In `ISHRemote.PesterSetup.ps1` override the global variables used for tests. Look for the region `Placeholder to inject your variable overrides. DONT FORGET TO DELETE`. **Don't forget not to commit those custom values**.
+
 ### Prerequisites
 
 1. Install or make sure you run Windows Management Framework v5, so PowerShell v5 for Pester support, see https://msdn.microsoft.com/en-us/powershell/wmf/requirements

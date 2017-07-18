@@ -35,7 +35,7 @@ namespace Trisoft.ISHRemote.Cmdlets
     ///                and: http://technet.microsoft.com/en-us/library/dd819489.aspx
     /// Progress Record: http://community.bartdesmet.net/blogs/bart/archive/2006/11/26/PowerShell-_2D00_-A-cmdlet-that-reports-progress-_2D00_-A-simple-file-downloader-cmdlet.aspx
     /// </summary>
-    public abstract class TrisoftCmdlet : Cmdlet
+    public abstract class TrisoftCmdlet : PSCmdlet
     {
         /// <summary>
         /// Sleep constant used to slow down the progress bars to check the messages.

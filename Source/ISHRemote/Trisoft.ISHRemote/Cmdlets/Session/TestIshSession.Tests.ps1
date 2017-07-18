@@ -16,7 +16,7 @@ Describe "Test-IshSession" -Tags "Read" {
 	}
 	#>
 
-	Context “Test-IshSession UserNamePasswordAuthGroup" {
+	Context “Test-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
 			Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" | Should Be $false
 		}
@@ -28,13 +28,13 @@ Describe "Test-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context “Test-IshSession ActiveDirectoryAuthGroup" {
+	Context “Test-IshSession ActiveDirectory" {
 		It "Parameter WsBaseUrl invalid" {
 			Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" | Should Be $false
 		}
 	}
 
-	Context “Test-IshSession PSCredentialAuthGroup" {
+	Context “Test-IshSession PSCredential" {
 		It "Parameter WsBaseUrl invalid" {
 			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
 			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
@@ -106,6 +106,16 @@ Describe "Test-IshSession" -Tags "Read" {
 			Test-IshSession -WsBaseUrl $webServicesBaseUrlToComputerName -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors | Should Be $true
 		}
 	}
+
+	Context "New-IshSession ExplicitIssuer" {
+		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using full hostname" {
+			Test-IshSession -WsBaseUrl $webServicesBaseUrl  -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword | Should BeExactly $true
+		}
+		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" {
+			Test-IshSession -WsBaseUrl $localWebServicesBaseUrl  -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors | Should BeExactly $true
+		}
+	}
+
 }
 
 	

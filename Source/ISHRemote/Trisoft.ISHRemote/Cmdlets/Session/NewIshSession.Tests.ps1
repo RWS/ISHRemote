@@ -20,7 +20,7 @@ Describe "New-IshSession" -Tags "Read" {
 	}
 	#>
 
-	Context “New-IshSession UserNamePasswordAuthGroup" {
+	Context “New-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
 			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" } | Should Throw "Invalid URI"
 		}
@@ -32,13 +32,13 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context “New-IshSession ActiveDirectoryAuthGroup" {
+	Context “New-IshSession ActiveDirectory" {
 		It "Parameter WsBaseUrl invalid" {
 			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" } | Should Throw "Invalid URI"
 		}
 	}
 
-	Context “New-IshSession PSCredentialAuthGroup" {
+	Context “New-IshSession PSCredential" {
 		It "Parameter WsBaseUrl invalid" {
 			{ 
 				$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
@@ -221,6 +221,18 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.ServerVersion.Split(".").Length | Should Be 4
 			$ishSession.Dispose()
 		} #>
+	}
+	Context "New-IshSession ExplicitIssuer" {
+		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using full hostname" {
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl  -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			$ishSession.ServerVersion | Should Not BeNullOrEmpty
+			$ishSession.ServerVersion.Split(".").Length | Should Be 4
+		}
+		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" {
+			$ishSession = New-IshSession -WsBaseUrl $localWebServicesBaseUrl  -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+			$ishSession.ServerVersion | Should Not BeNullOrEmpty
+			$ishSession.ServerVersion.Split(".").Length | Should Be 4
+		}
 	}
 
 	Context "New-IshSession returns IshSession ServiceReferences" {

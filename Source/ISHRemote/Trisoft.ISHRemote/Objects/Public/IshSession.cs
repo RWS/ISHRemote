@@ -37,6 +37,8 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly ILogger _logger;
 
         private Uri _webServicesBaseUri;
+        private Uri _wsTrustIssuerUrl;
+        private Uri _wsTrustIssuerMexUrl;
         private string _ishUserName;
         private string _userName;
         private SecureString _ishSecurePassword;
@@ -55,6 +57,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
         private TimeSpan _timeoutService = TimeSpan.MaxValue;
         private bool _ignoreSslPolicyErrors = false;
+        private bool _explicitIssuer = false;
 
         private InfoShareWcfConnection _connection;
 
@@ -80,37 +83,6 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
         /// </summary>
         /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl)
-        {
-            _logger = logger;
-
-            // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
-            _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
-            _ishUserName = Environment.UserName;
-            CreateConnection();
-        }
-
-        /// <summary>
-        /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
-        /// </summary>
-        /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
-        /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
-        /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword)
-        {
-            _logger = logger;
-
-            // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
-            _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
-            _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
-            _ishSecurePassword = ishSecurePassword;
-            CreateConnection();
-        }
-
-        /// <summary>
-        /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
-        /// </summary>
-        /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
         /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
         /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
         /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
@@ -120,14 +92,50 @@ namespace Trisoft.ISHRemote.Objects.Public
         public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, TimeSpan timeoutIssue, TimeSpan timeoutService, bool ignoreSslPolicyErrors)
         {
             _logger = logger;
+            _explicitIssuer = false;
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
             if (_ignoreSslPolicyErrors)
-            { 
+            {
                 CertificateValidationHelper.OverrideCertificateValidation();
             }
             ServicePointManagerHelper.RestoreCertificateValidation();
             // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
-            _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl+"/");
+            _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
+            _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
+            _ishSecurePassword = ishSecurePassword;
+            _timeout = timeout;
+            _timeoutIssue = timeoutIssue;
+            _timeoutService = timeoutService;
+            CreateConnection();
+        }
+
+        /// <summary>
+        /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
+        /// </summary>
+        /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
+        /// <param name="wsTrustIssuerUrl">The url to the security token service wstrust endpoint. For example 'https://example.com/ISHSTS/issue/wstrust/mixed/username'</param>
+        /// <param name="wsTrustIssuerMexUrl">The binding for the wsTrustEndpoint url</param>
+        /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
+        /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
+        /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
+        /// <param name="timeoutIssue">Timeout to control Send/Receive timeouts of WCF when issuing a token</param>
+        /// <param name="timeoutService">Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies</param>
+        /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
+        public IshSession(ILogger logger, string webServicesBaseUrl, string wsTrustIssuerUrl, string wsTrustIssuerMexUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, TimeSpan timeoutIssue, TimeSpan timeoutService, bool ignoreSslPolicyErrors)
+        {
+            _logger = logger;
+            _explicitIssuer = true;
+            _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
+            if (_ignoreSslPolicyErrors)
+            {
+                CertificateValidationHelper.OverrideCertificateValidation();
+            }
+            ServicePointManagerHelper.RestoreCertificateValidation();
+            // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
+            _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
+            _wsTrustIssuerUrl = new Uri(wsTrustIssuerUrl);
+            _wsTrustIssuerMexUrl = new Uri(wsTrustIssuerMexUrl);
+
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
             _ishSecurePassword = ishSecurePassword;
             _timeout = timeout;
@@ -141,13 +149,21 @@ namespace Trisoft.ISHRemote.Objects.Public
             //prepare connection for authentication/authorization
             var connectionParameters = new InfoShareWcfConnectionParameters
             {
-                Credential = _ishSecurePassword == null ? new NetworkCredential() : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
+                Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
                 Timeout = _timeout,
                 IssueTimeout = _timeoutIssue,
                 ServiceTimeout = _timeoutService
             };
 
-            _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, connectionParameters);
+            // _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, _forceLocal, connectionParameters);
+            if (_explicitIssuer)
+            {
+                _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, _wsTrustIssuerUrl, _wsTrustIssuerMexUrl, connectionParameters);
+            }
+            else
+            {
+                _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, connectionParameters);
+            }
 
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel");
@@ -185,7 +201,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get { return _webServicesBaseUri.ToString(); }
         }
-        
+
         /// <summary>
         /// The user name used to authenticate to the serice, is initialized to Environment.UserName in case of Windows Authentication through NetworkCredential()
         /// </summary>
@@ -213,7 +229,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                 return _userName;
             }
         }
-        
+
         public string ServerVersion
         {
             get { return _serverVersion.ToString(); }

@@ -96,23 +96,48 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <summary>
         /// <para type="description">SDL Knowledge Center Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: "https://example.com/ISHWS/"</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectoryAuthGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePasswordAuthGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredentialAuthGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory-ExplicitIssuer")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential-ExplicitIssuer")]
         [ValidateNotNullOrEmpty]
         public string WsBaseUrl { get; set; }
 
         /// <summary>
+        /// <para type="description">The Security Token Service WS-Trust issuer url! For example: "https://example.com/ISHSTS/issue/wstrust/mixed/username"</para>
+        /// </summary>
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory-ExplicitIssuer")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential-ExplicitIssuer")]
+        [ValidateNotNullOrEmpty]
+        public string WsTrustIssuerUrl { get; set; }
+
+        /// <summary>
+        /// <para type="description">The Security Token Service Metata Exchange Endpoint url! For example: "https://example.com/ISHSTS/issue/wstrust/mex"</para>
+        /// </summary>
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory-ExplicitIssuer")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential-ExplicitIssuer")]
+        [ValidateNotNullOrEmpty]
+        public string WsTrustIssuerMexUrl { get; set; }
+
+        /// <summary>
         /// <para type="description">Standard PowerShell Credential class</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredentialAuthGroup"), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential-ExplicitIssuer")]
+        [ValidateNotNullOrEmpty]
         [Credential]
         public PSCredential PSCredential { get; set; }
 
         /// <summary>
         /// <para type="description">Username to login into SDL Knowledge Center Content Manager</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePasswordAuthGroup"), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
+        [ValidateNotNullOrEmpty]
         public string IshUserName
         {
             get { return _ishUserName; }
@@ -122,7 +147,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <summary>
         /// <para type="description">Password to login into SDL Knowledge Center Content Manager</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePasswordAuthGroup"), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
+        [ValidateNotNullOrEmpty]
         public string IshPassword
         {
             get { return _ishPassword; }
