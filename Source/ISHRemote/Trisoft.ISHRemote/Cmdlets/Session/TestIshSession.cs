@@ -89,6 +89,18 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>These lines of code activate and hence test the WebServices (ISHWS-activation), SecureTokenServices (ISHSTS-activation) and validates the credentials in the 'InfoShare' database (ConnectionString-activation). The extra .ASP line triggers WebClient (ISHCM-activation) and the COM+ application (Trisoft-InfoShare-Author).</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -WsTrustIssuerUrl "https://example.com/ISHSTS/issue/wstrust/mixed/username" -WsTrustIssuerMexUrl "https://example.com/ISHSTS/issue/wstrust/mex" -PSCredential "Admin"
+    /// </code>
+    /// <para>Test the creation of a session with explicit issuer. In this example, the issuer is the ISHSTS next to the ISHWS.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// Test-IshSession -WsBaseUrl "https://localhost/ISHWS/" -WsTrustIssuerUrl "https://localhost/ISHSTS/issue/wstrust/mixed/username" -WsTrustIssuerMexUrl "https://localhost/ISHSTS/issue/wstrust/mex" -PSCredential "Admin" -IgnoreSslPolicyErrors
+    /// </code>
+    /// <para>Test the creation of a session with explicit issuer while using only local endpoints.</para>
+    /// </example>
     [Cmdlet(VerbsDiagnostic.Test, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(bool))]
     public sealed class TestIshSession : SessionCmdlet
