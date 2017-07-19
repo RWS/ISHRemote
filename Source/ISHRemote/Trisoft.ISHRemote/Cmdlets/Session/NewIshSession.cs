@@ -201,16 +201,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
             set { _ignoreSslPolicyErrors = value; }
         }
 
-        /// <summary>
-        /// <para type="description">Makes sure that the session is created by using only local endpoints</para>
-        /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
-        public SwitchParameter ForceLocal
-        {
-            get { return _forceLocal; }
-            set { _forceLocal = value; }
-        }
-
         #region Private fields 
         private string _ishUserName = null;
         private string _ishPassword = null;
@@ -219,7 +209,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
         private TimeSpan _timeoutService = TimeSpan.MaxValue;
         private bool _ignoreSslPolicyErrors = false;
-        private bool _forceLocal = false;
+
         #endregion
         protected override void ProcessRecord()
         {

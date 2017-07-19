@@ -155,7 +155,6 @@ namespace Trisoft.ISHRemote.Objects.Public
                 ServiceTimeout = _timeoutService
             };
 
-            // _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, _forceLocal, connectionParameters);
             if (_explicitIssuer)
             {
                 _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, _wsTrustIssuerUrl, _wsTrustIssuerMexUrl, connectionParameters);
