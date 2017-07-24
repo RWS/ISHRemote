@@ -37,8 +37,8 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly ILogger _logger;
 
         private Uri _webServicesBaseUri;
-        private Uri _wsTrustIssuerUrl;
-        private Uri _wsTrustIssuerMexUrl;
+        private Uri _wsTrustIssuerUri;
+        private Uri _wsTrustIssuerMexUri;
         private string _ishUserName;
         private string _userName;
         private SecureString _ishSecurePassword;
@@ -133,8 +133,8 @@ namespace Trisoft.ISHRemote.Objects.Public
             ServicePointManagerHelper.RestoreCertificateValidation();
             // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
-            _wsTrustIssuerUrl = new Uri(wsTrustIssuerUrl);
-            _wsTrustIssuerMexUrl = new Uri(wsTrustIssuerMexUrl);
+            _wsTrustIssuerUri = new Uri(wsTrustIssuerUrl);
+            _wsTrustIssuerMexUri = new Uri(wsTrustIssuerMexUrl);
 
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
             _ishSecurePassword = ishSecurePassword;
@@ -157,7 +157,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
             if (_explicitIssuer)
             {
-                _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, _wsTrustIssuerUrl, _wsTrustIssuerMexUrl, connectionParameters);
+                _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, _wsTrustIssuerUri, _wsTrustIssuerMexUri, connectionParameters);
             }
             else
             {

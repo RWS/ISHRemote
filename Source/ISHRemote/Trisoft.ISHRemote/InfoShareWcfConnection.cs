@@ -978,6 +978,10 @@ namespace Trisoft.ISHRemote
         {
             if (IssuerAuthenticationType == "UserNameMixed")
             {
+                if(_connectionParameters.Credential == null)
+                {
+                    throw new InvalidOperationException($"Authentication endpoint {_issuerWSTrustEndpointUri.Value} requires credentials");
+                }
                 clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
             }

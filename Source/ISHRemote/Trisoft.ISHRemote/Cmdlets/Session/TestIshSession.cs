@@ -238,7 +238,20 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 }
                 WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + "]");
                 WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] TimeoutIssue[{_timeoutIssue}] TimeoutService[{_timeoutService}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
-                var ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _timeoutIssue, _timeoutService, _ignoreSslPolicyErrors);
+
+                IshSession ishSession = null;
+                /* If the PSCmdlet is not accepted switch the condition to
+                 * if (!String.IsNullOrWhiteSpace(WsTrustIssuerMexUrl) && !String.IsNullOrWhiteSpace(WsTrustIssuerMexUrl))
+                 */
+                if (this.ParameterSetName.EndsWith("-ExplicitIssuer"))
+                {
+                    WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] WsTrustIssuerUrl[{WsTrustIssuerUrl}] WsTrustIssuerMexUrl[{WsTrustIssuerMexUrl}]");
+                    ishSession = new IshSession(Logger, WsBaseUrl, WsTrustIssuerUrl, WsTrustIssuerMexUrl, _ishUserName, _ishSecurePassword, _timeout, _timeoutIssue, _timeoutService, _ignoreSslPolicyErrors);
+                }
+                else
+                {
+                    ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _timeoutIssue, _timeoutService, _ignoreSslPolicyErrors);
+                }
 
                 // Keep the IshSession initialization as minimal as possible
                 // Do early load of IshTypeFieldSetup (either <13-TriDKXmlSetup-based or >=13-RetrieveFieldSetupByIshType-API-based) for
