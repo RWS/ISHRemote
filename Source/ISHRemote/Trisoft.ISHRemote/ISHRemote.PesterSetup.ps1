@@ -24,11 +24,12 @@ $ditaMapFileContent = @"
 <map><title>Enter the title of your map here.<?ish-replace-title?></title></map>
 "@
 Write-Verbose "Initializing variables for UserName/Password based tests, so ISHSTS-like..."
-$webServicesBaseUrl = 'https://ish.example.com/ISHWS/'  # must have trailing slash for tests to succeed
-$wsTrustIssuerUrl = 'https://ish.example.com/ISHSTS/issue/wstrust/mixed/username'
-$wsTrustIssuerMexUrl = 'https://ish.example.com/ISHSTS/issue/wstrust/mex'
-$ishUserName = 'admin2'
-$ishPassword = 'admin2'
+$baseUrl = 'https://ish.example.com'
+$webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
+$wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
+$wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
+$ishUserName = 'admin'
+$ishPassword = 'admin'
 Write-Verbose "Initializing variables for System Setup"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed
 $ishLng = 'VLANGUAGEEN'
