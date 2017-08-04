@@ -109,10 +109,10 @@ Describe "Test-IshSession" -Tags "Read" {
 
 	Context "New-IshSession ExplicitIssuer" {
 		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using full hostname" {
-			Test-IshSession -WsBaseUrl $webServicesBaseUrl  -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword | Should BeExactly $true
+			Test-IshSession -WsBaseUrl $webServicesBaseUrl -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword | Should BeExactly $true
 		}
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" {
-			Test-IshSession -WsBaseUrl $localWebServicesBaseUrl  -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors | Should BeExactly $true
+		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" -skip {
+			Test-IshSession -WsBaseUrl $localWebServicesBaseUrl -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors | Should BeExactly $true
 		}
 	}
 

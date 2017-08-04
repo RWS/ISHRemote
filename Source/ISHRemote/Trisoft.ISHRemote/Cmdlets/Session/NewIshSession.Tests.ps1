@@ -224,12 +224,12 @@ Describe "New-IshSession" -Tags "Read" {
 	}
 	Context "New-IshSession ExplicitIssuer" {
 		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using full hostname" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl  -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword
 			$ishSession.ServerVersion | Should Not BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should Be 4
 		}
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" {
-			$ishSession = New-IshSession -WsBaseUrl $localWebServicesBaseUrl  -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" -skip {
+			$ishSession = New-IshSession -WsBaseUrl $localWebServicesBaseUrl -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
 			$ishSession.ServerVersion | Should Not BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should Be 4
 		}
