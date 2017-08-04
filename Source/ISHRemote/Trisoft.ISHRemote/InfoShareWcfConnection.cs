@@ -35,9 +35,9 @@ using Trisoft.ISHRemote.Interfaces;
 
 namespace Trisoft.ISHRemote
 {
-	/// <summary>
-	/// InfoShare Wcf connection.
-	/// </summary>
+    /// <summary>
+    /// InfoShare Wcf connection.
+    /// </summary>
     internal sealed class InfoShareWcfConnection : IDisposable
     {
         #region Constants
@@ -121,6 +121,10 @@ namespace Trisoft.ISHRemote
         /// </summary>
         private readonly bool _stsInternalAuthentication = false;
         /// <summary>
+        /// Set when the session must be created by using only local endpoints
+        /// </summary>
+        private readonly bool _explicitIssuer = false;
+        /// <summary>
         /// Parameters that configure the connection behavior.
         /// </summary>
         InfoShareWcfConnectionParameters _connectionParameters;
@@ -137,21 +141,21 @@ namespace Trisoft.ISHRemote
         /// </summary>
         private Lazy<Uri> _issuerWSTrustEndpointUri;
         /// <summary>
+        /// The WS-Trust metadata exchange endpoint for the Security Token Service that provides the functionality to issue tokens.
+        /// </summary>
+        private Lazy<Uri> _issuerWSTrustMexUri;
+        /// <summary>
         /// WS STS Realm to issue tokens for
         /// </summary>
         private Lazy<Uri> _infoShareWSAppliesTo;
         /// <summary>
-        /// Author STS Realm to issue tokens for
-        /// </summary>
-        private Lazy<Uri> _infoShareWebAppliesTo;
-        /// <summary>
 		/// The token that is used to access the services.
 		/// </summary>
 		private Lazy<GenericXmlSecurityToken> _issuedToken;
-		/// <summary>
-		/// Service URIs by service.
-		/// </summary>
-		private Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string,Uri>();
+        /// <summary>
+        /// Service URIs by service.
+        /// </summary>
+        private Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
         /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
@@ -226,16 +230,30 @@ namespace Trisoft.ISHRemote
         private TranslationTemplate25ServiceReference.TranslationTemplateClient _translationTemplateClient;
         #endregion Private Members
 
-		#region Constructors
-		/// <summary>
-		/// Initializes a new instance of <c>InfoShareWcfConnection</c> class.
-		/// </summary>
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of <c>InfoShareWcfConnection</c> class.
+        /// </summary>
         /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
-		/// <param name="infoShareWSBaseUri">Base URI for InfoShare WS.</param>
+        /// <param name="infoShareWSBaseUri">Base URI for InfoShare WS.</param>
+        /// <param name="overrideWithLocalhostUri">Defines if the session must be created by using only local endpoints</param>
         /// <param name="parameters">Connection parameters.</param>
         public InfoShareWcfConnection(ILogger logger, Uri infoShareWSBaseUri, InfoShareWcfConnectionParameters parameters = null)
         {
             _logger = logger;
+
+            _logger.WriteDebug($"Incomming  infoShareWSBaseUri[{infoShareWSBaseUri}]");
+            if (infoShareWSBaseUri == null)
+                throw new ArgumentNullException("infoShareWSBaseUri");
+            if (parameters == null)
+            {
+                parameters = new InfoShareWcfConnectionParameters()
+                {
+                    Credential = null,
+                };
+            }
+
+            #region Derive parameters from infoShareWSBaseUri and connectionconfiguration.xml
 
             if (infoShareWSBaseUri.AbsolutePath.Contains("/Internal") || infoShareWSBaseUri.AbsolutePath.Contains("/SDL"))
             {
@@ -245,19 +263,6 @@ namespace Trisoft.ISHRemote
                 _logger.WriteDebug($"InfoShareWcfConnection stsInternalAuthentication[{_stsInternalAuthentication}]");
                 _logger.WriteVerbose($"Detected 'Internal/SDL' Authentication in incoming infoShareWSBaseUri[{infoShareWSBaseUri}]");
             }
-            
-
-
-            _logger.WriteDebug($"Incomming  infoShareWSBaseUri[{infoShareWSBaseUri}]");
-            if (infoShareWSBaseUri == null)
-                throw new ArgumentNullException("infoShareWSBaseUri");
-            if (parameters == null)
-            {
-                parameters = new InfoShareWcfConnectionParameters()
-                {
-                    Credential = new NetworkCredential(),
-                };
-            }
 
             this.InfoShareWSBaseUri = infoShareWSBaseUri;
             _connectionParameters = parameters;
@@ -266,28 +271,14 @@ namespace Trisoft.ISHRemote
             this.InfoShareWSBaseUri = InitializeInfoShareWSBaseUri();
             _logger.WriteDebug($"Normalized infoShareWSBaseUri[{this.InfoShareWSBaseUri}]");
             _issuerWSTrustEndpointUri = new Lazy<Uri>(InitializeIssuerWSTrustEndpointUri);
+            _issuerWSTrustMexUri = new Lazy<Uri>(() => { throw new NotSupportedException(); });
             _issuerAuthenticationType = new Lazy<string>(InitializeIssuerAuthenticationType);
             _infoShareWSAppliesTo = new Lazy<Uri>(InitializeInfoShareWSAppliesTo);
-            _infoShareWebAppliesTo = new Lazy<Uri>(InitializeInfoShareWebAppliesTo);
+
+            #endregion
 
             // Resolve service URIs
-            _serviceUriByServiceName.Add(Application25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Application.svc"));
-            _serviceUriByServiceName.Add(DocumentObj25, new Uri(InfoShareWSBaseUri, "Wcf/API25/DocumentObj.svc"));
-            _serviceUriByServiceName.Add(Folder25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Folder.svc"));
-            _serviceUriByServiceName.Add(User25, new Uri(InfoShareWSBaseUri, "Wcf/API25/User.svc"));
-            _serviceUriByServiceName.Add(UserRole25, new Uri(InfoShareWSBaseUri, "Wcf/API25/UserRole.svc"));
-            _serviceUriByServiceName.Add(UserGroup25, new Uri(InfoShareWSBaseUri, "Wcf/API25/UserGroup.svc"));
-            _serviceUriByServiceName.Add(ListOfValues25, new Uri(InfoShareWSBaseUri, "Wcf/API25/ListOfValues.svc"));
-            _serviceUriByServiceName.Add(PublicationOutput25, new Uri(InfoShareWSBaseUri, "Wcf/API25/PublicationOutput.svc"));
-            _serviceUriByServiceName.Add(OutputFormat25, new Uri(InfoShareWSBaseUri, "Wcf/API25/OutputFormat.svc"));
-            _serviceUriByServiceName.Add(Settings25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Settings.svc"));
-            _serviceUriByServiceName.Add(EDT25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Edt.svc"));
-            _serviceUriByServiceName.Add(EventMonitor25, new Uri(InfoShareWSBaseUri, "Wcf/API25/EventMonitor.svc"));
-            _serviceUriByServiceName.Add(Baseline25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Baseline.svc"));
-            _serviceUriByServiceName.Add(MetadataBinding25, new Uri(InfoShareWSBaseUri, "Wcf/API25/MetadataBinding.svc"));
-            _serviceUriByServiceName.Add(Search25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Search.svc"));
-            _serviceUriByServiceName.Add(TranslationJob25, new Uri(InfoShareWSBaseUri, "Wcf/API25/TranslationJob.svc"));
-            _serviceUriByServiceName.Add(TranslationTemplate25, new Uri(InfoShareWSBaseUri, "Wcf/API25/TranslationTemplate.svc"));
+            ResolveServiceUris();
 
             // The lazy initialization depends on all the initialization above.
             _issuedToken = new Lazy<GenericXmlSecurityToken>(IssueToken);
@@ -295,37 +286,93 @@ namespace Trisoft.ISHRemote
             // Set the endpoints
             ResolveEndpoints(_connectionParameters.AutoAuthenticate);
         }
-		#endregion
 
-		#region Public Properties
-		/// <summary>
-		/// Root uri for the Web Services
-		/// </summary>
-		public Uri InfoShareWSBaseUri { get; private set; }
-		/// <summary>
-		/// Checks whether the token is issued and still valid
-		/// </summary>
-		public bool IsValid
-		{
-			get
-			{
+        /// <summary>
+        /// Initializes a new instance of <c>InfoShareWcfConnection</c> class.
+        /// </summary>
+        /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
+        /// <param name="infoShareWSBaseUri">Base URI for InfoShare WS.</param>
+        /// <param name="wsTrustIssuerUri">Authentication endpoint</param>
+        /// <param name="wsTrustIssuerMexUri">STS WS Trust metadata exchange endpoint</param>
+        /// <param name="parameters">Connection parameters.</param>
+        public InfoShareWcfConnection(ILogger logger, Uri infoShareWSBaseUri, Uri wsTrustIssuerUri, Uri wsTrustIssuerMexUri, InfoShareWcfConnectionParameters parameters = null)
+        {
+            _logger = logger;
+            _explicitIssuer = true;
+
+            _logger.WriteDebug($"Incomming  infoShareWSBaseUri[{infoShareWSBaseUri}]");
+            _logger.WriteDebug($"Incomming  wsTrustIssuerUri[{wsTrustIssuerUri}]");
+            _logger.WriteDebug($"Incomming  wsTrustIssuerMexUri[{wsTrustIssuerMexUri}]");
+
+            if (infoShareWSBaseUri == null)
+                throw new ArgumentNullException("infoShareWSBaseUri");
+            if (wsTrustIssuerUri == null)
+                throw new ArgumentNullException("wsTrustIssuerUri");
+            if (wsTrustIssuerMexUri == null)
+                throw new ArgumentNullException("wsTrustIssuerMexUri");
+
+            if (parameters == null)
+            {
+                parameters = new InfoShareWcfConnectionParameters()
+                {
+                    Credential = null,
+                };
+            }
+
+            #region Use provided parameters
+
+            this.InfoShareWSBaseUri = infoShareWSBaseUri;
+            _connectionParameters = parameters;
+            _connectionConfiguration = new Lazy<XDocument>(LoadConnectionConfiguration);
+            this.InfoShareWSBaseUri = infoShareWSBaseUri;
+            _issuerWSTrustEndpointUri = new Lazy<Uri>(() => { return wsTrustIssuerUri; });
+            _issuerWSTrustMexUri = new Lazy<Uri>(() => { return wsTrustIssuerMexUri; });
+            _issuerAuthenticationType = new Lazy<string>(() => { return parameters.Credential != null ? "UserNameMixed" : "WindowsMixed"; });
+            _infoShareWSAppliesTo = new Lazy<Uri>(InitializeInfoShareWSAppliesTo);
+
+            #endregion
+
+            // Resolve service URIs
+            ResolveServiceUris();
+
+            // The lazy initialization depends on all the initialization above.
+            _issuedToken = new Lazy<GenericXmlSecurityToken>(IssueToken);
+
+            // Set the endpoints
+            ResolveEndpoints(_connectionParameters.AutoAuthenticate);
+        }
+
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// Root uri for the Web Services
+        /// </summary>
+        public Uri InfoShareWSBaseUri { get; private set; }
+        /// <summary>
+        /// Checks whether the token is issued and still valid
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
                 bool result = IssuedToken.ValidTo.ToUniversalTime() >= DateTime.UtcNow;
                 //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
                 // Besides single-thread execution of New-IshSession, logging here will typically cause error:
                 // PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing methods, and they can only be called from within the same thread.Validate that the cmdlet makes these calls correctly, or contact Microsoft Customer Support Services.
                 //_logger.WriteDebug($"Token still valid? {result} ({IssuedToken.ValidTo.ToUniversalTime()} >= {DateTime.UtcNow})");
                 return result;
-			}
-		}
-		#endregion Properties
+            }
+        }
+        #endregion Properties
 
-		#region Public Methods
-		/// <summary>
-		/// Create a /Wcf/API25/Application.svc proxy
-		/// </summary>
-		/// <returns>The proxy</returns>
-		public Application25ServiceReference.Application GetApplication25Channel()
-		{
+        #region Public Methods
+        /// <summary>
+        /// Create a /Wcf/API25/Application.svc proxy
+        /// </summary>
+        /// <returns>The proxy</returns>
+        public Application25ServiceReference.Application GetApplication25Channel()
+        {
             if (_applicationClient == null)
             {
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
@@ -333,7 +380,7 @@ namespace Trisoft.ISHRemote
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
             }
             return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
-		}
+        }
 
         /// <summary>
         /// Create a /Wcf/API25/DocumentObj.svc proxy
@@ -576,193 +623,229 @@ namespace Trisoft.ISHRemote
         }
         #endregion
 
-		#region Private Properties
-		/// <summary>
-		/// Gets the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
-		/// </summary>
-		private XDocument ConnectionConfiguration
-		{
-			get 
-			{
-				return _connectionConfiguration.Value;
-			}
-		}
+        #region Private Properties
+        /// <summary>
+        /// Gets the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
+        /// </summary>
+        private XDocument ConnectionConfiguration
+        {
+            get
+            {
+                return _connectionConfiguration.Value;
+            }
+        }
 
-		/// <summary>
-		/// Gets the binding type that is required by the end point of the WS-Trust issuer.
-		/// </summary>
-		private string IssuerAuthenticationType
-		{
-			get
-			{
-				return _issuerAuthenticationType.Value;
-			}
-		}
+        /// <summary>
+        /// Gets the binding type that is required by the end point of the WS-Trust issuer.
+        /// </summary>
+        private string IssuerAuthenticationType
+        {
+            get
+            {
+                return _issuerAuthenticationType.Value;
+            }
+        }
 
-		/// <summary>
-		/// Gets the WS-Trust endpoint for the Security Token Service that provides the functionality to issue tokens as specified by the issuerwstrustbindingtype.
-		/// </summary>
-		private Uri IssuerWSTrustEndpointUri
-		{
-			get
-			{
-				return _issuerWSTrustEndpointUri.Value;
-			}
-		}
+        /// <summary>
+        /// Gets the WS-Trust endpoint for the Security Token Service that provides the functionality to issue tokens as specified by the issuerwstrustbindingtype.
+        /// </summary>
+        private Uri IssuerWSTrustEndpointUri
+        {
+            get
+            {
+                return _issuerWSTrustEndpointUri.Value;
+            }
+        }
 
-		/// <summary>
-		/// Gets the token that is used to access the services.
-		/// </summary>
-		private GenericXmlSecurityToken IssuedToken
-		{
-			get
-			{
-				return _issuedToken.Value;
-			}
-		}
-		#endregion
+        /// <summary>
+        /// Gets the token that is used to access the services.
+        /// </summary>
+        private GenericXmlSecurityToken IssuedToken
+        {
+            get
+            {
+                return _issuedToken.Value;
+            }
+        }
+        #endregion
 
-		#region Private Methods
-		/// <summary>
-		/// Resolve endpoints
-		/// 1. Binding enpoints for the InfoShareWS endpoints
-		/// 2. Look into the issuer elements to extract the issuer binding and endpoint
-		/// </summary>
-		private void ResolveEndpoints(bool autoAuthenticate)
-		{
+        #region Private Methods
+
+        private void ResolveServiceUris()
+        {
+            _serviceUriByServiceName.Add(Application25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Application.svc"));
+            _serviceUriByServiceName.Add(DocumentObj25, new Uri(InfoShareWSBaseUri, "Wcf/API25/DocumentObj.svc"));
+            _serviceUriByServiceName.Add(Folder25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Folder.svc"));
+            _serviceUriByServiceName.Add(User25, new Uri(InfoShareWSBaseUri, "Wcf/API25/User.svc"));
+            _serviceUriByServiceName.Add(UserRole25, new Uri(InfoShareWSBaseUri, "Wcf/API25/UserRole.svc"));
+            _serviceUriByServiceName.Add(UserGroup25, new Uri(InfoShareWSBaseUri, "Wcf/API25/UserGroup.svc"));
+            _serviceUriByServiceName.Add(ListOfValues25, new Uri(InfoShareWSBaseUri, "Wcf/API25/ListOfValues.svc"));
+            _serviceUriByServiceName.Add(PublicationOutput25, new Uri(InfoShareWSBaseUri, "Wcf/API25/PublicationOutput.svc"));
+            _serviceUriByServiceName.Add(OutputFormat25, new Uri(InfoShareWSBaseUri, "Wcf/API25/OutputFormat.svc"));
+            _serviceUriByServiceName.Add(Settings25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Settings.svc"));
+            _serviceUriByServiceName.Add(EDT25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Edt.svc"));
+            _serviceUriByServiceName.Add(EventMonitor25, new Uri(InfoShareWSBaseUri, "Wcf/API25/EventMonitor.svc"));
+            _serviceUriByServiceName.Add(Baseline25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Baseline.svc"));
+            _serviceUriByServiceName.Add(MetadataBinding25, new Uri(InfoShareWSBaseUri, "Wcf/API25/MetadataBinding.svc"));
+            _serviceUriByServiceName.Add(Search25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Search.svc"));
+            _serviceUriByServiceName.Add(TranslationJob25, new Uri(InfoShareWSBaseUri, "Wcf/API25/TranslationJob.svc"));
+            _serviceUriByServiceName.Add(TranslationTemplate25, new Uri(InfoShareWSBaseUri, "Wcf/API25/TranslationTemplate.svc"));
+        }
+
+        /// <summary>
+        /// Resolve endpoints
+        /// 1. Binding enpoints for the InfoShareWS endpoints
+        /// 2. Look into the issuer elements to extract the issuer binding and endpoint
+        /// </summary>
+        private void ResolveEndpoints(bool autoAuthenticate)
+        {
             _logger.WriteDebug("Resolving endpoints");
-			Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
+            Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
             var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
-			// Get endpont for http or https depending on the base uri passed
+            // Get endpont for http or https depending on the base uri passed
             var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
             ApplyTimeout(applicationServiceEndpoint, _connectionParameters.ServiceTimeout);
             ApplyQuotas(applicationServiceEndpoint);
             _commonBinding = applicationServiceEndpoint.Binding;
 
             if (autoAuthenticate)
-			{
-				// Resolve the token
-				var token = IssuedToken;
-			}
+            {
+                // Resolve the token
+                var token = IssuedToken;
+            }
             _logger.WriteDebug("Resolved endpoints");
         }
 
-		/// <summary>
-		/// Issues the token
-		/// Mostly copied from Service References
-		/// </summary>
-		private GenericXmlSecurityToken IssueToken()
-		{
+        /// <summary>
+        /// Issues the token
+        /// Mostly copied from Service References
+        /// </summary>
+        private GenericXmlSecurityToken IssueToken()
+        {
             _logger.WriteDebug("Issue Token");
-			var issuerEndpoint = FindIssuerEndpoint();
+            var issuerEndpoint = FindIssuerEndpoint();
 
-			var requestSecurityToken = new RequestSecurityToken
-			{
-				RequestType = RequestTypes.Issue,
+            var requestSecurityToken = new RequestSecurityToken
+            {
+                RequestType = RequestTypes.Issue,
                 AppliesTo = new EndpointReference(_infoShareWSAppliesTo.Value.AbsoluteUri),
-				KeyType = System.IdentityModel.Protocols.WSTrust.KeyTypes.Symmetric
-			};
+                KeyType = System.IdentityModel.Protocols.WSTrust.KeyTypes.Symmetric
+            };
             using (var factory = new WSTrustChannelFactory((WS2007HttpBinding)issuerEndpoint.Binding, issuerEndpoint.Address))
-			{
-				ApplyCredentials(factory.Credentials);
-				ApplyTimeout(factory.Endpoint, _connectionParameters.IssueTimeout);
+            {
+                ApplyCredentials(factory.Credentials);
+                ApplyTimeout(factory.Endpoint, _connectionParameters.IssueTimeout);
 
-				factory.TrustVersion = TrustVersion.WSTrust13;
-				factory.Credentials.SupportInteractive = false;
+                factory.TrustVersion = TrustVersion.WSTrust13;
+                factory.Credentials.SupportInteractive = false;
 
-				WSTrustChannel channel = null;
-				try
-				{
+                WSTrustChannel channel = null;
+                try
+                {
                     _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}]");
                     channel = (WSTrustChannel)factory.CreateChannel();
-					RequestSecurityTokenResponse requestSecurityTokenResponse;
-					return channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
-				}
+                    RequestSecurityTokenResponse requestSecurityTokenResponse;
+                    return channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
+                }
                 catch
                 {
-                        // Fallback to 10.0.X and 11.0.X configuration using relying party per url like /InfoShareWS/API25/Application.svc
-                        requestSecurityToken.AppliesTo = new EndpointReference(_serviceUriByServiceName[Application25].AbsoluteUri);
-                        _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}] as fallback on 10.0.x/11.0.x");
-                        RequestSecurityTokenResponse requestSecurityTokenResponse;
-                        return channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
+                    // Fallback to 10.0.X and 11.0.X configuration using relying party per url like /InfoShareWS/API25/Application.svc
+                    requestSecurityToken.AppliesTo = new EndpointReference(_serviceUriByServiceName[Application25].AbsoluteUri);
+                    _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}] as fallback on 10.0.x/11.0.x");
+                    RequestSecurityTokenResponse requestSecurityTokenResponse;
+                    return channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
                 }
-				finally
-				{
+                finally
+                {
                     if (channel != null)
                     {
                         channel.Abort();
                     }
                     factory.Abort();
-				}
+                }
             }
         }
 
-		/// <summary>
-		/// Extract the Issuer endpoint and configure the appropriate one
-		/// </summary>
-		private ServiceEndpoint FindIssuerEndpoint()
-		{
+        /// <summary>
+        /// Extract the Issuer endpoint and configure the appropriate one
+        /// </summary>
+        private ServiceEndpoint FindIssuerEndpoint()
+        {
             _logger.WriteDebug("FindIssuerEndpoint");
-			IssuedSecurityTokenParameters protectionTokenParameters = null;
-			//Based on the scheme dynamically extract the protection token parameters from a Property path string using reflection.
-			//Writing the code requires to much casting. The paths are taken from the powershell scripts
-			if (InfoShareWSBaseUri.Scheme == Uri.UriSchemeHttp)
-			{
-                dynamic binding = _commonBinding;
-				protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].ProtectionTokenParameters.BootstrapSecurityBindingElement.ProtectionTokenParameters;
-			}
-			else
-			{
-                dynamic binding = _commonBinding;
-				protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].EndpointSupportingTokenParameters.Endorsing[0].BootstrapSecurityBindingElement.EndpointSupportingTokenParameters.Endorsing[0];
-			}
-            var issuerMetadataAddress = protectionTokenParameters.IssuerMetadataAddress;
-			var issuerAddress = protectionTokenParameters.IssuerAddress;
-            _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
-
-            if (_stsInternalAuthentication)
+            EndpointAddress issuerMetadataAddress = null;
+            EndpointAddress issuerAddress = null;
+            IssuedSecurityTokenParameters protectionTokenParameters = null;
+            if (!_explicitIssuer)
             {
-                // Enable-ISHIntegrationSTSInternalAuthentication is used directing the web services to a different STS
-                // issuerMetadataAddress = new EndpointAddress(InitializeIssuerMetadataAddress);  // [Should] Once connectionconfiguration.xml/issuer/mex offers the metadata exchange address, the dirty derive code should be replaced
-                string issuerWSTrustEndpointUri = InitializeIssuerWSTrustEndpointUri().AbsoluteUri;
-                string issuerWSTrustMetadataEndpointUri = issuerWSTrustEndpointUri.Substring(0, issuerWSTrustEndpointUri.IndexOf("issue/wstrust")) + "issue/wstrust/mex";
-                issuerMetadataAddress = new EndpointAddress(issuerWSTrustMetadataEndpointUri);
-                issuerAddress = new EndpointAddress(issuerWSTrustEndpointUri);
+                //Based on the scheme dynamically extract the protection token parameters from a Property path string using reflection.
+                //Writing the code requires to much casting. The paths are taken from the powershell scripts
+                if (InfoShareWSBaseUri.Scheme == Uri.UriSchemeHttp)
+                {
+                    dynamic binding = _commonBinding;
+                    protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].ProtectionTokenParameters.BootstrapSecurityBindingElement.ProtectionTokenParameters;
+                }
+                else
+                {
+                    dynamic binding = _commonBinding;
+                    protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].EndpointSupportingTokenParameters.Endorsing[0].BootstrapSecurityBindingElement.EndpointSupportingTokenParameters.Endorsing[0];
+                }
+                issuerMetadataAddress = protectionTokenParameters.IssuerMetadataAddress;
+                issuerAddress = protectionTokenParameters.IssuerAddress;
+                _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
+
+                if (_stsInternalAuthentication)
+                {
+                    // Enable-ISHIntegrationSTSInternalAuthentication is used directing the web services to a different STS
+                    // issuerMetadataAddress = new EndpointAddress(InitializeIssuerMetadataAddress);  // [Should] Once connectionconfiguration.xml/issuer/mex offers the metadata exchange address, the dirty derive code should be replaced
+                    string issuerWSTrustEndpointUri = InitializeIssuerWSTrustEndpointUri().AbsoluteUri;
+                    string issuerWSTrustMetadataEndpointUri = issuerWSTrustEndpointUri.Substring(0, issuerWSTrustEndpointUri.IndexOf("issue/wstrust")) + "issue/wstrust/mex";
+                    issuerMetadataAddress = new EndpointAddress(issuerWSTrustMetadataEndpointUri);
+                    issuerAddress = new EndpointAddress(issuerWSTrustEndpointUri);
+                    _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
+                }
+            }
+            else
+            {
+                issuerMetadataAddress = new EndpointAddress(_issuerWSTrustMexUri.Value);
+                issuerAddress = new EndpointAddress(_issuerWSTrustEndpointUri.Value);
                 _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
             }
 
             ServiceEndpointCollection serviceEndpointCollection;
-			try
-			{
-				// Start with the mex endpoint
-				var wsdlImporter = GetWsdlImporter(issuerMetadataAddress.Uri);
-				serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
-			}
-			catch
-			{
-				// Re-try with the wsdl endpoint
-				var wsdlImporter = GetWsdlImporter(new Uri(issuerMetadataAddress.Uri.AbsoluteUri.Replace("/mex", "?wsdl")));
-				serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
-			}
+            try
+            {
+                // Start with the mex endpoint
+                var wsdlImporter = GetWsdlImporter(issuerMetadataAddress.Uri);
+                serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
+            }
+            catch
+            {
+                // Re-try with the wsdl endpoint
+                var wsdlImporter = GetWsdlImporter(new Uri(issuerMetadataAddress.Uri.AbsoluteUri.Replace("/mex", "?wsdl")));
+                serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
+            }
 
-			var issuerWSTrustEndpointAbsolutePath = IssuerWSTrustEndpointUri.AbsolutePath;
+            var issuerWSTrustEndpointAbsolutePath = IssuerWSTrustEndpointUri.AbsolutePath;
             _logger.WriteDebug($"FindIssuerEndpoint issuerWSTrustEndpointAbsolutePath[{issuerWSTrustEndpointAbsolutePath}]");
             ServiceEndpoint issuerServiceEndpoint = serviceEndpointCollection.FirstOrDefault(
-				x => x.Address.Uri.AbsolutePath.Equals(issuerWSTrustEndpointAbsolutePath, StringComparison.OrdinalIgnoreCase));
+                x => x.Address.Uri.AbsolutePath.Equals(issuerWSTrustEndpointAbsolutePath, StringComparison.OrdinalIgnoreCase));
 
             if (issuerServiceEndpoint == null)
             {
                 throw new InvalidOperationException(String.Format("WSTrust endpoint not configured: '{0}'.", issuerWSTrustEndpointAbsolutePath));
             }
 
-			//Update the original binding as if we would do this manually in the configuration
-			protectionTokenParameters.IssuerBinding = issuerServiceEndpoint.Binding;
-			protectionTokenParameters.IssuerAddress = issuerServiceEndpoint.Address;
+            //Update the original binding as if we would do this manually in the configuration
+            if(!_explicitIssuer)
+            { 
+                protectionTokenParameters.IssuerBinding = issuerServiceEndpoint.Binding;
+                protectionTokenParameters.IssuerAddress = issuerServiceEndpoint.Address;
+            }
 
-			return issuerServiceEndpoint;
-		}
+            return issuerServiceEndpoint;
+        }
 
-		/// <summary>
+        /// <summary>
         /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
         /// </summary>
         /// <returns>The connection configuration.</returns>
@@ -785,7 +868,7 @@ namespace Trisoft.ISHRemote
         /// <returns>The binding type.</returns>
         private string InitializeIssuerAuthenticationType()
         {
-			var authTypeElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/issuer/authenticationtype");
+            var authTypeElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/issuer/authenticationtype");
             if (authTypeElement == null)
             {
                 throw new InvalidOperationException("Authentication type not found in the connection configuration.");
@@ -800,7 +883,7 @@ namespace Trisoft.ISHRemote
         /// <returns>The InfoShareWS endpoint for the Web Services.</returns>
         private Uri InitializeInfoShareWSBaseUri()
         {
-			var uriElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/infosharewsurl");
+            var uriElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/infosharewsurl");
             if (uriElement == null)
             {
                 throw new InvalidOperationException("infosharews url not found in the connection configuration.");
@@ -815,7 +898,7 @@ namespace Trisoft.ISHRemote
         /// <returns>The WS-Trust endpoint for the Security Token Service.</returns>
         private Uri InitializeIssuerWSTrustEndpointUri()
         {
-			var uriElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/issuer/url");
+            var uriElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/issuer/url");
             if (uriElement == null)
             {
                 throw new InvalidOperationException("Issuer url not found in the connection configuration.");
@@ -825,7 +908,7 @@ namespace Trisoft.ISHRemote
             return new Uri(uriElement.Value);
         }
 
-		/// <summary>
+        /// <summary>
         /// Returns the WS STS Realm to issue tokens for.
         /// </summary>
         /// <returns>The WS STS Realm to issue tokens for.</returns>
@@ -855,85 +938,89 @@ namespace Trisoft.ISHRemote
             return new Uri(uriElement.Value);
         }
 
-		/// <summary>
-		/// Find the wsdl importer
-		/// </summary>
-		/// <param name="wsdlUri">The wsdl uri</param>
-		/// <returns>A wsdl importer</returns>
-		private WsdlImporter GetWsdlImporter(Uri wsdlUri)
-		{
+        /// <summary>
+        /// Find the wsdl importer
+        /// </summary>
+        /// <param name="wsdlUri">The wsdl uri</param>
+        /// <returns>A wsdl importer</returns>
+        private WsdlImporter GetWsdlImporter(Uri wsdlUri)
+        {
             _logger.WriteDebug($"GetWsdlImporter wsdlUri[{wsdlUri}]");
-			WSHttpBinding mexBinding = null;
-			if (wsdlUri.Scheme == Uri.UriSchemeHttp)
-			{
-				mexBinding = (WSHttpBinding)MetadataExchangeBindings.CreateMexHttpBinding();
-			}
-			else
-			{
-				mexBinding = (WSHttpBinding)MetadataExchangeBindings.CreateMexHttpsBinding();
-			}
-			mexBinding.MaxReceivedMessageSize = Int32.MaxValue;
-			mexBinding.MaxBufferPoolSize = Int32.MaxValue;
-			mexBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
-			mexBinding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
-			mexBinding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
-			mexBinding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
-			mexBinding.ReaderQuotas.MaxDepth = 64;
+            WSHttpBinding mexBinding = null;
+            if (wsdlUri.Scheme == Uri.UriSchemeHttp)
+            {
+                mexBinding = (WSHttpBinding)MetadataExchangeBindings.CreateMexHttpBinding();
+            }
+            else
+            {
+                mexBinding = (WSHttpBinding)MetadataExchangeBindings.CreateMexHttpsBinding();
+            }
+            mexBinding.MaxReceivedMessageSize = Int32.MaxValue;
+            mexBinding.MaxBufferPoolSize = Int32.MaxValue;
+            mexBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
+            mexBinding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
+            mexBinding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
+            mexBinding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
+            mexBinding.ReaderQuotas.MaxDepth = 64;
 
-			var mexClient = new MetadataExchangeClient(mexBinding);
-			mexClient.MaximumResolvedReferences = int.MaxValue;
+            var mexClient = new MetadataExchangeClient(mexBinding);
+            mexClient.MaximumResolvedReferences = int.MaxValue;
 
-			var metadataSet = mexClient.GetMetadata(wsdlUri, MetadataExchangeClientMode.HttpGet);
-			return new WsdlImporter(metadataSet);
-		}
+            var metadataSet = mexClient.GetMetadata(wsdlUri, MetadataExchangeClientMode.HttpGet);
+            return new WsdlImporter(metadataSet);
+        }
 
-		/// <summary>
-		/// Initializes client credentials 
-		/// </summary>
-		/// <param name="clientCredentials">Client credentials to initialize</param>
-		private void ApplyCredentials(ClientCredentials clientCredentials)
-		{
-			if (IssuerAuthenticationType == "UserNameMixed")
-			{
+        /// <summary>
+        /// Initializes client credentials 
+        /// </summary>
+        /// <param name="clientCredentials">Client credentials to initialize</param>
+        private void ApplyCredentials(ClientCredentials clientCredentials)
+        {
+            if (IssuerAuthenticationType == "UserNameMixed")
+            {
+                if(_connectionParameters.Credential == null)
+                {
+                    throw new InvalidOperationException($"Authentication endpoint {_issuerWSTrustEndpointUri.Value} requires credentials");
+                }
                 clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
             }
-		}
-		
-		/// <summary>
-		/// Apply timeouts to the endpoint
-		/// </summary>
-		/// <param name="endpoint">The endpoint</param>
-		/// <param name="timeout">The timeout</param>
-		private void ApplyTimeout(ServiceEndpoint endpoint, TimeSpan? timeout)
-		{
-			if (timeout != null)
-			{
-				endpoint.Binding.ReceiveTimeout = timeout.Value;
-				endpoint.Binding.SendTimeout = timeout.Value;
-			}
-		}
-		
-		/// <summary>
-		/// Applies quotas to endpoint
-		/// </summary>
-		/// <param name="endpoint">The endpoint</param>
-		private void ApplyQuotas(ServiceEndpoint endpoint)
-		{
+        }
+
+        /// <summary>
+        /// Apply timeouts to the endpoint
+        /// </summary>
+        /// <param name="endpoint">The endpoint</param>
+        /// <param name="timeout">The timeout</param>
+        private void ApplyTimeout(ServiceEndpoint endpoint, TimeSpan? timeout)
+        {
+            if (timeout != null)
+            {
+                endpoint.Binding.ReceiveTimeout = timeout.Value;
+                endpoint.Binding.SendTimeout = timeout.Value;
+            }
+        }
+
+        /// <summary>
+        /// Applies quotas to endpoint
+        /// </summary>
+        /// <param name="endpoint">The endpoint</param>
+        private void ApplyQuotas(ServiceEndpoint endpoint)
+        {
             _logger.WriteDebug($"ApplyQuotas on serviceEndpoint[{endpoint.Address.Uri}]");
             CustomBinding customBinding = (CustomBinding)endpoint.Binding;
-			var textMessageEncoding = customBinding.Elements.Find<TextMessageEncodingBindingElement>();
-			textMessageEncoding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
-			textMessageEncoding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
-			textMessageEncoding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
-			textMessageEncoding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
-			textMessageEncoding.ReaderQuotas.MaxDepth = 64;
+            var textMessageEncoding = customBinding.Elements.Find<TextMessageEncodingBindingElement>();
+            textMessageEncoding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
+            textMessageEncoding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
+            textMessageEncoding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
+            textMessageEncoding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
+            textMessageEncoding.ReaderQuotas.MaxDepth = 64;
 
-			var transport = customBinding.Elements.Find<TransportBindingElement>();
-			transport.MaxReceivedMessageSize = Int32.MaxValue;
-			transport.MaxBufferPoolSize = Int32.MaxValue;
-		}
-		#endregion
+            var transport = customBinding.Elements.Find<TransportBindingElement>();
+            transport.MaxReceivedMessageSize = Int32.MaxValue;
+            transport.MaxBufferPoolSize = Int32.MaxValue;
+        }
+        #endregion
 
         #region IDisposable Methods
         /// <summary>

@@ -25,6 +25,8 @@ $ditaMapFileContent = @"
 "@
 Write-Verbose "Initializing variables for UserName/Password based tests, so ISHSTS-like..."
 $webServicesBaseUrl = 'https://ish.example.com/ISHWS/'  # must have trailing slash for tests to succeed
+$wsTrustIssuerUrl = 'https://ish.example.com/ISHSTS/issue/wstrust/mixed/username'
+$wsTrustIssuerMexUrl = 'https://ish.example.com/ISHSTS/issue/wstrust/mex'
 $ishUserName = 'admin2'
 $ishPassword = 'admin2'
 Write-Verbose "Initializing variables for System Setup"
@@ -37,6 +39,20 @@ $ishLngCombination = 'en'  # LanguageCombination like 'en+fr+nl' can only be exp
 $ishOutputFormatDitaXml = 'GUID-079A324-FE52-45C4-82CD-A1A9663C2777'  # 'DITA XML' element name
 $ishLovId = "DLANGUAGE"  # ListOfValues where the Lov tests will work on
 
+
+#region Placeholder to inject your variable overrides. DONT FORGET TO DELETE
+
+# e.g.
+# $ishUserName = 'myusername'
+# $ishPassword = 'mypassword'
+
+#endregion
+
+$webServicesBaseUrl -match "https://((?<hostname>.+))+/(.)+/"
+$hostname=$Matches['hostname']
+$localWebServicesBaseUrl = $webServicesBaseUrl.Replace($hostname,"localhost")
+$localWsTrustIssuerUrl =  $wsTrustIssuerUrl.Replace($hostname,"localhost")
+$localWsTrustIssuerMexUrl =  $wsTrustIssuerMexUrl.Replace($hostname,"localhost")
 
 #
 # Note
