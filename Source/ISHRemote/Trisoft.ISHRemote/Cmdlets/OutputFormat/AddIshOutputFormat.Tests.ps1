@@ -18,9 +18,9 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
-						Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
+			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" } # new mandatory field
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
 			$ishObject.GetType().Name | Should BeExactly "IshObject"
 			$ishObject.Count | Should Be 1
@@ -30,9 +30,9 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
-						Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
+			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" } # new mandatory field
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
 			$ishObject.Count | Should Be 1
 			$ishObject.IshRef -Like "VOUTPUTFORMAT*" | Should Be $true
@@ -42,10 +42,10 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
-						Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHOBJECTACTIVE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
+			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" } # new mandatory field
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name "FISHOUTPUTFORMATNAME" -Level None).Length -gt 1 | Should Be $true
 		}
@@ -56,7 +56,6 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
-						Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHOBJECTACTIVE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution |
@@ -65,6 +64,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 						Set-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -Level None -Value "SomethingReadAccess"  |
 						Set-IshMetadataField -IshSession $ishSession -Name "OWNER" -Level None -Value "SomethingOwner" |
 						Set-IshMetadataField -IshSession $ishSession -Name "INVALIDFIELDNAME" -Level None -Value "SomethingInvalidFieldName"
+			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" } # new mandatory field
 			{ Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" } | Should Throw
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
@@ -74,9 +74,9 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 	    $metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			        Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 					Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
-					Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 					Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 					Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
+		if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" } # new mandatory field
 		$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None |
 			                 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None |
 							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None |
