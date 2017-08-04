@@ -18,6 +18,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
+						Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
@@ -29,6 +30,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
+						Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
@@ -40,6 +42,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
+						Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHOBJECTACTIVE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
@@ -53,6 +56,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
+						Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHOBJECTACTIVE" -Level None -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution |
@@ -70,26 +74,31 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 	    $metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
 			        Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
 					Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
+					Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" |
 					Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
 					Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
-		$requestedMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
-			                 Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
-							 Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
-							 Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
-					         Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element |
-							 Set-IshMetadataField -IshSession $ishSession -Name "FISHOUTPUTEDT" -Level None -ValueType Element
+		$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None |
+			                 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None |
+					         Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHOUTPUTEDT" -Level None -ValueType Element
 		$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
-		$ishObjectA = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
+		$ishObjectA = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" | 
+		              Get-IshOutputFormat -IshSession $ishSession -RequestedMetadata $requestedMetadata
 		$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " B")
 		$ishObjectB = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" | 
 		              Get-IshOutputFormat -IshSession $ishSession -RequestedMetadata $requestedMetadata
 		$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " C")
-		$ishObjectC = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
+		$ishObjectC = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" | 
+		              Get-IshOutputFormat -IshSession $ishSession -RequestedMetadata $requestedMetadata
 		$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " D")
 		$ishObjectD = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" | 
 		              Get-IshOutputFormat -IshSession $ishSession -RequestedMetadata $requestedMetadata
 		$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " E")
-		$ishObjectE = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
+		$ishObjectE = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" | 
+		              Get-IshOutputFormat -IshSession $ishSession -RequestedMetadata $requestedMetadata
 		$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " F")
 		$ishObjectF = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" | 
 		              Get-IshOutputFormat -IshSession $ishSession -RequestedMetadata $requestedMetadata
