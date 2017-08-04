@@ -49,7 +49,7 @@ $ishLovId = "DLANGUAGE"  # ListOfValues where the Lov tests will work on
 
 #endregion
 
-$webServicesBaseUrl -match "https://((?<hostname>.+))+/(.)+/"
+$webServicesBaseUrl -match "https://((?<hostname>.+))+/(.)+/" | Out-Null
 $hostname=$Matches['hostname']
 $localWebServicesBaseUrl = $webServicesBaseUrl.Replace($hostname,"localhost")
 $localWsTrustIssuerUrl =  $wsTrustIssuerUrl.Replace($hostname,"localhost")
