@@ -321,6 +321,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                 _fieldDefinitionElementNames.Remove("OWNER");
                 _fieldDefinitionElementNames["CHECKED-OUT"].Correct(false, true, false, true, false, true);
                 _fieldDefinitionElementNames["CHECKED-OUT-BY"].Correct(false, true, false, true, false, true);
+                _fieldDefinitionElementNames["CREATED-ON"].IsBasic = false;
                 _fieldDefinitionElementNames["ED"].Correct(false, true, false, false, false, false);
                 _fieldDefinitionElementNames["ED"].IsMultiValue = false;
                 _fieldDefinitionElementNames["ED"].IsSystem = true;
@@ -344,6 +345,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                 _fieldDefinitionElementNames["FISHCONDITIONS"].Correct(false, true, false, false);
                 _fieldDefinitionElementNames["FISHCURRENTPROGRESS"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHEDITTMPLTDESCRIPTION"].IsSystem = true;
+                _fieldDefinitionElementNames["FISHEDITTMPLTDESCRIPTION"].IsBasic = false;
                 _fieldDefinitionElementNames["FISHEDITTMPLTICONNAME"].Correct(true, true, true, false, false, false);
                 _fieldDefinitionElementNames["FISHEDITTMPLTICONNAME"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHEDTNAME"].Correct(true, true, true, false);
@@ -372,17 +374,19 @@ namespace Trisoft.ISHRemote.HelperClasses
                 _fieldDefinitionElementNames["FISHLASTMODIFIEDBY"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHLASTMODIFIEDON"].Correct(false, true, false, true);
                 _fieldDefinitionElementNames["FISHLASTMODIFIEDON"].IsSystem = true;
+                _fieldDefinitionElementNames["FISHLASTMODIFIEDON"].IsBasic = false;
                 _fieldDefinitionElementNames["FISHLEASEDBY"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHLEASEDON"].Correct(false, true, false, false);
                 _fieldDefinitionElementNames["FISHLEASEDON"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHLINKS"].Correct(false, true, false, false, false, false);
                 _fieldDefinitionElementNames["FISHLINKS"].IsSystem = true;
-                _fieldDefinitionElementNames["FISHLNGINDEPENDENT"].Correct(true, true, true, false, false, false); // obsolete, or custom field?
+                _fieldDefinitionElementNames["FISHLNGINDEPENDENT"].Correct(true, true, true, true, false, false); // obsolete, or custom field?
                 _fieldDefinitionElementNames["FISHLNGINDEPENDENT"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHMASTERREF"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHMAXIMUMPROGRESS"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHMODIFIEDON"].Correct(false, true, false, false, false, true); // Used on the publication version to indicate the last modification date of the publication definition.
                 _fieldDefinitionElementNames["FISHMODIFIEDON"].IsSystem = true;
+                _fieldDefinitionElementNames["FISHMODIFIEDON"].IsBasic = false;
                 _fieldDefinitionElementNames["FISHNOREVISIONS"].IsBasic = false;
                 _fieldDefinitionElementNames["FISHNOREVISIONS"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHOBJECTACTIVE"].Correct(false, true, true, false);
@@ -405,6 +409,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                 _fieldDefinitionElementNames["FISHPUBREPORT"].IsBasic = false; // xml field
                 _fieldDefinitionElementNames["FISHPUBREVIEWENDDATE"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHPUBSOURCELANGUAGES"].IsSystem = true;
+                _fieldDefinitionElementNames["FISHPUBSOURCELANGUAGES"].IsMultiValue = false;
                 _fieldDefinitionElementNames["FISHPUBSTARTDATE"].Correct(false, true, false, false);
                 _fieldDefinitionElementNames["FISHPUBSTARTDATE"].IsSystem = true;
                 _fieldDefinitionElementNames["FISHPUBSTATUS"].IsSystem = true;
@@ -491,6 +496,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                 _fieldDefinitionElementNames["FUSERGROUP"].AllowOnUpdate = false;
                 _fieldDefinitionElementNames["FUSERGROUP"].IsBasic = false;
                 _fieldDefinitionElementNames["FUSERGROUP"].IsSystem = true;
+                _fieldDefinitionElementNames["MODIFIED-ON"].IsBasic = false;
                 _fieldDefinitionElementNames["NAME"].Correct(false, true, false, false, false, false);
                 _fieldDefinitionElementNames["OSUSER"].IsBasic = false;
                 _fieldDefinitionElementNames["PASSWORD"].Correct(true, false, true, false, false, true);
@@ -611,8 +617,8 @@ namespace Trisoft.ISHRemote.HelperClasses
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "FISHBASELINEACTIVE")].IsDescriptive = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "FISHLABELRELEASED")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "FISHLABELRELEASED")].IsDescriptive = true;
+            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "NAME")].AllowOnUpdate = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "NAME")].IsDescriptive = true;
-            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "NAME")].AllowOnUpdate = false;
             _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "ED"));
             _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "CHECKED-OUT"));
             _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHBaseline, Enumerations.Level.None, "CHECKED-OUT-BY"));
@@ -711,7 +717,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         private void CorrectISHOutputFormat()
         {
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHOUTPUTEDT")].IsBasic = true;
-            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHOUTPUTEDT")].IsDescriptive = true;
+            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHOUTPUTEDT")].IsDescriptive = false;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHOUTPUTEDT")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHCLEANUP")].IsSystem = true;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHOutputFormat, Enumerations.Level.None, "FISHKEEPDTDSYSTEMID")].IsSystem = true;
@@ -729,8 +735,8 @@ namespace Trisoft.ISHRemote.HelperClasses
 
         private void CorrectISHPublication()
         {
-            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHPublication, Enumerations.Level.Lng, "DOC-LANGUAGE")].IsDescriptive = true;
-            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHPublication, Enumerations.Level.Lng, "DOC-LANGUAGE")].IsBasic = true;
+            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHPublication, Enumerations.Level.Lng, "DOC-LANGUAGE")].IsDescriptive = false;
+            _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHPublication, Enumerations.Level.Lng, "DOC-LANGUAGE")].IsBasic = false;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHPublication, Enumerations.Level.Lng, "DOC-LANGUAGE")].AllowOnCreate = false;
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHPublication, Enumerations.Level.Lng, "DOC-LANGUAGE")].AllowOnUpdate = false;
             _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHPublication, Enumerations.Level.Lng, "FISHPUBREPORT"));
