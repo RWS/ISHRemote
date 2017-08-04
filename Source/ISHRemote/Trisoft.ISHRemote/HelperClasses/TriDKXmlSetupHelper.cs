@@ -136,7 +136,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                 IsSystem = isSystem.Equals("yes", StringComparison.InvariantCulture);
                 string[] descriptiveFields = { "VERSION", "DOC-LANGUAGE", "FRESOLUTION", "FISHPUBLNGCOMBINATION", "FISHOUTPUTFORMATREF", "FISHOUTPUTFORMATNAME", "FISHEDTNAME", "FNAME", "USERNAME", "FISHUSERROLENAME", "FISHUSERGROUPNAME" };
                 IsDescriptive = descriptiveFields.Contains<string>(name);
-                string[] notAllowOnReadFields = { "PASSWORD" };
+                string[] notAllowOnReadFields = { "PASSWORD", "FISHDITADLVRCLIENTSECRET" };
                 AllowOnRead = !notAllowOnReadFields.Contains<string>(name);
                 AllowOnCreate = classes.Contains("NEW");
                 AllowOnUpdate = classes.Contains("MODIFY");
