@@ -233,9 +233,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + "]");
                 WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] TimeoutIssue[{_timeoutIssue}] TimeoutService[{_timeoutService}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
                 IshSession ishSession = null;
-                /* If the PSCmdlet is not accepted switch the condition to
-                 * if (!String.IsNullOrWhiteSpace(WsTrustIssuerMexUrl) && !String.IsNullOrWhiteSpace(WsTrustIssuerMexUrl))
-                 */
                 if (this.ParameterSetName.EndsWith("-ExplicitIssuer"))
                 {
                     WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] WsTrustIssuerUrl[{WsTrustIssuerUrl}] WsTrustIssuerMexUrl[{WsTrustIssuerMexUrl}]");
