@@ -696,9 +696,6 @@
     <None Include="Cmdlets\Settings\GetIshTimeZone.Tests.ps1" />
     <None Include="Cmdlets\Settings\GetIshTypeFieldDefinition.Tests.ps1" />
     <None Include="ISHRemote.PesterSetup.ps1" />
-    <None Include="ISHRemote.psd1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Properties\AssemblyInfo.targets" />
     <None Include="Properties\ModuleManifest.targets" />
     <None Include="Samples\Publish-PublicationOutputs\Sample.Automate.PublishPublicationOutputs.ps1" />

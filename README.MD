@@ -21,10 +21,12 @@
 
 ## Prerequisites
 
-When you have PowerShell 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 5.0... and PackageManagement is there implicitly.
-When you have a PowerShell version lower than 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 4.0 or even 3.0. Note that the latest Knowledge Center 2016SP1/12.0.1 release is only verified with PowerShell 4 (not 5 or above), so don't upgrade your servers. As ISHRemote is about a client-side web services driven library I actually don't expect you to even install it on a server.
+When you have Windows PowerShell 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 5.0... and PackageManagement is there implicitly.
+When you have a Windows PowerShell version lower than 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 4.0 or even 3.0. Note that the latest Knowledge Center 2016SP4/12.0.4 release is only verified with Windows PowerShell 4 (not 5 or above), so don't upgrade your servers. As ISHRemote is about a client-side web services driven library I actually don't expect you to even install it on a server.
 
-So either upgrade to [Windows Management Framework 5.0](https://www.microsoft.com/en-us/download/details.aspx?id=50395) or stay on PowerShell 4 and install [Package Management Preview – March 2016 for PowerShell 4 & 3](https://blogs.msdn.microsoft.com/powershell/2016/03/08/package-management-preview-march-2016-for-powershell-4-3-is-now-available/).
+So either upgrade to [Windows Management Framework 5.0](https://www.microsoft.com/en-us/download/details.aspx?id=50395) or stay on Windows PowerShell 4 and install [Package Management Preview – March 2016 for PowerShell 4 & 3](https://blogs.msdn.microsoft.com/powershell/2016/03/08/package-management-preview-march-2016-for-powershell-4-3-is-now-available/).
+
+Note that we rely on `Windows PowerShell` (FullCLR), and not `PowerShell Core` (CoreCLR) which relies on `.NET Core`. Main reason is that the Core edition doesn't offer all supporting libraries for `WS-Trust` based authentication like `System.IdentityModel` and `System.ServiceModel`.
 
 ## Install
 Open a PowerShell, then you can find and install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator. The `-Force` will make you bypass some security/trust questions.
@@ -123,7 +125,7 @@ In `ISHRemote.PesterSetup.ps1` override the global variables used for tests. Loo
 
 ### Prerequisites
 
-1. Install or make sure you run Windows Management Framework v5, so PowerShell v5 for Pester support, see https://msdn.microsoft.com/en-us/powershell/wmf/requirements
+1. Install or make sure you run Windows Management Framework v5, so Windows PowerShell v5 for Pester support, see https://msdn.microsoft.com/en-us/powershell/wmf/requirements
 1. Install [Powershell Tools for Visual Studio 2015](https://visualstudiogallery.msdn.microsoft.com/c9eb3ba8-0c59-4944-9a62-6eee37294597/view/Discussions/1)
 1. Install Pester and have it available in `%userprofile%\My Documents\WindowsPowerShell\Modules\Pester`
 
