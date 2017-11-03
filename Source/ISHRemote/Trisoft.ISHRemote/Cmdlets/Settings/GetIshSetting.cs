@@ -69,6 +69,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// Get-IshSetting -IshSession $ishSession -FieldName "FTRANSLATIONCONFIGURATION" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLWriteObjPluginConfig.xml"
     /// Get-IshSetting -IshSession $ishSession -FieldName "FISHWRITEOBJPLUGINCFG" -FilePath $filePath
+    /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLPublishPluginConfiguration.xml"
+    /// Get-IshSetting -IshSession $ishSession -FieldName "FISHPUBLISHPLUGINCONFIG" -FilePath $filePath
     /// Write-Host "Done, see $settingsFolderPath"
     /// </code>
     /// <para>Retrieve all Settings xml configuration entries and save them in a folder to desk allowing file-to-file comparison with EnterViaUI folder.</para>

@@ -31,6 +31,17 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para type="description">The Set-IshDocumentObj cmdlet updates the document objects that are passed through the pipeline or determined via provided parameters This commandlet allows to update all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). 
     /// For publication (outputs) you need to use Set-IshPublicationOutput.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl $wsBaseUrl -PSCredential Admin
+    /// Get-IshDocumentObj -IshSession $ishSession -LogicalId ISHPUBLMODULECOMBINELANGUAGES | 
+    /// Set-IshMetadataField -IshSession $ishSession  -Name "FSTATUS" -Level "Lng" -ValueType "Element"  -Value "VSTATUSTOBEREVIEWED" |
+    /// Set-IshDocumentObj -IshSession $ishSession |
+    /// Set-IshMetadataField -IshSession $ishSession  -Name "FSTATUS" -Level "Lng" -ValueType "Element"  -Value "VSTATUSRELEASED" |
+    /// Set-IshDocumentObj -IshSession $ishSession
+    /// </code>
+    /// <para>For all versions and languages retrieved, push them to status 'To Be Reviewed' and immediately to 'Release'. Note that also Find-IshDocumentObj or Get-IshFolderContent are ways to get to content objects.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshDocumentObj", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
     public sealed class SetIshDocumentObj : DocumentObjCmdlet

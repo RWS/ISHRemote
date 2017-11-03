@@ -23,7 +23,8 @@ Describe “Add-IshBaseline" -Tags "Create" {
 
 	Context “Add-IshBaseline IshObjectsGroup" {
 		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
-		$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName
+		$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName | 
+		              Get-IshBaseline -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME")
 		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " B")
 		$ishObjectB = Add-IshBaseline -IshSession $ishSession -Name $baselineName | 
 		              Get-IshBaseline -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME")
@@ -34,7 +35,8 @@ Describe “Add-IshBaseline" -Tags "Create" {
 		$ishObjectD = Add-IshBaseline -IshSession $ishSession -Name $baselineName | 
 		              Get-IshBaseline -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME")
 		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " E")
-		$ishObjectE = Add-IshBaseline -IshSession $ishSession -Name $baselineName
+		$ishObjectE = Add-IshBaseline -IshSession $ishSession -Name $baselineName | 
+		              Get-IshBaseline -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME")
 		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " F")
 		$ishObjectF = Add-IshBaseline -IshSession $ishSession -Name $baselineName | 
 		              Get-IshBaseline -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME")
