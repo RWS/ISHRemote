@@ -99,7 +99,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     public sealed class NewIshSession : SessionCmdlet
     {
         /// <summary>
-        /// <para type="description">SDL Knowledge Center Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: "https://example.com/ISHWS/"</para>
+        /// <para type="description">SDL Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: "https://example.com/ISHWS/"</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
@@ -138,7 +138,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         public PSCredential PSCredential { get; set; }
 
         /// <summary>
-        /// <para type="description">Username to login into SDL Knowledge Center Content Manager</para>
+        /// <para type="description">Username to login into SDL Tridion Docs Content Manager</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
@@ -150,7 +150,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">Password to login into SDL Knowledge Center Content Manager</para>
+        /// <para type="description">Password to login into SDL Tridion Docs Content Manager</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]

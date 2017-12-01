@@ -1,6 +1,6 @@
 # Summary
 
-`ISHRemote` is a PowerShell module on SDL Knowledge Center Content Manager. Its goal is business automation on top of the Component Content Management System (InfoShare). This library is constructed close to the "Web Services API" to:
+`ISHRemote` is a PowerShell module on SDL Tridion Docs Content Manager. Its goal is business automation on top of the Component Content Management System (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare). This library is constructed close to the "Web Services API" to:
 * allow business logic automation ranging from triggering publishing into the continuous integration pipeline over legacy data correction up to provisioning
 * show case code examples and API best practices
 
@@ -22,7 +22,7 @@
 ## Prerequisites
 
 When you have Windows PowerShell 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 5.0... and PackageManagement is there implicitly.
-When you have a Windows PowerShell version lower than 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 4.0 or even 3.0. Note that the latest Knowledge Center 2016SP4/12.0.4 release is only verified with Windows PowerShell 4 (not 5 or above), so don't upgrade your servers. As ISHRemote is about a client-side web services driven library I actually don't expect you to even install it on a server.
+When you have a Windows PowerShell version lower than 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 4.0 or even 3.0. Note that the latest Knowledge Center 2016SP4/12.0.4 release is only verified with Windows PowerShell 4, so don't upgrade your servers. While Tridion Docs 13/13.0.0 is verified for Windows PowerShell 5. As ISHRemote is about a client-side web services driven library I actually don't expect you to even install it on a server.
 
 So either upgrade to [Windows Management Framework 5.0](https://www.microsoft.com/en-us/download/details.aspx?id=50395) or stay on Windows PowerShell 4 and install [Package Management Preview – March 2016 for PowerShell 4 & 3](https://blogs.msdn.microsoft.com/powershell/2016/03/08/package-management-preview-march-2016-for-powershell-4-3-is-now-available/).
 
