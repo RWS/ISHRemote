@@ -37,6 +37,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             /// <para type="description">Compare result indicates the entry exists in both lists with differences on the descriptive properties, showing left entry</para>
             /// </summary>
             LeftDifferent,
+            /// <summary>
             /// <para type="description">Compare result indicates the entry exists in both lists with differences on the descriptive properties, showing right entry</para>
             /// </summary>
             RightDifferent,
@@ -50,7 +51,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             RightOnly
         }
 
-        private Compare _compareResult;
+        private readonly Compare _compareResult;
 
         internal IshTypeFieldDefinitionCompare(IshTypeFieldDefinition ishTypeFieldDefinition, Compare compare)
             : base(ishTypeFieldDefinition)

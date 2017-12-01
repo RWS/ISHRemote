@@ -127,11 +127,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <summary>
         /// Initially holds incoming IshObject entries from the pipeline to correct the incorrect array-objects from Trisoft.Automation
         /// </summary>
-        private List<IshFolder> _retrievedIshFolders = new List<IshFolder>();
+        private readonly List<IshFolder> _retrievedIshFolders = new List<IshFolder>();
         /// <summary>
         /// Initially holds incoming folder id entries from the pipeline to correct the incorrect array-objects from Trisoft.Automation
         /// </summary>
-        private List<long> _retrievedFolderIds = new List<long>();
+        private readonly List<long> _retrievedFolderIds = new List<long>();
         /// <summary>
         /// Requested metadata to be shared across all (recursive) calls
         /// </summary>

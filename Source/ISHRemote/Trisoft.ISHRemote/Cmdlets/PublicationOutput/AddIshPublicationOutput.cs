@@ -59,7 +59,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         public IshSession IshSession { get; set; }
 
         /// <summary>
-        /// <para type="description">The <see cref="Objects.IshObject"/>s that need to be added.</para>
+        /// <para type="description">The <see cref="Objects.Public.IshObject"/>s that need to be added.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
@@ -147,7 +147,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// </summary>
         /// <exception cref="TrisoftAutomationException"></exception>
         /// <exception cref="Exception"></exception>
-        /// <remarks>Writes an <see cref="Objects.IshObject"/> array to the pipeline.</remarks>
+        /// <remarks>Writes an <see cref="Objects.Public.IshObject"/> array to the pipeline.</remarks>
         protected override void ProcessRecord()
         {
             try

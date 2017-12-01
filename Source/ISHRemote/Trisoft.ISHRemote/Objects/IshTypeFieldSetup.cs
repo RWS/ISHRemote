@@ -35,7 +35,7 @@ namespace Trisoft.ISHRemote.Objects
         /// <summary>
         /// Lookup dictionary based on field identifier (like ISHType, Level, Name concatenation)
         /// </summary>
-        private SortedDictionary<string, IshTypeFieldDefinition> _ishTypeFieldDefinitions;
+        private readonly SortedDictionary<string, IshTypeFieldDefinition> _ishTypeFieldDefinitions;
         /// <summary>
         /// Client side filtering of nonexisting or unallowed metadata can be done silently, with warning or not at all.
         /// </summary>

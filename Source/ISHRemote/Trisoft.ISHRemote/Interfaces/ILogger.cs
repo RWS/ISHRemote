@@ -63,11 +63,5 @@ namespace Trisoft.ISHRemote.Interfaces
         /// <param name="ex">Exception as a result of the error.</param>
         /// <param name="errorObject">Object that caused error.</param>
         void WriteError(Exception ex, object errorObject = null);
-
-        /// <summary>
-        /// Emulate Write-Host operation.
-        /// </summary>
-        /// <param name="message">Write-Host message.</param>
-        //void WriteHostEmulation(string message);
     }
 }

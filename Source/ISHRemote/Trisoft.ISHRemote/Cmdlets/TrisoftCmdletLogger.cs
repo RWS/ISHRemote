@@ -66,23 +66,13 @@ namespace Trisoft.ISHRemote.Cmdlets
         }
 
         /// <summary>
-        /// Initializes the the instance of the <see cref="TrisoftCmdletLogger"/> with instance of <see cref="BaseCmdlet"/> class.
+        /// Initializes the the instance of the <see cref="TrisoftCmdletLogger"/> with instance of <see cref="TrisoftCmdlet"/> class.
         /// </summary>
         /// <param name="cmdlet">The instance of the <see cref="TrisoftCmdlet"/> class.</param>
         public static void Initialize(TrisoftCmdlet cmdlet)
         {
             _cmdlet = cmdlet;
         }
-
-        /// <summary>
-        /// Writes message as Write-Host wrapper.
-        /// </summary>
-        /// <param name="message">Verbose message.</param>
-        //public void WriteHostEmulation(string message)
-        //{
-        //    // !!!Warning, please use carefully.
-        //    _cmdlet.SessionState.InvokeCommand.InvokeScript("Write-Host \"" + message + "\"");
-        //}
 
         /// <summary>
         /// Reports progress.

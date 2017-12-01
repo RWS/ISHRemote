@@ -23,6 +23,8 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,6 +40,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <NoWarn>CS1591,S125,CS0168,S2292</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -319,6 +322,7 @@
     <None Include="Cmdlets\UserRole\AddIshUserRole.Tests.ps1" />
     <None Include="Cmdlets\User\GetIshUser.Tests.ps1" />
     <None Include="Objects\_ObjectsDiagram.cd" />
+    <None Include="packages.config" />
     <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\basemap.dtd" />
     <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\basetopic.dtd" />
     <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.ent" />
@@ -1338,6 +1342,13 @@
   <PropertyGroup>
     <PreBuildEvent>REM %25WINDIR%25\SysNative\WindowsPowerShell\v1.0\powershell.exe "$(SolutionDir)..\Tools\PowerShell\Test-SDLOpenSourceHeader.ps1" -Path "$(SolutionDir)..\"</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Microsoft.DotNet.Analyzers.Compatibility.0.1.2-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets" Condition="Exists('..\packages\Microsoft.DotNet.Analyzers.Compatibility.0.1.2-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.DotNet.Analyzers.Compatibility.0.1.2-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.DotNet.Analyzers.Compatibility.0.1.2-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

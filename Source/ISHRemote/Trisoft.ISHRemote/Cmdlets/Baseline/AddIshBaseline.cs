@@ -97,7 +97,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                                         Enumerations.ValueType.Value)[0];
                             string baselineName = baselineNameValueField.Value;
                             WriteDebug($"BaselineName[{baselineName}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
-                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Create);
                             if (ShouldProcess(baselineName))
                             {
                                 var baselineId = IshSession.Baseline25.Create(baselineName, string.Empty);

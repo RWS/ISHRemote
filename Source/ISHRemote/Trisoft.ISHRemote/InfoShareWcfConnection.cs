@@ -127,35 +127,35 @@ namespace Trisoft.ISHRemote
         /// <summary>
         /// Parameters that configure the connection behavior.
         /// </summary>
-        InfoShareWcfConnectionParameters _connectionParameters;
+        private readonly InfoShareWcfConnectionParameters _connectionParameters;
         /// <summary>
         /// The connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
         /// </summary>
-        private Lazy<XDocument> _connectionConfiguration;
+        private readonly Lazy<XDocument> _connectionConfiguration;
         /// <summary>
         /// The binding type that is required by the end point of the WS-Trust issuer.
         /// </summary>
-        private Lazy<string> _issuerAuthenticationType;
+        private readonly Lazy<string> _issuerAuthenticationType;
         /// <summary>
         /// The WS-Trust endpoint for the Security Token Service that provides the functionality to issue tokens as specified by the issuerwstrustbindingtype.
         /// </summary>
-        private Lazy<Uri> _issuerWSTrustEndpointUri;
+        private readonly Lazy<Uri> _issuerWSTrustEndpointUri;
         /// <summary>
         /// The WS-Trust metadata exchange endpoint for the Security Token Service that provides the functionality to issue tokens.
         /// </summary>
-        private Lazy<Uri> _issuerWSTrustMexUri;
+        private readonly Lazy<Uri> _issuerWSTrustMexUri;
         /// <summary>
         /// WS STS Realm to issue tokens for
         /// </summary>
-        private Lazy<Uri> _infoShareWSAppliesTo;
+        private readonly Lazy<Uri> _infoShareWSAppliesTo;
         /// <summary>
 		/// The token that is used to access the services.
 		/// </summary>
-		private Lazy<GenericXmlSecurityToken> _issuedToken;
+		private readonly Lazy<GenericXmlSecurityToken> _issuedToken;
         /// <summary>
         /// Service URIs by service.
         /// </summary>
-        private Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
+        private readonly Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
         /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
@@ -236,7 +236,6 @@ namespace Trisoft.ISHRemote
         /// </summary>
         /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
         /// <param name="infoShareWSBaseUri">Base URI for InfoShare WS.</param>
-        /// <param name="overrideWithLocalhostUri">Defines if the session must be created by using only local endpoints</param>
         /// <param name="parameters">Connection parameters.</param>
         public InfoShareWcfConnection(ILogger logger, Uri infoShareWSBaseUri, InfoShareWcfConnectionParameters parameters = null)
         {

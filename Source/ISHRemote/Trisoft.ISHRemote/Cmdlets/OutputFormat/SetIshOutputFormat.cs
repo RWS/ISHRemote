@@ -84,7 +84,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// </summary>
         /// <exception cref="TrisoftAutomationException"></exception>
         /// <exception cref="Exception"></exception>
-        /// <remarks>Writes an <see cref="Objects.IshObject"/> array to the pipeline.</remarks>
+        /// <remarks>Writes an <see cref="Objects.Public.IshObject"/> array to the pipeline.</remarks>
         protected override void ProcessRecord()
         {
 

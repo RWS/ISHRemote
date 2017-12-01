@@ -145,8 +145,9 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <summary>
         /// IshTypeFieldDefinition creation through an xml element. See Settings25.RetrieveFieldSetupByIshType
         /// </summary>
+        /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
         /// <param name="ishType">Card type identifier</param>
-        /// <param name="xmlIshTypeFieldDefinition">One IshTypeFieldDefinition xml.</param>
+        /// <param name="xmlDef">One IshTypeFieldDefinition xml.</param>
         internal IshTypeFieldDefinition(ILogger logger, Enumerations.ISHType ishType, XmlElement xmlDef)
         {
             _logger = logger;
@@ -213,6 +214,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <summary>
         /// IshTypeFieldDefinition creation with the bare descriptive identifiers, defaulting values to AllowOnRead only
         /// </summary>
+        /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
         /// <param name="ishType">Card type identifier</param>
         /// <param name="level">The level of the field on this ISHType (card type)</param>
         /// <param name="name">The name of the field</param>

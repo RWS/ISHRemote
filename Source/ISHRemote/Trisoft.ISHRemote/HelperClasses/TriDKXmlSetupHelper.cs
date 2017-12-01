@@ -37,19 +37,19 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// <summary>
         /// Returning list of definitions
         /// </summary>
-        private SortedDictionary<string, IshTypeFieldDefinition> _ishTypeFieldDefinitions;
+        private readonly SortedDictionary<string, IshTypeFieldDefinition> _ishTypeFieldDefinitions;
         /// <summary>
         /// cardTypeElementName and list of fieldElementNames
         /// </summary>
-        private Dictionary<string, List<CardTypeFieldDefinition>> _cardTypeFieldElementNames = new Dictionary<string, List<CardTypeFieldDefinition>>();
+        private readonly Dictionary<string, List<CardTypeFieldDefinition>> _cardTypeFieldElementNames = new Dictionary<string, List<CardTypeFieldDefinition>>();
         /// <summary>
         /// fieldElementNames and FieldDefinition matching TriDKXmlSetup tridk:field
         /// </summary>
-        private Dictionary<string, FieldDefinition> _fieldDefinitionElementNames = new Dictionary<string, FieldDefinition>();
+        private readonly Dictionary<string, FieldDefinition> _fieldDefinitionElementNames = new Dictionary<string, FieldDefinition>();
         /// <summary>
         /// Loaded TriDKXmlSetup Full Export 
         /// </summary>
-        XPathDocument _xpathDocument;
+        private readonly XPathDocument _xpathDocument;
         #endregion
 
         internal class CardTypeFieldDefinition
@@ -195,7 +195,6 @@ namespace Trisoft.ISHRemote.HelperClasses
             XPathNavigator xpathNavigator = _xpathDocument.CreateNavigator();
             XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager(xpathNavigator.NameTable);
             xmlNamespaceManager.AddNamespace("tridk", "urn:trisoft.be:Tridk:Setup:1.0");
-            //xmlNamespaceManager.AddNamespace("xmlns:tridk", "urn:trisoft.be:Tridk:Setup:1.0"); 
 
             // Looping all wanted ISHTypes (card types)
             XPathNodeIterator cardTypeNodes = xpathNavigator.Select("/tridk:setup/tridk:cardtypes/tridk:cardtype", xmlNamespaceManager);
@@ -220,7 +219,6 @@ namespace Trisoft.ISHRemote.HelperClasses
                 _cardTypeFieldElementNames.Add(CardTypeFieldDefinition.Key(ishType, ishLevel), new List<CardTypeFieldDefinition>());
 
                 XPathNodeIterator cardTypeFieldNodes = currentCardTypeNavigator.Select("tridk:fielddefinition/tridk:cardtypefield", xmlNamespaceManager);
-                List<string> cardTypeFieldElementNames = new List<string>();
                 while (cardTypeFieldNodes.MoveNext())
                 {
                     // now cardTypeNodes.Current points to the first selected node: field on the card type
@@ -504,9 +502,6 @@ namespace Trisoft.ISHRemote.HelperClasses
                 _fieldDefinitionElementNames["RIGHTS"].Correct(false, true, false, false, true, true);
                 _fieldDefinitionElementNames["USERNAME"].AllowOnCreate = false;
                 _fieldDefinitionElementNames["VERSION"].Correct(false, true, false, true);
-
-                // foreach (var field in _fieldDefinitionElementNames.Keys)
-                // { // dummy to allow debugging by printing in the watch window}
             }
             catch (Exception exception)
             {

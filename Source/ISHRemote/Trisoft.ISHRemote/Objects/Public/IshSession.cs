@@ -36,14 +36,14 @@ namespace Trisoft.ISHRemote.Objects.Public
     {
         private readonly ILogger _logger;
 
-        private Uri _webServicesBaseUri;
-        private Uri _wsTrustIssuerUri;
-        private Uri _wsTrustIssuerMexUri;
+        private readonly Uri _webServicesBaseUri;
+        private readonly Uri _wsTrustIssuerUri;
+        private readonly Uri _wsTrustIssuerMexUri;
         private string _ishUserName;
         private string _userName;
-        private SecureString _ishSecurePassword;
-        private string _seperator = ", ";
-        private string _folderPathSeparator = @"\";
+        private readonly SecureString _ishSecurePassword;
+        private readonly string _seperator = ", ";
+        private readonly string _folderPathSeparator = @"\";
 
         private IshVersion _serverVersion;
         private IshVersion _clientVersion;
@@ -55,9 +55,9 @@ namespace Trisoft.ISHRemote.Objects.Public
         private int _blobBatchSize = 50;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
-        private TimeSpan _timeoutService = TimeSpan.MaxValue;
-        private bool _ignoreSslPolicyErrors = false;
-        private bool _explicitIssuer = false;
+        private readonly TimeSpan _timeoutService = TimeSpan.MaxValue;
+        private readonly bool _ignoreSslPolicyErrors = false;
+        private readonly bool _explicitIssuer = false;
 
         private InfoShareWcfConnection _connection;
 
@@ -82,6 +82,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <summary>
         /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
         /// </summary>
+        /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
         /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
         /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
         /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
@@ -112,6 +113,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <summary>
         /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
         /// </summary>
+        /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
         /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
         /// <param name="wsTrustIssuerUrl">The url to the security token service wstrust endpoint. For example 'https://example.com/ISHSTS/issue/wstrust/mixed/username'</param>
         /// <param name="wsTrustIssuerMexUrl">The binding for the wsTrustEndpoint url</param>

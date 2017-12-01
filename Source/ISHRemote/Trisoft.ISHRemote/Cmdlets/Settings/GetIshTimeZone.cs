@@ -63,7 +63,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         {
             try
             {
-                if (Count != null && Count >= 1)
+                if (Count >= 1)
                 {
                     IshApplicationSettings applicationSettings = new IshApplicationSettings();
                     for (int i = 0; i < Count; i++)

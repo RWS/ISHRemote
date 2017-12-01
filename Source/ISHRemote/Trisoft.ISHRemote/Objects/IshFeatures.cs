@@ -30,7 +30,7 @@ namespace Trisoft.ISHRemote.Objects
     /// </summary>
     internal class IshFeatures
     {
-        private List<IshFeature> _ishFeatures;
+        private readonly List<IshFeature> _ishFeatures;
 
         /// <summary>
         /// Creates an empty instance of the  object.
@@ -86,7 +86,7 @@ namespace Trisoft.ISHRemote.Objects
         /// <summary>
         /// Add a ishFeature to the current list.
         /// </summary>
-        /// <param name="feature">IshFeature that needs to be added.</param>
+        /// <param name="ishFeature">IshFeature that needs to be added.</param>
         /// <returns>The current list of <see cref="IshFeatures"/>.</returns>
         public IshFeatures AddFeature(IshFeature ishFeature)
         {
