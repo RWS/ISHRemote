@@ -464,31 +464,31 @@ namespace Trisoft.ISHRemote.PublicationOutput25ServiceReference {
         System.Threading.Tasks.Task<string> GetPossibleTargetStatusesByIshLngRefAsync(long lngRef);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPu" +
-            "blishLogObjectInfoByIshLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPu" +
-            "blishLogObjectInfoByIshLngRefResponse")]
+            "blishReportInfoByIshLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPu" +
+            "blishReportInfoByIshLngRefResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.PublicationOutput25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPu" +
-            "blishLogObjectInfoByIshLngRefInfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
-        [return: System.ServiceModel.MessageParameterAttribute(Name="xmlIshPublishLogObjects")]
-        string GetPublishLogObjectInfoByIshLngRef(long lngRef);
+            "blishReportInfoByIshLngRefInfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="xmlIshPublishReportInfoObjects")]
+        string GetPublishReportInfoByIshLngRef(long lngRef);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPu" +
-            "blishLogObjectInfoByIshLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPu" +
-            "blishLogObjectInfoByIshLngRefResponse")]
-        [return: System.ServiceModel.MessageParameterAttribute(Name="xmlIshPublishLogObjects")]
-        System.Threading.Tasks.Task<string> GetPublishLogObjectInfoByIshLngRefAsync(long lngRef);
+            "blishReportInfoByIshLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPu" +
+            "blishReportInfoByIshLngRefResponse")]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="xmlIshPublishReportInfoObjects")]
+        System.Threading.Tasks.Task<string> GetPublishReportInfoByIshLngRefAsync(long lngRef);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNe" +
-            "xtPublishLogObjectChunkByIshLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNe" +
-            "xtPublishLogObjectChunkByIshLngRefResponse")]
+            "xtPublishReportChunkByIshLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNe" +
+            "xtPublishReportChunkByIshLngRefResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.PublicationOutput25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNe" +
-            "xtPublishLogObjectChunkByIshLngRefInfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
-        Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefResponse GetNextPublishLogObjectChunkByIshLngRef(Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefRequest request);
+            "xtPublishReportChunkByIshLngRefInfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
+        Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefResponse GetNextPublishReportChunkByIshLngRef(Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefRequest request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNe" +
-            "xtPublishLogObjectChunkByIshLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNe" +
-            "xtPublishLogObjectChunkByIshLngRefResponse")]
-        System.Threading.Tasks.Task<Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefResponse> GetNextPublishLogObjectChunkByIshLngRefAsync(Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefRequest request);
+            "xtPublishReportChunkByIshLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNe" +
+            "xtPublishReportChunkByIshLngRefResponse")]
+        System.Threading.Tasks.Task<Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefResponse> GetNextPublishReportChunkByIshLngRefAsync(Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefRequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -957,14 +957,14 @@ namespace Trisoft.ISHRemote.PublicationOutput25ServiceReference {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="GetNextPublishLogObjectChunkByIshLngRef", WrapperNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", IsWrapped=true)]
-    public partial class GetNextPublishLogObjectChunkByIshLngRefRequest {
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetNextPublishReportChunkByIshLngRef", WrapperNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", IsWrapped=true)]
+    public partial class GetNextPublishReportChunkByIshLngRefRequest {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", Order=0)]
         public long lngRef;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", Order=1)]
-        public long publishLogRef;
+        public string publishReportRef;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", Order=2)]
         public long offSet;
@@ -972,12 +972,12 @@ namespace Trisoft.ISHRemote.PublicationOutput25ServiceReference {
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", Order=3)]
         public int size;
         
-        public GetNextPublishLogObjectChunkByIshLngRefRequest() {
+        public GetNextPublishReportChunkByIshLngRefRequest() {
         }
         
-        public GetNextPublishLogObjectChunkByIshLngRefRequest(long lngRef, long publishLogRef, long offSet, int size) {
+        public GetNextPublishReportChunkByIshLngRefRequest(long lngRef, string publishReportRef, long offSet, int size) {
             this.lngRef = lngRef;
-            this.publishLogRef = publishLogRef;
+            this.publishReportRef = publishReportRef;
             this.offSet = offSet;
             this.size = size;
         }
@@ -985,8 +985,8 @@ namespace Trisoft.ISHRemote.PublicationOutput25ServiceReference {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="GetNextPublishLogObjectChunkByIshLngRefResponse", WrapperNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", IsWrapped=true)]
-    public partial class GetNextPublishLogObjectChunkByIshLngRefResponse {
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetNextPublishReportChunkByIshLngRefResponse", WrapperNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", IsWrapped=true)]
+    public partial class GetNextPublishReportChunkByIshLngRefResponse {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", Order=0)]
         public long offSet;
@@ -997,10 +997,10 @@ namespace Trisoft.ISHRemote.PublicationOutput25ServiceReference {
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/", Order=2)]
         public byte[] bytes;
         
-        public GetNextPublishLogObjectChunkByIshLngRefResponse() {
+        public GetNextPublishReportChunkByIshLngRefResponse() {
         }
         
-        public GetNextPublishLogObjectChunkByIshLngRefResponse(long offSet, int size, byte[] bytes) {
+        public GetNextPublishReportChunkByIshLngRefResponse(long offSet, int size, byte[] bytes) {
             this.offSet = offSet;
             this.size = size;
             this.bytes = bytes;
@@ -1342,33 +1342,33 @@ namespace Trisoft.ISHRemote.PublicationOutput25ServiceReference {
             return base.Channel.GetPossibleTargetStatusesByIshLngRefAsync(lngRef);
         }
         
-        public string GetPublishLogObjectInfoByIshLngRef(long lngRef) {
-            return base.Channel.GetPublishLogObjectInfoByIshLngRef(lngRef);
+        public string GetPublishReportInfoByIshLngRef(long lngRef) {
+            return base.Channel.GetPublishReportInfoByIshLngRef(lngRef);
         }
         
-        public System.Threading.Tasks.Task<string> GetPublishLogObjectInfoByIshLngRefAsync(long lngRef) {
-            return base.Channel.GetPublishLogObjectInfoByIshLngRefAsync(lngRef);
+        public System.Threading.Tasks.Task<string> GetPublishReportInfoByIshLngRefAsync(long lngRef) {
+            return base.Channel.GetPublishReportInfoByIshLngRefAsync(lngRef);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefResponse Trisoft.ISHRemote.PublicationOutput25ServiceReference.PublicationOutput.GetNextPublishLogObjectChunkByIshLngRef(Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefRequest request) {
-            return base.Channel.GetNextPublishLogObjectChunkByIshLngRef(request);
+        Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefResponse Trisoft.ISHRemote.PublicationOutput25ServiceReference.PublicationOutput.GetNextPublishReportChunkByIshLngRef(Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefRequest request) {
+            return base.Channel.GetNextPublishReportChunkByIshLngRef(request);
         }
         
-        public byte[] GetNextPublishLogObjectChunkByIshLngRef(long lngRef, long publishLogRef, ref long offSet, ref int size) {
-            Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefRequest inValue = new Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefRequest();
+        public byte[] GetNextPublishReportChunkByIshLngRef(long lngRef, string publishReportRef, ref long offSet, ref int size) {
+            Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefRequest inValue = new Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefRequest();
             inValue.lngRef = lngRef;
-            inValue.publishLogRef = publishLogRef;
+            inValue.publishReportRef = publishReportRef;
             inValue.offSet = offSet;
             inValue.size = size;
-            Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefResponse retVal = ((Trisoft.ISHRemote.PublicationOutput25ServiceReference.PublicationOutput)(this)).GetNextPublishLogObjectChunkByIshLngRef(inValue);
+            Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefResponse retVal = ((Trisoft.ISHRemote.PublicationOutput25ServiceReference.PublicationOutput)(this)).GetNextPublishReportChunkByIshLngRef(inValue);
             offSet = retVal.offSet;
             size = retVal.size;
             return retVal.bytes;
         }
         
-        public System.Threading.Tasks.Task<Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefResponse> GetNextPublishLogObjectChunkByIshLngRefAsync(Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishLogObjectChunkByIshLngRefRequest request) {
-            return base.Channel.GetNextPublishLogObjectChunkByIshLngRefAsync(request);
+        public System.Threading.Tasks.Task<Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefResponse> GetNextPublishReportChunkByIshLngRefAsync(Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefRequest request) {
+            return base.Channel.GetNextPublishReportChunkByIshLngRefAsync(request);
         }
     }
 }

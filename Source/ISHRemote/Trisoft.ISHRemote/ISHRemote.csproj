@@ -678,6 +678,56 @@
     <None Include="Scripts\Public\Expand-ISHParameter.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.wsdl" />
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput1.wsdl" />
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.BaseFolder.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.CreateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.FolderLocationResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextDataObjectChunkByIshLngRefResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextPublishReportChunkByIshLngRefResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetPossibleTargetStatusesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.ReleaseByIshLngRefResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.ReleaseResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.SetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.TryGetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\Settings25ServiceReference\Settings1.disco" />
     <None Include="Cmdlets\Application\GetIshVersion.Tests.ps1" />
     <None Include="Cmdlets\DocumentObj\AddIshDocumentObj.Tests.ps1" />
@@ -922,53 +972,6 @@
     <None Include="Service References\OutputFormat25ServiceReference\Trisoft.ISHRemote.OutputFormat25ServiceReference.GetMetadataResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.wsdl" />
-    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput1.wsdl" />
-    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput4.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.BaseFolder.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.CreateResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.FolderLocationResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetMetadataResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetNextDataObjectChunkByIshLngRefResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.GetPossibleTargetStatusesResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.ReleaseByIshLngRefResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.ReleaseResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.SetMetadataResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\Trisoft.ISHRemote.PublicationOutput25ServiceReference.TryGetMetadataResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\Search25ServiceReference\Search.wsdl" />
     <None Include="Service References\Search25ServiceReference\Search.xsd">
       <SubType>Designer</SubType>
@@ -1093,6 +1096,13 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\PublicationOutput25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\PublicationOutput25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\PublicationOutput25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.disco" />
     <None Include="Scripts\Private\Register-IshAuxParameterCompleter.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1231,13 +1241,6 @@
     <None Include="Service References\OutputFormat25ServiceReference\configuration91.svcinfo" />
     <None Include="Service References\OutputFormat25ServiceReference\configuration.svcinfo" />
     <None Include="Service References\OutputFormat25ServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.disco" />
-    <None Include="Service References\PublicationOutput25ServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\PublicationOutput25ServiceReference\configuration.svcinfo" />
-    <None Include="Service References\PublicationOutput25ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

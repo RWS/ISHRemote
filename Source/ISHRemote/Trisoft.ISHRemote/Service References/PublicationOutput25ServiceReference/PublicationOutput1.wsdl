@@ -1488,7 +1488,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetPublishLogObjectInfoByIshLngRef_Input_policy">
+  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetPublishReportInfoByIshLngRef_Input_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
@@ -1507,7 +1507,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetPublishLogObjectInfoByIshLngRef_output_policy">
+  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetPublishReportInfoByIshLngRef_output_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
@@ -1526,7 +1526,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetPublishLogObjectInfoByIshLngRef_InfoShareFault_Fault">
+  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetPublishReportInfoByIshLngRef_InfoShareFault_Fault">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
@@ -1545,7 +1545,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_Input_policy">
+  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetNextPublishReportChunkByIshLngRef_Input_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
@@ -1564,7 +1564,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_output_policy">
+  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetNextPublishReportChunkByIshLngRef_output_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
@@ -1583,7 +1583,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_InfoShareFault_Fault">
+  <wsp:Policy wsu:Id="CustomBinding_PublicationOutput_GetNextPublishReportChunkByIshLngRef_InfoShareFault_Fault">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
@@ -2091,33 +2091,33 @@
         <soap12:fault use="literal" name="InfoShareFault" namespace="" />
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="GetPublishLogObjectInfoByIshLngRef">
-      <soap12:operation soapAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishLogObjectInfoByIshLngRef" style="document" />
+    <wsdl:operation name="GetPublishReportInfoByIshLngRef">
+      <soap12:operation soapAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishReportInfoByIshLngRef" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetPublishLogObjectInfoByIshLngRef_Input_policy" />
+        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetPublishReportInfoByIshLngRef_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetPublishLogObjectInfoByIshLngRef_output_policy" />
+        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetPublishReportInfoByIshLngRef_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
       <wsdl:fault name="InfoShareFault">
-        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetPublishLogObjectInfoByIshLngRef_InfoShareFault_Fault" />
+        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetPublishReportInfoByIshLngRef_InfoShareFault_Fault" />
         <soap12:fault use="literal" name="InfoShareFault" namespace="" />
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="GetNextPublishLogObjectChunkByIshLngRef">
-      <soap12:operation soapAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishLogObjectChunkByIshLngRef" style="document" />
+    <wsdl:operation name="GetNextPublishReportChunkByIshLngRef">
+      <soap12:operation soapAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishReportChunkByIshLngRef" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_Input_policy" />
+        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetNextPublishReportChunkByIshLngRef_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_output_policy" />
+        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetNextPublishReportChunkByIshLngRef_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
       <wsdl:fault name="InfoShareFault">
-        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_InfoShareFault_Fault" />
+        <wsp:PolicyReference URI="#CustomBinding_PublicationOutput_GetNextPublishReportChunkByIshLngRef_InfoShareFault_Fault" />
         <soap12:fault use="literal" name="InfoShareFault" namespace="" />
       </wsdl:fault>
     </wsdl:operation>
@@ -2413,8 +2413,8 @@
         <soap12:fault use="literal" name="InfoShareFault" namespace="" />
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="GetPublishLogObjectInfoByIshLngRef">
-      <soap12:operation soapAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishLogObjectInfoByIshLngRef" style="document" />
+    <wsdl:operation name="GetPublishReportInfoByIshLngRef">
+      <soap12:operation soapAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishReportInfoByIshLngRef" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -2425,8 +2425,8 @@
         <soap12:fault use="literal" name="InfoShareFault" namespace="" />
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="GetNextPublishLogObjectChunkByIshLngRef">
-      <soap12:operation soapAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishLogObjectChunkByIshLngRef" style="document" />
+    <wsdl:operation name="GetNextPublishReportChunkByIshLngRef">
+      <soap12:operation soapAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishReportChunkByIshLngRef" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

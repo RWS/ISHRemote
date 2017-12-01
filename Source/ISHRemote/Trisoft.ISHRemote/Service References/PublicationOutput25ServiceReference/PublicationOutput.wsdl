@@ -225,22 +225,22 @@
   <wsdl:message name="PublicationOutput_GetPossibleTargetStatusesByIshLngRef_InfoShareFault_FaultMessage">
     <wsdl:part xmlns:q24="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q24:InfoShareFault" />
   </wsdl:message>
-  <wsdl:message name="PublicationOutput_GetPublishLogObjectInfoByIshLngRef_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetPublishLogObjectInfoByIshLngRef" />
+  <wsdl:message name="PublicationOutput_GetPublishReportInfoByIshLngRef_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPublishReportInfoByIshLngRef" />
   </wsdl:message>
-  <wsdl:message name="PublicationOutput_GetPublishLogObjectInfoByIshLngRef_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetPublishLogObjectInfoByIshLngRefResponse" />
+  <wsdl:message name="PublicationOutput_GetPublishReportInfoByIshLngRef_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPublishReportInfoByIshLngRefResponse" />
   </wsdl:message>
-  <wsdl:message name="PublicationOutput_GetPublishLogObjectInfoByIshLngRef_InfoShareFault_FaultMessage">
+  <wsdl:message name="PublicationOutput_GetPublishReportInfoByIshLngRef_InfoShareFault_FaultMessage">
     <wsdl:part xmlns:q25="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q25:InfoShareFault" />
   </wsdl:message>
-  <wsdl:message name="PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetNextPublishLogObjectChunkByIshLngRef" />
+  <wsdl:message name="PublicationOutput_GetNextPublishReportChunkByIshLngRef_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNextPublishReportChunkByIshLngRef" />
   </wsdl:message>
-  <wsdl:message name="PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetNextPublishLogObjectChunkByIshLngRefResponse" />
+  <wsdl:message name="PublicationOutput_GetNextPublishReportChunkByIshLngRef_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNextPublishReportChunkByIshLngRefResponse" />
   </wsdl:message>
-  <wsdl:message name="PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_InfoShareFault_FaultMessage">
+  <wsdl:message name="PublicationOutput_GetNextPublishReportChunkByIshLngRef_InfoShareFault_FaultMessage">
     <wsdl:part xmlns:q26="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q26:InfoShareFault" />
   </wsdl:message>
   <wsdl:portType name="PublicationOutput">
@@ -364,15 +364,15 @@
       <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPossibleTargetStatusesByIshLngRefResponse" message="tns:PublicationOutput_GetPossibleTargetStatusesByIshLngRef_OutputMessage" />
       <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPossibleTargetStatusesByIshLngRefInfoShareFault" name="InfoShareFault" message="tns:PublicationOutput_GetPossibleTargetStatusesByIshLngRef_InfoShareFault_FaultMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetPublishLogObjectInfoByIshLngRef">
-      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishLogObjectInfoByIshLngRef" message="tns:PublicationOutput_GetPublishLogObjectInfoByIshLngRef_InputMessage" />
-      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishLogObjectInfoByIshLngRefResponse" message="tns:PublicationOutput_GetPublishLogObjectInfoByIshLngRef_OutputMessage" />
-      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishLogObjectInfoByIshLngRefInfoShareFault" name="InfoShareFault" message="tns:PublicationOutput_GetPublishLogObjectInfoByIshLngRef_InfoShareFault_FaultMessage" />
+    <wsdl:operation name="GetPublishReportInfoByIshLngRef">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishReportInfoByIshLngRef" message="tns:PublicationOutput_GetPublishReportInfoByIshLngRef_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishReportInfoByIshLngRefResponse" message="tns:PublicationOutput_GetPublishReportInfoByIshLngRef_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetPublishReportInfoByIshLngRefInfoShareFault" name="InfoShareFault" message="tns:PublicationOutput_GetPublishReportInfoByIshLngRef_InfoShareFault_FaultMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetNextPublishLogObjectChunkByIshLngRef">
-      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishLogObjectChunkByIshLngRef" message="tns:PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_InputMessage" />
-      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishLogObjectChunkByIshLngRefResponse" message="tns:PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_OutputMessage" />
-      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishLogObjectChunkByIshLngRefInfoShareFault" name="InfoShareFault" message="tns:PublicationOutput_GetNextPublishLogObjectChunkByIshLngRef_InfoShareFault_FaultMessage" />
+    <wsdl:operation name="GetNextPublishReportChunkByIshLngRef">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishReportChunkByIshLngRef" message="tns:PublicationOutput_GetNextPublishReportChunkByIshLngRef_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishReportChunkByIshLngRefResponse" message="tns:PublicationOutput_GetNextPublishReportChunkByIshLngRef_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/PublicationOutput/GetNextPublishReportChunkByIshLngRefInfoShareFault" name="InfoShareFault" message="tns:PublicationOutput_GetNextPublishReportChunkByIshLngRef_InfoShareFault_FaultMessage" />
     </wsdl:operation>
   </wsdl:portType>
 </wsdl:definitions>
