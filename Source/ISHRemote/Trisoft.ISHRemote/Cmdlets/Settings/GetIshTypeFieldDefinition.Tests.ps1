@@ -26,6 +26,9 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 		It "ishTypeFieldDefinitions[0].DataType" {
 			$ishTypeFieldDefinitions[0].DataType | Should Not BeNullOrEmpty
 		}
+		It "FXYEDITOR is not a standard field for <13.0.x" {
+			(Get-IshTypeFieldDefinition | Where-Object -Property Name -EQ -Value "FXYEDITOR").Count | Should Be 0
+		}
 		# More tests required for the IshTypeFieldDefinition properties
 		# Also test that there CardFields and TableFields present
 	}

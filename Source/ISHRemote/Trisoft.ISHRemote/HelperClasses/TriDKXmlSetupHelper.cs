@@ -300,7 +300,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         {
             try
             {
-                //_fieldDefinitionElementNames["FXYEDITOR"].IsBasic = false; // TODO [Must] Verify if this in every database, mark obsolete. Code can crash here :-(
+                _fieldDefinitionElementNames.Remove("FXYEDITOR");
                 _fieldDefinitionElementNames.Remove("CONDITION");
                 _fieldDefinitionElementNames.Remove("DELETE-ACCESS");
                 _fieldDefinitionElementNames.Remove("DOC-VERSION-MULTI-LNG");
@@ -572,6 +572,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                 CorrectISHUser();
                 CorrectISHUserGroup();
                 CorrectISHUserRole();
+                CorrectISHLibrary();
             }
             catch (Exception exception)
             {
@@ -777,6 +778,12 @@ namespace Trisoft.ISHRemote.HelperClasses
             _ishTypeFieldDefinitions[CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHUserRole, Enumerations.Level.None, "FISHUSERROLENAME")].IsSystem = true;
             _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHUserRole, Enumerations.Level.None, "READ-ACCESS"));
         }
+
+        private void CorrectISHLibrary()
+        {
+            _ishTypeFieldDefinitions.Remove(CardTypeFieldDefinition.Key(Enumerations.ISHType.ISHLibrary, Enumerations.Level.Lng, "FXYEDITOR"));
+        }
+
         internal List<IshTypeFieldDefinition> IshTypeFieldDefinition
         {
             get
