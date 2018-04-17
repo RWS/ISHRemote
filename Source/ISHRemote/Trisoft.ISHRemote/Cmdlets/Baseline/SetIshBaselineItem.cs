@@ -40,6 +40,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// </code>
     /// <para>Add or update the version of the baseline entry identified by the given LogicalId for the identified baselines</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $ishObjectSource = Get-IshBaseline -IshSession $ishSession -Id "GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534"
+    /// $baselineItems = Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectSource
+    /// $ishObjectTarget = Add-IshBaseline -IshSession $ishSession -Name "New Baseline"
+    /// $ishObjectTarget = Set-IshBaselineItem -IshSession $ishSession -IshObject ishObjectTarget -IshBaselineItem $baselineItems
+    /// </code>
+    /// <para>Reading the information from the source baseline and creating a new target baseline which we fill with the selected versions.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshBaselineItem", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class SetIshBaselineItem : BaselineCmdlet
@@ -71,26 +81,25 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup"), ValidateNotNullOrEmpty]
         public string Version { get; set; }
 
-        // TODO [Could] IshBaselineItem pipeline. Prefer to create IshBaselineItem as pipeline entries to update baselines (over IshObject parameter), then update one baseline entry in multiple baselines (so pipeline IshObject parameter)
         /// <summary>
-        /// <para type="description">Array with the baselines for which to retrieve the baseline entries. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
+        /// <para type="description">Array with the baseline entries which will be applied to the IshObject in a minimal number of API calls. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
         /// </summary>
-        //[Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshBaselineItemsGroup")]
-        //[AllowEmptyCollection]
-        //public IshBaselineItem[] IshBaselineItem { get; set; }
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshBaselineItemsGroup")]
+        public IshBaselineItem[] IshBaselineItem { get; set; }
 
-        private Dictionary<string, List<IshBaselineItem>> _baselineItemsToProcess = new Dictionary<string, List<Objects.Public.IshBaselineItem>>();
+        private readonly Dictionary<string, List<IshBaselineItem>> _baselineItemsToProcess = new Dictionary<string, List<Objects.Public.IshBaselineItem>>();
 
         protected override void ProcessRecord()
         {
             // Aggregate incoming IshBaselineItem, to allow group Baseline25.Update call
-            // ... or add single new IshBaselineItem for every incoming baseline
             if (IshObject != null && IshObject.Length == 0)
             {
                 // Do nothing
                 WriteVerbose("IshObject is empty, so nothing to do");
             }
-            else
+            
+            // add baseline item using provided LogicalId and Version parameters
+            if (IshObject != null && IshObject.Length != 0 && IshBaselineItem == null)
             {
                 foreach (var ishObject in IshObject)
                 {
@@ -98,11 +107,30 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                     {
                         _baselineItemsToProcess.Add(ishObject.IshRef, new List<Objects.Public.IshBaselineItem>());
                     }
+                    WriteDebug($"Id[{ishObject.IshRef}] Add {LogicalId}={Version}");
                     _baselineItemsToProcess[ishObject.IshRef].Add(new IshBaselineItem(ishObject.IshRef, LogicalId, Version));
                 }
             }
+
+            // add baseline item(s) using provided IshBaselineItem[] array to all parameter baseline ishobjects
+            if (IshObject != null && IshObject.Length != 0 && IshBaselineItem != null)
+            {
+                foreach (var ishObject in IshObject)
+                {
+                    if (!_baselineItemsToProcess.ContainsKey(ishObject.IshRef))
+                    {
+                        _baselineItemsToProcess.Add(ishObject.IshRef, new List<Objects.Public.IshBaselineItem>());
+                    }
+                    foreach (var ishBaselineItem in IshBaselineItem)
+                    {
+                        WriteDebug($"Id[{ishObject.IshRef}] Add {ishBaselineItem.LogicalId}={ishBaselineItem.Version}");
+                        _baselineItemsToProcess[ishObject.IshRef].Add(new IshBaselineItem(ishObject.IshRef, ishBaselineItem.LogicalId, ishBaselineItem.Version));
+                    }
+                }
+            }
+
         }
-    
+
         protected override void EndProcessing()
         {
             try
