@@ -93,7 +93,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                         {
                             IshMetadataField baselineNameValueField =
                                 (IshMetadataField)
-                                    ishObject.IshFields.Retrieve("NAME", Enumerations.Level.None,
+                                    ishObject.IshFields.Retrieve(FieldElements.BaselineName, Enumerations.Level.None,
                                         Enumerations.ValueType.Value)[0];
                             string baselineName = baselineNameValueField.Value;
                             WriteDebug($"BaselineName[{baselineName}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");

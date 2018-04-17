@@ -33,7 +33,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// $baselineIds = @("GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534","GUID-F1361489-66F3-4E27-A5D1-71C97025815A")
-    /// Get-IshBaseline -IshSession $ishSession -Id $baselineIds -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME")
+    /// Get-IshBaseline -IshSession $ishSession -Id $baselineIds -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE")
     /// </code>
     /// <para>Retrieve metadata from the identified baselines</para>
     /// </example>

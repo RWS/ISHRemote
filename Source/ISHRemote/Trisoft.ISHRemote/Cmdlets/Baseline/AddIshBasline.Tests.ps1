@@ -16,6 +16,7 @@ Describe “Add-IshBaseline" -Tags "Create" {
 		It "GetType().Name" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshBaseline -IshSession $ishSession -Name $baselineName
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Level None -Name "FISHDOCUMENTRELEASE").Length -gt 0 | Should Be $true
 			$ishObject.GetType().Name | Should BeExactly "IshObject"
 			$ishObject.Count | Should Be 1
 		}
