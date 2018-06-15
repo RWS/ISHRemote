@@ -70,7 +70,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             }
             else
             {
-                throw new ArgumentException("There is no version available.");
+                throw new ArgumentException("There is no version available. Value for field VERSION is missing.");
             }
             //Language
             IshField languageField = ishObject.IshFields.RetrieveFirst("DOC-LANGUAGE", Enumerations.Level.Lng,Enumerations.ValueType.Value);
@@ -140,7 +140,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// <param name="ishObject">The <see cref="IshObject"/>.</param>
         /// <param name="extension">The file extension.</param>
         /// <returns>
-        /// A string with following format #Title#=#Version#=#OutputFormat#=#LanguageCombination#.#Extension#
+        /// A string with following format #Title#=#LogicalId#=#Version#=#OutputFormat#=#LanguageCombination#.#Extension#
         /// </returns>
         internal static string GetDefaultPublicationOutputFileName(string path, IshObject ishObject, string extension)
         {
@@ -152,6 +152,15 @@ namespace Trisoft.ISHRemote.HelperClasses
             if (extension == null)
                 extension = "";
             string fileName = "";
+            //Logical id
+            if (ishObject.IshRef != null)
+            {
+                fileName += Encode(ishObject.IshRef) + "=";
+            }
+            else
+            {
+                throw new ArgumentException("There is no logicalid available.");
+            }
             //Version
             IshField versionField = ishObject.IshFields.RetrieveFirst("VERSION", Enumerations.Level.Version,Enumerations.ValueType.Value);
             if (versionField != null)
@@ -160,7 +169,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             }
             else
             {
-                throw new ArgumentException("There is no version available.");
+                throw new ArgumentException("There is no version available. Value for field VERSION is missing.");
             }
             //OutputFormat
             IshField outputFormatField = ishObject.IshFields.RetrieveFirst("FISHOUTPUTFORMATREF", Enumerations.Level.Lng,Enumerations.ValueType.Value);
@@ -170,7 +179,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             }
             else
             {
-                throw new ArgumentException("There is no outputformat available.");
+                throw new ArgumentException("There is no outputformat available. Value for field FISHOUTPUTFORMATREF is missing.");
             }
             //LanguageCombination
             IshField lngCombinationField = ishObject.IshFields.RetrieveFirst("FISHPUBLNGCOMBINATION", Enumerations.Level.Lng,Enumerations.ValueType.Value);
@@ -180,7 +189,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             }
             else
             {
-                throw new ArgumentException("There is no languagecombination available.");
+                throw new ArgumentException("There is no languagecombination available. Value for field FISHPUBLNGCOMBINATION is missing.");
             }
             //Escape the current filename
             fileName = EscapeFileName(fileName);
@@ -195,10 +204,6 @@ namespace Trisoft.ISHRemote.HelperClasses
             if (titleField != null)
             {
                 title = EscapeFileName(Encode(((IshMetadataField)titleField.ToMetadataField()).Value));
-            }
-            else
-            {
-                throw new ArgumentException("There is no title available.");
             }
             //Calculate the maximum length of the title
             int maxLengthTitle = 0;
