@@ -4,6 +4,13 @@
 * allow business logic automation ranging from triggering publishing into the continuous integration pipeline over legacy data correction up to provisioning
 * show case code examples and API best practices
 
+# Videos
+
+Have a look at the [Automating tasks in SDL Tridion Docs using PowerShell](https://youtu.be/3ItM2LDwh20) webinar. Supporting material, so you can easily copy-paste is on 
+
+* [Getting started with Microsoft PowerShell](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell-getting-started-with-microsoft-powershell)
+* [Examples](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell)
+
 # Features & Samples
 
 * This library is a relatively thin client layer on top of the business API. 
