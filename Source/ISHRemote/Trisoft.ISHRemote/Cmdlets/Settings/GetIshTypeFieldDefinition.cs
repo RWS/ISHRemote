@@ -56,6 +56,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// </code>
     /// <para>What are the fields I should pass when creating a new user through Add-IshUser.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// Get-IshTypeFieldDefinition -IshSession $ishSession | Out-GridView
+    /// </code>
+    /// <para>When using PowerShell ISE, you can list the result in a User Interface that even allows selection (through -OutputMode Multiple). The standard PowerShell grid view as extra filters and column sorting functionality.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshTypeFieldDefinition", SupportsShouldProcess = false)]
     [OutputType(typeof(IshTypeFieldDefinition))]
     public sealed class GetIshTypeFieldDefinition : SettingsCmdlet

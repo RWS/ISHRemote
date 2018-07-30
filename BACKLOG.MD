@@ -265,7 +265,7 @@ Add `Test-IshDocumentObj` and `Test-PublicationOutput` through (Try)GetMetadata 
 Add `Search-IshDocumentObj` which in turn requires `IshQuery` object with `Set-IshQueryField`
 * See [TS-10686]
 
-## <a name="ISHREMOTE-029"></a>[ISHREMOTE-029] 
+## <a name="ISHREMOTE-029"></a>[ISHREMOTE-029]  *DONE*
 Overload `Set-IshMetadataField` to accept IshObject/IshFolder/... on the pipeline to mass update in-memory structure
 * Requires alignment with [ISHREMOTE-011] and [ISHREMOTE-021]
 * Needs to match overloads of `Get-IshFieldValue`
