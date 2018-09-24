@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Imports">
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/BackgroundTask.svc?xsd=xsd0" namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/BackgroundTask.svc?xsd=xsd2" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/BackgroundTask.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/BackgroundTask.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/InfoShareWS" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/BackgroundTask.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="BackgroundTask_CreateBackgroundTaskWithStartAfter_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateBackgroundTaskWithStartAfter" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_CreateBackgroundTaskWithStartAfter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateBackgroundTaskWithStartAfterResponse" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_CreateBackgroundTaskWithStartAfter_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_CreateBackgroundTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateBackgroundTask" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_CreateBackgroundTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateBackgroundTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_CreateBackgroundTask_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_Find_InputMessage">
+    <wsdl:part name="parameters" element="tns:Find" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_Find_OutputMessage">
+    <wsdl:part name="parameters" element="tns:FindResponse" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_Find_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_RetrieveDataObjectByIshDataRefs_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveDataObjectByIshDataRefs" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_RetrieveDataObjectByIshDataRefs_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveDataObjectByIshDataRefsResponse" />
+  </wsdl:message>
+  <wsdl:message name="BackgroundTask_RetrieveDataObjectByIshDataRefs_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q4:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:portType name="BackgroundTask">
+    <wsdl:operation name="CreateBackgroundTaskWithStartAfter">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/CreateBackgroundTaskWithStartAfter" message="tns:BackgroundTask_CreateBackgroundTaskWithStartAfter_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/CreateBackgroundTaskWithStartAfterResponse" message="tns:BackgroundTask_CreateBackgroundTaskWithStartAfter_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/CreateBackgroundTaskWithStartAfterInfoShareFault" name="InfoShareFault" message="tns:BackgroundTask_CreateBackgroundTaskWithStartAfter_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateBackgroundTask">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/CreateBackgroundTask" message="tns:BackgroundTask_CreateBackgroundTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/CreateBackgroundTaskResponse" message="tns:BackgroundTask_CreateBackgroundTask_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/CreateBackgroundTaskInfoShareFault" name="InfoShareFault" message="tns:BackgroundTask_CreateBackgroundTask_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Find">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/Find" message="tns:BackgroundTask_Find_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/FindResponse" message="tns:BackgroundTask_Find_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/FindInfoShareFault" name="InfoShareFault" message="tns:BackgroundTask_Find_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveDataObjectByIshDataRefs">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/RetrieveDataObjectByIshDataRefs" message="tns:BackgroundTask_RetrieveDataObjectByIshDataRefs_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/RetrieveDataObjectByIshDataRefsResponse" message="tns:BackgroundTask_RetrieveDataObjectByIshDataRefs_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/BackgroundTask/RetrieveDataObjectByIshDataRefsInfoShareFault" name="InfoShareFault" message="tns:BackgroundTask_RetrieveDataObjectByIshDataRefs_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

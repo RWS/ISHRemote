@@ -203,6 +203,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\BackgroundTask25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\Baseline25ServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -678,6 +683,29 @@
     <None Include="Scripts\Public\Expand-ISHParameter.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask.wsdl" />
+    <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask1.wsdl" />
+    <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BackgroundTask25ServiceReference\Trisoft.ISHRemote.BackgroundTask25ServiceReference.CreateBackgroundTaskResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\BackgroundTask25ServiceReference\Trisoft.ISHRemote.BackgroundTask25ServiceReference.CreateBackgroundTaskWithStartAfterResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.wsdl" />
     <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.xsd">
       <SubType>Designer</SubType>
@@ -1096,6 +1124,13 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\BackgroundTask25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\BackgroundTask25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\BackgroundTask25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask.disco" />
     <None Include="Service References\PublicationOutput25ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -1305,6 +1340,7 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\Application25ServiceReference\" />
+    <WCFMetadataStorage Include="Service References\BackgroundTask25ServiceReference\" />
     <WCFMetadataStorage Include="Service References\Baseline25ServiceReference\" />
     <WCFMetadataStorage Include="Service References\DocumentObj25ServiceReference\" />
     <WCFMetadataStorage Include="Service References\EDT25ServiceReference\" />
