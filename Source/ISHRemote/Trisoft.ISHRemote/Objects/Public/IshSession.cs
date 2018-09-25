@@ -78,6 +78,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private Search25ServiceReference.Search _search25;
         private TranslationJob25ServiceReference.TranslationJob _translationJob25;
         private TranslationTemplate25ServiceReference.TranslationTemplate _translationTemplate25;
+        private BackgroundTask25ServiceReference.BackgroundTask _backgroundTask25;
 
         /// <summary>
         /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
@@ -588,6 +589,20 @@ namespace Trisoft.ISHRemote.Objects.Public
                     _search25 = _connection.GetSearch25Channel();
                 }
                 return _search25;
+            }
+        }
+
+        public BackgroundTask25ServiceReference.BackgroundTask BackgroundTask25
+        {
+            get
+            {
+                VerifyTokenValidity();
+
+                if (_backgroundTask25 == null)
+                {
+                    _backgroundTask25 = _connection.GetBackgroundTask25Channel();
+                }
+                return _backgroundTask25;
             }
         }
 

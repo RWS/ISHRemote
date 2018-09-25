@@ -15,20 +15,16 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IdentityModel.Protocols.WSTrust;
 using System.IdentityModel.Tokens;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Security;
 using System.ServiceModel.Security.Tokens;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Trisoft.ISHRemote.Interfaces;
@@ -109,6 +105,10 @@ namespace Trisoft.ISHRemote
         /// TranslationTemplate25
         /// </summary>
         private const string TranslationTemplate25 = "TranslationTemplate25";
+        /// <summary>
+        /// BackgroundTask25
+        /// </summary>
+        private const string BackgroundTask25 = "BackgroundTask25";
         #endregion
 
         #region Private Members
@@ -228,6 +228,10 @@ namespace Trisoft.ISHRemote
         /// Proxy for translation template
         /// </summary>
         private TranslationTemplate25ServiceReference.TranslationTemplateClient _translationTemplateClient;
+        /// <summary>
+        /// Proxy for background task
+        /// </summary>
+        private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
         #endregion Private Members
 
         #region Constructors
@@ -620,6 +624,22 @@ namespace Trisoft.ISHRemote
             }
             return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
         }
+
+
+        /// <summary>
+        /// Create a /Wcf/API25/BackgroundTask.svc proxy
+        /// </summary>
+        /// <returns>The proxy</returns>
+        public BackgroundTask25ServiceReference.BackgroundTask GetBackgroundTask25Channel()
+        {
+            if (_backgroundTaskClient == null)
+            {
+                _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
+            }
+            return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+        }
         #endregion
 
         #region Private Properties
@@ -689,6 +709,7 @@ namespace Trisoft.ISHRemote
             _serviceUriByServiceName.Add(Search25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Search.svc"));
             _serviceUriByServiceName.Add(TranslationJob25, new Uri(InfoShareWSBaseUri, "Wcf/API25/TranslationJob.svc"));
             _serviceUriByServiceName.Add(TranslationTemplate25, new Uri(InfoShareWSBaseUri, "Wcf/API25/TranslationTemplate.svc"));
+            _serviceUriByServiceName.Add(BackgroundTask25, new Uri(InfoShareWSBaseUri, "Wcf/API25/BackgroundTask.svc"));
         }
 
         /// <summary>
