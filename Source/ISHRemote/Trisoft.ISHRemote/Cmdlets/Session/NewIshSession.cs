@@ -260,11 +260,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
             catch (AggregateException aggregateException)
             {
                 var flattenedAggregateException = aggregateException.Flatten();
-                WriteVerbose(flattenedAggregateException.ToString());
+                WriteWarning(flattenedAggregateException.ToString());
                 ThrowTerminatingError(new ErrorRecord(flattenedAggregateException, base.GetType().Name, ErrorCategory.NotSpecified, null));
             }
             catch (Exception exception)
             {
+                if (exception.InnerException != null)
+                {
+                    WriteWarning(exception.InnerException.ToString());
+                }
                 ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
             }
         }

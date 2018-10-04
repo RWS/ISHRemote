@@ -146,14 +146,14 @@ namespace Trisoft.ISHRemote.HelperClasses
             internal void Correct(bool allowOnCreate, bool allowOnRead, bool allowOnUpdate, bool allowOnSearch)
             {
                 AllowOnCreate = allowOnCreate;
-                AllowOnRead = AllowOnRead;
+                AllowOnRead = allowOnRead;
                 AllowOnUpdate = allowOnUpdate;
                 AllowOnSearch = allowOnSearch;
             }
 
             internal void Correct(bool allowOnCreate, bool allowOnRead, bool allowOnUpdate, bool allowOnSearch, bool isDescriptive, bool isBasic)
             {
-                AllowOnRead = AllowOnRead;
+                AllowOnRead = allowOnRead;
                 AllowOnCreate = allowOnCreate;
                 AllowOnUpdate = allowOnUpdate;
                 AllowOnSearch = allowOnSearch;
@@ -170,15 +170,15 @@ namespace Trisoft.ISHRemote.HelperClasses
             _xpathDocument = new XPathDocument(new System.IO.StringReader(tridkXmlSetupXml));
             _logger.WriteDebug($"Loading CardTypes with FieldNames...");
             LoadCardTypeFieldElementNames();
-            _logger.WriteDebug($"Loaded _cardTypeFieldElementNames.Count[{_cardTypeFieldElementNames.Count()}]");
+            _logger.WriteDebug($"Loaded _cardTypeFieldElementNames.Count[{_cardTypeFieldElementNames.Count}]");
             LoadFieldDefinitions();
-            _logger.WriteDebug($"Loaded _fieldDefinitionElementNames.Count[{_fieldDefinitionElementNames.Count()}]");
+            _logger.WriteDebug($"Loaded _fieldDefinitionElementNames.Count[{_fieldDefinitionElementNames.Count}]");
             CorrectFieldDefinitions();
-            _logger.WriteDebug($"Corrected _fieldDefinitionElementNames.Count[{_fieldDefinitionElementNames.Count()}]");
+            _logger.WriteDebug($"Corrected _fieldDefinitionElementNames.Count[{_fieldDefinitionElementNames.Count}]");
             GenerateIshTypeFieldDefinitionsForCardTypesAndFields();
-            _logger.WriteDebug($"Generated _ishTypeFieldDefinitions.Count[{_ishTypeFieldDefinitions.Count()}]");
+            _logger.WriteDebug($"Generated _ishTypeFieldDefinitions.Count[{_ishTypeFieldDefinitions.Count}]");
             CorrectIshTypeFieldDefinitions();
-            _logger.WriteDebug($"Corrected _ishTypeFieldDefinitions.Count[{_ishTypeFieldDefinitions.Count()}]");
+            _logger.WriteDebug($"Corrected _ishTypeFieldDefinitions.Count[{_ishTypeFieldDefinitions.Count}]");
 
             // Add Compare-IshTypeFieldDefinition
             // WriteOutput holds IshTypeFieldDefinitionCompare, holding two IshTypeFieldDefinition entries and a github-compare-like '+'/'-' Flag column
@@ -269,13 +269,14 @@ namespace Trisoft.ISHRemote.HelperClasses
                 if (currentFieldTypeNavigator.SelectSingleNode("tridk:minnoofvalues", xmlNamespaceManager) != null)
                 {
                     string minnoofvalues = currentFieldTypeNavigator.SelectSingleNode("tridk:minnoofvalues", xmlNamespaceManager).GetAttribute("value", currentFieldTypeNavigator.NamespaceURI);
-                    min = (minnoofvalues.Equals(string.Empty)) ? 0 : Convert.ToInt64(minnoofvalues);
+                    min = (string.IsNullOrEmpty(minnoofvalues)) ? 0 : Convert.ToInt64(minnoofvalues);
+                    
                 }
                 long max = long.MaxValue;
                 if (currentFieldTypeNavigator.SelectSingleNode("tridk:maxnoofvalues", xmlNamespaceManager) != null)
                 {
                     string maxnoofvalues = currentFieldTypeNavigator.SelectSingleNode("tridk:maxnoofvalues", xmlNamespaceManager).GetAttribute("value", currentFieldTypeNavigator.NamespaceURI);
-                    max = (maxnoofvalues.Equals(string.Empty)) ? long.MaxValue : Convert.ToInt64(maxnoofvalues);
+                    max = (string.IsNullOrEmpty(maxnoofvalues)) ? long.MaxValue : Convert.ToInt64(maxnoofvalues);
                 }
 
                 string isPublic = currentFieldDefinitionNavigator.SelectSingleNode("tridk:public", xmlNamespaceManager).GetAttribute("value", currentFieldDefinitionNavigator.NamespaceURI);

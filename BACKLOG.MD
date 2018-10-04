@@ -304,6 +304,7 @@ Add `Get-IshTranslationJob`, `Find-IshTranslationJob` and `Get-IshTranslationJob
 	* Can a `IshTranslationJobItem` be promoted to a `IshDocumentObj`? An extra client-side cmdlet, beware of in-memory `New-IshDocumentObj` consistency.
 * None-scope is Creating/Updating/Deleting `IshTranslationJob`
 * None-scope is Creating/Updating/Deleting `IshTranslationJobItem`
+* Tip: `TranslationJobItem` has LogicalId=Version=Language=Resolution as key, and not language card id. There is no API call that takes batches using the readable identifiers. Trick is to create a temporary baseline report (LogicalId=Version) and pass that for completion using Language/Resolution as that will return you language card ids in group.
 
 ## <a name="ISHREMOTE-035"></a>[ISHREMOTE-035]
 Add `Get-IshSettingWorkflow` which in turn requires `IshSettingWorkflowSetup` and `IshSettingWorkflowTransition`
