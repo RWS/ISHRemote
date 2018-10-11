@@ -240,6 +240,9 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.Application25" {
 			$ishSession.Application25 -ne $null | Should Not BeNullOrEmpty
 		}
+		It "IshSession.BackgroundTask25" -skip { # Only available starting 13SP2/13.0.2
+			$ishSession.BackgroundTask25 -ne $null | Should Not BeNullOrEmpty
+		}
 		It "IshSession.Baseline25" {
 			$ishSession.Baseline25 -ne $null | Should Not BeNullOrEmpty
 		}
