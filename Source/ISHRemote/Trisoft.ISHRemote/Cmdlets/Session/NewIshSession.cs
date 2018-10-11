@@ -44,6 +44,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </example>
     /// <example>
     /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "" -IshPassword "admin"
+    /// </code>
+    /// <para>Building a session for the chosen service based on Active Directory authentication. By providing an empty username (and ignoring the password), an implicit NetworkCredential object will be passed for authentication to the service. This makes it possible to write generic scripts for UserNameMixed/ActiveDirectory authentication.</para>
+    /// </example>
+    /// <example>
+    /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// </code>
     /// <para>Iteratively the New-IshSession line with PSCredential parameter holding a string representation will prompt you for a password.</para>
@@ -138,11 +144,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         public PSCredential PSCredential { get; set; }
 
         /// <summary>
-        /// <para type="description">Username to login into SDL Tridion Docs Content Manager</para>
+        /// <para type="description">Username to login into SDL Tridion Docs Content Manager. When left empty, fall back to ActiveDirectory.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
-        [ValidateNotNullOrEmpty]
+        [AllowEmptyString]
         public string IshUserName
         {
             get { return _ishUserName; }
@@ -154,7 +160,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
-        [ValidateNotNullOrEmpty]
+        [AllowEmptyString]
         public string IshPassword
         {
             get { return _ishPassword; }
@@ -215,6 +221,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         {
             try
             {
+                if ((this.ParameterSetName.StartsWith("UserNamePassword")) && string.IsNullOrEmpty(_ishUserName))
+                {
+                    // We came in with an empty username but with -IshUserName/-IshPassword; 
+                    // so fallback to NetworkCredential/ActiveDirectory
+                    WriteWarning("Empty -IshUserName so fall back to NetworkCredential/ActiveDirectory, ignoring -IshPassword.");
+                    _ishUserName = null;
+                    _ishPassword = null;
+                }
                 int ishPasswordLength = _ishPassword == null ? 0 : _ishPassword.Length;
                 if (PSCredential != null)
                 {

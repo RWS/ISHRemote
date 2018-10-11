@@ -73,7 +73,7 @@ Describe “Get-IshSetting" -Tags "Read" {
 		It "GetType().Name" {
 			$ishFields.GetType().Name | Should BeExactly "Object[]"
 		}
-		It "$ishFields.Length" {
+		It "ishFields.Length" {
 			$ishFields.Length| Should Be 14
 		}
 		It "xml NAME is 'Configuration card'" {

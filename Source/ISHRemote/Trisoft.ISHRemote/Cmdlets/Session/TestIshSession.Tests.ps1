@@ -5,16 +5,15 @@ try {
 
 Describe "Test-IshSession" -Tags "Read" {
 	Write-Host "Initializing Test Data and Variables"
-	<#
+
 	Context "Test-IshSession ISHDeploy::Enable-ISHIntegrationSTSInternalAuthentication/Prepare-SupportAccess.ps1" {
-		It "Parameter WsBaseUrl contains 'SDL' (legacy script)" {
+		It "Parameter WsBaseUrl contains 'SDL' (legacy script)" -skip {
 			Test-IshSession -WsBaseUrl https://example.com/ISHWS/SDL/ -IshUserName x -IshPassword y | Should Be $true
 		}
-		It "Parameter WsBaseUrl contains 'Internal' (ISHDeploy)" {
+		It "Parameter WsBaseUrl contains 'Internal' (ISHDeploy)" -skip {
 			Test-IshSession -WsBaseUrl https://example.com/ISHWS/Internal/ -IshUserName x -IshPassword y | Should Be $true
 		}
 	}
-	#>
 
 	Context “Test-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
@@ -25,6 +24,9 @@ Describe "Test-IshSession" -Tags "Read" {
 		}
 		It "Parameter IshPassword specified" {
 			Test-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName $ishUserName -IshPassword "INVALIDISHPASSWORD" | Should Be $false
+		}
+		It "Parameter IshUserName empty falls back to NetworkCredential/ActiveDirectory" {
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName "" -IshPassword "IGNOREISHPASSWORD" } | Should Not Throw "Cannot validate argument on parameter 'IshUserName'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
 		}
 	}
 
