@@ -51,7 +51,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     ///     $settingsFolderPath = 'D:\temp'
     /// )
     /// $ishSession = New-IshSession -WsBaseUrl $wsBaseUrl -IshUserName $userName -IshPassword $password
-    /// $settingsFolderPath = Join-Path -Path $settingsFolderPath -ChildPath ((Get-Date -Format yyyyMMddHHmmss) + "=" + $wsBaseUrl.Replace(":","-").Replace("/","-") + "=" + (Get-IshVersion $ishSession).ToString())
+    /// $settingsFolderPath = Join-Path -Path $settingsFolderPath -ChildPath ((Get-Date -Format yyyyMMddHHmmss) + "=" + $wsBaseUrl.Replace(":","-").Replace("/","-") + "=" + (Get-IshVersion -IshSession $ishSession).ToString())
     /// Write-Verbose "Saving in $settingsFolderPath"
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLInboxConfiguration.xml"
     /// Get-IshSetting -IshSession $ishSession -FieldName "FINBOXCONFIGURATION" -FilePath $filePath

@@ -30,19 +30,24 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// </summary>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// # Update a publication output
-    /// $metadataUpdate = Set-IshMetadataField -IshSession $ishSession -Name 'FISHFALLBACKLNGDEFAULT' -Level 'lng' -Value 'bg' |
-    ///                   Set-IshMetadataField -IshSession $ishSession -Name 'FISHFALLBACKLNGIMAGES' -Level 'lng' -Value 'bg' |
-    ///                   Set-IshMetadataField -IshSession $ishSession -Name 'FISHFALLBACKLNGRESOURCES' -Level 'lng' -Value 'bg'
-    /// Set-IshPublicationOutput -IshSession $ishSession `
-    /// -LogicalId "GUID-F66C1BB5-076D-455C-B055-DAC5D61AB3D9" `
-    /// -Version "1" `
-    /// -OutputFormat "GUID-2A69335D-F025-4963-A142-5E49988C7C0C" `
-    /// -LanguageCombination  "en" `
-    /// -MetaData $metadataUpdate
+    /// $metadataUpdate = Set-IshMetadataField -IshSession $ishSession -Name FISHFALLBACKLNGDEFAULT -Level lng -Value 'bg' |
+    ///                   Set-IshMetadataField -IshSession $ishSession -Name FISHFALLBACKLNGIMAGES -Level lng -Value 'bg' |
+    ///                   Set-IshMetadataField -IshSession $ishSession -Name FISHFALLBACKLNGRESOURCES -Level lng -Value 'bg'
+    /// Set-IshPublicationOutput -IshSession $ishSession -LogicalId "GUID-F66C1BB5-076D-455C-B055-DAC5D61AB3D9" -Version "1" -OutputFormat "GUID-2A69335D-F025-4963-A142-5E49988C7C0C" -LanguageCombination "en" -MetaData $metadataUpdate
     /// </code>
-    /// <para>Updating publication outputs</para>
+    /// <para>Updating publication outputs publish fallback parameters</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// # Find all publication pending objects and cancel their publish operation
+    /// $ishObjects = Find-IshPublicationOutput -IshSession $ishSession -StatusFilter ISHNoStatusFilter -MetadataFilter(Set-IshMetadataFilterField -IshSession $ishSession -Name FISHPUBSTATUS -Level Lng -ValueType Element -FilterOperator in -Value VPUBSTATUSPUBLISHPENDING)
+    /// $metadataUpdate = Set-IshMetadataField -IshSession $ishSession -Name FISHPUBSTATUS -Level lng -ValueType Element -Value VPUBSTATUSPUBLISHINGCANCELLED
+    /// $ishObjects | Set-IshPublicationOutput -IshSession $ishSession -MetaData $metadataUpdate
+    /// </code>
+    /// <para>Cancelling all publication outputs publish operations without checking if the status transition is allowed</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshPublicationOutput", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
@@ -92,6 +97,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <para type="description">The metadata to set for the publication output object.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNull]
         public IshField[] Metadata { get; set; }
 
@@ -140,7 +146,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             WriteDebug($"Id[{ishObject.IshRef}] {++current}/{IshObject.Length}");
                             // Get language ref
                             long lngRef = Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]);
-                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
                             if (ShouldProcess(Convert.ToString(lngRef)))
                             {
                                 IshSession.PublicationOutput25.SetMetadataByIshLngRef(

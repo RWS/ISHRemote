@@ -36,23 +36,23 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// </summary>
     /// <example>
     /// <code>
-    /// $ishSessionA = New-IshSession -WsBaseUrl "https://example.com/InfoShareWSPRODUCATION/" -PSCredential "Admin"
-    /// $ishSessionB = New-IshSession -WsBaseUrl "https://example.com/InfoShareWSTEST/" -PSCredential "Admin"
+    /// $ishSessionA = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"
+    /// $ishSessionB = New-IshSession -WsBaseUrl "https://example.com/ISHWSTEST/" -PSCredential "Admin"
     /// Compare-IshTypeFieldDefinition -LeftIshSession $ishSessionA -RightIshSession $ishSessionB
     /// </code>
     /// <para>Compares incoming IshSession entries that are not equal, so indicating differences, left only and right only.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSessionA = New-IshSession -WsBaseUrl "https://example.com/InfoShareWSPRODUCATION/" -PSCredential "Admin"
-    /// $ishSessionB = New-IshSession -WsBaseUrl "https://example.com/InfoShareWSTEST/" -PSCredential "Admin"
+    /// $ishSessionA = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"
+    /// $ishSessionB = New-IshSession -WsBaseUrl "https://example.com/ISHWSTEST/" -PSCredential "Admin"
     /// Compare-IshTypeFieldDefinition -LeftIshSession $ishSessionA -RightIshSession $ishSessionB -ExcludeLeftUnique
     /// </code>
     /// <para>Compares incoming IshSession entries that are not equal, so indicating differences and right only changes compared to the $ishSessionA reference.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWSPRODUCATION/" -PSCredential "Admin"
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"
     /// $ishTypeFieldDefinitions = Get-IshTypeFieldDefinition -TriDKXmlSetupFilePath $tempFilePath
     /// Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $ishTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique
     /// </code>
@@ -60,7 +60,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWSPRODUCATION/" -PSCredential "Admin"
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"
     /// $ishTypeFieldDefinitions = Get-IshTypeFieldDefinition
     /// Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshTypeFieldDefinition $ishTypeFieldDefinitions -IncludeIdentical -ExcludeDifferent
     /// </code>
@@ -68,7 +68,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWSPRODUCATION/" -PSCredential "Admin"
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"
     /// $ishTypeFieldDefinitions = Get-IshTypeFieldDefinition
     /// Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $ishTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical |
     /// Where-Object -Property Name -NotLike "FTEST*" |
