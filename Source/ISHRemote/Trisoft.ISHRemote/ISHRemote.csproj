@@ -65,6 +65,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.Net.Http" />
@@ -111,6 +112,8 @@
     <Compile Include="Cmdlets\Field\GetIshMetadataField.cs" />
     <Compile Include="Cmdlets\FileProcessor\FileProcessorCmdlet.cs" />
     <Compile Include="Cmdlets\FileProcessor\NewIshDitaGeneralizedXml.cs" />
+    <Compile Include="Cmdlets\FileProcessor\NewIshObfuscatedFile.cs" />
+    <Compile Include="Cmdlets\FileProcessor\TestIshValidXml.cs" />
     <Compile Include="Cmdlets\Folder\AddIshFolder.cs" />
     <Compile Include="Cmdlets\Folder\GetIshFolderLocation.cs" />
     <Compile Include="Cmdlets\Folder\MoveIshFolder.cs" />
@@ -171,6 +174,8 @@
     <Compile Include="Cmdlets\User\RemoveIshUser.cs" />
     <Compile Include="Cmdlets\User\SetIshUser.cs" />
     <Compile Include="Cmdlets\User\UserCmdlet.cs" />
+    <Compile Include="HelperClasses\IshObfuscator.cs" />
+    <Compile Include="HelperClasses\NonClosingStreamWrapper.cs" />
     <Compile Include="HelperClasses\ServicePointManagerHelper.cs" />
     <Compile Include="Objects\FieldElements.cs" />
     <Compile Include="HelperClasses\CertificateValidationHelper.cs" />
@@ -322,6 +327,7 @@
     <None Include="Cmdlets\Baseline\SetIshBaselineItem.Tests.ps1" />
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
     <None Include="Cmdlets\FileProcessor\NewIshDitaGeneralizedXml.Tests.ps1" />
+    <None Include="Cmdlets\FileProcessor\NewIshObfuscatedFile.Tests.ps1" />
     <None Include="Cmdlets\OutputFormat\AddIshOutputFormat.Tests.ps1" />
     <None Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.Tests.ps1" />
     <None Include="Cmdlets\UserGroup\AddIshUserGroup.Tests.ps1" />
@@ -784,7 +790,6 @@
     <None Include="Samples\Publish-PublicationOutputs\Sample.Automate.PublishPublicationOutputs.ps1" />
     <None Include="Samples\Data-DocumentObj\Task.dita" />
     <None Include="Samples\Data-DocumentObj\Topic.dita" />
-    <None Include="Samples\Sample.Automate.GeneralizeDitaXml.ps1" />
     <Compile Include="Cmdlets\Field\SetIshRequestedMetadataField.cs" />
     <Compile Include="Cmdlets\Field\SetIshField.cs" />
     <Compile Include="Cmdlets\Field\SetIshMetadataFilterField.cs" />
