@@ -146,8 +146,17 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
         [ValidateNotNullOrEmpty]
         public string FolderPath { get; set; }
 
-        //private variables
+        #region Private fields
+        /// <summary>
+        /// Single conversion object
+        /// </summary>
         private DitaXmlGeneralization _ditaXMLGeneralization = null;
+        /// <summary>
+        /// Collection of the files to process
+        /// </summary>
+        private readonly List<FileInfo> _files = new List<FileInfo>();
+        #endregion
+        
 
         protected override void BeginProcessing()
         {
@@ -178,18 +187,41 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
             base.BeginProcessing();
         }
 
+        /// <summary>
+        /// Process the cmdlet.
+        /// </summary>
         protected override void ProcessRecord()
+        {
+            try
+            {
+                foreach (string filePath in FilePath)
+                {
+                    _files.Add(new FileInfo(filePath));
+                }
+            }
+            catch (TrisoftAutomationException trisoftAutomationException)
+            {
+                ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (Exception exception)
+            {
+                ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+        }
+
+        protected override void EndProcessing()
         {
             try
             {             
                 int current = 0;
-                foreach (string filePath in FilePath)
+                WriteDebug("Generalizing _files.Count[" + _files.Count + "]");
+                foreach (FileInfo inputFile in _files)
                 {
-                    FileInfo inputFile = new FileInfo(filePath);
                     // Could be nicer, but currently loosing inputFile relative files and dropping all in OutputFolder
                     FileInfo outputFile = new FileInfo(Path.Combine(FolderPath, inputFile.Name));
                     try
                     {
+                        WriteDebug("Generalizing inputFile[" + inputFile.FullName + "] to outputFile[" + outputFile.FullName + "]");
                         WriteParentProgress("Generalizing inputFile["+inputFile.FullName+"] to outputFile["+ outputFile.FullName +"]", ++current, FilePath.Length);
                         _ditaXMLGeneralization.Generalize(inputFile, outputFile);
                         WriteObject(outputFile);

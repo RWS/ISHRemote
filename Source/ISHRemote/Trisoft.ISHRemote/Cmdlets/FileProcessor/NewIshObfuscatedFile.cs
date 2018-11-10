@@ -161,7 +161,7 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
         /// <summary>
         /// Collection of the files to process
         /// </summary>
-        private readonly List<System.IO.FileInfo> _files = new List<System.IO.FileInfo>();
+        private readonly List<FileInfo> _files = new List<FileInfo>();
         #endregion
 
 
@@ -209,7 +209,7 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
             {
                 int current = 0;
                 WriteDebug("Obfuscating _files.Count["+_files.Count+"]");
-                foreach (System.IO.FileInfo inputFile in _files)
+                foreach (FileInfo inputFile in _files)
                 {
                     string outputFilePath = Path.Combine(FolderPath, inputFile.Name);
                     WriteDebug("Obfuscating inputFile[" + inputFile.FullName + "] to outputFile[" + outputFilePath + "]");
