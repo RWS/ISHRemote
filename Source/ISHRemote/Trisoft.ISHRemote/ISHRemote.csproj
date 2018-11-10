@@ -328,6 +328,7 @@
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
     <None Include="Cmdlets\FileProcessor\NewIshDitaGeneralizedXml.Tests.ps1" />
     <None Include="Cmdlets\FileProcessor\NewIshObfuscatedFile.Tests.ps1" />
+    <None Include="Cmdlets\FileProcessor\TestIshValidXml.Tests.ps1" />
     <None Include="Cmdlets\OutputFormat\AddIshOutputFormat.Tests.ps1" />
     <None Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.Tests.ps1" />
     <None Include="Cmdlets\UserGroup\AddIshUserGroup.Tests.ps1" />

@@ -14,160 +14,60 @@
 * limitations under the License.
 */
 
-
-/*
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using System.IO;
+using System.Collections.Generic;
+using System.Management.Automation;
 using System.Xml.Schema;
+using Trisoft.ISHRemote.Exceptions;
+using Trisoft.ISHRemote.HelperClasses;
+using System.Xml;
 
-
-namespace ConsoleApp2
+namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
 {
-    public class XmlFileHandler
+    /// <summary>
+    /// <para type="synopsis">The Test-IshValidFile checks wellformedness and validness using the given xml catalog.</para>
+    /// <para type="description">Quick test to validate the given xml using the DocTypes/DTDs specified through catalog.xml.</para>
+    /// </summary>
+    /// <example>
+    /// <code>Get-ChildItem -Path C:\temp\*.xml | Test-IshValidXml -XmlCatalogFilePath C:\InfoShare\WebDITA\Author\ASP\DocTypes\catalog.xml
+    /// </code>
+    /// <para>All xml files will get a Boolean True/False back from the Test-cmdlet using a local file system catalog and DTDs.</para>
+    /// </example>
+    /// <example>
+    /// <code>Test-IshValidXml -XmlCatalogFilePath https://example.com/ISHCM/DocTypes/catalog.xml -FilePath C:\temp\somefile.xml
+    /// </code>
+    /// <para>Single xml file will get a single Boolean True/False back from the Test-cmdlet using a remote https accessible catalog and DTDs. Note that this option is SLOW as every catalog, dtd, ent, mod file required will be downloaded over-and-over again - but it does work.</para>
+    /// </example>
+    [Cmdlet(VerbsDiagnostic.Test, "IshValidXml", SupportsShouldProcess = false)]
+    [OutputType(typeof(FileInfo))]
+    public sealed class TestIshValidXml : FileProcessorCmdlet
     {
-        const string _catalogUri = @"Y:\InfoShare\WebORA12\Author\ASP\DocTypes\catalog.xml";
-        static XmlResolverUsingCatalog _xmlSpecializedXmlResolver = new XmlResolverUsingCatalog(_catalogUri);
-        static XmlReaderSettings readerSettings = InitializeXmlReaderSettings(_xmlSpecializedXmlResolver, ValidationType.DTD);
+        /// <summary>
+        /// <para type="description">XmlCatalogFilePath should point to the leading catalog.xml file. For example C:\InfoShare\Web\Author\ASP\DocTypes\catalog.xml</para>
+        /// </summary>
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false)]
+        [ValidateNotNullOrEmpty]
+        public string XmlCatalogFilePath { get; set; }
 
-        public void PerformValidate(string fileName)
-        {
-            Validate(fileName, readerSettings);
-        }
+        /// <summary>
+        /// <para type="description">FilePath can be used to specify one or more input xml file location.</para>
+        /// </summary>
+        [Parameter(Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public string[] FilePath { get; set; }
 
-        private void Validate(string xmlFileLocation, XmlReaderSettings xmlReaderSettings)
-        {
-            using (StreamReader streamReader = new StreamReader(xmlFileLocation))
-            {
-                using (XmlReader xmlReader = XmlReader.Create(streamReader, xmlReaderSettings))
-                {
-                    while (xmlReader.Read())
-                    {
-                    }
-                }
-            }
-
-        }
-
-        public void Utf8Encoder(string inputFileLocation, string outputFileLocation)
-        {
-            Encoding outputEncoding = new UTF8Encoding(false);
-            using (var inputStream = new FileStream(inputFileLocation, FileMode.Open, FileAccess.Read, FileShare.None))
-            {
-                MemoryStream resultStream = new MemoryStream((int)inputStream.Length);
-                // As the XmlTextReader closes the input stream, we use a wrapper class so the original stream does not get closed
-                using (var reader = new XmlTextReader(inputStream))
-                {
-                    reader.Namespaces = false;
-                    reader.WhitespaceHandling = WhitespaceHandling.All;
-                    reader.EntityHandling = EntityHandling.ExpandCharEntities;
-                    reader.Normalization = false;
-                    reader.DtdProcessing = DtdProcessing.Parse;
-                    reader.XmlResolver = null;
-                    using (var resultStreamNonClosing = new NonClosingStreamWrapper(resultStream))
-                    {
-                        using (var writer = new XmlTextWriter(resultStreamNonClosing, outputEncoding))
-                        {
-                            writer.Namespaces = false;
-                            reader.Read();
-                            while (!reader.EOF)
-                            {
-                                switch (reader.NodeType)
-                                {
-                                    case XmlNodeType.XmlDeclaration:
-                                        WriteXmlDeclaration(outputEncoding, reader, writer);
-                                        reader.Read();
-                                        break;
-                                    case XmlNodeType.DocumentType:
-                                        writer.WriteNode(reader, false);
-                                        break;
-                                    case XmlNodeType.ProcessingInstruction:
-                                        writer.WriteNode(reader, false);
-                                        break;
-                                    case XmlNodeType.Element:
-                                        writer.WriteNode(reader, false);
-                                        break;
-                                    case XmlNodeType.Comment:
-                                        writer.WriteNode(reader, false);
-                                        break;
-                                    case XmlNodeType.Text:
-                                        writer.WriteNode(reader, false);
-                                        break;
-                                    default:
-                                        writer.WriteNode(reader, false);
-                                        break;
-                                }
-                            }
-                        }
-                        using (var outputStream = new FileStream(outputFileLocation, FileMode.Create, FileAccess.Write, FileShare.None))
-                        {
-                            resultStream.Position = 0;
-                            resultStream.CopyTo(outputStream);
-                        }
-                    }
-
-                }
-            }
-        }
-
-
-        private static Encoding _utf8encodingnobom = new UTF8Encoding(false);
-
-        private static void WriteXmlDeclaration(Encoding encoding, XmlReader xmlReader, XmlWriter xmlWriter)
-        {
-            string[] attributes = xmlReader.Value.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < attributes.Length; i++)
-            {
-                string attribute = attributes[i];
-                if (attribute.ToLower().StartsWith("encoding"))
-                {
-                    string preFix = attribute.Substring(0, 10);
-                    string value;
-                    if (encoding.Equals(Encoding.Unicode) || encoding.Equals(Encoding.BigEndianUnicode))
-                    {
-                        value = "UTF-16";
-                    }
-                    else if (encoding.Equals(Encoding.UTF8) || encoding.Equals(_utf8encodingnobom))
-                    {
-                        value = "UTF-8";
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Encoding '" + encoding.EncodingName + "' is not supported. Only UTF-16 and UTF-8 encodings are supported.");
-                    }
-                    string postFix = attribute.Substring(attribute.Length - 1);
-                    attributes[i] = preFix + value + postFix;
-                }
-            }
-
-            xmlWriter.WriteProcessingInstruction(xmlReader.Name, String.Join(" ", attributes));
-        }
-
-        private static XmlReaderSettings InitializeXmlReaderSettings(XmlResolverUsingCatalog xmlResolver, ValidationType validationType)
-        {
-            // When ProhibitDTD = true, the following error occurs:
-            // "For security reasons DTD is prohibited in this XML document. To enable DTD processing set the ProhibitDtd property on XmlReaderSettings to false and pass the settings into XmlReader.Create method."
-            XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
-            xmlReaderSettings.ConformanceLevel = ConformanceLevel.Auto;
-            xmlReaderSettings.DtdProcessing = DtdProcessing.Parse;
-            xmlReaderSettings.ValidationType = validationType;
-            if (validationType != ValidationType.None)
-            {
-                xmlReaderSettings.ValidationEventHandler += new System.Xml.Schema.ValidationEventHandler(ValidationHandler);
-            }
-            xmlReaderSettings.XmlResolver = xmlResolver;
-            xmlReaderSettings.IgnoreComments = false;
-            xmlReaderSettings.IgnoreProcessingInstructions = false;
-            xmlReaderSettings.IgnoreWhitespace = false;
-            xmlReaderSettings.CloseInput = true;
-            return xmlReaderSettings;
-        }
-
-
+        #region Private fields
+        private XmlResolverUsingCatalog _xmlResolverUsingCatalog;
+        /// <summary>
+        /// XmlReaderSettings that hold the processing types and xml catalog references.
+        /// </summary>
+        private readonly XmlReaderSettings _xmlReaderSettings = new XmlReaderSettings();
+        /// <summary>
+        /// Collection of the files to process
+        /// </summary>
+        private readonly List<FileInfo> _files = new List<FileInfo>();
+        #endregion
 
         /// <summary>
         /// Handler method for validation errors. Throws an exception when an error is encountered
@@ -182,22 +82,100 @@ namespace ConsoleApp2
                     XmlSchemaException xmlSchemaException = args.Exception as XmlSchemaException;
                     if (xmlSchemaException != null)
                     {
-                        throw new InvalidOperationException("Xml validation error '" + xmlSchemaException.Message + "' at line " + xmlSchemaException.LineNumber + " position " + xmlSchemaException.LinePosition);
+                        throw new InvalidOperationException("'" + xmlSchemaException.Message + "' at line " + xmlSchemaException.LineNumber + " position " + xmlSchemaException.LinePosition);
                     }
                     else
                     {
-                        throw new InvalidOperationException("Xml validation error '" + args.Message + "'");
+                        throw new InvalidOperationException("'" + args.Message + "'");
                     }
                 case System.Xml.Schema.XmlSeverityType.Warning:
                     if (args.Message == "No DTD found.")       // Unfortunately there does not seem to be a typed exception for not having a DTD, so need to test the message :-(
                     {
-                        throw new InvalidOperationException("Xml validation error '" + args.Message + "'");
+                        throw new InvalidOperationException("'" + args.Message + "'");
                     }
                     // Else: Do nothing
                     break;
             }
         }
 
+        protected override void BeginProcessing()
+        {
+            WriteDebug("Loading XmlResolverUsingCatalog[${XmlCatalogFilePath}]");
+            _xmlResolverUsingCatalog = new XmlResolverUsingCatalog(XmlCatalogFilePath);
+            // When ProhibitDTD = true, the following error occurs:
+            // "For security reasons DTD is prohibited in this XML document. To enable DTD processing set the ProhibitDtd property on XmlReaderSettings to false and pass the settings into XmlReader.Create method."
+            WriteDebug("Loading XmlReaderSettings");
+            _xmlReaderSettings.ConformanceLevel = ConformanceLevel.Auto;
+            _xmlReaderSettings.DtdProcessing = DtdProcessing.Parse;
+            _xmlReaderSettings.ValidationType = ValidationType.DTD;
+            _xmlReaderSettings.ValidationEventHandler += new System.Xml.Schema.ValidationEventHandler(ValidationHandler);
+            _xmlReaderSettings.XmlResolver = _xmlResolverUsingCatalog;
+            _xmlReaderSettings.IgnoreComments = false;
+            _xmlReaderSettings.IgnoreProcessingInstructions = false;
+            _xmlReaderSettings.IgnoreWhitespace = false;
+            _xmlReaderSettings.CloseInput = true;
+            base.BeginProcessing();
+        }
+
+        protected override void ProcessRecord()
+        {
+            try
+            {
+                foreach (string filePath in FilePath)
+                {
+                    _files.Add(new FileInfo(filePath));
+                }
+            }
+            catch (TrisoftAutomationException trisoftAutomationException)
+            {
+                ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (Exception exception)
+            {
+                ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+        }
+
+        protected override void EndProcessing()
+        {
+            try
+            {
+                int current = 0;
+                WriteDebug("Validating _files.Count[" + _files.Count + "]");
+                foreach (FileInfo inputFile in _files)
+                {
+                    WriteDebug("Validating inputFile[" + inputFile.FullName + "]");
+                    WriteParentProgress("Validating inputFile[" + inputFile.FullName + "]", ++current, _files.Count);
+                    try
+                    {
+                        using (StreamReader streamReader = new StreamReader(inputFile.FullName))
+                        {
+                            using (XmlReader xmlReader = XmlReader.Create(streamReader, _xmlReaderSettings))
+                            {
+                                while (xmlReader.Read()) { }
+                            }
+                        }
+                        WriteObject(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteWarning("Validating inputFile[" + inputFile.FullName + "] failed: " + ex.Message);
+                        WriteObject(false);
+                    }
+                }
+            }
+            catch (TrisoftAutomationException trisoftAutomationException)
+            {
+                ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (Exception exception)
+            {
+                ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+            finally
+            {
+                base.EndProcessing();
+            }
+        }
     }
 }
-*/
