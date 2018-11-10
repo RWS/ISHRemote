@@ -40,62 +40,50 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
     /// # Note that ditabase and ditaval are not supported.
     /// # Note that the xmls in the input folder needs to have a DOCTYPE.
     /// 
-    /// Write-Host "Setting current directory..."
-    /// [string]$currentScriptDirectory = split-path -parent $MyInvocation.MyCommand.Definition
-    /// Set-Location $currentScriptDirectory
-    /// [Environment]::CurrentDirectory=$currentScriptDirectory
     /// # Input folder with the specialized xmls to generalize.
     /// $inputfolder = "Data-GeneralizeDitaXml\InputFiles"	
-    /// # Output folder with the generalize xmls. The successfully generalized files will get a .gen extension, the failed ones will get .err with a .log file next to them why they failed.
-    /// $outputfolder = "Data-GeneralizeDitaXml\OutputFiles"    # !This folder will be deleted if it already exists!
+    /// # Output folder with the generalize xmls.
+    /// $outputfolder = "Data-GeneralizeDitaXml\OutputFiles"
     /// 
     /// # Location of the catalog xml that contains the specialized dtds
-    /// $specializedCatalogLocation = "Data-GeneralizeDitaXml\SpecializedDTDs\catalog-alldita12dtds.xml"
+    /// $specializedCatalogLocation = "Samples\Data-GeneralizeDitaXml\SpecializedDTDs\catalog-alldita12dtds.xml"
     /// # Location of the catalog xml that contains the "base" dtds
-    /// $generalizedCatalogLocation = "Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml";
+    /// $generalizedCatalogLocation = "Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml";
     /// # File that contains a mapping between the specialized dtd and the according generalized dtd.
-    /// $generalizationCatalogMappingLocation = "Data-GeneralizeDitaXml\generalization-catalog-mapping.xml"
+    /// $generalizationCatalogMappingLocation = "Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml"
     /// # If you would have specialized attributes from the DITA 1.2 "props" attribute, specify those attributes here to generalize them to the "props" attribute again.  Here just using modelyear, market, vehicle as an example
     /// $attributesToGeneralizeToProps = @("modelA", "modelB", "modelC")
     /// # If you would have specialized attributes from the DITA 1.2 "base" attribute, specify those attributes here to generalize them to the "base" attribute again. Here just using basea, baseb, basec as an example
     /// $attributesToGeneralizeToBase = @("basea", "baseb", "basec")
-    /// if (Test-Path $outputfolder)
-    /// {
-    /// 	Remove-Item $outputfolder -Recurse
-    /// }
     /// 
-    /// # First we will copy all the files of the inputfolder to the outputfolder recursively
-    /// Copy-Item -Path $inputfolder -Destination $outputfolder -recurse -force
-    /// 
-    /// # Read all the xml files to process from the outputfolder
-    /// $filesToProcess = get-childItem $outputfolder -include *.xml -recurse
-    /// 
-    /// # Generalize all the files in the outputfolder
-    /// # The successfully generalized files will get a .gen extension, the failed ones will get .err with a .log file next to them why they failed.	
-    /// $filesToProcess | New-IshDitaGeneralizedXml `
-    /// 						-SpecializedCatalogLocation $SpecializedCatalogLocation `
-    /// 					   -GeneralizedCatalogLocation $GeneralizedCatalogLocation `
-    /// 					   -GeneralizationCatalogMappingLocation $GeneralizationCatalogMappingLocation `
-    /// 					   -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
-    /// 					   -AttributesToGeneralizeToBase $attributesToGeneralizeToBase
+    /// # Read all the xml files to process and generalize all the files in the outputfolder
+    /// Get-ChildItem $inputfolder -Include *.xml -Recurse |
+    /// New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $SpecializedCatalogFilePath `
+    /// 					      -GeneralizedCatalogFilePath $GeneralizedCatalogFilePath `
+    /// 					      -GeneralizationCatalogMappingFilePath $GeneralizationCatalogMappingFilePath `
+    /// 					      -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
+    /// 					      -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
+    /// 					      -FolderPath $outputfolder
     /// </code>
     /// <para>Generalize all DITA xml files in a certain directory</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $generalizesamplesrootfolder = "C:\\temp\\";
-    /// $specializedCatalogLocation = $generalizesamplesrootfolder + "SpecializedDTDs\\catalog-dita-1.2.xml";
-    /// $generalizedCatalogLocation = $generalizesamplesrootfolder + "GeneralizedDTDs\\catalog-dita-1.1.xml";
-    /// $generalizationCatalogMappingLocation = $generalizesamplesrootfolder + "generalization-catalog-mapping.xml"; 
+    /// $someLearningAssessmentFilePath = "Samples\InputFiles\Learning\LearningAssessment.xml"
+    /// $outputfolder = "C:\temp\"
+    /// $specializedCatalogLocation = "Samples\SpecializedDTDs\catalog-dita-1.2.xml"
+    /// $generalizedCatalogLocation = "Samples\GeneralizedDTDs\catalog-dita-1.1.xml"
+    /// $generalizationCatalogMappingLocation = "Samples\generalization-catalog-mapping.xml";
     /// $attributesToGeneralizeToProps = @("complexity", "visibility")          # array containing 2 elements 
     /// $attributesToGeneralizeToBase = @();          # @() = empty array
     ///     
-    /// New-IshDitaGeneralizedXml -SpecializedCatalogLocation $SpecializedCatalogLocation `
-    /// -GeneralizedCatalogLocation $GeneralizedCatalogLocation `
-    /// -GeneralizationCatalogMappingLocation $GeneralizationCatalogMappingLocation `
-    /// -FilePath $FilePath `
-    /// -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
-    /// -AttributesToGeneralizeToBase $attributesToGeneralizeToBase
+    /// New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $SpecializedCatalogFilePath `
+    ///                           -GeneralizedCatalogFilePath $GeneralizedCatalogFilePath `
+    ///                           -GeneralizationCatalogMappingFilePath $GeneralizationCatalogMappingFilePath `
+    ///                           -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
+    ///                           -AttributesToGeneralizeToBase $attributesToGeneralizeToBase
+    ///                           -FilePath $someLearningAssessmentFilePath `
+    /// 					      -FolderPath $outputfolder
     /// </code>
     /// <para>Generalize one DITA xml file</para>
     /// </example>
@@ -108,14 +96,14 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false)]
         [ValidateNotNullOrEmpty]
-        public string SpecializedCatalogLocation { get; set; }
+        public string SpecializedCatalogFilePath { get; set; }
 
         /// <summary>
         /// <para type="description">The filepath of the catalog with the generalized/standard DTDs. Best is to make a separate folders with all the generalized DTD files together + a catalog with relative locations to the generalized DTD files.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false)]
         [ValidateNotNullOrEmpty]
-        public string GeneralizedCatalogLocation { get; set; }
+        public string GeneralizedCatalogFilePath { get; set; }
 
         /// <summary>
         /// <para type="description">The location of a generalization mapping file. This mapping file defines the relation between the specialized dtd rootelements/public ids and the corresponding generalized dtd rootelements/public ids. It is of the following form:
@@ -130,7 +118,7 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false)]
         [ValidateNotNullOrEmpty]
-        public string GeneralizationCatalogMappingLocation { get; set; }
+        public string GeneralizationCatalogMappingFilePath { get; set; }
 
         /// <summary>
         /// <para type="description">Array of attributes that are specialized from the DITA "props" attribute (and need to be generalized to it).</para>
@@ -158,20 +146,18 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
         [ValidateNotNullOrEmpty]
         public string FolderPath { get; set; }
 
-
+        //private variables
         private DitaXmlGeneralization _ditaXMLGeneralization = null;
-
-                FileInfo[] File;
 
         protected override void BeginProcessing()
         {
             //Validate all incoming catalogs once
-            WriteDebug("Loading SpecializedCatalogLocation[${SpecializedCatalogLocation}]");
-            XmlResolverUsingCatalog specializedXmlResolver = new XmlResolverUsingCatalog(SpecializedCatalogLocation);
-            WriteDebug("Loading GeneralizedCatalogLocation[${GeneralizedCatalogLocation}]");
-            XmlResolverUsingCatalog generalizedXmlResolver = new XmlResolverUsingCatalog(GeneralizedCatalogLocation);
-            WriteDebug("Loading GeneralizationCatalogMappingLocation[${GeneralizationCatalogMappingLocation}]");
-            DitaXmlGeneralizationCatalogMapping generalizationCatalogMapping = new DitaXmlGeneralizationCatalogMapping(GeneralizationCatalogMappingLocation);
+            WriteDebug("Loading SpecializedCatalogFilePath[${SpecializedCatalogFilePath}]");
+            XmlResolverUsingCatalog specializedXmlResolver = new XmlResolverUsingCatalog(SpecializedCatalogFilePath);
+            WriteDebug("Loading GeneralizedCatalogFilePath[${GeneralizedCatalogFilePath}]");
+            XmlResolverUsingCatalog generalizedXmlResolver = new XmlResolverUsingCatalog(GeneralizedCatalogFilePath);
+            WriteDebug("Loading GeneralizationCatalogMappingFilePath[${GeneralizationCatalogMappingFilePath}]");
+            DitaXmlGeneralizationCatalogMapping generalizationCatalogMapping = new DitaXmlGeneralizationCatalogMapping(GeneralizationCatalogMappingFilePath);
             _ditaXMLGeneralization = new HelperClasses.DitaXmlGeneralization(specializedXmlResolver, generalizedXmlResolver, generalizationCatalogMapping);
             if (AttributesToGeneralizeToProps != null)
             { 
@@ -185,7 +171,8 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
             }
 
             if (!Directory.Exists(FolderPath))
-            { 
+            {
+                WriteDebug("Creating FolderPath[${FolderPath}]");
                 string tempLocation = Directory.CreateDirectory(FolderPath).FullName;
             }
             base.BeginProcessing();
@@ -199,12 +186,10 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
                 foreach (string filePath in FilePath)
                 {
                     FileInfo inputFile = new FileInfo(filePath);
-                    FileInfo outputFile = null;
+                    // Could be nicer, but currently loosing inputFile relative files and dropping all in OutputFolder
+                    FileInfo outputFile = new FileInfo(Path.Combine(FolderPath, inputFile.Name));
                     try
                     {
-                        // Could be nicer, but currently loosing inputFile relative files and dropping all in OutputFolder
-                        outputFile = new FileInfo(Path.Combine(FolderPath, inputFile.Name));
-
                         WriteParentProgress("Generalizing inputFile["+inputFile.FullName+"] to outputFile["+ outputFile.FullName +"]", ++current, FilePath.Length);
                         _ditaXMLGeneralization.Generalize(inputFile, outputFile);
                         WriteObject(outputFile);

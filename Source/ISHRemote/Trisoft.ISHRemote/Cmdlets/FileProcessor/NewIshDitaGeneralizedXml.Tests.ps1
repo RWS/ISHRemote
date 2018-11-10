@@ -55,10 +55,10 @@ Describe “New-IshDitaGeneralizedXml" -Tags "Read" {
 	$attributesToGeneralizeToBase = @("basea", "baseb", "basec")
 
 	  
-	Context "New-IshDitaGeneralizedXml returns FileInfo" {
-		$taskFileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-											  -GeneralizedCatalogLocation $generalizedCatalogFilePath `
-											  -GeneralizationCatalogMappingLocation $generalizationCatalogMappingFilePath `
+	Context "New-IshDitaGeneralizedXml" {
+		$taskFileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+											  -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
+											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
@@ -71,39 +71,39 @@ Describe “New-IshDitaGeneralizedXml" -Tags "Read" {
 		}
 		It "BookMap without Attributes options Result String Comparison" {
 			$bookMapFileInfo = Get-Item $bookMapFilePath | 
-			                   New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-							                             -GeneralizedCatalogLocation $generalizedCatalogFilePath `
-														 -GeneralizationCatalogMappingLocation $generalizationCatalogMappingFilePath `
+			                   New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+							                             -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
+														 -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 														 -FolderPath $outputFolder
 			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaGeneralizedBookMapFileContent | Should Be $True
 		}
-		It "Parameter SpecializedCatalogLocation invalid" {
+		It "Parameter SpecializedCatalogFilePath invalid" {
 			{
-				$fileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogLocation "INVALIDILEPATH" `
-											  -GeneralizedCatalogLocation $generalizedCatalogFilePath `
-											  -GeneralizationCatalogMappingLocation $generalizationCatalogMappingFilePath `
+				$fileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath "INVALIDILEPATH" `
+											  -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
+											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
 			} | Should Throw
 		}
-		It "Parameter GeneralizedCatalogLocation invalid" {
+		It "Parameter GeneralizedCatalogFilePath invalid" {
 			{
-				$fileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-											  -GeneralizedCatalogLocation "INVALIDILEPATH" `
-											  -GeneralizationCatalogMappingLocation $generalizationCatalogMappingFilePath `
+				$fileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+											  -GeneralizedCatalogFilePath "INVALIDILEPATH" `
+											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
 			} | Should Throw
 		}
-		It "Parameter GeneralizationCatalogMappingLocation invalid" {
+		It "Parameter GeneralizationCatalogMappingFilePath invalid" {
 			{
-				$fileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-											  -GeneralizedCatalogLocation $generalizationCatalogMappingFilePath `
-											  -GeneralizationCatalogMappingLocation "INVALIDILEPATH" `
+				$fileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+											  -GeneralizedCatalogFilePath $generalizationCatalogMappingFilePath `
+											  -GeneralizationCatalogMappingFilePath "INVALIDILEPATH" `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
@@ -112,9 +112,9 @@ Describe “New-IshDitaGeneralizedXml" -Tags "Read" {
 		}
 		It "Parameter FilePath invalid will result in warning" {
 			{
-				$fileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-											  -GeneralizedCatalogLocation $generalizationCatalogMappingFilePath `
-											  -GeneralizationCatalogMappingLocation  $generalizationCatalogMappingFilePath `
+				$fileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+											  -GeneralizedCatalogFilePath $generalizationCatalogMappingFilePath `
+											  -GeneralizationCatalogMappingFilePath  $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
@@ -122,9 +122,9 @@ Describe “New-IshDitaGeneralizedXml" -Tags "Read" {
 			} | Should Not Throw
 		}
 		It "Parameter FilePath Single" {
-			$fileInfoArray = New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-											  -GeneralizedCatalogLocation $generalizedCatalogFilePath `
-											  -GeneralizationCatalogMappingLocation $generalizationCatalogMappingFilePath `
+			$fileInfoArray = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+											  -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
+											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
@@ -132,9 +132,9 @@ Describe “New-IshDitaGeneralizedXml" -Tags "Read" {
 			$fileInfoArray.Count | Should Be 1
 		}
 		It "Parameter FilePath Multiple" {
-			$fileInfoArray = New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-											  -GeneralizedCatalogLocation $generalizedCatalogFilePath `
-											  -GeneralizationCatalogMappingLocation $generalizationCatalogMappingFilePath `
+			$fileInfoArray = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+											  -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
+											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
@@ -143,18 +143,18 @@ Describe “New-IshDitaGeneralizedXml" -Tags "Read" {
 		}
 		It "Pipeline FilePath Single" {
 			$fileInfos = Get-Item -Path $taskFilePath
-			($fileInfos | New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-											  -GeneralizedCatalogLocation $generalizedCatalogFilePath `
-											  -GeneralizationCatalogMappingLocation $generalizationCatalogMappingFilePath `
+			($fileInfos | New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+											  -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
+											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder).Count | Should Be 1
 		}
 		It "Pipeline FilePath Multiple" {
 			$fileInfos = @((Get-Item -Path $taskFilePath), (Get-Item -Path $bookMapFilePath))
-			($fileInfos | New-IshDitaGeneralizedXml -SpecializedCatalogLocation $specializedCatalogFilePath `
-											  -GeneralizedCatalogLocation $generalizedCatalogFilePath `
-											  -GeneralizationCatalogMappingLocation $generalizationCatalogMappingFilePath `
+			($fileInfos | New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+											  -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
+											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder).Count | Should Be 2
