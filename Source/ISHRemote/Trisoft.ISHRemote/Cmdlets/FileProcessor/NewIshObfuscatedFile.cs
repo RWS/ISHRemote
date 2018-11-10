@@ -54,42 +54,22 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
     /// # Other type of files like .mpg, .mov, .swf etc. are not supported by the obfuscator, so will not be present in the output folder
     /// Note that the script deletes all the files in the output folder first
     /// 
-    /// Write-Host "Setting current directory..."
-    /// [string]$currentScriptDirectory = split-path -parent $MyInvocation.MyCommand.Definition
-    /// Set-Location $currentScriptDirectory
-    /// [Environment]::CurrentDirectory=$currentScriptDirectory
     /// # Input folder with the files to obfuscate
-    /// $inputfolder = "Data-ObfuscateFiles\InputFiles"	
+    /// $inputfolder = "Samples\Data-ObfuscateFiles\InputFiles"	
     /// # Output folder with the obfuscated files.
-    /// $outputfolder = "Data-ObfuscateFiles\OutputFiles"
-    /// 
-    /// # Clear the output folder
-    /// if (Test-Path $outputfolder)
-    /// {
-    /// 	Remove-Item $outputfolder -Recurse
-    /// }
+    /// $outputfolder = "Samples\Data-ObfuscateFiles\OutputFiles"
     /// 
     /// # Read all files to process from the inputfolder
-    /// $filesToProcess = get-childItem inputfolder -File
-    /// 
-    /// # If you also want to obfuscate certain attribute values when obfuscating an xml file, specify their attribute names here to obfuscate them as well. 
-    /// # Important: If you include attribute names of which the values adheres to a fixed list list of values in the DTD, the file will not be valid anymore against the DTD.
-    /// $attributesToObfuscate = @("navtitle")
-    /// # Obfuscates all xml and image files in the folder
-    /// # The successfully obfuscated files will be saved in the output folder
-    /// Write-Host "Starting obfuscation process"
-    /// $result = $filesToProcess | New-IshObfuscatedFile -OutputFolder $outputfolder -XmlAttributesToObfuscate $attributesToObfuscate
-    /// Write-Host "Done obfuscation $($result.Length) of $($filesToProcess.Length) file obfuscated"
+    /// Get-ChildItem $inputfolder -File | 
+    /// New-IshObfuscatedFile -OutputFolder $outputfolder -XmlAttributesToObfuscate @("navtitle")
     /// </code>
     /// <para>Obfuscates all xml and image files in a certain directory</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $samplefile = "C:\\temp\\test.html";
-    /// $attributesToObfuscate = @();          # @() = empty array
-    /// $xmlFileExtensions = @(".html")        # Since we know that the .html file contains xhtml which can be loaded as xml, add it to the file extensions that should be treated as xml
-    ///     
-    /// New-IshObfuscatedFile -OutputFolder "c:\\out\\" -FilePath $samplefile -XmlFileExtensions $xmlFileExtensions
+    /// $xhtmlFilePath = "C:\temp\test.html";
+    /// # Since we know that the .html file contains xhtml which can be loaded as xml, add it to the file extensions that should be treated as xml
+    /// New-IshObfuscatedFile -OutputFolder "c:\out\" -FilePath $xhtmlFilePath -XmlFileExtensions @(".html") -XmlAttributesToObfuscate @() # @() = empty array
     /// </code>
     /// <para>Obfuscates one xhtml file</para>
     /// </example>
