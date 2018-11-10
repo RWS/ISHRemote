@@ -31,8 +31,8 @@ using Trisoft.ISHRemote.HelperClasses;
 namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
 {
     /// <summary>
-    /// <para type="synopsis">The New-IshDitaGeneralizedXml cmdlet generalizes all files that are passed through the pipeline or via the -FilePath parameter. Both the specialized input xml file and resulting generalized xml output file are validated. Note that a DOCTYPE needs to be present in the input xml file and resulting generalized xml output file are validated.</para>
-    /// <para type="description">The New-IshDitaGeneralizedXml cmdlet generalizes all files that are passed through the pipeline or via the -FilePath parameter. Both the specialized input xml file and resulting generalized xml output file are validated. Note that a DOCTYPE needs to be present in the input xml file and resulting generalized xml output file are validated.</para>
+    /// <para type="synopsis">The New-IshDitaGeneralizedXml cmdlet generalizes all incoming files. Both the specialized input xml file and resulting generalized xml output file are validated.</para>
+    /// <para type="description">The New-IshDitaGeneralizedXml cmdlet generalizes all incoming files. Both the specialized input xml file and resulting generalized xml output file are validated. Note that a DOCTYPE needs to be present in the input xml file and resulting generalized xml output file are validated.</para>
     /// </summary>
     /// <example>
     /// <code>
@@ -106,16 +106,14 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
         /// <summary>
         /// <para type="description">The filepath of the catalog with the specialized DTDs. Best is to make a separate folders with all the specialized DTD files together + a catalog with relative locations to the specialized DTD files.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FilesGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileLocationGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false)]
         [ValidateNotNullOrEmpty]
         public string SpecializedCatalogLocation { get; set; }
 
         /// <summary>
         /// <para type="description">The filepath of the catalog with the generalized/standard DTDs. Best is to make a separate folders with all the generalized DTD files together + a catalog with relative locations to the generalized DTD files.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FilesGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileLocationGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false)]
         [ValidateNotNullOrEmpty]
         public string GeneralizedCatalogLocation { get; set; }
 
@@ -130,95 +128,92 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
         /// 2) The generalizedrootelement is required
         /// 3) Either the generalizeddtdpublicid or generalizeddtdsystemid is required</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FilesGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileLocationGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false)]
         [ValidateNotNullOrEmpty]
         public string GeneralizationCatalogMappingLocation { get; set; }
 
         /// <summary>
         /// <para type="description">Array of attributes that are specialized from the DITA "props" attribute (and need to be generalized to it).</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FilesGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileLocationGroup")]
-        [ValidateNotNull]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
         public string[] AttributesToGeneralizeToProps { get; set; }
 
         /// <summary>
         /// <para type="description">Array of attributes that are specialized from the DITA "base" attribute (and need to be generalized to it).</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FilesGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileLocationGroup")]
-        [ValidateNotNull]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
         public string[] AttributesToGeneralizeToBase { get; set; }
 
         /// <summary>
-        /// <para type="description">FilePath can be used to specify one specialized input xml file location.</para>
+        /// <para type="description">FilePath can be used to specify one or more specialized input xml file locations.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileLocationGroup"), ValidateNotNullOrEmpty]
-        [Alias("FileLocation")]
-        public string FilePath { get; set; }
+        [Parameter(Mandatory = true, ValueFromPipeline = true)]
+        [ValidateNotNullOrEmpty]
+        public string[] FilePath { get; set; }
 
         /// <summary>
-        /// <para type="description">Array of FileInfo objects that is passed through the pipeline. This parameter holds the specialized xml input files to generalize.</para>
+        /// <para type="description">Folder on the Windows filesystem where to store the new data files</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "FilesGroup"), ValidateNotNull]
-        [Alias("Files")]
-        public FileInfo[] File { get; set; }
+        [Parameter(Mandatory = true, ValueFromPipeline = false)]
+        [ValidateNotNullOrEmpty]
+        public string FolderPath { get; set; }
+
+
+        private DitaXmlGeneralization _ditaXMLGeneralization = null;
+
+                FileInfo[] File;
+
+        protected override void BeginProcessing()
+        {
+            //Validate all incoming catalogs once
+            WriteDebug("Loading SpecializedCatalogLocation[${SpecializedCatalogLocation}]");
+            XmlResolverUsingCatalog specializedXmlResolver = new XmlResolverUsingCatalog(SpecializedCatalogLocation);
+            WriteDebug("Loading GeneralizedCatalogLocation[${GeneralizedCatalogLocation}]");
+            XmlResolverUsingCatalog generalizedXmlResolver = new XmlResolverUsingCatalog(GeneralizedCatalogLocation);
+            WriteDebug("Loading GeneralizationCatalogMappingLocation[${GeneralizationCatalogMappingLocation}]");
+            DitaXmlGeneralizationCatalogMapping generalizationCatalogMapping = new DitaXmlGeneralizationCatalogMapping(GeneralizationCatalogMappingLocation);
+            _ditaXMLGeneralization = new HelperClasses.DitaXmlGeneralization(specializedXmlResolver, generalizedXmlResolver, generalizationCatalogMapping);
+            if (AttributesToGeneralizeToProps != null)
+            { 
+                WriteDebug("Loading AttributesToGeneralizeToProps[" + String.Join(",", AttributesToGeneralizeToProps) + "]");
+                _ditaXMLGeneralization.AttributesToGeneralizeToProps = AttributesToGeneralizeToProps;
+            }
+            if (AttributesToGeneralizeToBase != null)
+            { 
+                WriteDebug("Loading AttributesToGeneralizeToBase[" + String.Join(",", AttributesToGeneralizeToBase) + "]");
+                _ditaXMLGeneralization.AttributesToGeneralizeToBase = AttributesToGeneralizeToBase;
+            }
+
+            if (!Directory.Exists(FolderPath))
+            { 
+                string tempLocation = Directory.CreateDirectory(FolderPath).FullName;
+            }
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {
-
             try
             {             
                 int current = 0;
-
-                WriteDebug("Generalizing");
-
-                if (!String.IsNullOrEmpty(FilePath))
+                foreach (string filePath in FilePath)
                 {
-                    File = new FileInfo[] { new FileInfo(FilePath) };
-                }
-
-                XmlResolverUsingCatalog specializedXmlResolver = new XmlResolverUsingCatalog(SpecializedCatalogLocation);
-                XmlResolverUsingCatalog generalizedXmlResolver = new XmlResolverUsingCatalog(GeneralizedCatalogLocation);
-                DitaXmlGeneralizationCatalogMapping generalizationCatalogMapping = new DitaXmlGeneralizationCatalogMapping(GeneralizationCatalogMappingLocation);
-
-                DitaXmlGeneralization ditaXMLGeneralization = new HelperClasses.DitaXmlGeneralization(specializedXmlResolver,
-                    generalizedXmlResolver, generalizationCatalogMapping);
-
-                ditaXMLGeneralization.AttributesToGeneralizeToProps = AttributesToGeneralizeToProps;
-                ditaXMLGeneralization.AttributesToGeneralizeToBase = AttributesToGeneralizeToBase;
-
-                
-                List<FileInfo> outFiles = new List<FileInfo>();
-                foreach (FileInfo inputFile in File)
-                {
-                    FileInfo outFile = null;
+                    FileInfo inputFile = new FileInfo(filePath);
+                    FileInfo outputFile = null;
                     try
                     {
-                        WriteParentProgress("Generalizing file[" + inputFile.FullName + "]", ++current, File.Length);
+                        // Could be nicer, but currently loosing inputFile relative files and dropping all in OutputFolder
+                        outputFile = new FileInfo(Path.Combine(FolderPath, inputFile.Name));
 
-                        outFile = new FileInfo(Path.ChangeExtension(inputFile.FullName, ".gen"));
-                        // file.MoveTo(file.FullName + ".bak");             
-                        ditaXMLGeneralization.Generalize(inputFile, outFile);                        
-                        outFiles.Add(outFile);
-                        System.IO.File.Delete(inputFile.FullName);
+                        WriteParentProgress("Generalizing inputFile["+inputFile.FullName+"] to outputFile["+ outputFile.FullName +"]", ++current, FilePath.Length);
+                        _ditaXMLGeneralization.Generalize(inputFile, outputFile);
+                        WriteObject(outputFile);
                     }
                     catch (Exception ex)
                     {
-                        WriteWarning("Generalizing file " + inputFile.FullName + " failed: " + ex.Message);
-                        if (System.IO.File.Exists(Path.ChangeExtension(inputFile.FullName, ".gen")))
-                        {
-                            System.IO.File.Move(Path.ChangeExtension(inputFile.FullName, ".gen"), Path.ChangeExtension(inputFile.FullName, ".errxml"));
-                        }
-                        System.IO.File.Move(inputFile.FullName, Path.ChangeExtension(inputFile.FullName, ".err"));
-                        StreamWriter errFile = System.IO.File.CreateText(Path.ChangeExtension(inputFile.FullName, ".log"));
-                        errFile.Write("Generalizing file " + outFile.FullName + " failed: " + ex.Message);
-                        errFile.Close();
+                        WriteWarning("Generalizing inputFile[" + inputFile.FullName + "] to outputFile[" + outputFile.FullName + "] failed: " + ex.Message);
                     }
                 }
-                WriteDebug("outFiles.length[" + outFiles.Count + "]");
-                WriteObject(outFiles, true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

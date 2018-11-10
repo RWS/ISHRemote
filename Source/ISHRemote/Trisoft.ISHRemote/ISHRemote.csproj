@@ -321,6 +321,7 @@
     <None Include="Cmdlets\Baseline\SetIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\SetIshBaselineItem.Tests.ps1" />
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
+    <None Include="Cmdlets\FileProcessor\NewIshDitaGeneralizedXml.Tests.ps1" />
     <None Include="Cmdlets\OutputFormat\AddIshOutputFormat.Tests.ps1" />
     <None Include="Cmdlets\Settings\CompareIshTypeFieldDefinition.Tests.ps1" />
     <None Include="Cmdlets\UserGroup\AddIshUserGroup.Tests.ps1" />
@@ -1175,6 +1176,7 @@
     <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\Learning\LearningSummary.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\Reference.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\InputFiles\SubjectScheme\SubjectScheme.xml" />
+    <Content Include="Samples\Data-GeneralizeDitaXml\Remember--UsedByPesterTests.txt" />
     <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\catalog-alldita12dtds.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />
     <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\base\dtd\delayResolutionDomain.mod" />
