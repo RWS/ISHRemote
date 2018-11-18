@@ -25,7 +25,34 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 	             Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased |
 				 Set-IshDocumentObj -IshSession $ishSession
 
-	Context "Get-IshBackgroundTask returns IshBackgroundTask object " {
+
+    $allTaskMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CREATIONDATE  | 
+			           Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CURRENTATTEMPT |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EVENTTYPE |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EXECUTEAFTERDATE |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HASHID | 
+			           Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name LEASEDBY |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name LEASEDON |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name MODIFICATIONDATE | 
+			           Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name OUTPUTDATAID |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name PROGRESSID |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Value |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TASKID |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TRACKINGID |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType All
+    $allHistMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name ENDDATE | 
+			           Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name ERROR |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name ERRORNUMBER |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EXITCODE |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HISTORYID | 
+			           Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HOSTNAME |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name OUTPUT |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STARTDATE
+
+
+	Context "Get-IshBackgroundTask" {
 		$metadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TASKID | 
 		            Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HISTORYID |
 					Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EVENTTYPE |
@@ -50,119 +77,64 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 		It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTaskHistory]" {
 			$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] | Should Not BeNullOrEmpty
 		}
-	}
-
-		<#
-	Context “Add-IshDocumentObj ParameterGroupFileContent" {
-		It "Parameter IshSession/Lng/FileContent invalid" {
-			{ Add-IshDocumentObj -IShSession "INVALIDISHSESSION" -Lng "INVALIDLANGUAGE" -FileContent "INVALIDFILECONTENT" } | Should Throw
+		It "Parameter IshSession/ModifiedSince/UserFilter invalid" {
+			{ Get-IshBackgroundTask -IShSession "INVALIDISHSESSION" -ModifiedSince "INVALIDDATE" -UserFilter "INVALIDUSERFILTER" } | Should Throw
 		}
-		It "Parameter Lng/FileContent invalid" {
-			{ Add-IshDocumentObj -IShSession $ishSession -Lng "INVALIDLANGUAGE" -FileContent "INVALIDFILECONTENT" } | Should Throw
+		It "Parameter RequestedMetadata/MetadataFile invalid" {
+			{ Get-IshBackgroundTask -IShSession $ishSession -RequestedMetadata "INVALIDMETADATA" -MetadataFilter "INVALIDFILTER"  } | Should Throw
 		}
-		It "Parameter FileContent invalid" {
-			{ Add-IshDocumentObj -IShSession $ishSession -Lng $ishLng -FileContent "INVALIDFILECONTENT" } | Should Throw
+		It "Parameter RequestedMetadata/MetadataFilter are optional" {
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
+			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element).StartsWith('VUSER') | Should Be $true
+			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element).StartsWith('VBACKGROUNDTASK') | Should Be $true
 		}
-		It "All Parameters (Topic)" {
-			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Topic $timestamp" |
-						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-			    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -LogicalId "MYOWNGENERATEDLOGICALIDTOPIC" -Version '2' -Lng $ishLng -Metadata $ishTopicMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+		It "Parameter ModifiedSince is now" {
+			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(1)) -UserFilter All).Count | Should Be 0
 		}
-		It "All Parameters (Map)" {
-			$ishMapMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Map $timestamp" |
-						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-			                  Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderMap -IshType ISHMasterDoc -LogicalId "MYOWNGENERATEDLOGICALIDMAP" -Version '3' -Lng $ishLng -Metadata $ishMapMetadata -Edt "EDTXML" -FileContent $ditaMapFileContent
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+		It "Parameter RequestedMetadata only all of Task level" {
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
+			$ishBackgroundTask.ObjectRef["BackgroundTask"] -gt 0 | Should Be $true
+			#$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] -gt 0 | Should Be $true
+			$ishBackgroundTask.IshField.Count -ge 18 | Should Be $true
 		}
-		It "All Parameters (Lib)" {
-			$ishLibMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Lib $timestamp" |
-						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-			    			  Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderLib -IshType ISHLibrary -LogicalId "MYOWNGENERATEDLOGICALIDLIB" -Version '4' -Lng $ishLng -Metadata $ishLibMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+		It "Parameter RequestedMetadata only all of History level" {
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allHistMetadata)[0]
+			$ishBackgroundTask.ObjectRef["BackgroundTask"] -gt 0 | Should Be $true
+			#$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] -gt 0 | Should Be $true
+			$ishBackgroundTask.IshField.Count -ge 1 | Should Be $true  # At least 1 entries returned if BackgroundTask service is not running, otherwise more
 		}
-	}
-	
-	Context “Add-IshDocumentObj ParameterGroupFilePath" {
-		It "Parameter IshSession/Lng/FilePath invalid" {
-			{ Add-IshDocumentObj -IShSession "INVALIDISHSESSION" -Lng "INVALIDLANGUAGE" -FilePath "INVALIDFILEPATH" } | Should Throw
+		It "Parameter MetadataFilter Filter to exactly one" {
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
+			$filterMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Level Task -Name USERID -ValueType Element -Value ($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element) |
+			                  Set-IshMetadataFilterField -IshSession $ishSession -Level Task -Name TASKID -ValueType Element -Value ($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID) |
+							  Set-IshMetadataFilterField -IshSession $ishSession -Level History -Name HISTORYID -ValueType Element -Value ($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level History -Name HISTORYID)
+			$ishBackgroundTaskArray = Get-IshBackgroundTask -IshSession $ishSession -MetadataFilter $filterMetadata
+			#Write-Host ("ishBackgroundTask.IshRef["+ $ishBackgroundTask.IshRef + "] ishBackgroundTaskArray.IshRef["+ $ishBackgroundTask.IshRef + "]")
+			$ishBackgroundTaskArray.Count | Should Be 1
 		}
-		It "All Parameters (Image like EDTJPEG)" {
-			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Image $timestamp" |
-						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-			    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-			$tempFilePath = (New-TemporaryFile).FullName
-			Add-Type -AssemblyName "System.Drawing"
-			$bmp = New-Object -TypeName System.Drawing.Bitmap(100,100)
-			for ($i = 0; $i -lt 100; $i++)
-			{
-				for ($j = 0; $j -lt 100; $j++)
-				{
-					$bmp.SetPixel($i, $j, 'Red')
-				}
-			}
-			$bmp.Save($tempFilePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderImage -IshType ISHIllustration -LogicalId "MYOWNGENERATEDLOGICALIDIMAGE" -Version '5' -Lng $ishLng -Resolution $ishResolution -Metadata $ishImageMetadata -Edt "EDTJPEG" -FilePath $tempFilePath
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+		It "Parameter IshBackgroundTask invalid" {
+			{ Get-IshBackgroundTask -IshSession $ishSession -IshBackgroundTask "INVALIDISHBACKGROUNDTASK" } | Should Throw
 		}
-		It "All Parameters (Other like EDT-TEXT)" {
-			$ishOtherMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Other $timestamp" |
-						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-			    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-			Get-Process | Out-File $tempFilePath
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderOther -IshType ISHTemplate -LogicalId "MYOWNGENERATEDLOGICALIDOTHER" -Version '6' -Lng $ishLng -Metadata $ishOtherMetadata -Edt "EDT-TEXT" -FilePath $tempFilePath
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+		It "Parameter IshBackgroundTask Single" {
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter Current)[0]
+			$taskId = $ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID
+			$ishBackgroundTaskArray = Get-IshBackgroundTask -IshSession $ishSession -IshBackgroundTask $ishBackgroundTask
+			$ishBackgroundTaskArray.Count -ge 1 | Should Be $true
+			$ishBackgroundTaskArray.IshRef | Should Be $taskId
 		}
-	}
-
-	Context “Add-IshDocumentObj IshObjectsGroup" {
-		$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
-						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-		It "Parameter IshObject invalid" {
-			{ Add-IshDocumentObj -IshSession $ishSession -IshFolder "INVALIDISHFOLDER" -IshObject "INVALIDISHOBJECT" } | Should Throw
+		<# TODO It "Parameter IshBackgroundTask Multiple" {
 		}
-		It "Parameter IshObject Single" {
-			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			             Get-IshDocumentObjData -IshSession $ishSession
-			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObject
-			$ishObjectArray = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshObject $ishObject
-			$ishObjectArray.Count | Should Be 1
+		#>
+		It "Pipeline IshBackgroundTask Single" {
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter Current)[0]
+			$taskId = $ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID
+			$ishBackgroundTaskArray = $ishBackgroundTask | Get-IshBackgroundTask -IshSession $ishSession
+			$ishBackgroundTaskArray.Count -ge 1 | Should Be $true
+			$ishBackgroundTaskArray.IshRef | Should Be $taskId
 		}
-		It "Parameter IshObject Multiple" {
-			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
-			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
-			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
-			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectB
-			$ishObjectArray = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshObject @($ishObjectA,$ishObjectB)
-			$ishObjectArray.Count | Should Be 2
+		<# TODO It "Pipeline IshBackgroundTask Multiple" {
 		}
-		It "Pipeline IshObject Single" {
-			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
-			$ishObjectC = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
-			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectC
-			$ishObjectArray = $ishObjectC | Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic
-			$ishObjectArray.Count | Should Be 1
-		}
-		It "Pipeline IshObject Multiple" {
-			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
-			$ishObjectD = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
-			$ishObjectE = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
-			$ishObjects = @($ishObjectD,$ishObjectE)
-			$ishObjects | Remove-IshDocumentObj -IshSession $ishSession
-			$ishObjectArray = $ishObjects | Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic
-			$ishObjects.Count -eq $ishObjectArray.Count | Should Be $true
-		}
+		#>
 	}
 	#>
 }

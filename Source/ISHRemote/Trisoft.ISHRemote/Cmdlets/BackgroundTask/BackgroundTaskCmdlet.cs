@@ -31,19 +31,6 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         }
 
         /// <summary>
-        /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
-        /// </summary>
-        /// <param name="currentFields">The current <see cref="IshFields"/> object to append.</param>
-        /// <returns>The updated <see cref="IshFields"/> object.</returns>
-        public virtual IshFields AddRequiredFields(IshFields currentFields)
-        {
-			throw new NotImplementedException();
-            currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTID", Enumerations.Level.Progress, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
-            currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTTYPE", Enumerations.Level.Progress, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
-            return currentFields;
-        }
-
-        /// <summary>
         /// Wrap incoming objects as PSObjects and extend with PSNoteProperties for every IshField value entry
         /// </summary>
         /// <param name="ishEvents">Object to wrap and return as PSObject</param>

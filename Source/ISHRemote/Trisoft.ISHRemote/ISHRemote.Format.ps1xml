@@ -497,15 +497,15 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ishref</Label>
-            <Width>40</Width>
+            <Width>12</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>ishobjectref</Label>
-            <Width>12</Width>
+            <Width>29</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>eventtype</Label>
-            <Width>12</Width>
+            <Width>38</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -515,7 +515,7 @@
                 <PropertyName>IshRef</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>IshObjectRef</PropertyName>
+                <PropertyName>ObjectRef</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>EventType</PropertyName>

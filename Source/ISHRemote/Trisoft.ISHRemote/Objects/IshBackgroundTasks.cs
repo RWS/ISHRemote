@@ -42,9 +42,9 @@ namespace Trisoft.ISHRemote.Objects
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xmlIshBackgroundTasks);
             _backgroundTasks = new List<IshBackgroundTask>();
-            foreach (XmlNode ishEvent in xmlDocument.SelectNodes("ishbackgroundtasks/ishbackgroundtask"))
+            foreach (XmlNode ishBackgroundTask in xmlDocument.SelectNodes("ishbackgroundtasks/ishbackgroundtask"))
             {
-                _backgroundTasks.Add(new IshBackgroundTask((XmlElement)ishEvent));
+                _backgroundTasks.Add(new IshBackgroundTask((XmlElement)ishBackgroundTask));
             }
         }
 

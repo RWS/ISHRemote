@@ -108,18 +108,6 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBackgroundTasksGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequestedMetadata { get; set; }
-/*
-        /// <summary>
-        /// <para type="description">The enumeration indicating which overall status the event must have (e.g. All, Success, Failed,...)</para>
-        /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [ValidateNotNullOrEmpty]
-        public Enumerations.BackgroundTaskStatusFilter BackgroundTaskStatusFilter
-        {
-            private get { return Enumerations.BackgroundTaskStatusFilter.All; }  // required otherwise XmlDoc2CmdletDoc crashes with 'System.ArgumentException: Property Get method was not found.'
-            set { _progressStatusFilter = EnumConverter.ToBackgroundTaskStatusFilter<BackgroundTask25ServiceReference.e>(value); }
-        }
-*/
 
         /// <summary>
         /// <para type="description">The <see cref="IshBackgroundTask"/>s that need to be handled.</para>
@@ -133,7 +121,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         private DateTime _modifiedSince = DateTime.Today.AddDays(-1);
         //private BackgroundTask25ServiceReference.B _progressStatusFilter = BackgroundTask25ServiceReference.ProgressStatusFilter.All;
         private BackgroundTask25ServiceReference.eUserFilter _userFilter = BackgroundTask25ServiceReference.eUserFilter.All;
-        private List<IshBackgroundTask> _retrievedIshBackgroundTask = new List<IshBackgroundTask>();
+        private readonly List<IshBackgroundTask> _retrievedIshBackgroundTask = new List<IshBackgroundTask>();
         #endregion
 
 
@@ -175,43 +163,27 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 IshFields metadataFilter = new IshFields(MetadataFilter);
                 IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 string xmlIshBackgroundTasks;
+                List<IshBackgroundTask> returnIshBackgroundTasks = new List<IshBackgroundTask>();
+                if (_retrievedIshBackgroundTask.Count != 0)
+                {
+                    var backgroundTaskIds = _retrievedIshBackgroundTask.Select(ishEvent => Convert.ToInt64(ishEvent.ObjectRef[Enumerations.ReferenceType.BackgroundTask])).ToList();
+                    if (backgroundTaskIds.Count != 0)
+                    {
+                        var backgroundTaskIdsAsString = string.Join(", ", backgroundTaskIds.ToArray());
+                        metadataFilter.AddOrUpdateField(new IshMetadataFilterField("TASKID", Enumerations.Level.Task, Enumerations.FilterOperator.In, backgroundTaskIdsAsString, Enumerations.ValueType.Value), Enumerations.ActionMode.Find);
+                    }
+                }
                 WriteDebug($"Finding UserFilter[{_userFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 xmlIshBackgroundTasks = IshSession.BackgroundTask25.Find(
                     ModifiedSince,
                     _userFilter,
-                    metadataFilter.ToXml(), 
+                    metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
-                var returnIshBackgroundTasks = new IshBackgroundTasks(xmlIshBackgroundTasks).BackgroundTasks;
-
+                returnIshBackgroundTasks = new IshBackgroundTasks(xmlIshBackgroundTasks).BackgroundTasks;
                 WriteVerbose("returned object count[" + returnIshBackgroundTasks.Count + "]");
                 WriteObject(returnIshBackgroundTasks, true);
 
                 /*
-                IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());  // ToRequestedFields() should not be required if TableType like CardTypes pass IshTypeFieldSetup
-                string xmlIshEvents;
-                if (_retrievedIshEvents.Count == 0)
-                {
-                    WriteVerbose("Retrieving overview");
-                    var progressLevelRequestedMetadata = requestedMetadata.ToRequestedFields(Enumerations.Level.Progress);
-                    WriteDebug($"Retrieving ProgressStatusFilter[{_progressStatusFilter}] UserFilter[{_userFilter}] RequestedMetadata.length[{progressLevelRequestedMetadata.ToXml().Length}]");
-                    xmlIshEvents = IshSession.BackgroundTask25.RetrieveEventOverview(EventTypes, _progressStatusFilter, ModifiedSince, _userFilter, progressLevelRequestedMetadata.ToXml());
-                    _retrievedIshEvents = new IshEvents(xmlIshEvents).Events;
-                }
-
-                // if there is a filter RetrieveEventsByProgressIds after RetrieveEventOverview or on incoming IShEvents
-                var progressRefs = _retrievedIshEvents.Select(ishEvent => Convert.ToInt64(ishEvent.ObjectRef[Enumerations.ReferenceType.EventProgress])).ToList();
-                if (progressRefs.Count != 0)
-                {
-                    WriteVerbose("Retrieving details");
-                    IshFields metadataFilter = new IshFields(MetadataFilter);
-                    //TODO: [Could]  could become the highest ishdetailref value to retrieve less, but then you need to 'append' to the incoming IshEvents so low priority
-                    long lastDetailId = 0;
-                    //TODO: [Could] requestedMetadata can be all levels here
-                    xmlIshEvents = IshSession.BackgroundTask25.RetrieveEventsByProgressIds(progressRefs.ToArray(), _eventLevel, lastDetailId, metadataFilter.ToXml(), requestedMetadata.ToXml());
-                    _retrievedIshEvents = new IshEvents(xmlIshEvents).Events;
-                }
-                WriteVerbose("returned event count[" + _retrievedIshEvents.Count + "]");
-
                 //Every cmdlet should return as a promoted PSObject which allows up-to-date PSNoteProperty
                 WriteObject(WrapAsPSObjectAndAddNoteProperties(_retrievedIshEvents), true);
                 */
