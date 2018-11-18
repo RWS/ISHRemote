@@ -108,7 +108,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBackgroundTasksGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequestedMetadata { get; set; }
-
+/*
         /// <summary>
         /// <para type="description">The enumeration indicating which overall status the event must have (e.g. All, Success, Failed,...)</para>
         /// </summary>
@@ -119,12 +119,13 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
             private get { return Enumerations.BackgroundTaskStatusFilter.All; }  // required otherwise XmlDoc2CmdletDoc crashes with 'System.ArgumentException: Property Get method was not found.'
             set { _progressStatusFilter = EnumConverter.ToBackgroundTaskStatusFilter<BackgroundTask25ServiceReference.e>(value); }
         }
+*/
 
         /// <summary>
         /// <para type="description">The <see cref="IshBackgroundTask"/>s that need to be handled.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshBackgroundTasksGroup")]
-        public IshEvent[] IshBackgroundTask { get; set; }
+        public IshBackgroundTask[] IshBackgroundTask { get; set; }
 
         
 
@@ -182,7 +183,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                     requestedMetadata.ToXml());
                 var returnIshBackgroundTasks = new IshBackgroundTasks(xmlIshBackgroundTasks).BackgroundTasks;
 
-                WriteVerbose("returned object count[" + returnIshBackgroundTasks.Length + "]");
+                WriteVerbose("returned object count[" + returnIshBackgroundTasks.Count + "]");
                 WriteObject(returnIshBackgroundTasks, true);
 
                 /*

@@ -81,6 +81,8 @@
   <ItemGroup>
     <Compile Include="Cmdlets\Application\ApplicationCmdlet.cs" />
     <Compile Include="Cmdlets\Application\GetIshVersion.cs" />
+    <Compile Include="Cmdlets\BackgroundTask\BackgroundTaskCmdlet.cs" />
+    <Compile Include="Cmdlets\BackgroundTask\GetIshBackgroundTask.cs" />
     <Compile Include="Cmdlets\Baseline\AddIshBaseline.cs" />
     <Compile Include="Cmdlets\Baseline\BaselineCmdlet.cs" />
     <Compile Include="Cmdlets\Baseline\FindIshBaseline.cs" />
@@ -185,7 +187,9 @@
     <Compile Include="InfoShareWcfConnection.cs" />
     <Compile Include="InfoShareWcfConnectionParameters.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Objects\IshBackgroundTasks.cs" />
     <Compile Include="Objects\IshBaselineItems.cs" />
+    <Compile Include="Objects\Public\IshBackgroundTask.cs" />
     <Compile Include="Objects\Public\IshBaselineItem.cs" />
     <Compile Include="Objects\Public\IshRequestedMetadataField.cs" />
     <Compile Include="Objects\Public\IshTypeFieldDefinition.cs" />
@@ -319,6 +323,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\Public\IshVersion.cs" />
+    <None Include="Cmdlets\BackgroundTask\GetIshBackgroundTask.Tests.ps1" />
     <None Include="Cmdlets\Baseline\AddIshBasline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\FindIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\GetIshBaseline.Tests.ps1" />

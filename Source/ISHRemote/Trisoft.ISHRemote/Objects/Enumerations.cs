@@ -177,7 +177,7 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
-        /// <para type="description">Used by IshObject to set all reference types on a card</para>
+        /// <para type="description">Used by IshObject/IshEvent/IshBackgroundTask to set all reference types on a card</para>
         /// </summary>
         public enum ReferenceType
         {
@@ -202,7 +202,11 @@ namespace Trisoft.ISHRemote.Objects
             [StringValue("ishprogressref")]
             EventProgress,
             [StringValue("ishdetailref")]
-            EventDetail
+            EventDetail,
+            [StringValue("ishtaskref")]
+            BackgroundTask,
+            [StringValue("ishhistoryref")]
+            BackgroundTaskHistory
         }
 
         /// <summary>

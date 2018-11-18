@@ -26,31 +26,29 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 				 Set-IshDocumentObj -IshSession $ishSession
 
 	Context "Get-IshBackgroundTask returns IshBackgroundTask object " {
-		$ishObject= $null
+		$metadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TASKID | 
+		            Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HISTORYID |
+					Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EVENTTYPE |
+					Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name PROGRESSID 
+		$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -UserFilter All -RequestedMetadata $metadata)[0]
 		It "GetType().Name" {
-			$ishObject.GetType().Name | Should BeExactly "IshBackgroundTask"
+			$ishBackgroundTask.GetType().Name | Should BeExactly "IshBackgroundTask"
 		}
-		It "$ishObject.IshData" {
-			{ $ishObject.IshData } | Should Not Throw
+		It "ishObject.IshField" {
+			$ishBackgroundTask.IshField | Should Not BeNullOrEmpty
 		}
-		It "$ishObject.IshField" {
-			$ishObject.IshField | Should Not BeNullOrEmpty
+		It "ishObject.IshRef" {
+			$ishBackgroundTask.IshRef | Should Not BeNullOrEmpty
 		}
-		It "$ishObject.IshRef" {
-			$ishObject.IshRef | Should Not BeNullOrEmpty
+		It "ishBackgroundTask.EventType" {
+			$ishBackgroundTask.EventType | Should Not BeNullOrEmpty
 		}
-		It "$ishObject.IshType" {
-			$ishObject.IshType | Should Not BeNullOrEmpty
+		# Double check following 2 ReferenceType enum usage 
+		It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTask]" {
+			$ishBackgroundTask.ObjectRef["BackgroundTask"] | Should Not BeNullOrEmpty
 		}
-		# Double check following 3 ReferenceType enum usage 
-		It "$ishObject.ObjectRef[Enumerations.ReferenceType.Logical]" {
-			$ishObject.ObjectRef["Logical"] | Should Not BeNullOrEmpty
-		}
-		It "$ishObject.ObjectRef[Enumerations.ReferenceType.Version]" {
-			$ishObject.ObjectRef["Version"] | Should Not BeNullOrEmpty
-		}
-		It "$ishObject.ObjectRef[Enumerations.ReferenceType.Lng]" {
-			$ishObject.ObjectRef["Lng"] | Should Not BeNullOrEmpty
+		It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTaskHistory]" {
+			$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] | Should Not BeNullOrEmpty
 		}
 	}
 

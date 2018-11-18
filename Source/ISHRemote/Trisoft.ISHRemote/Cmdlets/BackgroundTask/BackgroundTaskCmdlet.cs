@@ -37,7 +37,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// <returns>The updated <see cref="IshFields"/> object.</returns>
         public virtual IshFields AddRequiredFields(IshFields currentFields)
         {
-			throw;
+			throw new NotImplementedException();
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTID", Enumerations.Level.Progress, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
             currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTTYPE", Enumerations.Level.Progress, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
             return currentFields;
@@ -50,7 +50,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// <returns>Wrapped PSObjects</returns>
         internal List<PSObject> WrapAsPSObjectAndAddNoteProperties(List<IshEvent> ishEvents)
         {
-			throw;
+            throw new NotImplementedException();
             List<PSObject> psObjects = new List<PSObject>();
             foreach(IshEvent ishEvent in ishEvents)
             {
