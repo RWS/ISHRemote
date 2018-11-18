@@ -8,6 +8,9 @@
 ISHRemote.psd1
 AssemblyInfo.cs
 
+# My debug files
+ISHRemote.PesterSetup.Debug.ps1
+
 # User-specific files
 *.suo
 *.user

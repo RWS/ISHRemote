@@ -40,13 +40,20 @@ $ishLngCombination = 'en'  # LanguageCombination like 'en+fr+nl' can only be exp
 $ishOutputFormatDitaXml = 'GUID-079A324-FE52-45C4-82CD-A1A9663C2777'  # 'DITA XML' element name
 $ishLovId = "DLANGUAGE"  # ListOfValues where the Lov tests will work on
 
-
-#region Placeholder to inject your variable overrides. DONT FORGET TO DELETE
-
-# e.g.
-# $ishUserName = 'myusername'
-# $ishPassword = 'mypassword'
-
+#region Placeholder to inject your variable overrides. 
+Write-Host    "Initializing Global Test Data and Variables for debug"
+$debugPesterSetupFilePath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "ISHRemote.PesterSetup.Debug.ps1"
+if (Test-Path -Path $debugPesterSetupFilePath -PathType Leaf)
+{
+	. ($debugPesterSetupFilePath)
+	# Where the .Debug.ps1 should contain at least
+	# $baseUrl = 'https://ish.example.com'
+	# $webServicesBaseUrl = "$baseUrl/ISHWS/"
+	# $wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
+	# $wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
+	# $ishUserName = 'myusername'
+	# $ishPassword = 'mypassword'
+}
 #endregion
 
 $webServicesBaseUrl -match "https://((?<hostname>.+))+/(.)+/" | Out-Null
