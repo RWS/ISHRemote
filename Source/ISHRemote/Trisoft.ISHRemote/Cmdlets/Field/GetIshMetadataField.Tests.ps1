@@ -82,6 +82,15 @@ Describe “Get-IshMetadataField" -Tags "Read" {
 		}
 	}
 
+	Context "Get-IshMetadataField -IshSession $ishSession IshBackgroundTask" {
+		It "Parameter IshBackgroundTask invalid" {
+			{ Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -IshBackgroundTask "INVALIDBACKGROUNDTASK" } | Should Throw
+		}
+		It "Pipeline IshBackgroundTask Multiple" {
+			#TODO test possibly is slow (or fails) when there are no EventMonitor entries
+			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince (Get-Date).AddMonths(-3) | Get-IshMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level Task).Count -ge 0 | Should Be $true
+		}
+	}
 	Context "Get-IshMetadataField IshFields.ToXml() for API Testing" {
 		It "Trisoft.ISHRemote.Objects.IShFields is public" {
 			{ New-Object -TypeName Trisoft.ISHRemote.Objects.IShFields } | Should Not Throw
