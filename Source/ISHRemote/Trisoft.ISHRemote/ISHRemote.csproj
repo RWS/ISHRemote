@@ -334,6 +334,7 @@
     <None Include="Cmdlets\UserGroup\AddIshUserGroup.Tests.ps1" />
     <None Include="Cmdlets\UserRole\AddIshUserRole.Tests.ps1" />
     <None Include="Cmdlets\User\GetIshUser.Tests.ps1" />
+    <None Include="ISHRemote.PesterSetup.Debug.ps1" />
     <None Include="Objects\_ObjectsDiagram.cd" />
     <None Include="packages.config" />
     <None Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\basemap.dtd" />
