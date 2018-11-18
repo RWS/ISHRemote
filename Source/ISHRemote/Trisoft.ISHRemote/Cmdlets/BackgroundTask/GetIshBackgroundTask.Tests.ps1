@@ -42,14 +42,14 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TASKID |
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TRACKINGID |
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType All
-    $allHistMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name ENDDATE | 
-			           Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name ERROR |
-					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name ERRORNUMBER |
-					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EXITCODE |
-					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HISTORYID | 
-			           Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HOSTNAME |
-					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name OUTPUT |
-					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STARTDATE
+    $allHistMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ENDDATE | 
+			           Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERROR |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERRORNUMBER |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name EXITCODE |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name HISTORYID | 
+			           Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name HOSTNAME |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name OUTPUT |
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name STARTDATE
 
 
 	Context "Get-IshBackgroundTask" {

@@ -27,37 +27,54 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
 {
     /// <summary>
     /// <para type="synopsis">Gets BackgroundTask entries with filtering options.</para>
-    /// <para type="description">Uses BackgroundTask25 API to retrieve ishevents showing progress of background task events from the centralized log system.</para>
+    /// <para type="description">Uses BackgroundTask25 API to retrieve backgroundtasks showing their status, lease, etc from the virtual queue.</para>
     /// <para type="description">This table oriented API maps straight through to database column names regarding ishfield usage.</para>
     /// </summary>
     /// <example>
     /// <code>
-    /// $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTID" -Level "Progress" |
-    ///                      Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level "Progress"
-    /// Get-IshEvent -IshSession $ishSession -EventTypes @("EXPORTFORPUBLICATION","SYNCHRONIZETOLIVECONTENT") -RequestedMetadata $requestedMetadata
+    /// $allMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CREATIONDATE  | 
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CURRENTATTEMPT |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EVENTTYPE |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EXECUTEAFTERDATE |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HASHID | 
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name LEASEDBY |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name LEASEDON |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name MODIFICATIONDATE | 
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name OUTPUTDATAID |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name PROGRESSID |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Value |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TASKID |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TRACKINGID |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType All |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ENDDATE | 
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERROR |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERRORNUMBER |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name EXITCODE |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name HISTORYID | 
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name HOSTNAME |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name OUTPUT |
+    ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name STARTDATE
+    /// Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $allMetadata               
     /// </code>
-    /// <para>Gets all top-level (progress) ishevents filtered to publish and synchronize events.</para>
+    /// <para>Returns the full denormalized task/history entries limited to All users and the last 24 hours.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTID" -Level "Progress" |
-    ///                      Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level "Progress" |
-    ///                      Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTDATATYPE" -Level "Detail"
-    /// $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name "EVENTDATATYPE" -Level "Detail" -FilterOperator "NotEqual" -Value "10"
-    /// Get-IshEvent -IshSession $ishSession -EventTypes @("EXPORTFORPUBLICATION","SYNCHRONIZETOLIVECONTENT") -RequestedMetadata $requestedMetadata -MetadataFilter $metadataFilter
+    /// Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter Current
     /// </code>
-    ///   <para>Gets up to detail ishevents filtered to publish and synchronize events and the eventdatatype should differ from 10.</para>
+    /// <para>Returns the full denormalized task/history entries limited to only Basic fields, the current user and limited to 10 seconds ago of activity.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTID" -Level "Progress" |
-    ///                      Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level "Progress" |
-    ///                      Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTDATATYPE" -Level "Detail"
-    /// $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name "ACTION" -Level "Detail" -FilterOperator In -Value "Request started, Start execution, Execution completed"
-    /// Get-IshEvent -IshSession $ishSession -EventTypes @("EXPORTFORPUBLICATION") -RequestedMetadata $requestedMetadata -MetadataFilter $metadataFilter
+    /// $filterMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Level Task -Name EVENTTYPE -FilterOperator In -Value "CREATETRANSLATIONS, CREATETRANSLATIONFROMLIST" |
+    ///                   Set-IshMetadataFilterField -IshSession $ishSession -Level Task -Name TASKID -Value $taskId
+    /// Get-IshBackgroundTask -IshSession $ishSession -MetadataFilter $filterMetadata
     /// </code>
-    ///   <para>Gets up to detail ishevents filtered to publish events and filters to only have the queue event, processing started and processing ended. This allows calculation of lead times and through put.</para>
+    /// <para>Returns the full denormalized task/history entries limited to only Basic fields, for All users and the last 24 hours.</para>
     /// </example>
+    /// <example>
     [Cmdlet(VerbsCommon.Get, "IshBackgroundTask", SupportsShouldProcess = false)]
     [OutputType(typeof(IshBackgroundTask))]
     public sealed class GetIshBackgroundTask : BackgroundTaskCmdlet
