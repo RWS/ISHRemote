@@ -46,7 +46,11 @@ namespace Trisoft.ISHRemote.Objects
             [StringValue("detail")]
             Detail = 310,
             [StringValue("data")]
-            Data = 320
+            Data = 320,
+            [StringValue("task")]
+            Task = 400,
+            [StringValue("history")]
+            History = 410,
         }
 
         /// <summary>
@@ -281,7 +285,11 @@ namespace Trisoft.ISHRemote.Objects
             /// <summary>
             /// Conditional Context, available on FISHCONTEXT (used to be saved on CTCONTEXT card type)
             /// </summary>
-            ISHFeatures
+            ISHFeatures,
+            /// <summary>
+            /// Background Task table
+            /// </summary>
+            ISHBackgroundTask
         }
 
 
