@@ -35,6 +35,7 @@ $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSepar
 $ishLng = 'VLANGUAGEEN'
 $ishResolution = 'VRESLOW'
 $ishStatusDraft = 'VSTATUSDRAFT'
+$ishStatusReleased = 'VSTATUSRELEASED'  # Direct status transition from $ishStatusDraft (D) to $ishStatusReleased (R) is required by the executing user
 $ishUserAuthor = 'VUSERADMIN'
 $ishLngCombination = 'en'  # LanguageCombination like 'en+fr+nl' can only be expressed with labels
 $ishOutputFormatDitaXml = 'GUID-079A324-FE52-45C4-82CD-A1A9663C2777'  # 'DITA XML' element name

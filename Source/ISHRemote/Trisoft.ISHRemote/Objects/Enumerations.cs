@@ -414,6 +414,29 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// <para type="description">BackgroundTask Status Filter</para>
+        /// </summary>
+        public enum BackgroundTaskStatusFilter
+        {
+            /// <summary>
+            /// Filtering on the status Busy will return all with status: VBACKGROUNDTASKSTATUSEXECUTING, VBACKGROUNDTASKSTATUSPENDING
+            /// </summary>
+            Busy,
+            /// <summary>
+            /// Filtering on the status Success will return all with status: VBACKGROUNDTASKSTATUSSUCCESS, VBACKGROUNDTASKSTATUSSKIPPED
+            /// </summary>
+            Success,
+            /// <summary>
+            /// Filtering on the status Failed will return all with status: VBACKGROUNDTASKSTATUSFAILED, VBACKGROUNDTASKSTATUSABORTED (NotUsedIn-13.0.1), VBACKGROUNDTASKSTATUSCANCELPENDING (NotUsedIn-13.0.1), VBACKGROUNDTASKSTATUSCANCELLED (NotUsedIn-13.0.1)
+            /// </summary>
+            Failed,
+            /// <summary>
+            /// No filtering on the status is applied 
+            /// </summary>
+            All
+        }
+
+        /// <summary>
         /// <para type="description">EventMonitor Events Status Filter</para>
         /// </summary>
         public enum ProgressStatusFilter

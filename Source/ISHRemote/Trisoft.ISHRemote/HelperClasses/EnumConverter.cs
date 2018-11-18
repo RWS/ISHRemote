@@ -56,6 +56,20 @@ namespace Trisoft.ISHRemote.HelperClasses
         }
 
         /// <summary>
+        /// Convert a BackgroundTaskStatusFilter string to an enumeration value.
+        /// </summary>
+        /// <param name="backgroundTaskStatusFilter">The backgroundTaskStatusFilter string that needs to be converted.</param>
+        /// <returns>A eBackgroundTaskStatusFilter enumeration value.</returns>
+        public static TResult ToBackgroundTaskStatusFilter<TResult>(Enumerations.BackgroundTaskStatusFilter backgroundTaskStatusFilter)
+        {
+            if (!typeof(TResult).IsEnum)
+            {
+                throw new NotSupportedException("TResult must be an Enum");
+            }
+            return (TResult)Enum.Parse(typeof(TResult), backgroundTaskStatusFilter.ToString(), true);
+        }
+
+        /// <summary>
         /// Convert a userFilter string to an enumeration value.
         /// </summary>
         /// <param name="userFilter">The userFilter string that needs to be converted.</param>
