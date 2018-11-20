@@ -74,7 +74,6 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// </code>
     /// <para>Returns the full denormalized task/history entries limited to only Basic fields, for All users and the last 24 hours.</para>
     /// </example>
-    /// <example>
     [Cmdlet(VerbsCommon.Get, "IshBackgroundTask", SupportsShouldProcess = false)]
     [OutputType(typeof(IshBackgroundTask))]
     public sealed class GetIshBackgroundTask : BackgroundTaskCmdlet
@@ -180,7 +179,6 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 IshFields metadataFilter = new IshFields(MetadataFilter);
                 IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 string xmlIshBackgroundTasks;
-                List<IshBackgroundTask> returnIshBackgroundTasks = new List<IshBackgroundTask>();
                 if (_retrievedIshBackgroundTask.Count != 0)
                 {
                     var backgroundTaskIds = _retrievedIshBackgroundTask.Select(ishEvent => Convert.ToInt64(ishEvent.ObjectRef[Enumerations.ReferenceType.BackgroundTask])).ToList();
@@ -196,14 +194,18 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                     _userFilter,
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
-                returnIshBackgroundTasks = new IshBackgroundTasks(xmlIshBackgroundTasks).BackgroundTasks;
+                List<IshBackgroundTask> returnIshBackgroundTasks = new IshBackgroundTasks(xmlIshBackgroundTasks).BackgroundTasks;
                 WriteVerbose("returned object count[" + returnIshBackgroundTasks.Count + "]");
-                WriteObject(returnIshBackgroundTasks, true);
-
-                /*
-                //Every cmdlet should return as a promoted PSObject which allows up-to-date PSNoteProperty
-                WriteObject(WrapAsPSObjectAndAddNoteProperties(_retrievedIshEvents), true);
-                */
+                
+                switch (IshSession.PipelineObjectPreference)
+                {
+                    case Enumerations.PipelineObjectPreference.PSObjectNoteProperty:
+                        WriteObject(WrapAsPSObjectAndAddNoteProperties(IshSession, returnIshBackgroundTasks), true);
+                        break;
+                    case Enumerations.PipelineObjectPreference.Off:
+                        WriteObject(returnIshBackgroundTasks, true);
+                        break;
+                }
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

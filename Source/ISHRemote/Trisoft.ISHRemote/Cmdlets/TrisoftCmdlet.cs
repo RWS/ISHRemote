@@ -44,7 +44,7 @@ namespace Trisoft.ISHRemote.Cmdlets
 
         public readonly ILogger Logger;
 
-        private string _levelNameValueTypeSeparator = "--";
+        private string _levelNameValueTypeSeparator = "--";     // consider removing and get from IshSession.NameHelper
         private int _tickCountStart;
         
         private ProgressRecord _parentProgressRecord;
@@ -154,16 +154,26 @@ namespace Trisoft.ISHRemote.Cmdlets
             }
         }
 
+        /// <summary>
+        /// Intentional override to include cmdlet origin
+        /// </summary>
         public new void WriteVerbose(string message)
         {
             base.WriteVerbose(base.GetType().Name + "  " + message);
+            WriteDebug(message);
         }
 
+        /// <summary>
+        /// Intentional override to include cmdlet origin and timestamp
+        /// </summary>
         public new void WriteDebug(string message)
         {
             base.WriteDebug($"{base.GetType().Name} {DateTime.Now.ToString("yyyyMMdd.HHmmss.fff")} {message}");
         }
 
+        /// <summary>
+        /// Intentional override to include cmdlet origin 
+        /// </summary>
         public new void WriteWarning(string message)
         {
             base.WriteWarning(base.GetType().Name + "  " + message);

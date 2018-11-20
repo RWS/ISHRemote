@@ -50,6 +50,30 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 			           Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name HOSTNAME |
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name OUTPUT |
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name STARTDATE
+    $allMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CREATIONDATE  | 
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CURRENTATTEMPT |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EVENTTYPE |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EXECUTEAFTERDATE |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name HASHID | 
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name LEASEDBY |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name LEASEDON |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name MODIFICATIONDATE | 
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name OUTPUTDATAID |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name PROGRESSID |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Value |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TASKID |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TRACKINGID |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType All |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ENDDATE | 
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERROR |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERRORNUMBER |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name EXITCODE |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name HISTORYID | 
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name HOSTNAME |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name OUTPUT |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name STARTDATE
 
 
 	Context "Get-IshBackgroundTask" {
@@ -74,9 +98,9 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 		It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTask]" {
 			$ishBackgroundTask.ObjectRef["BackgroundTask"] | Should Not BeNullOrEmpty
 		}
-		It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTaskHistory]" {
-			$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] | Should Not BeNullOrEmpty
-		}
+		#It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTaskHistory]" {
+		#	$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] | Should Not BeNullOrEmpty
+		#}
 		It "Parameter IshSession/ModifiedSince/UserFilter invalid" {
 			{ Get-IshBackgroundTask -IShSession "INVALIDISHSESSION" -ModifiedSince "INVALIDDATE" -UserFilter "INVALIDUSERFILTER" } | Should Throw
 		}
@@ -102,6 +126,25 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 			$ishBackgroundTask.ObjectRef["BackgroundTask"] -gt 0 | Should Be $true
 			#$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] -gt 0 | Should Be $true
 			$ishBackgroundTask.IshField.Count -ge 1 | Should Be $true  # At least 1 entries returned if BackgroundTask service is not running, otherwise more
+		}
+		It "Parameter RequestedMetadata PipelineObjectPreference=PSObjectNoteProperty" {
+			$ishSession.PipelineObjectPreference | Should Be "PSObjectNoteProperty"
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$ishBackgroundTask.GetType().Name | Should BeExactly "IshBackgroundTask"  # and not PSObject
+			[bool]($ishBackgroundTask.PSobject.Properties.name -match "status_task_element") | Should Be $true
+			[bool]($ishBackgroundTask.PSobject.Properties.name -match "userid_task_element") | Should Be $true
+			[bool]($ishBackgroundTask.PSobject.Properties.name -match "modificationdate") | Should Be $true
+			$ishBackgroundTask.modificationdate -like "*/*" | Should Be $false  # It should be sortable date format: yyyy-MM-ddTHH:mm:ss
+		}
+		It "Parameter RequestedMetadata PipelineObjectPreference=Off" {
+		    $pipelineObjectPreference = $ishSession.PipelineObjectPreference
+			$ishSession.PipelineObjectPreference = "Off"
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$ishBackgroundTask.GetType().Name | Should BeExactly "IshBackgroundTask"
+			[bool]($ishBackgroundTask.PSobject.Properties.name -match "status_task_element") | Should Be $false
+			[bool]($ishBackgroundTask.PSobject.Properties.name -match "userid_task_element") | Should Be $false
+			[bool]($ishBackgroundTask.PSobject.Properties.name -match "modificationdate") | Should Be $false
+			$ishSession.PipelineObjectPreference = $pipelineObjectPreference
 		}
 		It "Parameter MetadataFilter Filter to exactly one" {
 			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]

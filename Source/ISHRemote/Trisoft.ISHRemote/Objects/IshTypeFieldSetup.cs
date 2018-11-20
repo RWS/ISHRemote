@@ -199,6 +199,16 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// Returns the DataType of the specified field linked to the mentioned card type
+        /// </summary>
+        /// <param name="ishType">The card type</param>
+        /// <param name="ishField">Field object indicating level and name</param>
+        public Enumerations.DataType GetDataType(Enumerations.ISHType ishType, IshField ishField)
+        {
+            return _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.Level == ishField.Level && d.Name == ishField.Name).First().DataType;
+        }
+
+        /// <summary>
         /// Requested metadata fields will be duplicated and enriched to cater our Public Objects initilization.
         /// The minimal fields (IsDescriptive) will be added to allow initialization of the various IshObject types for all ValueTypes. 
         /// Unallowed fields for read operations (IshFieldDefinition.AllowOnRead) will be stripped with a Debug log message.

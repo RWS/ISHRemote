@@ -105,6 +105,23 @@ namespace Trisoft.ISHRemote.Objects
             Off
         }
 
+        /// <summary>
+        /// <para type="description">Allows tuning client-side object enrichment like no wrapping (off) or PSObject-with-PSNoteProperty wrapping.</para>
+        /// </summary>
+        public enum PipelineObjectPreference
+        {
+            /// <summary>
+            /// Wrap every possible pipeline object with PSObject and add PSNoteProperty for all IshFields
+            /// </summary>
+            [StringValue("psobjectnoteproperty")]
+            PSObjectNoteProperty,
+            /// <summary>
+            /// Deprecated legacy behavior (0.6 and earlier), so no pipeline PSObject wrapping
+            /// </summary>
+            [StringValue("off")]
+            Off
+        }
+
 
         /// <summary>
         /// <para type="description">List of value like Events can be hidden upon Find/Retrieval with these filters</para>

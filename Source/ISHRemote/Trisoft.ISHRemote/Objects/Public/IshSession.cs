@@ -49,6 +49,8 @@ namespace Trisoft.ISHRemote.Objects.Public
         private IshVersion _clientVersion;
         private IshTypeFieldSetup _ishTypeFieldSetup;
         private Enumerations.StrictMetadataPreference _strictMetadataPreference = Enumerations.StrictMetadataPreference.Continue;
+        private NameHelper _nameHelper;
+        private Enumerations.PipelineObjectPreference _pipelineObjectPreference = Enumerations.PipelineObjectPreference.PSObjectNoteProperty;
 
         private int _chunkSize = 10485760;
         private int _metadataBatchSize = 1000;
@@ -199,13 +201,25 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
+        internal NameHelper NameHelper
+        {
+            get
+            {
+                if (_nameHelper == null)
+                {
+                    _nameHelper = new NameHelper(this);
+                }
+                return _nameHelper;
+            }
+        }
+
         public string WebServicesBaseUrl
         {
             get { return _webServicesBaseUri.ToString(); }
         }
 
         /// <summary>
-        /// The user name used to authenticate to the serice, is initialized to Environment.UserName in case of Windows Authentication through NetworkCredential()
+        /// The user name used to authenticate to the service, is initialized to Environment.UserName in case of Windows Authentication through NetworkCredential()
         /// </summary>
         public string IshUserName
         {
@@ -332,6 +346,15 @@ namespace Trisoft.ISHRemote.Objects.Public
                 _strictMetadataPreference = value;
                 IshTypeFieldSetup.StrictMetadataPreference = value;
             }
+        }
+
+        /// <summary>
+        /// Allows tuning client-side object enrichment like no wrapping (off) or PSObject-with-PSNoteProperty wrapping.
+        /// </summary>
+        public Enumerations.PipelineObjectPreference PipelineObjectPreference
+        {
+            get { return _pipelineObjectPreference; }
+            set { _pipelineObjectPreference = value; }
         }
 
         /// <summary>

@@ -178,6 +178,7 @@
     <Compile Include="Cmdlets\User\UserCmdlet.cs" />
     <Compile Include="HelperClasses\IshObfuscator.cs" />
     <Compile Include="HelperClasses\NonClosingStreamWrapper.cs" />
+    <Compile Include="HelperClasses\NameHelper.cs" />
     <Compile Include="HelperClasses\ServicePointManagerHelper.cs" />
     <Compile Include="Objects\FieldElements.cs" />
     <Compile Include="HelperClasses\CertificateValidationHelper.cs" />

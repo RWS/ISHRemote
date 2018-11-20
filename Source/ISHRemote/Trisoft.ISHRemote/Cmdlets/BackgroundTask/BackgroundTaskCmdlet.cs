@@ -32,20 +32,20 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
 
         /// <summary>
         /// Wrap incoming objects as PSObjects and extend with PSNoteProperties for every IshField value entry
+        /// 
         /// </summary>
-        /// <param name="ishEvents">Object to wrap and return as PSObject</param>
+        /// <param name="ishSession">Incoming ishSession allows future tuning or simple disablement</param>
+        /// <param name="ishObjects">Object to wrap and return as PSObject</param>
         /// <returns>Wrapped PSObjects</returns>
-        internal List<PSObject> WrapAsPSObjectAndAddNoteProperties(List<IshEvent> ishEvents)
+        internal List<PSObject> WrapAsPSObjectAndAddNoteProperties(IshSession ishSession, List<IshBackgroundTask> ishObjects)
         {
-            throw new NotImplementedException();
             List<PSObject> psObjects = new List<PSObject>();
-            foreach(IshEvent ishEvent in ishEvents)
+            foreach(var ishObject in ishObjects)
             {
-                PSObject psObject = PSObject.AsPSObject(ishEvent);
-                foreach(IshField ishField in ishEvent.IshFields.Fields())
+                PSObject psObject = PSObject.AsPSObject(ishObject);  // returning a PSObject object that inherits from ishObject
+                foreach(IshField ishField in ishObject.IshFields.Fields())
                 {
-                    string name = ishField.Level + LevelNameValueTypeSeparator + ishField.Name + LevelNameValueTypeSeparator + ishField.ValueType;
-                    psObject.Properties.Add(new PSNoteProperty(name, ishEvent.IshFields.GetFieldValue(ishField.Name,ishField.Level,ishField.ValueType)));
+                    psObject.Properties.Add(ishSession.NameHelper.GetPSNoteProperty(ISHType, (IshMetadataField)ishField));
                 }
                 psObjects.Add(psObject);
             }
