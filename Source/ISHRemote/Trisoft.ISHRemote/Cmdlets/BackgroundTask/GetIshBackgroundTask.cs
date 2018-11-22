@@ -74,6 +74,13 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// </code>
     /// <para>Returns the full denormalized task/history entries limited to only Basic fields, for All users and the last 24 hours.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $metadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS
+    /// Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $metadata | Group-Object -Property status
+    /// </code>
+    /// <para>Returns the group-by count by status, for All users and the last 24 hours.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshBackgroundTask", SupportsShouldProcess = false)]
     [OutputType(typeof(IshBackgroundTask))]
     public sealed class GetIshBackgroundTask : BackgroundTaskCmdlet
@@ -140,6 +147,14 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         private readonly List<IshBackgroundTask> _retrievedIshBackgroundTask = new List<IshBackgroundTask>();
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if ((IshSession.ServerIshVersion.MajorVersion < 13) || ((IshSession.ServerIshVersion.MajorVersion == 13) && (IshSession.ServerIshVersion.RevisionVersion < 2)))
+            {
+                throw new PlatformNotSupportedException($"Get-IshBackgroundTask requires server-side BackgroundTask API which only available starting from 13SP2/13.0.2 and up. ServerIshVersion[{IshSession.ServerVersion}]");
+            }
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the cmdlet.

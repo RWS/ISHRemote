@@ -41,7 +41,7 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element |
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TASKID |
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TRACKINGID |
-					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType All
+					   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element
     $allHistMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ENDDATE | 
 			           Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERROR |
 					   Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERRORNUMBER |
@@ -65,7 +65,7 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
                    Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element |
                    Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TASKID |
                    Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name TRACKINGID |
-                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType All |
+                   Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element |
                    Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ENDDATE | 
                    Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERROR |
                    Set-IshRequestedMetadataField -IshSession $ishSession -Level History -Name ERRORNUMBER |
@@ -90,9 +90,6 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 		}
 		It "ishObject.IshRef" {
 			$ishBackgroundTask.IshRef | Should Not BeNullOrEmpty
-		}
-		It "ishBackgroundTask.EventType" {
-			$ishBackgroundTask.EventType | Should Not BeNullOrEmpty
 		}
 		# Double check following 2 ReferenceType enum usage 
 		It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTask]" {
@@ -119,7 +116,7 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
 			$ishBackgroundTask.ObjectRef["BackgroundTask"] -gt 0 | Should Be $true
 			#$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] -gt 0 | Should Be $true
-			$ishBackgroundTask.IshField.Count -ge 18 | Should Be $true
+			$ishBackgroundTask.IshField.Count | Should Be 16
 		}
 		It "Parameter RequestedMetadata only all of History level" {
 			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allHistMetadata)[0]

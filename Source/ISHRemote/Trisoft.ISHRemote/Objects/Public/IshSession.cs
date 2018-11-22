@@ -246,6 +246,11 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
+        internal IshVersion ServerIshVersion
+        {
+            get { return _serverVersion; }
+        }
+
         public string ServerVersion
         {
             get { return _serverVersion.ToString(); }
@@ -254,7 +259,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <summary>
         /// Retrieving assembly file version, actually can take up to 500 ms to get this initialized, so moved code to JIT property
         /// </summary>
-        public string ClientVersion
+        internal IshVersion ClientIshVersion
         {
             get
             {
@@ -262,8 +267,13 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     _clientVersion = new IshVersion(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVer‌​sion);
                 }
-                return _clientVersion.ToString();
+                return _clientVersion;
             }
+        }
+        
+        public string ClientVersion
+        {
+            get { return ClientIshVersion.ToString(); }
         }
 
         public List<IshTypeFieldDefinition> IshTypeFieldDefinition

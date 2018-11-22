@@ -495,30 +495,109 @@
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
+          <!-- Task -->
           <TableColumnHeader>
-            <Label>ishref</Label>
-            <Width>12</Width>
+            <Label>taskid</Label>
+            <Width>10</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>ishobjectref</Label>
-            <Width>29</Width>
+            <Label>userid</Label>
+            <Width>10</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>eventtype</Label>
-            <Width>38</Width>
+            <Width>25</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>status</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ca</Label>
+            <Width>2</Width>
+          </TableColumnHeader>
+          <!--<TableColumnHeader><Label>executeafterdate</Label><Width>20</Width></TableColumnHeader>-->
+          <TableColumnHeader>
+            <Label>leasedby</Label>
+            <Width>25</Width>
+          </TableColumnHeader>
+          <!--<TableColumnHeader><Label>leasedon</Label><Width>20</Width></TableColumnHeader>-->
+          <!--<TableColumnHeader><Label>modificationdate</Label><Width>20</Width></TableColumnHeader>-->
+          <!-- History -->
+          <TableColumnHeader>
+            <Label>histid</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>hostname</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>startdate</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>enddate</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>errn</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>exitc</Label>
+            <Width>5</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
+              <!-- Task -->
               <TableColumnItem>
-                <PropertyName>IshRef</PropertyName>
+                <PropertyName>taskid</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>ObjectRef</PropertyName>
+                <PropertyName>userid</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>EventType</PropertyName>
+                <PropertyName>eventtype</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>status</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>currentattempt</PropertyName>
+              </TableColumnItem>
+              <!--<TableColumnItem>
+                <PropertyName>executeafterdate</PropertyName>
+              </TableColumnItem>-->
+              <TableColumnItem>
+                <PropertyName>leasedby</PropertyName>
+              </TableColumnItem>
+              <!--<TableColumnItem>
+                <PropertyName>leasedon</PropertyName>
+              </TableColumnItem>-->
+              <!--<TableColumnItem>
+                <PropertyName>modificationdate</PropertyName>
+              </TableColumnItem>-->
+              <!-- History -->
+              <TableColumnItem>
+                <PropertyName>historyid_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>hostname_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>startdate_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>enddate_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>errornumber_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>exitcode_history_value</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

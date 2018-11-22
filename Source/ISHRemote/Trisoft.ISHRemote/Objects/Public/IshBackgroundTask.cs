@@ -91,13 +91,6 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get { return _ishRef; }
         }
-        /// <summary>
-        /// Gets the type of the backgroundTask
-        /// </summary>
-        public string EventType
-        {
-            get { return _ishFields.GetFieldValue("EVENTTYPE", Enumerations.Level.Task, Enumerations.ValueType.Value); }
-        }
 
         /// <summary>
         /// Get a pipeline friendly base/specialized IshField objects as array
