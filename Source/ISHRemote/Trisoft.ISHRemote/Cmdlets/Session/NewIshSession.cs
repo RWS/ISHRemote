@@ -261,6 +261,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 // usage by ToIshMetadataFields/.../ToIshRequestedMetadataFields and Expand-ISHParameter.ps1 parameter autocompletion
                 var ishTypeFieldSetup = ishSession.IshTypeFieldSetup;
 
+                // Submit the PSVariable so you don't have to specify '-IshSession $ishSession' all the time, can be retrieved in every cmdlet, preferably in BeginProcessing()
+                WriteVerbose($"Storing IshSession[{ishSession.Name}] under SessionState.{ISHRemoteSessionStateIshSession}");
+                this.SessionState.PSVariable.Set(ISHRemoteSessionStateIshSession, ishSession);
+
                 WriteObject(ishSession);
             }
             catch (NotSupportedException notSupportedException)

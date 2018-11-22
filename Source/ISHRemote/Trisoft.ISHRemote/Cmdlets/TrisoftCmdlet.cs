@@ -40,7 +40,7 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// <summary>
         /// Sleep constant used to slow down the progress bars to check the messages.
         /// </summary>
-        const int SleepTime = 0;
+        protected const int SleepTime = 0;
 
         public readonly ILogger Logger;
 
@@ -52,6 +52,14 @@ namespace Trisoft.ISHRemote.Cmdlets
         protected int _parentTotal;
         private ProgressRecord _childProgressRecord;
 
+        /// <summary>
+        /// Name of the PSVariable so you don't have to specify '-IshSession $ishSession' anymore, should be set by New-IshSession
+        /// </summary>
+        protected const string ISHRemoteSessionStateIshSession = "ISHRemoteSessionStateIshSession";
+        /// <summary>
+        /// Error message you get when you didn't pass an explicit -IshSession on the cmdlet, or New-IshSession didn't set the SessionState variable
+        /// </summary>
+        protected const string ISHRemoteSessionStateIshSessionException = "IshSession is null. Please create a session first using New-IshSession.Or explicitly pass parameter -IshSession to your cmdlet.";
 
         /// <summary>
         /// Returns the PSObject NoteProperty separator to generate additional auxiliary properties

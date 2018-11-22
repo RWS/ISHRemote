@@ -227,6 +227,11 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _ishUserName = value; }
         }
 
+        internal string Name
+        {
+            get { return $"[{WebServicesBaseUrl}][{IshUserName}]"; }
+        }
+
         /// <summary>
         /// The user name as available on the InfoShare User Profile in the CMS under field 'USERNAME'
         /// </summary>

@@ -33,7 +33,7 @@ namespace Trisoft.ISHRemote.HelperClasses
     {
         private readonly IshSession _ishSession;
         private readonly string _levelNameValueTypeSeparator = "_";  // Not that many special characters allowed in Properties, e.g. '=' is assignment
-        // Future fast-lookup dictionary...
+        // TODO [Could] NameHelper PSNoteProperty generator could benefit of fast-lookup dictionary to store DataType and PropertyName as almost all IshObjects start from the same requested metadata request...
 
         public NameHelper(IshSession ishSession)
         {

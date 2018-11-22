@@ -104,8 +104,8 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 		It "Parameter RequestedMetadata/MetadataFile invalid" {
 			{ Get-IshBackgroundTask -IShSession $ishSession -RequestedMetadata "INVALIDMETADATA" -MetadataFilter "INVALIDFILTER"  } | Should Throw
 		}
-		It "Parameter RequestedMetadata/MetadataFilter are optional" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
+		It "Parameter IshSession/UserFilter/MetadataFilter are optional" {
+			$ishBackgroundTask = (Get-IshBackgroundTask -ModifiedSince ((Get-Date).AddSeconds(-10)) -RequestedMetadata $allTaskMetadata)[0]
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element).StartsWith('VUSER') | Should Be $true
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element).StartsWith('VBACKGROUNDTASK') | Should Be $true
 		}
