@@ -96,7 +96,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                 if (IshSession != null)
                 {
                     WriteDebug($"Importing IshSession.ServerVersion[{IshSession.ServerVersion}]");
-                    if (13 <= Convert.ToInt64(IshSession.ServerVersion.Substring(0, IshSession.ServerVersion.IndexOf('.'))))
+                    if (13 <= IshSession.ServerIshVersion.MajorVersion)
                     {
                         // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
                         WriteVerbose($"Importing Settings25.RetrieveFieldSetupByIshType in IshSession.ServerVersion[{IshSession.ServerVersion}]");

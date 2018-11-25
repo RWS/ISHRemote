@@ -140,7 +140,16 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         {
                             WriteDebug($"Enriching ishObject[{ishObject.ObjectRef[Enumerations.ReferenceType.Lng]}] with IshData {++current}/{IshObject.Length}");
                             ishObject.IshData = ishData;
-                            WriteObject(ishObject, true);
+
+                            switch (IshSession.PipelineObjectPreference)
+                            {
+                                case Enumerations.PipelineObjectPreference.PSObjectNoteProperty:
+                                    WriteObject(WrapAsPSObjectAndAddNoteProperties(IshSession, ishObject), true);
+                                    break;
+                                case Enumerations.PipelineObjectPreference.Off:
+                                    WriteObject(ishObject, true);
+                                    break;
+                            }
                         }       
                     }
                     WriteVerbose("returned file count[" + current + "]");

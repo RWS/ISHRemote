@@ -248,7 +248,13 @@ namespace Trisoft.ISHRemote.Objects
         /// <param name="ishField">Field object indicating level and name</param>
         public Enumerations.DataType GetDataType(Enumerations.ISHType ishType, IshField ishField)
         {
-            return _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.Level == ishField.Level && d.Name == ishField.Name).First().DataType;
+            //_logger.WriteDebug($"GetDataType ISHType[{ishType}] Level[{ishField.Level}] Name[{ishField.Name}]");  //Remove slow logging
+            IshTypeFieldDefinition ishTypeFieldDefinition = _ishTypeFieldDefinitions.Values.FirstOrDefault(d => d.ISHType == ishType && d.Level == ishField.Level && d.Name == ishField.Name);
+            if (ishTypeFieldDefinition == null)
+            {
+                return Enumerations.DataType.String;
+            }
+            return ishTypeFieldDefinition.DataType;
         }
 
         /// <summary>

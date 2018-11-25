@@ -38,6 +38,15 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Returns the documents that are touched since yesterday.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $yesterday = (Get-Date).AddDays(-2000).ToString("dd/MM/yyyy HH:mm:ss")
+    /// $ishObjects = Find-IshDocumentObj -MetadataFilter(Set-IshMetadataFilterField -Level Lng -Name MODIFIED-ON -FilterOperator GreaterThan -Value $yesterday) `
+    ///                                   -RequestedMetadata(Set-IshRequestedMetadataField -Level Lng -Name FISHLASTMODIFIEDON)
+    /// $ishObjects | Select-Object -Property IshType, IshRef, version_version_value, doc-language, fresolution, fishlastmodifiedon, fishlastmodifiedby, fstatus, checked-out-by, ftitle_logical_value | Format-Table
+    /// </code>
+    /// <para></para>
+    /// </example>
     [Cmdlet(VerbsCommon.Find, "IshDocumentObj", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class FindIshDocumentObj : DocumentObjCmdlet
@@ -118,10 +127,19 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     statusFilter,
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
-                var returnIshObjects = new IshObjects(xmlIshObjects).Objects;
+                var returnIshObjects = new IshObjects(xmlIshObjects);
 
-                WriteVerbose("returned object count[" + returnIshObjects.Length + "]");
-                WriteObject(returnIshObjects, true);
+                WriteVerbose("returned object count[" + returnIshObjects.ObjectList.Count + "]");
+
+                switch (IshSession.PipelineObjectPreference)
+                {
+                    case Enumerations.PipelineObjectPreference.PSObjectNoteProperty:
+                        WriteObject(WrapAsPSObjectAndAddNoteProperties(IshSession, returnIshObjects.ObjectList), true);
+                        break;
+                    case Enumerations.PipelineObjectPreference.Off:
+                        WriteObject(returnIshObjects.Objects, true);
+                        break;
+                }
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

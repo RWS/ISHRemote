@@ -130,7 +130,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         {
             if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
             //if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); } // don't throw as for Field cmdlets this trully is optional
-            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            //WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
             base.BeginProcessing();
         }
 

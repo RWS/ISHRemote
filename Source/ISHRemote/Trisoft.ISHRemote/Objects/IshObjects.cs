@@ -77,5 +77,10 @@ namespace Trisoft.ISHRemote.Objects
                 return ids.ToArray();
             }
         }
+
+        public List<IshObject> ObjectList
+        {
+            get { return _objects;  }
+        }
     }
 }
