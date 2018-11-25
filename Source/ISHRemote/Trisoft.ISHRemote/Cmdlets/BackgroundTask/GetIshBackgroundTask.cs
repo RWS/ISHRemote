@@ -195,7 +195,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
             try
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 string xmlIshBackgroundTasks;
                 if (_retrievedIshBackgroundTask.Count != 0)
                 {

@@ -166,7 +166,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                     WriteDebug("Retrieving");
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.EDT25.RetrieveMetadata(
                        EDTIdsToRetrieve.ToArray(),
                        EDT25ServiceReference.ActivityFilter.None,

@@ -100,7 +100,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                 PublicationOutput25ServiceReference.StatusFilter statusFilter = EnumConverter.ToStatusFilter<PublicationOutput25ServiceReference.StatusFilter>(StatusFilter);
                 IshFields metadataFilter = new IshFields(MetadataFilter);
                 // Add the required fields (needed for pipe operations)
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                 WriteDebug($"Finding StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 xmlIshObjects = IshSession.PublicationOutput25.Find(
                     statusFilter, 

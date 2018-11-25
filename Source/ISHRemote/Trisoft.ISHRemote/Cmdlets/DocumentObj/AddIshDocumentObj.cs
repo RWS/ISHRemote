@@ -319,7 +319,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     ishObject.IshData.ByteArray));
                         }
 
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                         var response2 = IshSession.DocumentObj25.GetMetadata(new DocumentObj25ServiceReference.GetMetadataRequest(
                             response.logicalId, response.version, ishObjectLanguage, ishObjectResolution,
                             requestedMetadata.ToXml()));
@@ -366,7 +366,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             _ishData.ByteArray));
                     }
 
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                     var response2 = IshSession.DocumentObj25.GetMetadata(new DocumentObj25ServiceReference.GetMetadataRequest(
                         response.logicalId, response.version, Lng, resolution,
                         requestedMetadata.ToXml()));

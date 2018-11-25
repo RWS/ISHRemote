@@ -123,7 +123,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                     // Remove Password field explicitly, as we are not allowed to read it
                     returnFields.RemoveField(FieldElements.Password, Enumerations.Level.None, Enumerations.ValueType.All);
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.User25.RetrieveMetadata(
                         returnUsers.ToArray(),
                         User25ServiceReference.ActivityFilter.None,

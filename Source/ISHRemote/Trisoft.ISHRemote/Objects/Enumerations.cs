@@ -122,6 +122,30 @@ namespace Trisoft.ISHRemote.Objects
             Off
         }
 
+        public enum RequestedMetadataGroup
+        {
+            /// <summary>
+            /// performance-optimized, only primary keys
+            /// </summary>
+            [StringValue("descriptive")]
+            Descriptive,
+            /// <summary>
+            /// user friendly fields used in tables
+            /// </summary>
+            [StringValue("basic")]
+            Basic,
+            // <summary>
+            // not performant, tech fields only
+            // </summary>
+            //[StringValue("system")]
+            //System,
+            /// <summary>
+            /// not performant
+            /// </summary>
+            [StringValue("all")]
+            All
+        }
+
 
         /// <summary>
         /// <para type="description">List of value like Events can be hidden upon Find/Retrieval with these filters</para>

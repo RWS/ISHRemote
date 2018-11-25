@@ -89,7 +89,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                 var activityFilter = EnumConverter.ToActivityFilter<EDT25ServiceReference.ActivityFilter>(ActivityFilter);
                 IshFields metadataFilter = new IshFields(MetadataFilter);
                 // add more fields required for pipe operations
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
 
                 // 2. Finding 
                 WriteDebug($"Finding ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");

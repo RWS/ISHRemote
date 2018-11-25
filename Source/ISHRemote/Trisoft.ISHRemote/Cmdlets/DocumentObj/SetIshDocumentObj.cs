@@ -184,7 +184,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         var returnFields = (IshObject[0] == null)
                             ? new IshFields()
                             : IshObject[0].IshFields;
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(), requestedMetadata.ToXml());
                         IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
@@ -230,7 +230,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             }
                             version = response.version;
                         }
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                         var response2 = IshSession.DocumentObj25.GetMetadata(new GetMetadataRequest(LogicalId,
                             version,
                             Lng,

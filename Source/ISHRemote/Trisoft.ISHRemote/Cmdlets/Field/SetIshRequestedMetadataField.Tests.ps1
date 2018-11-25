@@ -6,7 +6,7 @@ try {
 Describe “Set-IshRequestedMetadataField" -Tags "Read" {
 	Write-Host "Initializing Test Data and Variables"
 
-	Context "Set-IshRequestedMetadataField -IshSession $ishSession returns IshRequestedMetadataField" {
+	Context "Set-IshRequestedMetadataField -IshSession ishSession returns IshRequestedMetadataField" {
 		It "GetType().Name" {
 			(Set-IshRequestedMetadataField -IshSession $ishSession -Name "FTITLE").GetType().Name | Should BeExactly "IshRequestedMetadataField"
 		}

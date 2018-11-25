@@ -70,7 +70,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
             try
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
 
                 WriteDebug($"Finding MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 string xmlIshObjects = IshSession.Baseline25.GetList(

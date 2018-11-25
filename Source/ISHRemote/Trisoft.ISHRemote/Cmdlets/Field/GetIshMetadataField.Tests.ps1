@@ -13,14 +13,14 @@ Describe “Get-IshMetadataField" -Tags "Read" {
 	$ishFolderFavoritesOriginal = Get-IshFolder -IShSession $ishSession -BaseFolder Favorites -RequestedMetadata $requestedMetadata
 	$ishFolderEditorTemplateOriginal = Get-IshFolder -IShSession $ishSession -BaseFolder EditorTemplate -RequestedMetadata $requestedMetadata
 
-	Context "Get-IshMetadataField -IshSession $ishSession returns String object" {
+	Context "Get-IshMetadataField -IshSession ishSession returns String object" {
 		$ishFolderData = Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -IshField $ishFolderDataOriginal.IshField
 		It "GetType().Name" {
 			$ishFolderData.GetType().Name | Should BeExactly "String"
 		}
 	}
 
-	Context “Get-IshMetadataField -IshSession $ishSession IshFieldsGroup" {
+	Context “Get-IshMetadataField -IshSession ishSession IshFieldsGroup" {
 		It "Parameter IshSession/Name invalid" {
 			{ Get-IshMetadataField -IshSession "INVALIDISHSESSION" -Name "INVALIDFIELDNAME" } | Should Throw
 		}
@@ -44,7 +44,7 @@ Describe “Get-IshMetadataField" -Tags "Read" {
 		}
 	}
 
-	Context "Get-IshMetadataField -IshSession $ishSession IshObjectGroup" {
+	Context "Get-IshMetadataField -IshSession ishSession IshObjectGroup" {
 		It "Parameter IshObject invalid" {
 			{ Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -IshObject "INVALIDOBJECT" } | Should Throw
 		}
@@ -54,7 +54,7 @@ Describe “Get-IshMetadataField" -Tags "Read" {
 		}
 	}
 
-	Context "Get-IshMetadataField -IshSession $ishSession IshFolderGroup" {
+	Context "Get-IshMetadataField -IshSession ishSession IshFolderGroup" {
 		It "Parameter IshFolder invalid" {
 			{ Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -IshFolder "INVALIDFOLDER" } | Should Throw
 		}
@@ -72,7 +72,7 @@ Describe “Get-IshMetadataField" -Tags "Read" {
 		}
 	}
 	
-	Context "Get-IshMetadataField -IshSession $ishSession IshEventGroup" {
+	Context "Get-IshMetadataField -IshSession ishSession IshEventGroup" {
 		It "Parameter IshEvent invalid" {
 			{ Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -IshEvent "INVALIDEVENT" } | Should Throw
 		}
@@ -82,7 +82,7 @@ Describe “Get-IshMetadataField" -Tags "Read" {
 		}
 	}
 
-	Context "Get-IshMetadataField -IshSession $ishSession IshBackgroundTask" {
+	Context "Get-IshMetadataField -IshSession ishSession IshBackgroundTask" {
 		It "Parameter IshBackgroundTask invalid" {
 			{ Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -IshBackgroundTask "INVALIDBACKGROUNDTASK" } | Should Throw
 		}

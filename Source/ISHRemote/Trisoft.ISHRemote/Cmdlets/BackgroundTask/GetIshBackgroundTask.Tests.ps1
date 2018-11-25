@@ -109,6 +109,19 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element).StartsWith('VUSER') | Should Be $true
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element).StartsWith('VBACKGROUNDTASK') | Should Be $true
 		}
+		It "Parameter IshSession.DefaultRequestedMetadata" {
+			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
+			$ishSession.DefaultRequestedMetadata = "Descriptive"
+			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
+			(($ishBackgroundTask.IshField.Count -eq 1) -or ($ishBackgroundTask.IshField.Count -eq 2)) | Should Be $true  # Either BackgroundTask has run and you get taskid/historyid, or it didn't and you only get taskid
+			$ishSession.DefaultRequestedMetadata = "Basic"
+			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
+			(($ishBackgroundTask.IshField.Count -eq 13) -or ($ishBackgroundTask.IshField.Count -eq 19)) | Should Be $true
+			$ishSession.DefaultRequestedMetadata = "All"
+			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
+			(($ishBackgroundTask.IshField.Count -eq 18) -or ($ishBackgroundTask.IshField.Count -eq 26)) | Should Be $true
+			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
+		}
 		It "Parameter ModifiedSince is now" {
 			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(1)) -UserFilter All).Count | Should Be 0
 		}
@@ -116,7 +129,7 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
 			$ishBackgroundTask.ObjectRef["BackgroundTask"] -gt 0 | Should Be $true
 			#$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] -gt 0 | Should Be $true
-			$ishBackgroundTask.IshField.Count | Should Be 16
+			$ishBackgroundTask.IshField.Count -ge 16 | Should Be $true
 		}
 		It "Parameter RequestedMetadata only all of History level" {
 			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allHistMetadata)[0]

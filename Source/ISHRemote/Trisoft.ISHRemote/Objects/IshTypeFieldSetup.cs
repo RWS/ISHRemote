@@ -186,9 +186,51 @@ namespace Trisoft.ISHRemote.Objects
         {
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
-                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.IsDescriptive == true))
+                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.IsDescriptive == true && d.AllowOnRead == true))
                 {
                     //TODO [Could] IshTypeFieldSetup adding descriptive fields potentially has an issue with removing too many ValueType entries
+                    ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
+                    if (ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHLov || ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHType)
+                    {
+                        ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Element), Enumerations.ActionMode.Read);
+                    }
+                }
+            }
+            return ishFields;
+        }
+
+        /// <summary>
+        /// Reverse lookup for all fields that are marked basic for the incoming ishTypes; then add them to ishFields.
+        /// Basic fields are fields who offer user-friendly business logic.
+        /// </summary>
+        private IshFields AddBasicFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        {
+            foreach (Enumerations.ISHType ishType in ishTypes)
+            {
+                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.IsBasic == true && d.AllowOnRead == true))
+                {
+                    //TODO [Could] IshTypeFieldSetup adding basic fields potentially has an issue with removing too many ValueType entries
+                    ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
+                    if (ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHLov || ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHType)
+                    {
+                        ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Element), Enumerations.ActionMode.Read);
+                    }
+                }
+            }
+            return ishFields;
+        }
+
+        /// <summary>
+        /// Reverse lookup for all fields that are marked basic for the incoming ishTypes; then add them to ishFields.
+        /// All fields of the specified object ISHType, so all descriptive, basic, system fields.
+        /// </summary>
+        private IshFields AddAllFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        {
+            foreach (Enumerations.ISHType ishType in ishTypes)
+            {
+                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.AllowOnRead == true))
+                {
+                    //TODO [Could] IshTypeFieldSetup adding basic fields potentially has an issue with removing too many ValueType entries
                     ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
                     if (ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHLov || ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHType)
                     {
@@ -215,12 +257,30 @@ namespace Trisoft.ISHRemote.Objects
         /// Unallowed fields for read operations (IshFieldDefinition.AllowOnRead) will be stripped with a Debug log message.
         /// </summary>
         /// <remarks>Logs debug entry for unknown combinations of ishTypes and ishField (name, level) entries - will not throw.</remarks>
+        /// <param name="requestedMetadataGroup">Initialize return field set given the default/initial requested metadata, this way interactive mode becomes a lot less chatty</param>
         /// <param name="ishTypes">Given ISHTypes (like ISHMasterDoc, ISHLibrary, ISHConfiguration,...) to verify/alter the IshFields for</param>
         /// <param name="ishFields">Incoming IshFields entries will be transformed to matching and allowed IshRequestedMetadataField entries</param>
         /// <param name="actionMode">RequestedMetadataFields only has value for read operations like Read, Find, Search,...</param>
-        public IshFields ToIshRequestedMetadataFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        public IshFields ToIshRequestedMetadataFields(Enumerations.RequestedMetadataGroup requestedMetadataGroup, Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
         {
             IshFields requestedMetadataFields = new IshFields();
+
+            // Preload RequestedMetadata by retrieving the selection specified by requestedMetadataGroup and ishTypes
+            switch (requestedMetadataGroup)
+            {
+                case Enumerations.RequestedMetadataGroup.All:
+                        requestedMetadataFields = AddAllFields(ishTypes, requestedMetadataFields, actionMode);
+                        break;
+                case Enumerations.RequestedMetadataGroup.Basic:
+                        requestedMetadataFields = AddBasicFields(ishTypes, requestedMetadataFields, actionMode);
+                        break;
+                case Enumerations.RequestedMetadataGroup.Descriptive:
+                    // always required, AddDescriptiveFields is called at the end of this function
+                    break;
+            }
+            _logger.WriteDebug($"ToIshRequestedMetadataFields loaded RequestedMetadataGroup[{requestedMetadataGroup}] resulting in requestedMetadataFields.Count[{requestedMetadataFields.Count()}]");
+
+            // AddOrUpdate with the specified RequestedMetadata
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
                 // Check incoming IshField with IshTypeFieldDefinitions

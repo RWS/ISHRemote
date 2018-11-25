@@ -135,10 +135,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                     requestedMetadata.AddField(new IshRequestedMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value));
                 }
 
-                var metadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, requestedMetadata, Enumerations.ActionMode.Read);
+                var metadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, requestedMetadata, Enumerations.ActionMode.Read);
                 string xmlIshObjects = IshSession.Settings25.GetMetadata(metadata.ToXml());
                 var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
-                if (RequestedMetadata != null)
+                if (FieldName == null)
                 {
                     // 3. Write it
                     WriteVerbose("returned object count[1]");

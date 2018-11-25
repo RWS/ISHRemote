@@ -190,7 +190,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                     metadata.ToXml()));
                         }
 
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                         var response2 =
                             IshSession.PublicationOutput25.GetMetadata(new PublicationOutput25ServiceReference.
                                 GetMetadataRequest(
@@ -220,7 +220,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             metadata.ToXml()));
                     }
 
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                     var response2 =
                         IshSession.PublicationOutput25.GetMetadata(new PublicationOutput25ServiceReference.
                             GetMetadataRequest(

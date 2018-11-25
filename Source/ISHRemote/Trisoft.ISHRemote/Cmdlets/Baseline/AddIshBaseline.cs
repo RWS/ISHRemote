@@ -125,7 +125,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                     // 2b. Retrieve the material
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.Baseline25.RetrieveMetadata(
                         returnBaselines.ToArray(),
                         "",

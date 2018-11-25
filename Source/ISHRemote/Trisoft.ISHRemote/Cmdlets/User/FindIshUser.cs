@@ -76,7 +76,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
             try
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 var activityFilter = EnumConverter.ToActivityFilter<User25ServiceReference.ActivityFilter>(ActivityFilter);
                 WriteDebug($"Finding ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 string xmlIshObjects = IshSession.User25.Find(

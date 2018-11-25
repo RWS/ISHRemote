@@ -155,7 +155,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                     returnFields.RemoveField(FieldElements.DitaDeliveryClientSecret, Enumerations.Level.None, Enumerations.ValueType.All);
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.OutputFormat25.RetrieveMetadata(
                         outputFormatIdsToRetrieve.ToArray(),
                         OutputFormat25ServiceReference.ActivityFilter.None,

@@ -51,6 +51,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private Enumerations.StrictMetadataPreference _strictMetadataPreference = Enumerations.StrictMetadataPreference.Continue;
         private NameHelper _nameHelper;
         private Enumerations.PipelineObjectPreference _pipelineObjectPreference = Enumerations.PipelineObjectPreference.PSObjectNoteProperty;
+        private Enumerations.RequestedMetadataGroup _defaultRequestedMetadata = Enumerations.RequestedMetadataGroup.Basic;
 
         private int _chunkSize = 10485760;
         private int _metadataBatchSize = 1000;
@@ -370,6 +371,16 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get { return _pipelineObjectPreference; }
             set { _pipelineObjectPreference = value; }
+        }
+
+        /// <summary>
+        /// Any RequestedMetadata will be preloaded with the Descriptive/Basic/All metadata fields known for the ISHType[] in use by the cmdlet
+        /// A potential override/append by the specified -RequestedMetadata is possible.
+        /// </summary>
+        public Enumerations.RequestedMetadataGroup DefaultRequestedMetadata
+        {
+            get { return _defaultRequestedMetadata; }
+            set { _defaultRequestedMetadata = value; }
         }
 
         /// <summary>

@@ -55,11 +55,11 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// <summary>
         /// Name of the PSVariable so you don't have to specify '-IshSession $ishSession' anymore, should be set by New-IshSession
         /// </summary>
-        protected const string ISHRemoteSessionStateIshSession = "ISHRemoteSessionStateIshSession";
+        internal const string ISHRemoteSessionStateIshSession = "ISHRemoteSessionStateIshSession";
         /// <summary>
         /// Error message you get when you didn't pass an explicit -IshSession on the cmdlet, or New-IshSession didn't set the SessionState variable
         /// </summary>
-        protected const string ISHRemoteSessionStateIshSessionException = "IshSession is null. Please create a session first using New-IshSession.Or explicitly pass parameter -IshSession to your cmdlet.";
+        internal const string ISHRemoteSessionStateIshSessionException = "IshSession is null. Please create a session first using New-IshSession.Or explicitly pass parameter -IshSession to your cmdlet.";
 
         /// <summary>
         /// Returns the PSObject NoteProperty separator to generate additional auxiliary properties

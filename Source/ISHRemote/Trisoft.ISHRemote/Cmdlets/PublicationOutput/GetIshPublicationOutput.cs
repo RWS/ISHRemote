@@ -131,7 +131,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                 else
                 {
                     WriteDebug("Retrieving");
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                     if (IshObject != null)
                     {
                         // 2a. Retrieve using LngCardIds

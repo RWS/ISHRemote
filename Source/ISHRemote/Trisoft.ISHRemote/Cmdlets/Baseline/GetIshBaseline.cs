@@ -94,7 +94,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                 else
                 {
                     IshFields metadataFilter = new IshFields(MetadataFilter);
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                     var ids = (IshObject != null) ? new IshObjects(IshObject).Ids : Id;
                     WriteDebug($"Retrieving Id.length[{ids.Length}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                     string xmlIshObjects = IshSession.Baseline25.RetrieveMetadata(

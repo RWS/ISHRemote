@@ -186,7 +186,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 WriteDebug("Retrieving");
                 var returnIshObjects = new List<IshObject>();
                 // Add the required fields (needed for pipe operations)
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(), Enumerations.ActionMode.Read);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
                 if (_retrievedIshObjects.Count > 0)
                 {
                     var lngCardIds =_retrievedIshObjects.Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng])).ToList();

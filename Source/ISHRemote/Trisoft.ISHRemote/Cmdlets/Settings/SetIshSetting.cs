@@ -176,7 +176,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                            
                 // 2. Retrieve the updated material from the database and write it out
                 WriteDebug("Retrieving");
-                var requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                var requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                 string xmlIshObjects = IshSession.Settings25.GetMetadata(requestedMetadata.ToXml());
                 var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
 
