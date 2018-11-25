@@ -41,8 +41,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -87,6 +87,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
 
         private List<IshField> _incomingIshField = new List<IshField>();
         #endregion
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {

@@ -15,9 +15,9 @@ Describe "Set-IshBaselineItem" {
 	Context "Set-IshBaselineItem returns IshObject" {
 		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 		$ishObject = Add-IshBaseline -IshSession $ishSession -Name $baselineName
-		$ishObject = Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--A" -Version "1"   # new
-		$ishObject = Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--AA" -Version "2"  # new
-		$ishObject = Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--AAA" -Version "3" # new
+		$ishObject = Set-IshBaselineItem -IshObject $ishObject -LogicalId "$cmdletName--A" -Version "1"   # new
+		$ishObject = Set-IshBaselineItem -IshObject $ishObject -LogicalId "$cmdletName--AA" -Version "2"  # new
+		$ishObject = Set-IshBaselineItem -IshObject $ishObject -LogicalId "$cmdletName--AAA" -Version "3" # new
 		It "GetType()" {
 			$ishObject.GetType().Name | Should BeExactly "IshObject"
 		}

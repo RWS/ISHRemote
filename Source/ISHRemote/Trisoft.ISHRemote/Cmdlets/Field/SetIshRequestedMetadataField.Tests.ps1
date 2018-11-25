@@ -50,14 +50,14 @@ Describe “Set-IshRequestedMetadataField" -Tags "Read" {
 			$ishFieldB =Set-IshRequestedMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element
 			(Set-IshRequestedMetadataField -IshSession $ishSession -IshField @($ishFieldA,$ishFieldB) -Name "FTITLE" -Level Logical -ValueType Element).Length | Should Be 1
 		}
-		It "Pipeline IshFields Single" {
+		It "Pipeline IshFields Single with implicit IshSession" {
 			$ishFields = $null
-			($ishFields | Set-IshRequestedMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element).Length | Should Be 1
+			($ishFields | Set-IshRequestedMetadataField -Name "FTITLE" -Level Logical -ValueType Element).Length | Should Be 1
 		}
-		It "Pipeline IshFields Multiple duplicate entries will be removed" {
-			$ishFieldA =Set-IshRequestedMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element
-			$ishFieldB =Set-IshRequestedMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element
-			(@($ishFieldA,$ishFieldB) | Set-IshRequestedMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element).Length | Should Be 1
+		It "Pipeline IshFields Multiple with implicit IshSession duplicate entries will be removed" {
+			$ishFieldA =Set-IshRequestedMetadataField -Name "FTITLE" -Level Logical -ValueType Element
+			$ishFieldB =Set-IshRequestedMetadataField -Name "FTITLE" -Level Logical -ValueType Element
+			(@($ishFieldA,$ishFieldB) | Set-IshRequestedMetadataField -Name "FTITLE" -Level Logical -ValueType Element).Length | Should Be 1
 		}
 	}
 }

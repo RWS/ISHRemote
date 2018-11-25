@@ -68,8 +68,9 @@ $localWsTrustIssuerMexUrl =  $wsTrustIssuerMexUrl.Replace($hostname,"localhost")
 # * Only variables and generic PowerShell object initialization
 # * Avoid ISHRemote execution, $ishSession creation will be overwritten in New-IshSession to avoid tests to fail
 #
-if ($null -eq $global:ishSession)
-{
+#if ($null -eq $global:ishSession)
+#{
 	$global:ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
-}
+#}
 $ishSession = $global:ishSession
+# TODO [Must] The StateStore is now required for all tests, but it is only done in New-IshSession. 50s performance boost to gain 

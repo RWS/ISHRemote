@@ -91,6 +91,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBackgroundTasksGroup")]
+        [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>

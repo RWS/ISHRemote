@@ -39,8 +39,8 @@ Describe “Get-IshMetadataField" -Tags "Read" {
 		It "Parameter IshFolder FDOCUMENTTYPE" {
 			Get-IshMetadataField -IshSession $ishSession -Name "FDOCUMENTTYPE" -Level None -IshField $ishFolderSystemOriginal.IshField | Should Be "None"
 		}
-		It "Parameter IshFolder READ-ACCESS" {
-			Get-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -Level None -IshField $ishFolderSystemOriginal.IshField -ValueType Element | Should BeNullOrEmpty
+		It "Parameter IshFolder READ-ACCESS with implicit IshSession" {
+			Get-IshMetadataField -Name "READ-ACCESS" -Level None -IshField $ishFolderSystemOriginal.IshField -ValueType Element | Should BeNullOrEmpty
 		}
 	}
 

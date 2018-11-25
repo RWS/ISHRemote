@@ -695,6 +695,12 @@
     <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\xsd\xnalDomain.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Scripts\Private\Get-IshAuxSessionState.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Private\Set-IshAuxSessionState.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Scripts\Public\Expand-ISHParameter.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -49,7 +49,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
+        [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -64,6 +65,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNull]
         public IshField[] RequestedMetadata { get; set; }
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {
