@@ -30,9 +30,15 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <summary>
     /// <para type="synopsis">The Move-IshDocumentObj cmdlet moves document objects that are passed through the pipeline or determined via provided parameters from one repository folder to another folder. This commandlet allows to move all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). 
     /// For publication (outputs) you need to use Move-IshPublicationOutput.</para>
-    /// <para type="description">The Move-IshDocumentObj cmdlet moves document objects that are passed through the pipeline or determined via provided parameters from one repository folder to another folder. This commandlet allows to move all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). 
-    /// For publication (outputs) you need to use Move-IshPublicationOutput.</para>
+    /// <para type="description">The Move-IshDocumentObj cmdlet moves document objects that are passed through the pipeline or determined via provided parameters from one repository folder to another folder. This commandlet allows to move all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). For publication (outputs) you need to use Move-IshPublicationOutput.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Move-IshDocumentObj -LogicalId ISHPUBLILLUSTRATIONMISSING -FromIshFolder (Get-IshFolder -BaseFolder System) -ToIshFolder (Get-IshDocumentObjFolderLocation -LogicalId ISHPUBLILLUSTRATIONMISSING)
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Moves DocumentObj (and PublicationOutput) to another folder.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Move, "IshDocumentObj", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
     public sealed class MoveIshDocumentObj : DocumentObjCmdlet
@@ -40,8 +46,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -119,6 +125,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         private List<IshObject> _retrievedIshObjects = new List<IshObject>();
         #endregion
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Move-IshDocumentObj commandlet.

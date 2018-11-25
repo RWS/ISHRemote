@@ -30,6 +30,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para type="description">The Find-IshDocumentObj cmdlet finds document objects (which include illustrations) using MetadataFilter, TypeFilter and StatusFilter that are provided This commandlet allows to find all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). 
     /// For publication (outputs) you need to use Find-IshPublicationOutput.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $yesterday = (Get-Date).AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss")
+    /// Find-IshDocumentObj -MetadataFilter(Set-IshMetadataFilterField -Level Lng -Name MODIFIED-ON -FilterOperator GreaterThan -Value $yesterday)
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Returns the documents that are touched since yesterday.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Find, "IshDocumentObj", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class FindIshDocumentObj : DocumentObjCmdlet
@@ -38,7 +46,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -78,6 +86,13 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         private Enumerations.StatusFilter _statusFilter = Enumerations.StatusFilter.ISHNoStatusFilter;
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Find-IshDocumentObj commandlet.

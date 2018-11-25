@@ -47,12 +47,12 @@ Describe “Get-IshDocumentObjFolderLocation" -Tags "Read" {
 			$folderPathArray = Get-IShDocumentObjFolderLocation -IshSession $ishSession -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
 			$folderPathArray.GetType().Name | Should BeExactly "Object[]"
 		}
-		It "Parameter IshObject Single" {
-			$folderPathArray = Get-IShDocumentObjFolderLocation -IshSession $ishSession -IshObject $ishObjectTopicA
+		It "Parameter IshObject Single with implicit IshSession" {
+			$folderPathArray = Get-IShDocumentObjFolderLocation -IshObject $ishObjectTopicA
 			$folderPathArray.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-			$folderPathArray = Get-IShDocumentObjFolderLocation -IshSession $ishSession -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
+		It "Parameter IshObject Multiple with implicit IshSession" {
+			$folderPathArray = Get-IShDocumentObjFolderLocation -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
 			$folderPathArray.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

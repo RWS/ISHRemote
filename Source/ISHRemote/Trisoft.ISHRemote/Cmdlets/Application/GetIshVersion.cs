@@ -30,10 +30,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Application
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "username" -IshUserPassword  "userpassword"
-    /// $version = Get-Version -IshSession $ishSession
-    /// Write-Host $version
+    /// Get-IshVersion -IshSession $ishSession
     /// </code>
-    /// <para>Get version example</para>
+    /// <para>Get version example with explicit IshSession</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "username" -IshUserPassword  "userpassword"
+    /// Get-IshVersion
+    /// </code>
+    /// <para>Get version example with implicit IshSession</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshVersion", SupportsShouldProcess = false)]
     [OutputType(typeof(IshVersion))]

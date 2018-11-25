@@ -43,12 +43,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
-    /// $ishObjectSource = Get-IshBaseline -IshSession $ishSession -Id "GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534"
-    /// $baselineItems = Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectSource
-    /// $ishObjectTarget = Add-IshBaseline -IshSession $ishSession -Name "New Baseline"
-    /// $ishObjectTarget = Set-IshBaselineItem -IshSession $ishSession -IshObject ishObjectTarget -IshBaselineItem $baselineItems
+    /// $ishObjectSource = Get-IshBaseline -Id "GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534"
+    /// $baselineItems = Get-IshBaselineItem -IshObject $ishObjectSource
+    /// $ishObjectTarget = Add-IshBaseline -Name "New Baseline"
+    /// $ishObjectTarget = Set-IshBaselineItem -IshObject ishObjectTarget -IshBaselineItem $baselineItems
     /// </code>
-    /// <para>Reading the information from the source baseline and creating a new target baseline which we fill with the selected versions.</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Reading the information from the source baseline and creating a new target baseline which we fill with the selected versions.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshBaselineItem", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]

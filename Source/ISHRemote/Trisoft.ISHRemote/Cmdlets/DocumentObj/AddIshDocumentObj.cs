@@ -37,28 +37,28 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// </summary>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "" -IshUserPassword  ""
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
     /// Write-Host "`r`nCreate a logical, version, language level"
     /// $ditaFileContent = @"
     /// &lt;? xml version="1.0" ?>
     /// &lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
     /// &lt;topic>&lt;title>Enter the title of your topic here.&lt;? ish-replace-title?>&lt;/title>&lt;shortdesc>Enter a short description of your topic here(optional).&lt;/shortdesc>&lt;body>&lt;p>This is the start of your topic.&lt;/p>&lt;/body>&lt;/topic>
     /// "@
-    /// $ishMetadataFields = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Example ISHModule" |
-    ///                      Set-IshMetadataField -IshSession $ishSession -Name "FCHANGES" -Level "Version" -Value "Changes text field" |
-    ///                      Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level "Lng" -Value "Draft" |
-    ///                      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level "Lng" -Value "admin"
+    /// $ishMetadataFields = Set-IshMetadataField -Name "FTITLE" -Level "Logical" -Value "Example ISHModule" |
+    ///                      Set-IshMetadataField -Name "FCHANGES" -Level "Version" -Value "Changes text field" |
+    ///                      Set-IshMetadataField -Name "FSTATUS" -Level "Lng" -Value "Draft" |
+    ///                      Set-IshMetadataField -Name "FAUTHOR" -Level "Lng" -Value "admin"
     /// # add object
-    /// $ishObject = Add-IshDocumentObj -IshSession $ishSession `
+    /// $ishObject = Add-IshDocumentObj `
     ///              -FolderId "0" `
     ///              -IshType "ISHModule" `
     ///              -Lng "en" `
     ///              -Metadata $ishMetadataFields `
     ///              -Edt "EDTXML" `
-    ///        -FileContent $ditaFileContent
+    ///              -FileContent $ditaFileContent
     /// $ishObject.ObjectRef| Format-Table
     /// </code>
-    /// <para>Add Module without providing LogicalId, Version and using FileContent parameter</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Add Module without providing LogicalId, Version and using FileContent parameter</para>
     /// </example>
     /// <example>
     /// <code>
@@ -114,9 +114,9 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -267,6 +267,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         private IshData _ishData;
         #endregion
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Add-IshDocumentObj commandlet.

@@ -37,10 +37,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
-    /// Find-IshBaseline -IshSession $ishSession -MetadataFilter (Set-IshMetadataFilterField -IshSession $ishSession -Name "FISHBASELINEACTIVE" -ValueType Element -Value "FALSE")
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// Find-IshBaseline -MetadataFilter (Set-IshMetadataFilterField -IshSession $ishSession -Name "FISHBASELINEACTIVE" -ValueType Element -Value "FALSE")
     /// </code>
-    /// <para>Retrieve all active baselines</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve all active baselines with Basic metadata.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshBaseline", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]

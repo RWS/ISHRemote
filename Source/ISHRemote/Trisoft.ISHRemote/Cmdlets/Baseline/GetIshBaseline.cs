@@ -33,7 +33,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// $baselineIds = @("GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534","GUID-F1361489-66F3-4E27-A5D1-71C97025815A")
-    /// Get-IshBaseline -IshSession $ishSession -Id $baselineIds -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE")
+    /// Get-IshBaseline -Id $baselineIds -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE")
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve metadata from the identified baselines</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $baselineIds = @("GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534","GUID-F1361489-66F3-4E27-A5D1-71C97025815A")
+    /// Get-IshBaseline -IshSesssion $ishSession -Id $baselineIds -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE")
     /// </code>
     /// <para>Retrieve metadata from the identified baselines</para>
     /// </example>

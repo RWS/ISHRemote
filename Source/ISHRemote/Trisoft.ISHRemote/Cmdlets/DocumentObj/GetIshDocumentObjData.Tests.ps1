@@ -59,12 +59,12 @@ Describe “Get-IshDocumentObjData" -Tags "Read" {
 			$ishobjects = Get-IshDocumentObjData -IshSession $ishSession -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
 			$ishobjects.GetType().Name | Should BeExactly "Object[]"
 		}
-		It "Parameter IshObject Single" {
-			$ishobjects = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA
+		It "Parameter IshObject Single with implicit IshSession" {
+			$ishobjects = Get-IshDocumentObjData -IshObject $ishObjectTopicA
 			$ishobjects.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-			$ishobjects = Get-IshDocumentObjData -IshSession $ishSession -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
+		It "Parameter IshObject Multiple with implicit IshSession" {
+			$ishobjects = Get-IshDocumentObjData -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
 			$ishobjects.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

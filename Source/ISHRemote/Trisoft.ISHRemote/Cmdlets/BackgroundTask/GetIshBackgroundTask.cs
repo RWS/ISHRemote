@@ -32,6 +32,13 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// </summary>
     /// <example>
     /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// Get-IshBackgroundTask
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Returns the full denormalized task/history entries limited to only Basic fields, for All users and the last 24 hours.</para>
+    /// </example>
+    /// <example>
+    /// <code>
     /// $allMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CREATIONDATE  | 
     ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CURRENTATTEMPT |
     ///                Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name EVENTTYPE |

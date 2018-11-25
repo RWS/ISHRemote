@@ -129,23 +129,23 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 		It "Parameter IshObject invalid" {
 			{ Add-IshDocumentObj -IshSession $ishSession -IshFolder "INVALIDISHFOLDER" -IshObject "INVALIDISHOBJECT" } | Should Throw
 		}
-		It "Parameter IshObject Single" {
+		It "Parameter IshObject Single with implicit IshSession" {
 			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			             Get-IshDocumentObjData -IshSession $ishSession
+			$ishObject = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+			             Get-IshDocumentObjData
 			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObject
-			$ishObjectArray = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshObject $ishObject
+			$ishObjectArray = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshObject $ishObject
 			$ishObjectArray.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
+		It "Parameter IshObject Multiple with implicit IshSession" {
 			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
-			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
+			$ishObjectA = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+			              Get-IshDocumentObjData 
 			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
-			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectB
-			$ishObjectArray = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshObject @($ishObjectA,$ishObjectB)
+			$ishObjectB = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+			              Get-IshDocumentObjData
+			Remove-IshDocumentObj -IshObject $ishObjectB
+			$ishObjectArray = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshObject @($ishObjectA,$ishObjectB)
 			$ishObjectArray.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

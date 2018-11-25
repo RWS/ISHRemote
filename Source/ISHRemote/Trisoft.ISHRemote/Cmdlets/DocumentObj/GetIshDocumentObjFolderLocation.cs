@@ -34,9 +34,9 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
-    /// $folderPath = Get-IshDocumentObjFolderLocation -IshSession $ishSession -LogicalId "GUID-8C8F01ED-9785-47DE-9A00-1F8AAFD94E7D"
+    /// $folderPath = Get-IshDocumentObjFolderLocation -LogicalId "GUID-8C8F01ED-9785-47DE-9A00-1F8AAFD94E7D"
     /// </code>
-    /// <para>Retrieve location of the DocumentObj</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve location of the DocumentObj</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshDocumentObjFolderLocation", SupportsShouldProcess = false)]
     [OutputType(typeof(string))]
@@ -46,8 +46,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -62,6 +62,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         public IshObject[] IshObject { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Get-IshDocumentObjFolderLocation commandlet.
