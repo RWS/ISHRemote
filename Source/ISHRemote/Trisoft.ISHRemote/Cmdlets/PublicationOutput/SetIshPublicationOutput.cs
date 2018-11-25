@@ -45,9 +45,9 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// # Find all publication pending objects and cancel their publish operation
     /// $ishObjects = Find-IshPublicationOutput -IshSession $ishSession -StatusFilter ISHNoStatusFilter -MetadataFilter(Set-IshMetadataFilterField -IshSession $ishSession -Name FISHPUBSTATUS -Level Lng -ValueType Element -FilterOperator in -Value VPUBSTATUSPUBLISHPENDING)
     /// $metadataUpdate = Set-IshMetadataField -IshSession $ishSession -Name FISHPUBSTATUS -Level lng -ValueType Element -Value VPUBSTATUSPUBLISHINGCANCELLED
-    /// $ishObjects | Set-IshPublicationOutput -IshSession $ishSession -MetaData $metadataUpdate
+    /// $ishObjects | Set-IshPublicationOutput -MetaData $metadataUpdate
     /// </code>
-    /// <para>Cancelling all publication outputs publish operations without checking if the status transition is allowed</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Cancelling all publication outputs publish operations without checking if the status transition is allowed</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshPublicationOutput", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
@@ -57,8 +57,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -110,6 +110,14 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
 
         /// <summary>

@@ -28,6 +28,14 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
     /// <para type="synopsis">The Add-IshUserRole cmdlet adds the new user roles that are passed through the pipeline or determined via provided parameters</para>
     /// <para type="description">The Add-IshUserRole cmdlet adds the new user roles that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $metadata = Set-IshMetadataField -Name "FDESCRIPTION" -Level None -Value "Description of $userRoleName"
+    /// $ishObject = Add-IshUserRole -Name $userRoleName -Metadata $metadata
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Adding a user role.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Add, "IshUserRole", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
     public sealed class AddIshUserRole : UserRoleCmdlet
@@ -35,8 +43,8 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -58,6 +66,14 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup"), ValidateNotNull]
         public IshField[] Metadata { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {

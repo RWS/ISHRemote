@@ -18,8 +18,8 @@ Describe "Get-IshUser" -Tags "Create" {
                     Set-IshMetadataField -IshSession $ishSession -Name FUSERGROUP -Level None -ValueType Element -Value "VUSERGROUPDEFAULTDEPARTMENT" |
 					Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "SomethingSecret"
 		$ishObject = Add-IshUser -IshSession $ishSession -Name $userName -Metadata $metadata
-		It "GetType().Name" {
-			$ishObject = Get-IshUser -IshSession $ishSession -Id $ishObject.IshRef
+		It "Parameter IshSession Implicit" {
+			$ishObject = Get-IshUser -Id $ishObject.IshRef
 			$ishObject.GetType().Name | Should BeExactly "IshObject"
 			$ishObject.Count | Should Be 1
 		}

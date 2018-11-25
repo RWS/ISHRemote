@@ -42,9 +42,9 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     ///                              Set-IshRequestedMetadataField -IshSession $ishSession -Name 'VERSION' -Level "Version"
     /// $metadataFilterRetrieve = Set-IshMetadataFilterField -IshSession $ishSession -Name 'FISHPUBSTATUS' -Level 'Lng' -ValueType "Value" -FilterOperator "Equal" -Value "Draft" 
     /// $publicationOutputs = Find-IshPublicationOutput -IshSession $ishSession -StatusFilter "ishnostatusfilter" -MetadataFilter $metadataFilterRetrieve -RequestedMetadata $requestedMetadataRetrieve
-    /// $fileInfoArray = $publicationOutputs | Get-IshPublicationOutputData -IshSession $ishSession -FolderPath "c:\temp\export"
+    /// $fileInfoArray = $publicationOutputs | Get-IshPublicationOutputData -FolderPath "c:\temp\export"
     /// </code>
-    /// <para>Downloading publication outputs</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Downloading publication outputs</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshPublicationOutputData", SupportsShouldProcess = false)]
     [OutputType(typeof(FileInfo))]
@@ -54,7 +54,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -69,6 +69,14 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// </summary>
         [Parameter(Mandatory = true)]
         public string FolderPath { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Get-IshPublicationOutputData commandlet.

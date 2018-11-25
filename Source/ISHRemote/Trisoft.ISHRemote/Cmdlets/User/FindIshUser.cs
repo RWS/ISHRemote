@@ -28,6 +28,13 @@ namespace Trisoft.ISHRemote.Cmdlets.User
     /// <para type="synopsis">The Find-IshUser cmdlet finds users using ActivityFilter and MetadataFilter that are provided</para>
     /// <para type="description">The Find-IshUser cmdlet finds users using ActivityFilter and MetadataFilter that are provided</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// (Find-IshUser).count
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Counting all users.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Find, "IshUser", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class FindIshUser : UserCmdlet
@@ -35,7 +42,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// ActivityFilter
@@ -69,6 +76,14 @@ namespace Trisoft.ISHRemote.Cmdlets.User
         /// </summary>
         private Enumerations.ActivityFilter _activityFilter = Enumerations.ActivityFilter.None;
         #endregion
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {

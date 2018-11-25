@@ -29,6 +29,15 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
     /// <para type="synopsis">The Set-IshUserRole cmdlet updates the user roles that are passed through the pipeline or determined via provided parameters</para>
     /// <para type="description">The Set-IshUserRole cmdlet updates the user roles that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Get-IshUserRole -Id VUSERROLEADMINISTRATOR  | 
+    /// Set-IshMetadataField -Name DESCRIPTION -Value "Something new over ISHRemote" | 
+    /// Set-IshUserRole
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets the user role and adapts the client-side memory structure to hold a new description and sets in the repository.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshUserRole", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
     public sealed class SetIshUserRole : UserRoleCmdlet
@@ -36,8 +45,8 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -59,6 +68,14 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {

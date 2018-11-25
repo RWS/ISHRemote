@@ -31,13 +31,13 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
-    /// $ishobjects = Publish-IshPublicationOutput -IshSession $ishSession `
+    /// $ishobjects = Publish-IshPublicationOutput `
     /// -LogicalId "GUID-F66C1BB5-076D-455C-B055-DAC5D61AB3D9" `
     /// -Version "1" `
     /// -OutputFormat "GUID-2A69335D-F025-4963-A142-5E49988C7C0C" `
     /// -LanguageCombination "en"
     /// </code>
-    /// <para>Publishing a publication output</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Publishing a publication output</para>
     /// </example>
     [Cmdlet(VerbsData.Publish, "IshPublicationOutput", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
@@ -47,8 +47,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -92,6 +92,14 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Publish-IshPublicationOutput commandlet.

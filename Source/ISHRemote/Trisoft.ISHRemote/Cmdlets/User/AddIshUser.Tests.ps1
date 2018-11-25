@@ -137,17 +137,17 @@ Describe "Add-IshUser" -Tags "Create" {
 		It "Parameter IshObject invalid" {
 			{ Add-IshUser -IShSession $ishSession -IshObject "INVALIDUSER" } | Should Throw
 		}
-		It "Parameter IshObject Single" {
-			$ishObjectA = $ishObjectA | Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
-		    $ishObjects = Add-IshUser -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjects | Remove-IshUser -IshSession $ishSession
+		It "Parameter IshObject Single with implicit IshSession" {
+			$ishObjectA = $ishObjectA | Set-IshMetadataField -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
+		    $ishObjects = Add-IshUser -IshObject $ishObjectA
+			$ishObjects | Remove-IshUser
 			$ishObjects.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-		    $ishObjectB = $ishObjectB | Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
-			$ishObjectC = $ishObjectC | Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
-			$ishObjects = Add-IshUser -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
-			$ishObjects | Remove-IshUser -IshSession $ishSession
+		It "Parameter IshObject Multiple with implicit IshSession" {
+		    $ishObjectB = $ishObjectB | Set-IshMetadataField -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
+			$ishObjectC = $ishObjectC | Set-IshMetadataField -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
+			$ishObjects = Add-IshUser -IshObject @($ishObjectB,$ishObjectC)
+			$ishObjects | Remove-IshUser
 			$ishObjects.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

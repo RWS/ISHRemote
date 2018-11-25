@@ -68,14 +68,14 @@ Describe "Add-IshUserRole" -Tags "Create" {
 		It "Parameter IshObject invalid" {
 			{ Add-IshUserRole -IShSession $ishSession -IshObject "INVALIDUSERROLE" } | Should Throw
 		}
-		It "Parameter IshObject Single" {
-			$ishObjects = Add-IshUserRole -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjects | Remove-IshUserRole -IshSession $ishSession
+		It "Parameter IshObject Single with implicit IshSession" {
+			$ishObjects = Add-IshUserRole -IshObject $ishObjectA
+			$ishObjects | Remove-IshUserRole
 			$ishObjects.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-			$ishObjects = Add-IshUserRole -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
-			$ishObjects | Remove-IshUserRole -IshSession $ishSession
+		It "Parameter IshObject Multiple with implicit IshSession" {
+			$ishObjects = Add-IshUserRole -IshObject @($ishObjectB,$ishObjectC)
+			$ishObjects | Remove-IshUserRole
 			$ishObjects.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

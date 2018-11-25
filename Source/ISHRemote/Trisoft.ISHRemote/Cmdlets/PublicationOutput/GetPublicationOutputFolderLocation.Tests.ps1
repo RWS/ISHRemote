@@ -46,12 +46,12 @@ Describe “Get-IshPublicationOutputFolderLocation" -Tags "Read" {
 			$folderPathArray = Get-IshPublicationOutputFolderLocation -IshSession $ishSession -IshObject @($ishObjectPubA,$ishObjectPubB)
 			$folderPathArray.GetType().Name | Should BeExactly "Object[]"
 		}
-		It "Parameter IshObject Single" {
-			$folderPathArray = Get-IshPublicationOutputFolderLocation -IshSession $ishSession -IshObject $ishObjectPubA
+		It "Parameter IshObject Single with implicit IshSession" {
+			$folderPathArray = Get-IshPublicationOutputFolderLocation -IshObject $ishObjectPubA
 			$folderPathArray.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-			$folderPathArray = Get-IshPublicationOutputFolderLocation -IshSession $ishSession -IshObject @($ishObjectPubA,$ishObjectPubB)
+		It "Parameter IshObject Multiple with implicit IshSession" {
+			$folderPathArray = Get-IshPublicationOutputFolderLocation -IshObject @($ishObjectPubA,$ishObjectPubB)
 			$folderPathArray.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

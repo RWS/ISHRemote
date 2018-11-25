@@ -43,7 +43,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// -LanguageCombination "en" `
     /// -Metadata $metaDataCreate
     /// </code>
-    /// <para>Creating a new publication output</para>
+    /// <para>Creating a new publication output. New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshPublicationOutput", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
@@ -53,8 +53,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -141,6 +141,14 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// </summary>
         private long _folderId = -1;
         #endregion
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Add-IshPublicationOutput commandlet.

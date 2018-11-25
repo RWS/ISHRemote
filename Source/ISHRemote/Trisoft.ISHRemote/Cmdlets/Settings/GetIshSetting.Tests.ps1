@@ -17,11 +17,9 @@ Describe “Get-IshSetting" -Tags "Read" {
 	}
 
 	Context “Get-IshSetting ParameterGroup returns string object" {
-		$fieldValue = Get-IshSetting -IShSession $ishSession -FieldName "NAME"
-		It "GetType().Name" {
+		It "Parameter IshSession implicit" {
+			$fieldValue = Get-IshSetting -IShSession $ishSession -FieldName "NAME"
 			$fieldValue.GetType().Name | Should BeExactly "String"
-		}
-		It "NAME is 'Configuration card'" {
 			$fieldValue | Should Be "Configuration card"
 		}
 	}
