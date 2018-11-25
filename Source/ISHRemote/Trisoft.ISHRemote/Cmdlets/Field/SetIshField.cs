@@ -34,6 +34,17 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
     /// * If none of the above applies, the fields in the MergeFields are returned
     /// Best practice is to supply IshSession for future functionality.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $ishMetadataFieldsAction = Set-IshMetadataField -Name "FISHUSERDISABLED" -Level "none" -ValueType "Element" -Value "TRUE" |
+    ///                            Set-IshMetadataField -Name "FISHOBJECTACTIVE" -Level "none" -ValueType "Element" -Value "FALSE"
+	/// $ishobject = $ishobject |
+    ///              Set-IshField -MergeFields $ishMetadataFieldsAction -ValueAction "Overwrite" |
+    ///              Set-IshUser -IshSession $ishSession
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Preferably use the specialized IshField cmdlets, more for testing purposes this one.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshField", SupportsShouldProcess = false)]
     [OutputType(typeof(IshField),typeof(IshObject))]
     public sealed class SetIshField : FieldCmdlet

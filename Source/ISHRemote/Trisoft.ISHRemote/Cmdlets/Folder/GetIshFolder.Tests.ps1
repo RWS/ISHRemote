@@ -37,13 +37,13 @@ Describe “Get-IshFolder" -Tags "Read" {
 		It "GetType()" {
 			$ishFolderData.GetType().Name | Should BeExactly "IshFolder"
 		}
-		It "$ishFolderData.IshFolderRef" {
+		It "ishFolderData.IshFolderRef" {
 			$ishFolderData.IshFolderRef -ge 0 | Should Be $true
 		}
-		It "$ishFolderData.IshFolderType" {
+		It "ishFolderData.IshFolderType" {
 			$ishFolderData.IshFolderType | Should Not BeNullOrEmpty
 		}
-		It "$ishFolderData.IshField" {
+		It "ishFolderData.IshField" {
 			$ishFolderData.IshField | Should Not BeNullOrEmpty
 		}
 	}
@@ -110,11 +110,11 @@ Describe “Get-IshFolder" -Tags "Read" {
 		It "Parameter IshFolder invalid" {
 			{ Get-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderData).IshFolderRef -ge 0 | Should Be $true
+		It "Parameter IshFolder Single with implicit IshSession" {
+			(Get-IshFolder -IshFolder $ishFolderData).IshFolderRef -ge 0 | Should Be $true
 		}
-		It "Parameter IshFolder Multiple" {
-			(Get-IshFolder -IshSession $ishSession -IshFolder @($ishFolderData,$ishFolderSystem,$ishFolderFavorites,$ishFolderEditorTemplate)).Count -eq 4 | Should Be $true
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			(Get-IshFolder -IshFolder @($ishFolderData,$ishFolderSystem,$ishFolderFavorites,$ishFolderEditorTemplate)).Count -eq 4 | Should Be $true
 		}
 		It "Pipeline IshFolder Single" {
 			$ishFolders = $ishFolderData | Get-IshFolder -IshSession $ishSession

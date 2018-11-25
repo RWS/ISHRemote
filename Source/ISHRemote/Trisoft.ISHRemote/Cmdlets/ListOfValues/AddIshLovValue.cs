@@ -31,9 +31,9 @@ namespace Trisoft.ISHRemote.Cmdlets.ListOfValues
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
-    /// $lovValue = Add-IshLovValue -IshSession $ishSession -LovId "DILLUSTRATIONTYPE" -Label "New image type" -Description "New image type description"
+    /// $lovValue = Add-IshLovValue -LovId "DILLUSTRATIONTYPE" -Label "New image type" -Description "New image type description"
     /// </code>
-    /// <para>Adding a Value into the List of Values</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Adding a Value into the List of Values</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshLovValue", SupportsShouldProcess = true)]
     [OutputType(typeof(IshLovValue))]
@@ -43,8 +43,8 @@ namespace Trisoft.ISHRemote.Cmdlets.ListOfValues
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshLovValueGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshLovValueGroup")]
         [ValidateNotNullOrEmpty]
 		public IshSession IshSession { get; set; }
 
@@ -81,13 +81,21 @@ namespace Trisoft.ISHRemote.Cmdlets.ListOfValues
         [ValidateNotNullOrEmpty]
 		public string LovValueId { get; set; }
 
-		/// <summary>
-		/// Process the Add-IshLovValue commandlet.
-		/// </summary>
-		/// <exception cref="TrisoftAutomationException"></exception>
-		/// <exception cref="Exception"></exception>
-		/// <remarks>Writes an <see cref="IshLovValue"/> array to the pipeline</remarks>
-		protected override void ProcessRecord()
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
+
+        /// <summary>
+        /// Process the Add-IshLovValue commandlet.
+        /// </summary>
+        /// <exception cref="TrisoftAutomationException"></exception>
+        /// <exception cref="Exception"></exception>
+        /// <remarks>Writes an <see cref="IshLovValue"/> array to the pipeline</remarks>
+        protected override void ProcessRecord()
 		{
 			try
 			{

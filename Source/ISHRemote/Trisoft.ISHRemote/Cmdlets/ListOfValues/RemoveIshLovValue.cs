@@ -43,8 +43,8 @@ namespace Trisoft.ISHRemote.Cmdlets.ListOfValues
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshLovValueGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshLovValueGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -67,6 +67,14 @@ namespace Trisoft.ISHRemote.Cmdlets.ListOfValues
         // TODO [Could] Promote parameter IshLovValue to IshLovValue[] processing
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshLovValueGroup")]
         public IshLovValue IshLovValue { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Remove-IshLovValue commandlet.

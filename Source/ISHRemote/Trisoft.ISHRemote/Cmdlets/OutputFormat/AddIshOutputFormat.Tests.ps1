@@ -113,14 +113,14 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 		It "Parameter IshObject invalid" {
 			{ Add-IshOutputFormat -IShSession $ishSession -IshObject "INVALIDOUTPUTFORMAT" } | Should Throw
 		}
-		It "Parameter IshObject Single" {
-			$ishObjects = Add-IshOutputFormat -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjects | Remove-IshOutputFormat -IshSession $ishSession
+		It "Parameter IshObject Single with optional IshSession" {
+			$ishObjects = Add-IshOutputFormat -IshObject $ishObjectA
+			$ishObjects | Remove-IshOutputFormat
 			$ishObjects.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-			$ishObjects = Add-IshOutputFormat -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
-			$ishObjects | Remove-IshOutputFormat -IshSession $ishSession
+		It "Parameter IshObject Multiple with optional IshSession" {
+			$ishObjects = Add-IshOutputFormat -IshObject @($ishObjectB,$ishObjectC)
+			$ishObjects | Remove-IshOutputFormat
 			$ishObjects.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

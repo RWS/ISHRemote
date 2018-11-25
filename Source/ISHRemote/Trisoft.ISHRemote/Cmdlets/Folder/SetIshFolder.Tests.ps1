@@ -48,13 +48,13 @@ Describe “Set-IshFolder" -Tags "Create" {
 		It "GetType().Name" {
 			$ishFolderData.GetType().Name | Should BeExactly "IshFolder"
 		}
-		It "$ishFolderData.IshFolderRef" {
+		It "ishFolderData.IshFolderRef" {
 			$ishFolderData.IshFolderRef -ge 0 | Should Be $true
 		}
-		It "$ishFolderData.IshFolderType" {
+		It "ishFolderData.IshFolderType" {
 			$ishFolderData.IshFolderType | Should Not BeNullOrEmpty
 		}
-		It "$ishFolderData.IshField" {
+		It "ishFolderData.IshField" {
 			$ishFolderData.IshField | Should Not BeNullOrEmpty
 		}
 	}
@@ -125,12 +125,12 @@ Describe “Set-IshFolder" -Tags "Create" {
 		It "Parameter IshFolder invalid" {
 			{ Set-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			$ishFolders = Set-IshFolder -IShSession $ishSession -IshFolder $ishFolderK
+		It "Parameter IshFolder Single with implicit IshSession" {
+			$ishFolders = Set-IshFolder -IshFolder $ishFolderK
 			$ishFolders.Count | Should Be 1
 		}
-		It "Parameter IshFolder Multiple" {
-			$ishFolders = Set-IshFolder -IShSession $ishSession -IshFolder @($ishFolderL,$ishFolderM)
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			$ishFolders = Set-IshFolder -IshFolder @($ishFolderL,$ishFolderM)
 			$ishFolders.Count | Should Be 2
 		}
 		It "Pipeline IshFolder Single" {

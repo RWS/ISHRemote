@@ -33,12 +33,12 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
     /// $ishMetadataFilterFields = Set-IshMetadataFilterField -IshSession $ishSession -Name "EDT-FILE-EXTENSION" -Level "None" -FilterOperator "Like" -Value "%xml%"
     /// $ishRequestedFields = Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME" -Level "None"
-    /// $edtList = Find-IshEDT -IshSession $ishSession `
+    /// $edtList = Find-IshEDT `
     ///       -ActivityFilter "None" `
     ///       -MetadataFilter $ishMetadataFilterFields `
     ///       -RequestedMetadata $ishRequestedFields
     /// </code>
-    /// <para>Find EDTs with names containing "edt" text</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Find EDTs with names containing "edt" text</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshEDT", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
@@ -47,7 +47,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -78,7 +78,14 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
         /// </summary>
         private Enumerations.ActivityFilter _activityFilter = Enumerations.ActivityFilter.None;
         #endregion
-        
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
         protected override void ProcessRecord()
         {
             try

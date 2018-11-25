@@ -27,10 +27,25 @@ namespace Trisoft.ISHRemote.Cmdlets.Feature
     /// <para type="synopsis">The Set-IshFeature cmdlet creates a new IshFeature based on the parameters provided. When IshFeature[] object is passed through the pipeline then the new feature is added based on the parameters provided</para>
     /// <para type="description">The Set-IshFeature cmdlet creates a new IshFeature based on the parameters provided. When IshFeature[] object is passed through the pipeline then the new feature is added based on the parameters provided</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $ishFeatures = Set-IshFeature -Name "ISHRemoteStringCond" -Value "StringOne" |
+    ///                Set-IshFeature -Name "ISHRemoteVersionCond" -Value "12.0.1"
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Build a Condition Context for passing to Get-DocumentObjData.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshFeature", SupportsShouldProcess = false)]
     [OutputType(typeof(IshFeature))]
     public sealed class SetIshFeature : TrisoftCmdlet
     {
+        /// <summary>
+        /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
+        [ValidateNotNullOrEmpty]
+        public IshSession IshSession { get; set; }
+
         /// <summary>
         /// <para type="description">The condition name</para>
         /// </summary>
@@ -48,6 +63,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Feature
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipeline = true)]
         public IshFeature[] IshFeature { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {

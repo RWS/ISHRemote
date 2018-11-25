@@ -54,12 +54,12 @@ Describe “Move-IshFolder" -Tags "Create" {
 		It "Parameter IshFolder invalid" {
 			{ Move-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" -ToFolderId $ishFolderA.IshFolderRef } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			$ishFolders = Move-IshFolder -IShSession $ishSession -IshFolder $ishFolderC -ToFolderId $ishFolderA.IshFolderRef
+		It "Parameter IshFolder Single with implicit IshSession" {
+			$ishFolders = Move-IshFolder -IshFolder $ishFolderC -ToFolderId $ishFolderA.IshFolderRef
 			$ishFolders.Count | Should Be 1
 		}
-		It "Parameter IshFolder Multiple" {
-			$ishFolders = Move-IshFolder -IShSession $ishSession -IshFolder @($ishFolderD,$ishFolderE) -ToFolderId $ishFolderA.IshFolderRef
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			$ishFolders = Move-IshFolder -IshFolder @($ishFolderD,$ishFolderE) -ToFolderId $ishFolderA.IshFolderRef
 			$ishFolders.Count | Should Be 2
 		}
 		It "Pipeline IshFolder Single" {

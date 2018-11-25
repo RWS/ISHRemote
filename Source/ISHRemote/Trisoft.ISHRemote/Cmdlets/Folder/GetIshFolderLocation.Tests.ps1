@@ -76,12 +76,12 @@ Describe “Get-IshFolderLocation" -Tags "Read" {
 		It "Parameter IshFolder invalid" {
 			{ Get-IshFolderLocation -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			$ishObjects = Get-IshFolderLocation -IshSession $ishSession -IshFolder $ishFolderEditorTemplate
+		It "Parameter IshFolder Single with implicit IshSession" {
+			$ishObjects = Get-IshFolderLocation -IshFolder $ishFolderEditorTemplate
 			$ishObjects.Count | Should Be 1
 		}
-		It "Parameter IshFolder Multiple" {
-			$ishObjects = Get-IshFolderLocation -IshSession $ishSession -IshFolder @($ishFolderData,$ishFolderSystem)
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			$ishObjects = Get-IshFolderLocation -IshFolder @($ishFolderData,$ishFolderSystem)
 			$ishObjects.Count | Should Be 2
 		}
 		It "Pipeline IshFolder Single" {

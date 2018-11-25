@@ -37,12 +37,12 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
     ///             Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level "none" -Value "TRUE" -ValueType Element |
     ///             Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level "none" -Value "TRUE" -ValueType Element |
     ///             Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level "none" -Value "TRUE" -ValueType Element
-    /// $outputFormat = Add-IshOutputFormat -IshSession $ishSession `
+    /// $outputFormat = Add-IshOutputFormat `
     /// -Name "MyOutputFormat" `
     /// -EDT "EDTPDF" `
     /// -Metadata $metadata
     /// </code>
-    /// <para>Adding a new output format</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Adding a new output format</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshOutputFormat", SupportsShouldProcess = true)]
     [OutputType(typeof(IshObject))]
@@ -52,8 +52,8 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -81,6 +81,14 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Add-IshOutputFormat commandlet.

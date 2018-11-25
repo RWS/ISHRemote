@@ -50,9 +50,9 @@ Describe “Add-IshLovValue" -Tags "Create" {
 		It "Parameter IshLovValue invalid" {
 			{ Add-IshLovValue -IShSession $ishSession -IshLovValue "INVALIDLOVVALUE" } | Should Throw
 		}
-		It "Parameter IshLovValue Single" {
-			Remove-IshLovValue -IshSession $ishSession -LovId $ishLovId -LovValueId $lovValueId
-			$ishLovValues = Add-IshLovValue -IShSession $ishSession -IshLovValue $ishLovValue
+		It "Parameter IshLovValue Single with optional IshSession" {
+			Remove-IshLovValue -LovId $ishLovId -LovValueId $lovValueId
+			$ishLovValues = Add-IshLovValue -IshLovValue $ishLovValue
 			$ishLovValues.Count | Should Be 1
 		}
 		<# NotImplemented

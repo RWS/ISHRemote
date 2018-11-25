@@ -40,9 +40,9 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
     /// -Name "MyOutputFormat" `
     /// -EDT "EDTPDF" `
     /// -Metadata $metadata
-    /// Remove-IshOutputFormat -IshSession $ishSession -Id $outputFormatAdd[0].IshRef
+    /// Remove-IshOutputFormat -Id $outputFormatAdd[0].IshRef
     /// </code>
-    /// <para>Remove added output format</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Remove added output format</para>
     /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshOutputFormat", SupportsShouldProcess = true)]
     public sealed class RemoveIshOutputFormat : OutputFormatCmdlet
@@ -51,8 +51,8 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -68,6 +68,14 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Remove-IshOutputFormat commandlet.

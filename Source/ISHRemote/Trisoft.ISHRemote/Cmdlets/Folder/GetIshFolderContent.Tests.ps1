@@ -127,11 +127,11 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		It "Parameter IshFolder invalid" {
 			{ Get-IshFolderContent -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			(Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderSystem).Count -eq 0 | Should Be $true
+		It "Parameter IshFolder Single with implicit IshSession" {
+			(Get-IshFolderContent -IshFolder $ishFolderSystem).Count -eq 0 | Should Be $true
 		}
-		It "Parameter IshFolder Multiple" {
-			$ishObjects = Get-IshFolderContent -IshSession $ishSession -IshFolder @($ishFolderData,$ishFolderSystem)
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			$ishObjects = Get-IshFolderContent -IshFolder @($ishFolderData,$ishFolderSystem)
 			$ishObjects.Count -eq 0| Should Be $true
 		}
 		It "Pipeline IshFolder Single" {
