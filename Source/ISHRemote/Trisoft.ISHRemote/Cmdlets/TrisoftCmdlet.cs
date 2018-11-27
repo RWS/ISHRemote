@@ -96,6 +96,35 @@ namespace Trisoft.ISHRemote.Cmdlets
             WriteDebug($"EndProcessing  elapsed:{(Environment.TickCount - _tickCountStart)}ms");
         }
 
+        protected void WriteObject(IshSession ishSession, Enumerations.ISHType[] ishType, List<IshBaseObject> ishBaseObjects, bool enumerateCollection)
+        {
+            switch (ishSession.PipelineObjectPreference)
+            {
+                case Enumerations.PipelineObjectPreference.PSObjectNoteProperty:
+                    List<PSObject> psObjects = new List<PSObject>();
+                    foreach (var IshBaseObject in ishBaseObjects)
+                    {
+                        PSObject psObject = PSObject.AsPSObject(IshBaseObject);  // returning a PSObject object that inherits from ishObject
+                        foreach (IshField ishField in IshBaseObject.IshFields.Fields())
+                        {
+                            psObject.Properties.Add(ishSession.NameHelper.GetPSNoteProperty(ishType, (IshMetadataField)ishField));
+                        }
+                        psObjects.Add(psObject);
+                    }
+                    WriteObject(psObjects, enumerateCollection);
+                    break;
+                case Enumerations.PipelineObjectPreference.Off:
+                    WriteObject(ishBaseObjects, true);
+                    break;
+            }
+        }
+        protected void WriteObject(IshSession ishSession, Enumerations.ISHType[] ishType, IshBaseObject ishBaseObject, bool enumerateCollection)
+        {
+            List<IshBaseObject> ishBaseObjectList = new List<IshBaseObject>();
+            ishBaseObjectList.Add(ishBaseObject);
+            WriteObject(ishSession, ishType, ishBaseObjectList, enumerateCollection);
+        }
+
         /// <summary>
         /// Write progress over the complete cmdlet, so over updates and retrieves
         /// </summary>

@@ -240,16 +240,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 
                 // Write retrieved objects to pipeline
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
-
-                switch (IshSession.PipelineObjectPreference)
-                {
-                    case Enumerations.PipelineObjectPreference.PSObjectNoteProperty:
-                        WriteObject(WrapAsPSObjectAndAddNoteProperties(IshSession, returnIshObjects), true);
-                        break;
-                    case Enumerations.PipelineObjectPreference.Off:
-                        WriteObject(returnIshObjects.ToArray(), true);
-                        break;
-                }
+                WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

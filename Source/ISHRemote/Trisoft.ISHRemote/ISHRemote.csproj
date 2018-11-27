@@ -190,6 +190,7 @@
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Objects\IshBackgroundTasks.cs" />
     <Compile Include="Objects\IshBaselineItems.cs" />
+    <Compile Include="Objects\IshBaseObject.cs" />
     <Compile Include="Objects\Public\IshBackgroundTask.cs" />
     <Compile Include="Objects\Public\IshBaselineItem.cs" />
     <Compile Include="Objects\Public\IshRequestedMetadataField.cs" />

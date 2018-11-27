@@ -26,7 +26,7 @@ namespace Trisoft.ISHRemote.Objects.Public
     /// <summary>
     /// <para type="description">The IshBackgroundTask is one entry on the BackgroundTask history are, also holding task top-level information.</para>
     /// </summary>
-    public class IshBackgroundTask
+    public class IshBackgroundTask : IshBaseObject
     {
         // Regular IshBackgroundTasks look like
         //<ishbackgroundtask ishtaskref="169075" ishhistoryref="122259">
@@ -104,7 +104,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// Gets and sets the IshFields property.
         /// The IshFields property is a collection of <see cref="IshFields"/>.
         /// </summary>
-        internal IshFields IshFields
+        internal override IshFields IshFields 
         {
             get { return _ishFields; }
             set { _ishFields = value; }

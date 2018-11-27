@@ -109,13 +109,15 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element).StartsWith('VUSER') | Should Be $true
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element).StartsWith('VBACKGROUNDTASK') | Should Be $true
 		}
-		It "Parameter IshSession.DefaultRequestedMetadata" {
+		It "Option IshSession.DefaultRequestedMetadata" {
 			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
 			$ishSession.DefaultRequestedMetadata = "Descriptive"
 			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
 			(($ishBackgroundTask.IshField.Count -eq 1) -or ($ishBackgroundTask.IshField.Count -eq 2)) | Should Be $true  # Either BackgroundTask has run and you get taskid/historyid, or it didn't and you only get taskid
 			$ishSession.DefaultRequestedMetadata = "Basic"
 			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
+			$ishBackgroundTask.status.Length -ge 1 | Should Be $true
+			$ishBackgroundTask.status_task_element.StartsWith('VBACKGROUNDTASKSTATUS') | Should Be $true 
 			(($ishBackgroundTask.IshField.Count -eq 13) -or ($ishBackgroundTask.IshField.Count -eq 19)) | Should Be $true
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]

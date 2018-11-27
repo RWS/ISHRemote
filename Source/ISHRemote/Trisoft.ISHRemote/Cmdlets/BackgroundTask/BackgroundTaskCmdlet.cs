@@ -29,29 +29,6 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         {
             get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHBackgroundTask }; }
         }
-
-        /// <summary>
-        /// Wrap incoming objects as PSObjects and extend with PSNoteProperties for every IshField value entry
-        /// 
-        /// </summary>
-        /// <param name="ishSession">Incoming ishSession allows future tuning or simple disablement</param>
-        /// <param name="ishObjects">Object to wrap and return as PSObject</param>
-        /// <returns>Wrapped PSObjects</returns>
-        internal List<PSObject> WrapAsPSObjectAndAddNoteProperties(IshSession ishSession, List<IshBackgroundTask> ishObjects)
-        {
-            List<PSObject> psObjects = new List<PSObject>();
-            foreach(var ishObject in ishObjects)
-            {
-                PSObject psObject = PSObject.AsPSObject(ishObject);  // returning a PSObject object that inherits from ishObject
-                foreach(IshField ishField in ishObject.IshFields.Fields())
-                {
-                    psObject.Properties.Add(ishSession.NameHelper.GetPSNoteProperty(ISHType, (IshMetadataField)ishField));
-                }
-                psObjects.Add(psObject);
-            }
-            return psObjects;
-        }
-    
     }
 }
 

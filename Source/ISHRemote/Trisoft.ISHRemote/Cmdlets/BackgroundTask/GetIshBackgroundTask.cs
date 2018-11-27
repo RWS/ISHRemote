@@ -221,17 +221,9 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
                 List<IshBackgroundTask> returnIshBackgroundTasks = new IshBackgroundTasks(xmlIshBackgroundTasks).BackgroundTasks;
+
                 WriteVerbose("returned object count[" + returnIshBackgroundTasks.Count + "]");
-                
-                switch (IshSession.PipelineObjectPreference)
-                {
-                    case Enumerations.PipelineObjectPreference.PSObjectNoteProperty:
-                        WriteObject(WrapAsPSObjectAndAddNoteProperties(IshSession, returnIshBackgroundTasks), true);
-                        break;
-                    case Enumerations.PipelineObjectPreference.Off:
-                        WriteObject(returnIshBackgroundTasks, true);
-                        break;
-                }
+                WriteObject(IshSession, ISHType, returnIshBackgroundTasks.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

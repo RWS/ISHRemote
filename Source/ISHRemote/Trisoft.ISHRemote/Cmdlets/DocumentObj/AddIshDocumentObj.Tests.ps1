@@ -55,6 +55,16 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 		It "$ishObject.ObjectRef[Enumerations.ReferenceType.Lng]" {
 			$ishObject.ObjectRef["Lng"] | Should Not BeNullOrEmpty
 		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			#logical
+			$ishObject.ftitle_logical_value.Length -ge 1 | Should Be $true 
+			#version
+			$ishObject.version_version_value.Length -ge 1 | Should Be $true 
+			#language
+			$ishObject.fstatus.Length -ge 1 | Should Be $true 
+			$ishObject.fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
+		}
 	}
 
 	Context “Add-IshDocumentObj ParameterGroupFileContent" {
