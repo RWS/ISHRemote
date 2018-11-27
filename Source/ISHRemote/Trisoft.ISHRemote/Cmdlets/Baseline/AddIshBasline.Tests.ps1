@@ -26,6 +26,9 @@ Describe “Add-IshBaseline" -Tags "Create" {
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Level None -Name "FISHDOCUMENTRELEASE").Length -gt 0 | Should Be $true
 			$ishObject.GetType().Name | Should BeExactly "IshObject"
 			$ishObject.Count | Should Be 1
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishdocumentrelease.Length -ge 1 | Should Be $true 
+			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should Be $true 
 		}
 	}
 

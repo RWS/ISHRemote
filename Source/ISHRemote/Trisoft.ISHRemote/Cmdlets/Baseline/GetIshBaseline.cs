@@ -121,7 +121,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                 }
 
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
-                WriteObject(returnedObjects, true);
+                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

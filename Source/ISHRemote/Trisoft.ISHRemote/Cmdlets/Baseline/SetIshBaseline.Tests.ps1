@@ -28,6 +28,9 @@ Describe “Set-IshBaseline" -Tags "Create" {
 			$ishObject = Set-IshBaseline -Id $ishObject.IshRef -Metadata $metadata
 			$ishObject.GetType().Name | Should BeExactly "IshObject"
 			$ishObject.Count | Should Be 1
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishdocumentrelease.Length -ge 1 | Should Be $true 
+			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should Be $true 
 		}
 	}
 

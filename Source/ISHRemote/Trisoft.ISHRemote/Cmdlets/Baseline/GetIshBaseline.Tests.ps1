@@ -54,6 +54,9 @@ Describe "Get-IshBaseline" -Tags "Read" {
 			$ishObject.IshRef -ge 0 | Should Be $true
 			$ishObject.IshType | Should Not BeNullOrEmpty
 			$ishObject.IshField | Should Not BeNullOrEmpty
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishdocumentrelease.Length -ge 1 | Should Be $true 
+			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should Be $true 
 		}
 	}
 
