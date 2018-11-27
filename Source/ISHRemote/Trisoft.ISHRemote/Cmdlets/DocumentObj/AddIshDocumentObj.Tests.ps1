@@ -64,6 +64,8 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 			#language
 			$ishObject.fstatus.Length -ge 1 | Should Be $true 
 			$ishObject.fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
+			$ishObject.doclanguage.Length -ge 1 | Should Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
+			$ishObject.doclanguage_lng_element.StartsWith('VLANGUAGE') | Should Be $true 
 		}
 	}
 

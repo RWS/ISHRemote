@@ -65,12 +65,14 @@ namespace Trisoft.ISHRemote.HelperClasses
                             case Enumerations.Level.None:
                             case Enumerations.Level.Task:
                             case Enumerations.Level.Progress:
-                                propertyName.Append(ishField.Name.ToLower());
+                                // Incoming field "CHECK-OUT" should become "checkout" otherwise PowerShell will enforce single quote around so $ishObject.'check-out'
+                                propertyName.Append(ishField.Name.Replace("-","").ToLower());
                                 switch (ishField.ValueType)
                                 {
                                     case Enumerations.ValueType.Element:
                                     case Enumerations.ValueType.Id:
                                         propertyName.Append(_levelNameValueTypeSeparator);
+                                        // Incoming field "CHECK-OUT" should become "checkout" otherwise PowerShell will enforce single quote around so $ishObject.'check-out'
                                         propertyName.Append(ishField.Level.ToString().ToLower());
                                         propertyName.Append(_levelNameValueTypeSeparator);
                                         propertyName.Append(ishField.ValueType.ToString().ToLower());
@@ -80,7 +82,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                                 }
                                 break;
                             default:
-                                propertyName.Append(ishField.Name.ToLower());
+                                propertyName.Append(ishField.Name.Replace("-", "").ToLower());
                                 propertyName.Append(_levelNameValueTypeSeparator);
                                 propertyName.Append(ishField.Level.ToString().ToLower());
                                 propertyName.Append(_levelNameValueTypeSeparator);
