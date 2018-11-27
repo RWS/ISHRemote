@@ -148,7 +148,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 }
 
                 WriteVerbose("returned object count[" + returnedFolders.Count + "]");
-                WriteObject(returnedFolders,true);               
+                WriteObject(IshSession, ISHType, returnedFolders.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

@@ -32,6 +32,10 @@ Describe “Add-IshUserGroup" -Tags "Create" {
 			$ishObject = Add-IshUserGroup -IshSession $ishSession -Name $userGroupName -Metadata $metadata
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should Be $true
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERGROUPNAME -Level None).Length -gt 1 | Should Be $true
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishobjectactive.Length -ge 1 | Should Be $true 
+			$ishObject.fishusergroupname.Length -ge 1 | Should Be $true 
+			$ishObject.fishusergroupname_none_element.StartsWith('VUSERGROUP') | Should Be $true 
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference

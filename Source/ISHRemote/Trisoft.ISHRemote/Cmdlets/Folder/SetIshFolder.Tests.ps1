@@ -57,6 +57,12 @@ Describe “Set-IshFolder" -Tags "Create" {
 		It "ishFolderData.IshField" {
 			$ishFolderData.IshField | Should Not BeNullOrEmpty
 		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishFolderData.name.Length -ge 1 | Should Be $true 
+			$ishFolderData.fdocumenttype.Length -ge 1 | Should Be $true 
+			$ishFolderData.fdocumenttype_none_element.StartsWith('VDOCTYPE') | Should Be $true 
+		}
 	}
 
 	# Order in renames matters

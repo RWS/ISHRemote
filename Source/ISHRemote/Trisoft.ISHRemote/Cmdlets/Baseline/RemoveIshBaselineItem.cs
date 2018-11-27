@@ -136,7 +136,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                         IshSession.Baseline25.Update(baselineId, stringWriter.ToString());
                     }
                 }
-                WriteObject(IshObject, true);
+                WriteObject(IshObject, true);  // Incoming IshObject is not altered, already contains optional PSNoteProperty, so continuing the pipeline
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

@@ -26,7 +26,7 @@ namespace Trisoft.ISHRemote.Objects.Public
     /// <summary>
     /// <para type="description">Generic pipeline object for the Folder API holding folder reference like "ishfolderref", "ishfoldertype", "ishfields"</para>
     /// </summary>
-    public class IshFolder
+    public class IshFolder : IshBaseObject
     {
         /* IshFolder looks like:
          
@@ -100,7 +100,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// Gets and sets the IshFields property.
         /// The IshFields property is a collection of <see cref="IshFields"/>.
         /// </summary>
-        internal IshFields IshFields
+        internal override IshFields IshFields
         {
             get { return _ishFields; }
             set { _ishFields = value; }

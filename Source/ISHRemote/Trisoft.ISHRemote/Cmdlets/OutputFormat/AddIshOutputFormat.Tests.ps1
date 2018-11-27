@@ -52,6 +52,22 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name "FISHOUTPUTFORMATNAME" -Level None).Length -gt 1 | Should Be $true
 		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
+			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -Value "TRUE" |
+			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -Value "TRUE" |
+						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level None -Value "TRUE" |
+						Set-IshMetadataField -IshSession $ishSession -Name "FISHSINGLEFILE" -Level None -Value "TRUE" |
+						Set-IshMetadataField -IshSession $ishSession -Name "FISHOBJECTACTIVE" -Level None -Value "TRUE" |
+						Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONS" -Level None -ValueType Element -Value $ishResolution
+			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" } # new mandatory field
+			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONSTOEXPORT" -Level None -ValueType Element -Value "VRESOLUTIONSTOEXPORTALLRESOLUTIONS" } # new mandatory field since 13SP2/13.0.2
+			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
+			$ishObject.fishoutputformatname.Length -ge 1 | Should Be $true 
+			$ishObject.fishoutputedt.Length -ge 1 | Should Be $true 
+			$ishObject.fishoutputedt_none_element | Should Be "EDTZIP"
+		}
 		It "Parameter Metadata StrictMetadataPreference=Off" {
 		    $strictMetadataPreference = $ishSession.StrictMetadataPreference
 			$ishSession.StrictMetadataPreference = "Off"

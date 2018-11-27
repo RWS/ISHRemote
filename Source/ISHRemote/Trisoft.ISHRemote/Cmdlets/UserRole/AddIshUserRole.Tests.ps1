@@ -32,6 +32,10 @@ Describe "Add-IshUserRole" -Tags "Create" {
 			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should Be $true
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERROLENAME -Level None).Length -gt 1 | Should Be $true
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishobjectactive.Length -ge 1 | Should Be $true 
+			$ishObject.fishuserrolename.Length -ge 1 | Should Be $true 
+			$ishObject.fishuserrolename_none_element.StartsWith('VUSERROLE') | Should Be $true 
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference

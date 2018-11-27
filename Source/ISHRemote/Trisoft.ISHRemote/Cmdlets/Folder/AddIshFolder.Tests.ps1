@@ -36,6 +36,12 @@ Describe “Add-IshFolder" -Tags "Create" {
 		It "ishFolderCmdlet.IshField" {
 			$ishFolderCmdlet.IshField | Should Not BeNullOrEmpty
 		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishFolderCmdlet.name.Length -ge 1 | Should Be $true 
+			$ishFolderCmdlet.fdocumenttype.Length -ge 1 | Should Be $true 
+			$ishFolderCmdlet.fdocumenttype_none_element.StartsWith('VDOCTYPE') | Should Be $true 
+		}
 	}
 
 	Context “Add-IshFolder ParameterGroup" {

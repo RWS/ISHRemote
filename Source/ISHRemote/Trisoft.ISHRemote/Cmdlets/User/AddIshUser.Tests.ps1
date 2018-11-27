@@ -42,6 +42,10 @@ Describe "Add-IshUser" -Tags "Create" {
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FUSERGROUP -Level None -ValueType Element).Length -gt 1 | Should Be $true # added user field by element name
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FUSERGROUP -Level None -ValueType Value).Length -gt 1 | Should Be $true # added user field by element name, value added by AddDescriptiveFields
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name USERNAME -Level None).Length -gt 1 | Should Be $true
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.username.Length -ge 1 | Should Be $true 
+			$ishObject.fishusertype.Length -ge 1 | Should Be $true 
+			$ishObject.fishusertype_none_element.StartsWith('VUSERTYPE') | Should Be $true 
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off with INVALIDFIELDNAME" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference

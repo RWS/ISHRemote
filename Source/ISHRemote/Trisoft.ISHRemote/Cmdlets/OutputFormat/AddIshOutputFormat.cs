@@ -167,7 +167,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
 
                     //TODO should be covered by ISHREMOTE-011 using IshTypeFieldSetup
                     // Remove FISHDITADLVRCLIENTSECRET field explicitly, as we are not allowed to read it
-                    returnFields.RemoveField(FieldElements.DitaDeliveryClientSecret, Enumerations.Level.None, Enumerations.ValueType.All);
+                    //returnFields.RemoveField(FieldElements.DitaDeliveryClientSecret, Enumerations.Level.None, Enumerations.ValueType.All);
 
                     // Add the required fields (needed for pipe operations)
                     IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
@@ -181,7 +181,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                 }
 
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
-                WriteObject(returnIshObjects, true);
+                WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

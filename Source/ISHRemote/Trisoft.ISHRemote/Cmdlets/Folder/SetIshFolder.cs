@@ -275,9 +275,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(returnFolderIds.ToArray(), requestedMetadata.ToXml());
 
                 // 3b. Write it
-                IshFolders returnIshObjects = new IshFolders(xmlIshFolders);
-                WriteVerbose("returned object count[" + returnIshObjects.Folders.Length + "]");
-                WriteObject(returnIshObjects.Folders, true);
+                var returnIshObjects = new IshFolders(xmlIshFolders).FolderList;
+                WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
+                WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

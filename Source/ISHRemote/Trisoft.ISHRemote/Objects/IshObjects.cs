@@ -78,6 +78,9 @@ namespace Trisoft.ISHRemote.Objects
             }
         }
 
+        /// <summary>
+        /// Gets the current IshObjects as list
+        /// </summary>
         public List<IshObject> ObjectList
         {
             get { return _objects;  }

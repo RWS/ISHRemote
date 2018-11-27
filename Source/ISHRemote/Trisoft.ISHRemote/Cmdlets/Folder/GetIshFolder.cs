@@ -272,7 +272,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 if (!Recurse)
                 {
                     WriteDebug($"returned object count[{returnIshFolders.Count}]");
-                    WriteObject(returnIshFolders,true);
+                    WriteObject(IshSession, ISHType, returnIshFolders.ConvertAll(x => (IshBaseObject)x), true);
                 }
                 else
                 {
@@ -304,7 +304,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 // put them on the pipeline depth-first-traversel
                 string folderName = ishFolder.IshFields.GetFieldValue("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
                 WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
-                WriteObject(ishFolder,true);
+                WriteObject(IshSession, ISHType, ishFolder, true);
 
                 WriteDebug($"RetrieveRecursive IshFolderRef[{ishFolder.IshFolderRef}] folderName[{folderName}] ({currentDepth}<{maxDepth})");
                 string xmlIshFolders = IshSession.Folder25.GetSubFoldersByIshFolderRef(ishFolder.IshFolderRef);
