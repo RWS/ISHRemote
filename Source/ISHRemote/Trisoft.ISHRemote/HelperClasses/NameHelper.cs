@@ -49,7 +49,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// * e.g. User... level-None types… username, username=none=value, username=none=element
         /// * e.g. Events... not a card type… userid=progress=value
         /// </summary>
-        /// <remarks>PSNoteProperty: date fields converting dd/MM/yyy HH:mm:ss to a sortable format; so ISO8601 (ToString('s', dt)) yyyy'-'MM'-'dd'T'HH':'mm':'ss 
+        /// <remarks>PSNoteProperty: date fields converting dd/MM/yyyy HH:mm:ss to a sortable format; so ISO8601 (ToString('s', dt)) yyyy'-'MM'-'dd'T'HH':'mm':'ss 
         /// (similar format 'u' add time zone which I consider non-scope for now). Note that TranslationJob's LEASEDON is returned by the API in Utc.</remarks>
         public PSNoteProperty GetPSNoteProperty(Enumerations.ISHType[] ishTypes, IshMetadataField ishField)
         {

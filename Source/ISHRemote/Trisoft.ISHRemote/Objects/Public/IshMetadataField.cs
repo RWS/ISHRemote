@@ -133,7 +133,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             xmlWriter.WriteAttributeString("name", Name);
             xmlWriter.WriteAttributeString("level", StringEnum.GetStringValue(Level));
             // write value type explicitly, except when it is just 'value'
-            if (_valueType != Enumerations.ValueType.Value)
+            if (_valueType != Enumerations.ValueType.Value)  // TODO [Could] IshMetadataField.GetXml(...) I think also ValueType.All should be added here otherwise API will get @valuetype="" as input I think
             { 
                 xmlWriter.WriteAttributeString("ishvaluetype", StringEnum.GetStringValue(_valueType));
             }
@@ -143,6 +143,16 @@ namespace Trisoft.ISHRemote.Objects.Public
                 xmlWriter.WriteString(_value);
             }
             xmlWriter.WriteEndElement();
+        }
+
+        /// <summary>
+        /// Debugging implementation
+        /// </summary>
+        /// <returns>string</returns>
+        public override string ToString()
+        {
+            return $"Set-IshMetadataField -Level {StringEnum.GetStringValue(Level)} -Name {Name} -ValueType {StringEnum.GetStringValue(_valueType)} -Value \"{_value}\"";
+            //return $"<ishfield name='{Name}' level='{StringEnum.GetStringValue(Level)}' ishvaluetype='{StringEnum.GetStringValue(_valueType)}'>{_value}</ishfield>";
         }
     }
 }

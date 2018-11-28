@@ -71,6 +71,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
             if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
             WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
             base.BeginProcessing();
+            // Working code, but not required for Baseline object type
+            //if (MetadataFilter == null)
+            //{
+            //    var fieldName = "FISHMODIFIEDON";
+            //    var dateTime = DateTime.Today.AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss");
+            //    var metadataFilter = new IshMetadataFilterField(fieldName, Enumerations.Level.None, Enumerations.FilterOperator.GreaterThanOrEqual, dateTime, Enumerations.ValueType.Value);
+            //    WriteVerbose($"Filtering to 1 day using -MetadataFilter {metadataFilter}");
+            //    MetadataFilter = new IshFields().AddField(metadataFilter).Fields();
+            //}
         }
 
         protected override void ProcessRecord()
