@@ -40,7 +40,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Publishing a publication output</para>
     /// </example>
     [Cmdlet(VerbsData.Publish, "IshPublicationOutput", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshPublicationOutput))]
     public sealed class PublishIshPublicationOutput : PublicationOutputCmdlet
     {
 
@@ -150,7 +150,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             : IshObject[0].IshFields;
                         IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                         string xmlIshObjects = IshSession.PublicationOutput25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(), requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                     else
@@ -177,7 +177,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                 LogicalId, response.version, OutputFormat, LanguageCombination,
                                 requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                 }

@@ -195,6 +195,7 @@
     <Compile Include="Objects\Public\IshBackgroundTask.cs" />
     <Compile Include="Objects\Public\IshBaselineItem.cs" />
     <Compile Include="Objects\Public\IshDocumentObj.cs" />
+    <Compile Include="Objects\Public\IshPublicationOutput.cs" />
     <Compile Include="Objects\Public\IshRequestedMetadataField.cs" />
     <Compile Include="Objects\Public\IshTypeFieldDefinition.cs" />
     <Compile Include="Objects\Public\IshTypeFieldDefinitionCompare.cs" />

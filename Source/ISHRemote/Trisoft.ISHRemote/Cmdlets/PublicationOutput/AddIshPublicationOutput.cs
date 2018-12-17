@@ -46,7 +46,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// <para>Creating a new publication output. New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshPublicationOutput", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshPublicationOutput))]
     public sealed class AddIshPublicationOutput : PublicationOutputCmdlet
     {
 
@@ -205,7 +205,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                 response.logicalId, response.version, outputFormat, languageCombination,
                                 requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
 
                     }
@@ -235,7 +235,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             response.logicalId, response.version, OutputFormat, LanguageCombination,
                             requestedMetadata.ToXml()));
                     string xmlIshObjects = response2.xmlObjectList;
-                    IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                    IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                     returnedObjects.AddRange(retrievedObjects.Objects);
                 }
 

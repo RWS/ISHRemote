@@ -46,7 +46,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Finding publication outputs</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshPublicationOutput", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshPublicationOutput))]
     public sealed class FindIshPublicationOutput : PublicationOutputCmdlet
     {
 
@@ -123,10 +123,10 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                     statusFilter, 
                     metadataFilter.ToXml(), 
                     requestedMetadata.ToXml());
+                var returnIshObjects = new IshObjects(ISHType, xmlIshObjects);
 
-                var returnedObjects = new IshObjects(xmlIshObjects).ObjectList;
-                WriteVerbose("returned object count[" + returnedObjects.Count + "]");
-                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
+                WriteVerbose("returned object count[" + returnIshObjects.ObjectList.Count + "]");
+                WriteObject(IshSession, ISHType, returnIshObjects.ObjectList.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

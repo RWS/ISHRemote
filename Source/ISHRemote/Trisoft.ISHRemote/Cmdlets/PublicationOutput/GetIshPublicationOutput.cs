@@ -49,7 +49,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieving publication outputs</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshPublicationOutput", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshPublicationOutput))]
     public sealed class GetIshPublicationOutput : PublicationOutputCmdlet
     {
         /// <summary>
@@ -157,7 +157,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             string xmlIshObjects = IshSession.PublicationOutput25.RetrieveMetadataByIshLngRefs(
                                 lngCardIdBatch.ToArray(),
                                 requestedMetadata.ToXml());
-                            IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                            IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                             returnedObjects.AddRange(retrievedObjects.Objects);
                             currentLngCardIdCount += lngCardIdBatch.Count;
                             WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
@@ -181,7 +181,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                 statusFilter,
                                 metadataFilter.ToXml(),
                                 requestedMetadata.ToXml());
-                            IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                            IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                             returnedObjects.AddRange(retrievedObjects.Objects);
                             currentLogicalIdCount += logicalIdBatch.Count;
                             WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");
