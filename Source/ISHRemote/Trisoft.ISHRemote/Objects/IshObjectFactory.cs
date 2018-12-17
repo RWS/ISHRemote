@@ -33,9 +33,9 @@ namespace Trisoft.ISHRemote.Objects
         /// Simplest factory is to make the cmdlet in question (like Find-IshDocumentObj) mention which type its return. 
         /// Typically in the cmdlet name.
         /// </summary>
-        public static IshObject Get(Enumerations.ISHType ishType, XmlElement xmlIshObject)
+        public static IshObject Get(Enumerations.ISHType[] ishType, XmlElement xmlIshObject)
         {
-            switch (ishType)
+            switch (ishType[0]) // any of the ISHDocumentObj types would do
             {
                 case Enumerations.ISHType.ISHIllustration:
                 case Enumerations.ISHType.ISHLibrary:
@@ -43,6 +43,8 @@ namespace Trisoft.ISHRemote.Objects
                 case Enumerations.ISHType.ISHMasterDoc:
                 case Enumerations.ISHType.ISHTemplate:
                     return new IshDocumentObj(xmlIshObject);
+                case Enumerations.ISHType.ISHPublication:
+                    return new IshPublicationOutput(xmlIshObject);
                 default:
                     throw new ArgumentException($"IshObjectFactory ishtype[{ishType}] is unknown");
             }

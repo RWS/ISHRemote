@@ -194,7 +194,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             : IshObject[0].IshFields;
                         IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(), requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                     else
@@ -245,7 +245,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             resolution,
                             requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
-                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                 }            

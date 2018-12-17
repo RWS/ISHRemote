@@ -179,7 +179,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                 string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
                                     lngCardIdBatch.ToArray(),
                                     requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLngCardIdCount += lngCardIdBatch.Count;
                                 WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
@@ -200,7 +200,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     lngCardIdBatch.ToArray(),
                                     productDefinitionFeatures.ToXml(),
                                     requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLngCardIdCount += lngCardIdBatch.Count;
                                 WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
@@ -227,7 +227,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     statusFilter,
                                     metadataFilter.ToXml(),
                                     requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLogicalIdCount += logicalIdBatch.Count;
                                 WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");
@@ -250,7 +250,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     metadataFilter.ToXml(),
                                     productDefinitionFeatures.ToXml(),
                                     requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLogicalIdCount += logicalIdBatch.Count;
                                 WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");

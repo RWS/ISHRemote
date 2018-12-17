@@ -49,7 +49,7 @@ namespace Trisoft.ISHRemote.Objects
         /// Creates a new instance of the <see cref="IshObjects"/> class over the IshObjectFactory
         /// </summary>
         /// <param name="xmlIshObjects">The xml containing the objects.</param>
-        public IshObjects(Enumerations.ISHType ishType, string xmlIshObjects)
+        public IshObjects(Enumerations.ISHType[] ishType, string xmlIshObjects)
         {
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xmlIshObjects);

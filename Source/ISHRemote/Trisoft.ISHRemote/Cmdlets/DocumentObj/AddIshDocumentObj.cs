@@ -332,7 +332,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             response.logicalId, response.version, ishObjectLanguage, ishObjectResolution,
                             requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
-                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                     }
                 }
@@ -379,7 +379,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         response.logicalId, response.version, Lng, resolution,
                         requestedMetadata.ToXml()));
                     string xmlIshObjects = response2.xmlObjectList;
-                    IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                    IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                     returnIshObjects.AddRange(retrievedObjects.Objects);
                 }
 

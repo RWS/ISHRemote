@@ -136,7 +136,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     statusFilter,
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
-                var returnIshObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                var returnIshObjects = new IshObjects(ISHType, xmlIshObjects);
 
                 WriteVerbose("returned object count[" + returnIshObjects.ObjectList.Count + "]");
                 WriteObject(IshSession, ISHType, returnIshObjects.ObjectList.ConvertAll(x => (IshBaseObject)x), true);

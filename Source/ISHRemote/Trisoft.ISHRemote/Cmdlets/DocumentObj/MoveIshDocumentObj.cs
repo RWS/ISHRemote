@@ -214,7 +214,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
                             lngCardIdBatch.ToArray(),
                             requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLngCardIdCount += lngCardIdBatch.Count;
                         WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
@@ -231,7 +231,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     {
                         // Process language card ids in batches
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, "", requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLogicalIdCount += logicalIdBatch.Count;
                         WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");
