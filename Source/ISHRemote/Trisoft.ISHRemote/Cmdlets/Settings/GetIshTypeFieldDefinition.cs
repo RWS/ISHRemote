@@ -129,7 +129,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                 else
                 {
                     IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession);
-                    if ((IshSession != null) && (13 <= IshSession.ServerIshVersion.MajorVersion))
+                    if ((TriDKXmlSetupFilePath == null) && (IshSession != null) && (13 <= IshSession.ServerIshVersion.MajorVersion))
                     {
                         WriteDebug($"Importing using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
                         // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
@@ -138,8 +138,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                         WriteObject(IshSession.IshTypeFieldDefinition, true);
                         WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count}]");
                     }
-
-                    if (TriDKXmlSetupFilePath != null)
+                    else if (TriDKXmlSetupFilePath != null)
                     {
                         // always allow? only when IshSession.ServerVersion < 13.0.0
                         WriteVerbose($"Importing TriDKXmlSetupFilePath[{TriDKXmlSetupFilePath}] without IshSession");
