@@ -32,15 +32,6 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// </summary>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential admin
-    /// Find-IshPublicationOutput -Verbose
-    /// # -MetadataFilter Set-IshMetadataFilterField -Level lng -Name MODIFIED-ON -FilterOperator greaterthanorequal -ValueType value -Value "27/11/2018 00:00:00"
-    /// </code>
-    /// <para>Returns the PublicationOutputs expanded to Base fields, worked on in the last day using an implicit -MetadataFilter to avoid retrieving the full repository. Check the -Verbose output on how to adapt the filter.</para>
-    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
-    /// </example>
-    /// <example>
-    /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
     /// $requestedMetadataRetrieve = Set-IshRequestedMetadataField -IshSession $ishSession -Name 'FISHOUTPUTFORMATREF' -Level "Lng" |
     ///                              Set-IshRequestedMetadataField -IshSession $ishSession -Name 'FISHPUBLNGCOMBINATION' -Level "Lng" |
@@ -54,7 +45,6 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Finding publication outputs</para>
     /// </example>
-    /// <remarks>When no -MetadataFilter is specified, an implicit filter is applied to limit to 1 day over language-level MODIFIED-ON to avoid returning the full database. Check the -Verbose output on how to get more results.</remarks>
     [Cmdlet(VerbsCommon.Find, "IshPublicationOutput", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class FindIshPublicationOutput : PublicationOutputCmdlet
@@ -101,14 +91,15 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
             if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
             WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
             base.BeginProcessing();
-            if (MetadataFilter == null)
-            {
-                var fieldName = "MODIFIED-ON";
-                var dateTime = DateTime.Today.AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss");
-                var metadataFilter = new IshMetadataFilterField(fieldName, Enumerations.Level.Lng, Enumerations.FilterOperator.GreaterThanOrEqual, dateTime, Enumerations.ValueType.Value);
-                WriteVerbose($"Filtering to 1 day using -MetadataFilter {metadataFilter}");
-                MetadataFilter = new IshFields().AddField(metadataFilter).Fields();
-            }
+            // Working code, but breaks backward behavior compatibility in projected 0.7/1.0 release, see #49
+            // if (MetadataFilter == null)
+            // {
+            //     var fieldName = "MODIFIED-ON";
+            //     var dateTime = DateTime.Today.AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss");
+            //     var metadataFilter = new IshMetadataFilterField(fieldName, Enumerations.Level.Lng, Enumerations.FilterOperator.GreaterThanOrEqual, dateTime, Enumerations.ValueType.Value);
+            //     WriteVerbose($"Filtering to 1 day using -MetadataFilter {metadataFilter}");
+            //     MetadataFilter = new IshFields().AddField(metadataFilter).Fields();
+            // }
         }
 
 
