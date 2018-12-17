@@ -48,7 +48,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para></para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshDocumentObj", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshDocumentObj))]
     public sealed class FindIshDocumentObj : DocumentObjCmdlet
     {
 
@@ -136,7 +136,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     statusFilter,
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
-                var returnIshObjects = new IshObjects(xmlIshObjects);
+                var returnIshObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
 
                 WriteVerbose("returned object count[" + returnIshObjects.ObjectList.Count + "]");
                 WriteObject(IshSession, ISHType, returnIshObjects.ObjectList.ConvertAll(x => (IshBaseObject)x), true);

@@ -31,7 +31,7 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 		$ishObject = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 		It "GetType().Name" {
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshDocumentObj"
 		}
 		It "$ishObject.IshData" {
 			{ $ishObject.IshData } | Should Not Throw

@@ -46,6 +46,21 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="IshObjects"/> class over the IshObjectFactory
+        /// </summary>
+        /// <param name="xmlIshObjects">The xml containing the objects.</param>
+        public IshObjects(Enumerations.ISHType ishType, string xmlIshObjects)
+        {
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(xmlIshObjects);
+            _objects = new List<IshObject>();
+            foreach (XmlNode ishObject in xmlDocument.SelectNodes("ishobjects/ishobject"))
+            {
+                _objects.Add(IshObjectFactory.Get(ishType, (XmlElement)ishObject));
+            }
+        }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="IshObjects"/> class.
         /// </summary>
         /// <param name="ishObjects">An <see cref="IshObject"/> array.</param>

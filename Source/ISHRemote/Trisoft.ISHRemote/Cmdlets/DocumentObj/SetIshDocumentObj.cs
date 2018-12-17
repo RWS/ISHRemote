@@ -43,7 +43,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para>For all versions and languages retrieved, push them to status 'To Be Reviewed' and immediately to 'Release'. Note that also Find-IshDocumentObj or Get-IshFolderContent are ways to get to content objects.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshDocumentObj", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshDocumentObj))]
     public sealed class SetIshDocumentObj : DocumentObjCmdlet
     {
 
@@ -194,7 +194,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             : IshObject[0].IshFields;
                         IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(), requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                     else
@@ -244,7 +244,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             Lng,
                             resolution,
                             requestedMetadata.ToXml()));
-                        IshObjects retrievedObjects = new IshObjects(response2.xmlObjectList);
+                        string xmlIshObjects = response2.xmlObjectList;
+                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                 }            

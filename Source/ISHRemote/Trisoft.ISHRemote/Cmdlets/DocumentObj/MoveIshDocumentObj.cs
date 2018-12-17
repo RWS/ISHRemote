@@ -40,7 +40,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Moves DocumentObj (and PublicationOutput) to another folder.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Move, "IshDocumentObj", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshDocumentObj))]
     public sealed class MoveIshDocumentObj : DocumentObjCmdlet
     {
         /// <summary>
@@ -214,7 +214,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
                             lngCardIdBatch.ToArray(),
                             requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLngCardIdCount += lngCardIdBatch.Count;
                         WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
@@ -231,7 +231,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     {
                         // Process language card ids in batches
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, "", requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLogicalIdCount += logicalIdBatch.Count;
                         WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");

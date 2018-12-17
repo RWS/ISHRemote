@@ -107,7 +107,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para>Add Module without providing LogicalId and Version</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshDocumentObj", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshDocumentObj))]
     public sealed class AddIshDocumentObj : DocumentObjCmdlet
     {
 
@@ -332,7 +332,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             response.logicalId, response.version, ishObjectLanguage, ishObjectResolution,
                             requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                     }
                 }
@@ -379,7 +379,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         response.logicalId, response.version, Lng, resolution,
                         requestedMetadata.ToXml()));
                     string xmlIshObjects = response2.xmlObjectList;
-                    IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                    IshObjects retrievedObjects = new IshObjects(Enumerations.ISHType.ISHMasterDoc, xmlIshObjects);  // any of the ISHDocumentObj types would do
                     returnIshObjects.AddRange(retrievedObjects.Objects);
                 }
 

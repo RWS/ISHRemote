@@ -66,8 +66,8 @@
             <Width>11</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>ishref</Label>
-            <Width>40</Width>
+            <Label>LogicalId</Label>
+            <Width>41</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>ishobjectref</Label>
@@ -86,6 +86,86 @@
               <TableColumnItem>
                 <PropertyName>ObjectRef</PropertyName>
               </TableColumnItem>              
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshDocumentObj -->
+    <View>
+      <Name>IshObject</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshDocumentObj</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ishtype</Label>
+            <Width>11</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LogicalId</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Version</Label>
+            <Width>7</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Lang</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Res</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Status</Label>
+            <Width>18</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ModifiedBy</Label>
+            <Width>19</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ModifiedOn</Label>
+            <Width>19</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ftitle_logical_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>version_version_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>doclanguage</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fresolution</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fstatus</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishlastmodifiedby</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishlastmodifiedon</PropertyName>
+              </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
         </TableRowEntries>
