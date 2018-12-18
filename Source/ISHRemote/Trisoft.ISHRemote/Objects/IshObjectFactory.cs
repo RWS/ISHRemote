@@ -45,6 +45,8 @@ namespace Trisoft.ISHRemote.Objects
                     return new IshDocumentObj(xmlIshObject);
                 case Enumerations.ISHType.ISHPublication:
                     return new IshPublicationOutput(xmlIshObject);
+                case Enumerations.ISHType.ISHBaseline:
+                    return new IshBaseline(xmlIshObject);
                 default:
                     throw new ArgumentException($"IshObjectFactory ishtype[{ishType}] is unknown");
             }

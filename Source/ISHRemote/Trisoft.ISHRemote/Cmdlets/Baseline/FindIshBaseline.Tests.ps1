@@ -44,7 +44,7 @@ Describe "Find-IshBaseline" -Tags "Read" {
 		It "Parameter IshSession explicit" {
 			$ishObject = Find-IshBaseline -IShSession $ishSession -RequestedMetadata $requestedMetadata | 
 		                 Where-Object -Property IshRef -EQ -Value $baselineId
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 			$ishObject.IshRef -ge 0 | Should Be $true
 			$ishObject.IshType | Should Not BeNullOrEmpty
 			$ishObject.IshField | Should Not BeNullOrEmpty
@@ -55,7 +55,7 @@ Describe "Find-IshBaseline" -Tags "Read" {
 		It "Parameter IshSession/RequestedMetadata implicit" {
 			$ishObject = Find-IshBaseline | 
 		                 Where-Object -Property IshRef -EQ -Value $baselineId
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 			$ishObject.IshRef -ge 0 | Should Be $true
 			$ishObject.IshType | Should Not BeNullOrEmpty
 			$ishObject.IshField | Should Not BeNullOrEmpty

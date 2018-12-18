@@ -91,9 +91,61 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshBaseline -->
+    <View>
+      <Name>IshBaseline</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshBaseline</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ishtype</Label>
+            <Width>11</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Id</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>(R)</Label>
+            <Width>4</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishdocumentrelease</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishlabelreleased</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishbaselineactive</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshDocumentObj -->
     <View>
-      <Name>IshObject</Name>
+      <Name>IshDocumentObj</Name>
       <ViewSelectedBy>
         <TypeName>Trisoft.ISHRemote.Objects.Public.IshDocumentObj</TypeName>
       </ViewSelectedBy>
@@ -173,7 +225,7 @@
     </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshPublicationOutput -->
     <View>
-      <Name>IshObject</Name>
+      <Name>IshPublicationOutput</Name>
       <ViewSelectedBy>
         <TypeName>Trisoft.ISHRemote.Objects.Public.IshPublicationOutput</TypeName>
       </ViewSelectedBy>
@@ -1013,11 +1065,11 @@
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>CreatedOn</Label>
-            <Width>20</Width>
+            <Width>19</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>ModifiedOn</Label>
-            <Width>20</Width>
+            <Width>19</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -1039,10 +1091,10 @@
                 <PropertyName>Source</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>CreatedOn</PropertyName>
+                <PropertyName>CreatedOnAsSortableDateTime</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>ModifiedOn</PropertyName>
+                <PropertyName>ModifiedOnAsSortableDateTime</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

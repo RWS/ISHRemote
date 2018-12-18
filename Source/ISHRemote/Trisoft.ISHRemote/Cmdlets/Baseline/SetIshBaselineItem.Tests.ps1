@@ -19,7 +19,7 @@ Describe "Set-IshBaselineItem" {
 		$ishObject = Set-IshBaselineItem -IshObject $ishObject -LogicalId "$cmdletName--AA" -Version "2"  # new
 		$ishObject = Set-IshBaselineItem -IshObject $ishObject -LogicalId "$cmdletName--AAA" -Version "3" # new
 		It "GetType()" {
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 		}
 		It "$ishObject.IshRef" {
 			$ishObject.IshRef | Should Not BeNullOrEmpty

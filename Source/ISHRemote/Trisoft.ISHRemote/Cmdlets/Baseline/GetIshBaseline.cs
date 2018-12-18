@@ -46,7 +46,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para>Retrieve metadata from the identified baselines</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshBaseline", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshBaseline))]
     public sealed class GetIshBaseline : BaselineCmdlet
     {
         /// <summary>
@@ -117,7 +117,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                         metadataFilter.ToXml(),
                         requestedMetadata.ToXml());
 
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");

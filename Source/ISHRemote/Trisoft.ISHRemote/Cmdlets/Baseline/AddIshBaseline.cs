@@ -36,7 +36,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para>Create a baseline ishobject, that holds no baseline entries</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshBaseline", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshBaseline))]
     public sealed class AddIshBaseline : BaselineCmdlet
     {
         /// <summary>
@@ -139,7 +139,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                         "",
                         requestedMetadata.ToXml());
 
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 // 3. Write it

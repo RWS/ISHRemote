@@ -18,7 +18,7 @@ Describe “Set-IshBaseline" -Tags "Create" {
 			$ishObject = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -Level None -Value "$baselineName RENAMED"
 			$ishObject = Set-IshBaseline -IshSession $ishSession -Id $ishObject.IshRef -Metadata $metadata
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 			$ishObject.Count | Should Be 1
 		}
 		It "Parameter IshSession implicit" {
@@ -26,7 +26,7 @@ Describe “Set-IshBaseline" -Tags "Create" {
 			$ishObject = Add-IshBaseline -Name $baselineName
 			$metadata = Set-IshMetadataField -Name "FISHDOCUMENTRELEASE" -Level None -Value "$baselineName RENAMED"
 			$ishObject = Set-IshBaseline -Id $ishObject.IshRef -Metadata $metadata
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 			$ishObject.Count | Should Be 1
 			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
 			$ishObject.fishdocumentrelease.Length -ge 1 | Should Be $true 

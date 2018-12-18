@@ -43,14 +43,14 @@ Describe "Get-IshBaseline" -Tags "Read" {
 		$metadataFilter = Set-IshMetadataFilterField -IShSession $ishSession -Name "NAME" -Level None -FilterOperator Like -Value "%"
 		It "Parameter IshSession explicit" {
 			$ishObject = Get-IshBaseline -IShSession $ishSession -Id $baselineId -RequestedMetadata $requestedMetadata -MetadataFilter $metadataFilter
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 			$ishObject.IshRef -ge 0 | Should Be $true
 			$ishObject.IshType | Should Not BeNullOrEmpty
 			$ishObject.IshField | Should Not BeNullOrEmpty
 		}
 		It "Parameter IshSession/RequestedMetadata implicit" {
 			$ishObject = Get-IshBaseline -Id $baselineId -MetadataFilter $metadataFilter
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 			$ishObject.IshRef -ge 0 | Should Be $true
 			$ishObject.IshType | Should Not BeNullOrEmpty
 			$ishObject.IshField | Should Not BeNullOrEmpty

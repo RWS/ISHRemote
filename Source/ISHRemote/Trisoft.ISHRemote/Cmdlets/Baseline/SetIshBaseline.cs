@@ -38,7 +38,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para>Make the identified baseline inactive</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshBaseline", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshBaseline))]
     public sealed class SetIshBaseline : BaselineCmdlet
     {
         /// <summary>
@@ -138,7 +138,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                         "",
                         requestedMetadata.ToXml());
 
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 // 3. Write it

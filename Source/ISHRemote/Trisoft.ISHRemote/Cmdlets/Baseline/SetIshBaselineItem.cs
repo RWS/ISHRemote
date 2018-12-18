@@ -51,7 +51,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Reading the information from the source baseline and creating a new target baseline which we fill with the selected versions.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshBaselineItem", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshBaseline))]
     public sealed class SetIshBaselineItem : BaselineCmdlet
     {
         /// <summary>

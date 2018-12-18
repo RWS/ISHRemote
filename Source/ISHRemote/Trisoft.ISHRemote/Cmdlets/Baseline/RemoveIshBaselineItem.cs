@@ -41,7 +41,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para>Removes the LogicalId as baseline entry for the identified baselines</para>
     /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshBaselineItem", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshBaseline))]
     public sealed class RemoveIshBaselineItem : BaselineCmdlet
     {
         /// <summary>

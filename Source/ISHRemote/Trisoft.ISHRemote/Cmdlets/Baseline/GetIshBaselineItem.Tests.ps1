@@ -25,7 +25,9 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 			$ishBaselineItem.Version | Should Not BeNullOrEmpty
 			$ishBaselineItem.Author | Should Not BeNullOrEmpty
 			$ishBaselineItem.CreatedOn | Should Not BeNullOrEmpty
+			$ishBaselineItem.CreatedOnAsSortableDateTime | Should Not BeNullOrEmpty
 			$ishBaselineItem.ModifiedOn | Should Not BeNullOrEmpty
+			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should Not BeNullOrEmpty
 		}
 		It "Parameter IshSession implicit" {
 			$ishBaselineItem = (Get-IshBaselineItem -IshObject $ishObject)[0]
@@ -35,7 +37,9 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 			$ishBaselineItem.Version | Should Not BeNullOrEmpty
 			$ishBaselineItem.Author | Should Not BeNullOrEmpty
 			$ishBaselineItem.CreatedOn | Should Not BeNullOrEmpty
+			$ishBaselineItem.CreatedOnAsSortableDateTime | Should Not BeNullOrEmpty
 			$ishBaselineItem.ModifiedOn | Should Not BeNullOrEmpty
+			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should Not BeNullOrEmpty		
 		}
 	}
 
