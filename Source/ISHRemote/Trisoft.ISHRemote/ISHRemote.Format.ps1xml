@@ -223,6 +223,72 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshEDT -->
+    <View>
+      <Name>IshEDT</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshEDT</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ishtype</Label>
+            <Width>11</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LogicalId</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Extension</Label>
+            <Width>9</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Mimetype</Label>
+            <Width>33</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Candidate</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishedtname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>edtfileextension</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>edtmimetype</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>edtcandidate</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshPublicationOutput -->
     <View>
       <Name>IshPublicationOutput</Name>

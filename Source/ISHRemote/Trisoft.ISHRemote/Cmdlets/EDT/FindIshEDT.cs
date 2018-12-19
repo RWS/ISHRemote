@@ -41,7 +41,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Find EDTs with names containing "edt" text</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshEDT", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshEDT))]
     public sealed class FindIshEDT : EDTCmdlet
     {
         /// <summary>
@@ -107,7 +107,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                 WriteVerbose("xmlIshObjects.length[" + xmlIshObjects.Length + "]");
 
                 // 3. Write it
-                var returnedObjects = new IshObjects(xmlIshObjects).ObjectList;
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
                 WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }

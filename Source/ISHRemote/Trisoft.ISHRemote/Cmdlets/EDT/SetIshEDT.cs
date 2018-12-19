@@ -51,7 +51,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     /// <para>Adding .map and .ditamap to the EDTXML object. By adding these, tools like Content-Importer/DITA2Trisoft can import .xml, .dita and .ditamap files and they will all be assigned EDTXML as Electronic Document Type.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshEDT", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshEDT))]
     public sealed class SetIshEDT : EDTCmdlet
     {
 
@@ -181,7 +181,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                        "",
                        requestedMetadata.ToXml());
                     
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 // 3b. Write it

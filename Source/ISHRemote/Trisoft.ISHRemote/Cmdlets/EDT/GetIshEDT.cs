@@ -49,7 +49,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve Name of added EDT</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshEDT", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshEDT))]
     public sealed class GetIshEDT : EDTCmdlet
     {
         /// <summary>
@@ -150,7 +150,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                         activityFilter,
                         metadataFilter.ToXml(),
                         requestedMetadata.ToXml());
-                    returnIshObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnIshObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
