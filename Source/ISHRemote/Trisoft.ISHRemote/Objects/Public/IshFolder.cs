@@ -44,6 +44,7 @@ namespace Trisoft.ISHRemote.Objects.Public
          */
 
         private long _ishFolderRef;
+        private Enumerations.ISHType _ishType = Enumerations.ISHType.ISHFolder;
         private Enumerations.IshFolderType _ishFolderType;
         private IshFields _ishFields;
 
@@ -70,6 +71,14 @@ namespace Trisoft.ISHRemote.Objects.Public
             long.TryParse(xmlIshFolder.Attributes["ishfolderref"].Value, out _ishFolderRef);
             _ishFolderType = (Enumerations.IshFolderType)Enum.Parse(typeof(Enumerations.IshFolderType), xmlIshFolder.Attributes["ishfoldertype"].Value);
             _ishFields = new IshFields((XmlElement)xmlIshFolder.SelectSingleNode("ishfields"));
+        }
+
+        /// <summary>
+        /// Gets the IshType property.
+        /// </summary>
+        public Enumerations.ISHType IshType
+        {
+            get { return _ishType; }
         }
 
         /// <summary>

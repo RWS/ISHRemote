@@ -72,7 +72,6 @@ namespace Trisoft.ISHRemote.HelperClasses
                                     case Enumerations.ValueType.Element:
                                     case Enumerations.ValueType.Id:
                                         propertyName.Append(_levelNameValueTypeSeparator);
-                                        // Incoming field "CHECK-OUT" should become "checkout" otherwise PowerShell will enforce single quote around so $ishObject.'check-out'
                                         propertyName.Append(ishField.Level.ToString().ToLower());
                                         propertyName.Append(_levelNameValueTypeSeparator);
                                         propertyName.Append(ishField.ValueType.ToString().ToLower());

@@ -62,7 +62,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>ishtype</Label>
+            <Label>ISHType</Label>
             <Width>11</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -100,7 +100,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>ishtype</Label>
+            <Label>ISHType</Label>
             <Width>11</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -152,7 +152,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>ishtype</Label>
+            <Label>ISHType</Label>
             <Width>11</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -232,7 +232,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>ishtype</Label>
+            <Label>ISHType</Label>
             <Width>11</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -289,6 +289,65 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshFolder -->
+    <View>
+      <Name>IshFolder</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshFolder</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>11</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>FolderName</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>FolderType</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>DocumentType</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserGroup</Label>
+            <Width>33</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ReadAccess</Label>
+            <Width>33</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshFolderType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fdocumenttype</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fusergroup</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>readaccess</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshPublicationOutput -->
     <View>
       <Name>IshPublicationOutput</Name>
@@ -298,7 +357,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>ishtype</Label>
+            <Label>ISHType</Label>
             <Width>11</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -733,7 +792,7 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>ishtype</Label>
+            <Label>ISHType</Label>
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
