@@ -45,7 +45,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Adding a new output format</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshOutputFormat", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshOutputFormat))]
     public sealed class AddIshOutputFormat : OutputFormatCmdlet
     {
 
@@ -164,11 +164,6 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
 
                     // 3a. Retrieve added OutputFormat and write it out
                     WriteDebug("Retrieving");
-
-                    //TODO should be covered by ISHREMOTE-011 using IshTypeFieldSetup
-                    // Remove FISHDITADLVRCLIENTSECRET field explicitly, as we are not allowed to read it
-                    //returnFields.RemoveField(FieldElements.DitaDeliveryClientSecret, Enumerations.Level.None, Enumerations.ValueType.All);
-
                     // Add the required fields (needed for pipe operations)
                     IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.OutputFormat25.RetrieveMetadata(
@@ -177,7 +172,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                         "",
                         requestedMetadata.ToXml());
 
-                    returnIshObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnIshObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");

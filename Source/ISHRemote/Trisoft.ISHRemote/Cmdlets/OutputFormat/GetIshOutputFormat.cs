@@ -40,7 +40,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve name of the existing output format</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshOutputFormat", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshOutputFormat))]
     public sealed class GetIshOutputFormat : OutputFormatCmdlet
     {
 
@@ -141,7 +141,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                         activityFilter,
                         metadataFilter.ToXml(),
                         requestedMetadata.ToXml());
-                    returnIshObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnIshObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");

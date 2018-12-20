@@ -348,6 +348,79 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshOutputFormat -->
+    <View>
+      <Name>IshOutputFormat</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshOutputFormat</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>11</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Id</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>OutputEDT</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>StyleProcessor</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>TransType</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Clean</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishoutputformatname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishoutputedt</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fstyleprocessor</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fditaottranstype</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishcleanup</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshPublicationOutput -->
     <View>
       <Name>IshPublicationOutput</Name>

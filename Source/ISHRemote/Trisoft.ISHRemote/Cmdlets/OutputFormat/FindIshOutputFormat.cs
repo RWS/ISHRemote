@@ -36,8 +36,15 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Find output formats with specific names</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential "username"
+    /// Find-IshOutputFormat | Select-Object -Property * | Out-GridView
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieves all output formats and make sure that all read-only object properties (PSNoteProperty) become columns in the PowerShell ISE visual GridView.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Find, "IshOutputFormat", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshOutputFormat))]
     public sealed class FindIshOutputFormat : OutputFormatCmdlet
     {
         /// <summary>
@@ -105,7 +112,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
                 WriteVerbose("xmlIshObjects.length[" + xmlIshObjects.Length + "]");
 
                 // 3. Write it
-                var returnedObjects = new IshObjects(xmlIshObjects).ObjectList;
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
                 WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }

@@ -23,7 +23,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -Value "TRUE" } # new mandatory field
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONSTOEXPORT" -Level None -ValueType Element -Value "VRESOLUTIONSTOEXPORTALLRESOLUTIONS" } # new mandatory field since 13SP2/13.0.2
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshOutputFormat"
 			$ishObject.Count | Should Be 1
 		}
 		It "Parameter Metadata" {
