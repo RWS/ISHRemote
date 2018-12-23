@@ -43,7 +43,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve one specific field for all user groups.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshUserGroup", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUserGroup))]
     public sealed class FindIshUserGroup : UserGroupCmdlet
     {
         /// <summary>
@@ -103,7 +103,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
 
-                var returnedObjects = new IshObjects(xmlIshObjects).ObjectList;
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
                 WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }

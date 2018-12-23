@@ -37,7 +37,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Get the Basic metadata of 'Default Department'.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshUserGroup", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUserGroup))]
     public sealed class GetIshUserGroup : UserGroupCmdlet
     {
         /// <summary>
@@ -131,7 +131,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                         metadataFilter.ToXml(),
                         requestedMetadata.ToXml());
 
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");

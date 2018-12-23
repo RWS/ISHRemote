@@ -37,7 +37,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Adding a user group.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshUserGroup", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUserGroup))]
     public sealed class AddIshUserGroup : UserGroupCmdlet
     {
         /// <summary>
@@ -148,7 +148,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                         "",
                         requestedMetadata.ToXml());
                     
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 // 3. Write it

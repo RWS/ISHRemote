@@ -63,7 +63,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>11</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>LogicalId</Label>
@@ -101,7 +101,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>11</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Title</Label>
@@ -153,7 +153,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>11</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Title</Label>
@@ -233,7 +233,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>11</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Title</Label>
@@ -299,7 +299,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>11</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>FolderName</Label>
@@ -358,7 +358,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>11</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Title</Label>
@@ -431,7 +431,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>11</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Title</Label>
@@ -532,7 +532,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>11</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>UserDisplayName</Label>
@@ -624,6 +624,51 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>fishlocked</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+     <!-- Trisoft.ISHRemote.Objects.Public.IshUserGroup -->
+    <View>
+      <Name>IshUserGroup</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshUserGroup</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserGroupName</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Description</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishusergroupname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fdescription</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -1167,7 +1212,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>20</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Level</Label>
@@ -1244,7 +1289,7 @@
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>20</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Level</Label>

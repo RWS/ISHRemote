@@ -204,6 +204,7 @@
     <Compile Include="Objects\Public\IshTypeFieldDefinitionCompare.cs" />
     <Compile Include="Objects\IshTypeFieldSetup.cs" />
     <Compile Include="Objects\Public\IshUser.cs" />
+    <Compile Include="Objects\Public\IshUserGroup.cs" />
     <Compile Include="Properties\Resouces\ISHTypeFieldSetup.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

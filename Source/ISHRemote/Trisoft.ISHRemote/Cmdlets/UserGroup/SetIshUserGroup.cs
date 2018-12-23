@@ -39,7 +39,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets the user group and adapts the client-side memory structure to hold a new description and sets in the repository.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshUserGroup", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUserGroup))]
     public sealed class SetIshUserGroup : UserGroupCmdlet
     {
         /// <summary>
@@ -140,7 +140,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
                         "",
                         requestedMetadata.ToXml());
                     
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 // 3. Write it
