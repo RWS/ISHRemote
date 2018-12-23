@@ -16,7 +16,7 @@ Describe "Add-IshUserRole" -Tags "Create" {
 		It "GetType().Name" {
 			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUserRole"
 			$ishObject.Count | Should Be 1
 		}
 		It "Parameter Metadata" {

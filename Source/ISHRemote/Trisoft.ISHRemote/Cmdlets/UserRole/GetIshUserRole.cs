@@ -37,7 +37,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Get the Basic metadata of 'Administrator' role.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshUserRole", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUserRole))]
     public sealed class GetIshUserRole : UserRoleCmdlet
     {
         /// <summary>
@@ -132,7 +132,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                         metadataFilter.ToXml(),
                         requestedMetadata.ToXml());
 
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");

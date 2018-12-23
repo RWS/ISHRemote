@@ -535,11 +535,11 @@
             <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>UserDisplayName</Label>
+            <Label>DisplayName</Label>
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>UserName</Label>
+            <Label>Name</Label>
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -630,7 +630,7 @@
         </TableRowEntries>
       </TableControl>
     </View>
-     <!-- Trisoft.ISHRemote.Objects.Public.IshUserGroup -->
+    <!-- Trisoft.ISHRemote.Objects.Public.IshUserGroup -->
     <View>
       <Name>IshUserGroup</Name>
       <ViewSelectedBy>
@@ -643,12 +643,12 @@
             <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>UserGroupName</Label>
+            <Label>Name</Label>
             <Width>40</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Description</Label>
-            <Width>40</Width>
+            <Width>60</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Active</Label>
@@ -663,6 +663,51 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>fishusergroupname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fdescription</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshUserRole -->
+    <View>
+      <Name>IshUserRole</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshUserRole</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Description</Label>
+            <Width>60</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishuserrolename</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>fdescription</PropertyName>

@@ -39,7 +39,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets the user role and adapts the client-side memory structure to hold a new description and sets in the repository.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshUserRole", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUserRole))]
     public sealed class SetIshUserRole : UserRoleCmdlet
     {
         /// <summary>
@@ -141,7 +141,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                         "",
                         requestedMetadata.ToXml());
                     
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 // 3. Write it

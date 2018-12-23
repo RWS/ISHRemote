@@ -43,7 +43,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve one specific field for all user roles.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshUserRole", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUserRole))]
     public sealed class FindIshUserRole : UserRoleCmdlet
     {
         /// <summary>
@@ -105,7 +105,7 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
 
-                var returnedObjects = new IshObjects(xmlIshObjects).ObjectList;
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
                 WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
