@@ -37,7 +37,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets the current user (Admin) Basic metadata.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshUser", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUser))]
     public sealed class GetIshUser : UserCmdlet
     {
         /// <summary>
@@ -144,7 +144,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                             metadataFilter.ToXml(),
                             requestedMetadata.ToXml());                        
                     }
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");

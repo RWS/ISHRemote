@@ -19,7 +19,7 @@ Describe "Add-IshUser" -Tags "Create" {
                          Set-IshMetadataField -IshSession $ishSession -Name FUSERGROUP -Level None -ValueType Element -Value "VUSERGROUPDEFAULTDEPARTMENT" |
                          Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "SomethingSecret"
 			$ishObject = Add-IshUser -IshSession $ishSession -Name $userName -Metadata $metadata
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUser"
 			$ishObject.Count | Should Be 1
 		}
 		It "Parameter Metadata" {

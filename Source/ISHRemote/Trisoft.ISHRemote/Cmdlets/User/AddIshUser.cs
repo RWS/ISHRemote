@@ -40,7 +40,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Adding a user</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshUser", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUser))]
     public sealed class AddIshUser : UserCmdlet
     {
         /// <summary>
@@ -154,7 +154,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                         User25ServiceReference.ActivityFilter.None,
                         "",
                         requestedMetadata.ToXml());                    
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 // 3. Write it

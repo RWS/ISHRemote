@@ -20,7 +20,7 @@ Describe "Get-IshUser" -Tags "Create" {
 		$ishObject = Add-IshUser -IshSession $ishSession -Name $userName -Metadata $metadata
 		It "Parameter IshSession Implicit" {
 			$ishObject = Get-IshUser -Id $ishObject.IshRef
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUser"
 			$ishObject.Count | Should Be 1
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off with PASSWORD" {
@@ -44,7 +44,7 @@ Describe "Get-IshUser" -Tags "Create" {
 			$ishSession.DefaultRequestedMetadata = "Descriptive"
 			$ishObject = Get-IshUser -IshSession $ishSession
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUser"
 			$ishObject.IshField.Length | Should Be 10
 		}
 		It "Parameter IshSession.DefaultRequestedMetadata=Basic on My-Metadata" {
@@ -52,7 +52,7 @@ Describe "Get-IshUser" -Tags "Create" {
 			$ishSession.DefaultRequestedMetadata = "Basic"
 			$ishObject = Get-IshUser -IshSession $ishSession
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUser"
 			$ishObject.IshField.Length | Should Be 25
 		}
 		It "Parameter IshSession.DefaultRequestedMetadata=All on My-Metadata" {
@@ -60,7 +60,7 @@ Describe "Get-IshUser" -Tags "Create" {
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishObject = Get-IshUser -IshSession $ishSession
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUser"
 			$ishObject.IshField.Length | Should Be 29
 		}
 	}

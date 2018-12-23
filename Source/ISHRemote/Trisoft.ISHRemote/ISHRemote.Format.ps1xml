@@ -522,6 +522,114 @@
         </TableRowEntries>
       </TableControl>
     </View>
+     <!-- Trisoft.ISHRemote.Objects.Public.IshUser -->
+    <View>
+      <Name>IshUser</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshUser</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>11</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserDisplayName</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserName</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserGroup</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserRole</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Lng</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Email</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserType</Label>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ExternalId</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LastLogin</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Disabled</Label>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Locked</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishuserdisplayname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>username</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fusergroup</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishuserroles</PropertyName>
+              </TableColumnItem>
+            <TableColumnItem>
+                <PropertyName>fishuserlanguage</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishemail</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishusertype</PropertyName>
+              </TableColumnItem>
+                <TableColumnItem>
+                <PropertyName>fishexternalid</PropertyName>
+              </TableColumnItem>
+                <TableColumnItem>
+                <PropertyName>fishlastloginon</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishuserdisabled</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishlocked</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshField -->
     <View>
       <Name>IshField</Name>
@@ -855,37 +963,6 @@
         </TableRowEntries>
       </TableControl>
 
-    </View>
-    <!-- Trisoft.ISHRemote.Objects.Public.IshFolder -->
-    <View>
-      <Name>IshFolder</Name>
-      <ViewSelectedBy>
-        <TypeName>Trisoft.ISHRemote.Objects.Public.IshFolder</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-          <TableColumnHeader>
-            <Label>ISHType</Label>
-            <Width>20</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Label>ishref</Label>
-            <Width>60</Width>
-          </TableColumnHeader>
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-              <TableColumnItem>
-                <PropertyName>IshFolderType</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>IshFolderRef</PropertyName>
-              </TableColumnItem>
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
     </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshEvent -->
     <View>

@@ -39,7 +39,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets the current user (Admin) adapts the client-side memory structure to hold a new email address and sets in the repository.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshUser", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUser))]
     public sealed class SetIshUser : UserCmdlet
     {
         /// <summary>
@@ -147,7 +147,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                         "",
                         requestedMetadata.ToXml());
                     
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 // 3. Write it

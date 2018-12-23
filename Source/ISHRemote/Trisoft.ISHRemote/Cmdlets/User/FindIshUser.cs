@@ -36,7 +36,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Counting all users.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshUser", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUser))]
     public sealed class FindIshUser : UserCmdlet
     {
         /// <summary>
@@ -99,7 +99,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
 
-                var returnedObjects = new IshObjects(xmlIshObjects).ObjectList;
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
                 WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
