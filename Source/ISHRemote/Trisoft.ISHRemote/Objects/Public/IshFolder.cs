@@ -43,9 +43,9 @@ namespace Trisoft.ISHRemote.Objects.Public
          </ishfolder>
          */
 
-        private long _ishFolderRef;
-        private Enumerations.ISHType _ishType = Enumerations.ISHType.ISHFolder;
-        private Enumerations.IshFolderType _ishFolderType;
+        private readonly long _ishFolderRef;
+        private readonly Enumerations.ISHType _ishType = Enumerations.ISHType.ISHFolder;
+        private readonly Enumerations.IshFolderType _ishFolderType;
         private IshFields _ishFields;
 
         /// <summary>

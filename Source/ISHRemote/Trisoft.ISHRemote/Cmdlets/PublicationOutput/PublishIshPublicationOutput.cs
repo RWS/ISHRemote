@@ -167,18 +167,17 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                 LanguageCombination,
                                 metadata.ToXml(),
                                 requiredCurrentMetadata.ToXml()));
+                            // Get the metadata of the object
+                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, publishMetadata, Enumerations.ActionMode.Read);
+                            var response2 =
+                                IshSession.PublicationOutput25.GetMetadata(new PublicationOutput25ServiceReference.
+                                    GetMetadataRequest(
+                                    LogicalId, response.version, OutputFormat, LanguageCombination,
+                                    requestedMetadata.ToXml()));
+                            string xmlIshObjects = response2.xmlObjectList;
+                            IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
+                            returnedObjects.AddRange(retrievedObjects.Objects);
                         }
-
-                        // Get the metadata of the object
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, publishMetadata, Enumerations.ActionMode.Read);
-                        var response2 =
-                            IshSession.PublicationOutput25.GetMetadata(new PublicationOutput25ServiceReference.
-                                GetMetadataRequest(
-                                LogicalId, response.version, OutputFormat, LanguageCombination,
-                                requestedMetadata.ToXml()));
-                        string xmlIshObjects = response2.xmlObjectList;
-                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
-                        returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                 }
 

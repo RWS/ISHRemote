@@ -123,7 +123,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// Initially holds incoming IshObject entries from the pipeline to correct the incorrect array-objects from Trisoft.Automation
         /// </summary>
-        private List<IshObject> _retrievedIshObjects = new List<IshObject>();
+        private readonly List<IshObject> _retrievedIshObjects = new List<IshObject>();
         #endregion
 
         protected override void BeginProcessing()

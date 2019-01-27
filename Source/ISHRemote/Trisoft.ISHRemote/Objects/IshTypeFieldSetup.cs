@@ -182,7 +182,7 @@ namespace Trisoft.ISHRemote.Objects
         /// Reverse lookup for all fields that are marked descriptive for the incoming ishTypes; then add them to ishFields.
         /// Descriptive fields are fields who are database-object-wise consired primary key, so to uniquely identify an object.
         /// </summary>
-        private IshFields AddDescriptiveFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        private IshFields AddDescriptiveFields(Enumerations.ISHType[] ishTypes, IshFields ishFields)
         {
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
@@ -203,7 +203,7 @@ namespace Trisoft.ISHRemote.Objects
         /// Reverse lookup for all fields that are marked basic for the incoming ishTypes; then add them to ishFields.
         /// Basic fields are fields who offer user-friendly business logic.
         /// </summary>
-        private IshFields AddBasicFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        private IshFields AddBasicFields(Enumerations.ISHType[] ishTypes, IshFields ishFields)
         {
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
@@ -224,7 +224,7 @@ namespace Trisoft.ISHRemote.Objects
         /// Reverse lookup for all fields that are marked basic for the incoming ishTypes; then add them to ishFields.
         /// All fields of the specified object ISHType, so all descriptive, basic, system fields.
         /// </summary>
-        private IshFields AddAllFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        private IshFields AddAllFields(Enumerations.ISHType[] ishTypes, IshFields ishFields)
         {
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
@@ -275,10 +275,10 @@ namespace Trisoft.ISHRemote.Objects
             switch (requestedMetadataGroup)
             {
                 case Enumerations.RequestedMetadataGroup.All:
-                        requestedMetadataFields = AddAllFields(ishTypes, requestedMetadataFields, actionMode);
+                        requestedMetadataFields = AddAllFields(ishTypes, requestedMetadataFields);
                         break;
                 case Enumerations.RequestedMetadataGroup.Basic:
-                        requestedMetadataFields = AddBasicFields(ishTypes, requestedMetadataFields, actionMode);
+                        requestedMetadataFields = AddBasicFields(ishTypes, requestedMetadataFields);
                         break;
                 case Enumerations.RequestedMetadataGroup.Descriptive:
                     // always required, AddDescriptiveFields is called at the end of this function
@@ -355,7 +355,7 @@ namespace Trisoft.ISHRemote.Objects
                 }
             }
             //Add IsDescriptive fields for the incoming IshType to allow basic descriptive/minimal object initialization
-            requestedMetadataFields = AddDescriptiveFields(ishTypes, requestedMetadataFields, actionMode);
+            requestedMetadataFields = AddDescriptiveFields(ishTypes, requestedMetadataFields);
             //TODO [Should] Merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet. Server-side they are retrieved anyway, so the only penalty is xml transfer size.
             return requestedMetadataFields;
         }

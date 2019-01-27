@@ -176,6 +176,7 @@
     <Compile Include="Cmdlets\User\RemoveIshUser.cs" />
     <Compile Include="Cmdlets\User\SetIshUser.cs" />
     <Compile Include="Cmdlets\User\UserCmdlet.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HelperClasses\IshObfuscator.cs" />
     <Compile Include="HelperClasses\NonClosingStreamWrapper.cs" />
     <Compile Include="HelperClasses\NameHelper.cs" />

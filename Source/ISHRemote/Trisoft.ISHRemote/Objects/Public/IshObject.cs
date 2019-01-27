@@ -40,9 +40,9 @@ namespace Trisoft.ISHRemote.Objects.Public
         //<ishdata edt="EDTXML"><![CDATA[PFhNTEZJTEU+UHJvamVjdE1hbmFnZW1lbnQ/PC9YTUxGSUxFPg0K]]></ishdata>
 
 
-        private string _ishRef;
-        private Enumerations.ISHType _ishType; 
-        private Dictionary<Enumerations.ReferenceType,string> _objectRef;
+        private readonly string _ishRef;
+        private readonly Enumerations.ISHType _ishType; 
+        private readonly Dictionary<Enumerations.ReferenceType,string> _objectRef;
         private IshFields _ishFields;
         private IshData _ishData;
 

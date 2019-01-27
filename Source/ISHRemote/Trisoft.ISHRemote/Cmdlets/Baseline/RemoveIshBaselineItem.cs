@@ -115,8 +115,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                     WriteDebug($"Id[{baselineId}] {++current}/{_baselineItemsToProcess.Keys.Count}");
                     if (ShouldProcess(baselineId))
                     {
-                        StringWriter stringWriter;
-                        using (stringWriter = new StringWriter())
+                        using (StringWriter stringWriter = new StringWriter())
                         {
                             using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
                             {
@@ -132,8 +131,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                                 }
                                 xmlWriter.WriteEndElement();
                             }
+                            IshSession.Baseline25.Update(baselineId, stringWriter.ToString());
                         }
-                        IshSession.Baseline25.Update(baselineId, stringWriter.ToString());
                     }
                 }
                 WriteObject(IshObject, true);  // Incoming IshObject is not altered, already contains optional PSNoteProperty, so continuing the pipeline

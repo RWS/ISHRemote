@@ -25,7 +25,9 @@ using System.Threading;
 using System.Xml;
 using Trisoft.ISHRemote.Interfaces;
 using Trisoft.ISHRemote.Folder25ServiceReference;
+using System.Runtime.InteropServices;
 
+[assembly: ComVisible(false)]
 namespace Trisoft.ISHRemote.Cmdlets
 {
     /// <summary>
@@ -44,13 +46,13 @@ namespace Trisoft.ISHRemote.Cmdlets
 
         public readonly ILogger Logger;
 
-        private string _levelNameValueTypeSeparator = "--";     // consider removing and get from IshSession.NameHelper
+        private readonly string _levelNameValueTypeSeparator = "--";     // consider removing and get from IshSession.NameHelper
         private int _tickCountStart;
         
-        private ProgressRecord _parentProgressRecord;
+        private readonly ProgressRecord _parentProgressRecord;
         protected int _parentCurrent;
         protected int _parentTotal;
-        private ProgressRecord _childProgressRecord;
+        private readonly ProgressRecord _childProgressRecord;
 
         /// <summary>
         /// Name of the PSVariable so you don't have to specify '-IshSession $ishSession' anymore, should be set by New-IshSession
@@ -69,7 +71,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             get { return _levelNameValueTypeSeparator; }
         }
 
-        public TrisoftCmdlet()
+        protected TrisoftCmdlet()
         {
             Logger = TrisoftCmdletLogger.Instance();
             TrisoftCmdletLogger.Initialize(this);
@@ -239,7 +241,6 @@ namespace Trisoft.ISHRemote.Cmdlets
                 BaseFolder.System,
                 new string[] { "'" + baseFolderLabel + "'" },  // Use faulty folder path with quotes added, so we can throw the expected exception with errorcode=102001
                 "");
-
             return BaseFolder.Data;
         }
 

@@ -184,12 +184,20 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                                     File.SetAttributes(FilePath, FileAttributes.Normal);
                                 }
                                 // Write it as a text file
-                                using (var stream = new FileStream(FilePath, fileMode, FileAccess.ReadWrite))
+                                Stream stream = null;
+                                try
                                 {
-                                    using (System.IO.StreamWriter writer = new System.IO.StreamWriter(stream, Encoding.UTF8))
+                                    stream = new FileStream(FilePath, fileMode, FileAccess.ReadWrite);
+                                    using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
                                     {
+                                        stream = null;
                                         writer.Write(value);
                                     }
+                                }
+                                finally
+                                {
+                                    if (stream != null)
+                                        stream.Dispose();
                                 }
                             }
                         }                        

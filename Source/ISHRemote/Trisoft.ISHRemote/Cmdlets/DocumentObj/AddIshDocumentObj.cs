@@ -372,15 +372,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                             metadata.ToXml(),
                             _ishData.Edt,
                             _ishData.ByteArray));
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
+                        var response2 = IshSession.DocumentObj25.GetMetadata(new DocumentObj25ServiceReference.GetMetadataRequest(
+                            response.logicalId, response.version, Lng, resolution,
+                            requestedMetadata.ToXml()));
+                        string xmlIshObjects = response2.xmlObjectList;
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
+                        returnIshObjects.AddRange(retrievedObjects.Objects);
                     }
-
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
-                    var response2 = IshSession.DocumentObj25.GetMetadata(new DocumentObj25ServiceReference.GetMetadataRequest(
-                        response.logicalId, response.version, Lng, resolution,
-                        requestedMetadata.ToXml()));
-                    string xmlIshObjects = response2.xmlObjectList;
-                    IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
-                    returnIshObjects.AddRange(retrievedObjects.Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");

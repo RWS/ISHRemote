@@ -52,7 +52,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshEDT", SupportsShouldProcess = true)]
     [OutputType(typeof(IshEDT))]
-    public sealed class SetIshEDT : EDTCmdlet
+    public sealed class SetIshEdt : EDTCmdlet
     {
 
         /// <summary>

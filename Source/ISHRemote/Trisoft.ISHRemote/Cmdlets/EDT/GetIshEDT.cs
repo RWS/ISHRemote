@@ -50,7 +50,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshEDT", SupportsShouldProcess = false)]
     [OutputType(typeof(IshEDT))]
-    public sealed class GetIshEDT : EDTCmdlet
+    public sealed class GetIshEdt : EDTCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
