@@ -65,7 +65,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
         protected override void BeginProcessing()
         {
             if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
-            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
             WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
             base.BeginProcessing();
         }
@@ -75,8 +75,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
 
             try
             {
-                List<IshObject> returnedObjects = new List<IshObject>();
-
                 if (IshObject != null && IshObject.Length == 0)
                 {
                     // Do nothing

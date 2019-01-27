@@ -28,7 +28,7 @@ namespace Trisoft.ISHRemote.Objects
     /// </summary>
     internal class IshObjects
     {
-        private List<IshObject> _objects;
+        private readonly List<IshObject> _objects;
 
         /// <summary>
         /// Creates a new instance of the <see cref="IshObjects"/> class.
@@ -48,6 +48,7 @@ namespace Trisoft.ISHRemote.Objects
         /// <summary>
         /// Creates a new instance of the <see cref="IshObjects"/> class over the IshObjectFactory
         /// </summary>
+        /// <param name="ishType">The object type to create, derived from IshObject.</param>
         /// <param name="xmlIshObjects">The xml containing the objects.</param>
         public IshObjects(Enumerations.ISHType[] ishType, string xmlIshObjects)
         {

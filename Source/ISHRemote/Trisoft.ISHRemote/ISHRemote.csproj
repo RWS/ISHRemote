@@ -341,6 +341,7 @@
     <None Include="Cmdlets\Baseline\GetIshBaselineItem.Tests.ps1" />
     <None Include="Cmdlets\Baseline\SetIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\SetIshBaselineItem.Tests.ps1" />
+    <None Include="Cmdlets\DocumentObj\FindIshDocumentObj.Performance.ps1" />
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
     <None Include="Cmdlets\FileProcessor\NewIshDitaGeneralizedXml.Tests.ps1" />
     <None Include="Cmdlets\FileProcessor\NewIshObfuscatedFile.Tests.ps1" />

@@ -73,12 +73,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
         //[AllowEmptyCollection]
         //public IshBaselineItem[] IshBaselineItem { get; set; }
 
-        private Dictionary<string, List<IshBaselineItem>> _baselineItemsToProcess = new Dictionary<string, List<Objects.Public.IshBaselineItem>>();
+        private readonly Dictionary<string, List<IshBaselineItem>> _baselineItemsToProcess = new Dictionary<string, List<Objects.Public.IshBaselineItem>>();
 
         protected override void BeginProcessing()
         {
             if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
-            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
             WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
             base.BeginProcessing();
         }

@@ -88,7 +88,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         protected override void BeginProcessing()
         {
             if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
-            if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
             WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
             base.BeginProcessing();
             // Working code, but breaks backward behavior compatibility in projected 0.7/1.0 release, see #49

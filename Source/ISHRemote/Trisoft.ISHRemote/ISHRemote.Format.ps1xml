@@ -1268,7 +1268,7 @@
             <Width>25</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Type</Label>
+            <Label>DataType</Label>
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -1301,7 +1301,7 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Type</PropertyName>
+                <PropertyName>DataType</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>SDB</PropertyName>

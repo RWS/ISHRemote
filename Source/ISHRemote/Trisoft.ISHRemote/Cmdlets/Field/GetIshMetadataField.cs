@@ -129,7 +129,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         protected override void BeginProcessing()
         {
             if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
-            //if (IshSession == null) { throw new ArgumentNullException(ISHRemoteSessionStateIshSessionException); } // don't throw as for Field cmdlets this trully is optional
+            //if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); } // don't throw as for Field cmdlets this trully is optional
             //WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
             base.BeginProcessing();
         }
