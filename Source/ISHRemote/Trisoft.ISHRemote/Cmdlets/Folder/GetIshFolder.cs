@@ -40,6 +40,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// </summary>
     /// <example>
     /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Get-IshFolder -FolderPath "\General\__ISHRemote\Add-IshPublicationOutput\Pub"
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Returns the IshFolder object.</para>
+    /// </example>
+    /// <example>
+    /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// $requestedMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Name "FNAME" -Level "None"
     /// $folderId = 7598 # provide a real folder identifier
