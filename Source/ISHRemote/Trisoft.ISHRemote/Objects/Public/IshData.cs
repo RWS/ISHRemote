@@ -63,7 +63,20 @@ namespace Trisoft.ISHRemote.Objects.Public
             _byteArray = fileContent;
             _fileExtension = "";
         }
-        
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="IshData"/> class.
+        /// </summary>
+        /// <param name="edt">The EDT.</param>
+        /// <param name="fileExtension">File extension</param>
+        /// <param name="fileContent">Byte array with the file content.</param>
+        public IshData(string edt, string fileExtension, byte[] fileContent)
+        {
+            _edt = (edt == null) ? DefaultEDT : edt;
+            _byteArray = fileContent;
+            _fileExtension = fileExtension;
+        }
+
         /// <summary>
         /// Initializing by something that looks like <ishdata edt="EDTXML"><![CDATA[PFhNTEZJTEU+UHJvamVjdE1hbmFnZW1lbnQ/PC9YTUxGSUxFPg0K]]></ishdata>
         /// </summary>
