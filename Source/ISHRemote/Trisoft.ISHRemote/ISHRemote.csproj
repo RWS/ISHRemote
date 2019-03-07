@@ -136,6 +136,7 @@
     <Compile Include="Cmdlets\OutputFormat\GetIshOutputFormat.cs" />
     <Compile Include="Cmdlets\OutputFormat\SetIshOutputFormat.cs" />
     <Compile Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.cs" />
+    <None Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.Tests.ps1" />
     <Compile Include="Cmdlets\PublicationOutput\FindIshPublicationOutput.cs" />
     <Compile Include="Cmdlets\PublicationOutput\PublicationOutputCmdlet.cs">
       <SubType>Code</SubType>
@@ -1181,6 +1182,7 @@
     </None>
     <None Include="Cmdlets\User\AddIshUser.Tests.ps1" />
     <None Include="Cmdlets\Session\TestIshSession.Tests.ps1" />
+    <None Include="Cmdlets\EventMonitor\GetIshEvent.Tests.ps1" />
     <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />
