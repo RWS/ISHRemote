@@ -25,39 +25,10 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
 {
     public abstract class EventCmdlet : TrisoftCmdlet
     {
-        /// <summary>
-        /// Add the required fields to the requested metadata so when piping the object the necesarry identifiers are provided.
-        /// </summary>
-        /// <param name="currentFields">The current <see cref="IshFields"/> object to append.</param>
-        /// <returns>The updated <see cref="IshFields"/> object.</returns>
-        public virtual IshFields AddRequiredFields(IshFields currentFields)
+        public Enumerations.ISHType[] ISHType
         {
-            currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTID", Enumerations.Level.Progress, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
-            currentFields.AddOrUpdateField(new IshRequestedMetadataField("EVENTTYPE", Enumerations.Level.Progress, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
-            return currentFields;
-        }
-
-        /// <summary>
-        /// Wrap incoming objects as PSObjects and extend with PSNoteProperties for every IshField value entry
-        /// </summary>
-        /// <param name="ishEvents">Object to wrap and return as PSObject</param>
-        /// <returns>Wrapped PSObjects</returns>
-        internal List<PSObject> WrapAsPSObjectAndAddNoteProperties(List<IshEvent> ishEvents)
-        {
-            List<PSObject> psObjects = new List<PSObject>();
-            foreach(IshEvent ishEvent in ishEvents)
-            {
-                PSObject psObject = PSObject.AsPSObject(ishEvent);
-                foreach(IshField ishField in ishEvent.IshFields.Fields())
-                {
-                    string name = ishField.Level + LevelNameValueTypeSeparator + ishField.Name + LevelNameValueTypeSeparator + ishField.ValueType;
-                    psObject.Properties.Add(new PSNoteProperty(name, ishEvent.IshFields.GetFieldValue(ishField.Name,ishField.Level,ishField.ValueType)));
-                }
-                psObjects.Add(psObject);
-            }
-            return psObjects;
-        }
-    
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHEvent }; }
+        }    
     }
 }
 

@@ -102,9 +102,9 @@ Describe “Get-IshEvent" -Tags "Create" {
 		It "ishEvent.ObjectRef[Enumerations.ReferenceType.EventProgress]" {
 			$ishEvent.ObjectRef["EventProgress"] | Should Not BeNullOrEmpty
 		}
-		#It "ishEvent.ObjectRef[Enumerations.ReferenceType.EventDetail]" {
-		#	$ishEvent.ObjectRef["EventDetail"] | Should Not BeNullOrEmpty
-		#}
+		It "ishEvent.ObjectRef[Enumerations.ReferenceType.EventDetail]" {
+			$ishEvent.ObjectRef["EventDetail"] | Should Not BeNullOrEmpty
+		}
 		It "Parameter IshSession/ModifiedSince/UserFilter invalid" {
 			{ Get-IshEvent -IShSession "INVALIDISHSESSION" -ModifiedSince "INVALIDDATE" -UserFilter "INVALIDUSERFILTER" } | Should Throw
 		}
@@ -114,20 +114,20 @@ Describe “Get-IshEvent" -Tags "Create" {
 		It "Parameter IshSession/UserFilter/MetadataFilter are optional" {
 			$ishEvent = (Get-IshEvent -ModifiedSince ((Get-Date).AddSeconds(-10)) -RequestedMetadata $allProgressMetadata)[0]
 			($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID -ValueType Value).Length -gt 0 | Should Be $true
-			($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name USERID -ValueType Element).StartsWith('VUSER') | Should Be $false  # unexpected but ValueType Element is not returned by the API call
+			#($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name USERID -ValueType Element).StartsWith('VUSER') | Should Be $false  # unexpected but ValueType Element is not returned by the API call
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
 			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
 			$ishSession.DefaultRequestedMetadata = "Descriptive"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
-			(($ishEvent.IshField.Count -eq 1) -or ($ishEvent.IshField.Count -eq 2)) | Should Be $true  # Either BackgroundTask has run and you get progressid/detailid, or it didn't and you only get progressid
+			$ishEvent.IshField.Count | Should Be 2
 			$ishSession.DefaultRequestedMetadata = "Basic"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
 			$ishEvent.status.Length -gt 0 | Should Be $true
-			(($ishEvent.IshField.Count -eq 13) -or ($ishEvent.IshField.Count -eq 19)) | Should Be $true
+			$ishEvent.IshField.Count | Should Be 18
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
-			(($ishEvent.IshField.Count -eq 18) -or ($ishEvent.IshField.Count -eq 26)) | Should Be $true
+			$ishEvent.IshField.Count | Should Be 21
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 		}
 		It "Parameter ModifiedSince is now" {
@@ -137,13 +137,13 @@ Describe “Get-IshEvent" -Tags "Create" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
 			$ishEvent.ObjectRef["EventProgress"] -gt 0 | Should Be $true
 			#$ishEvent.ObjectRef["EventDetail"] -gt 0 | Should Be $true
-			$ishEvent.IshField.Count -ge 16 | Should Be $true
+			$ishEvent.IshField.Count -ge 19 | Should Be $true  # Perhaps expected 10 Progress level fields, but Get-IshEvent currently always retrieves details as well
 		}
-		It "Parameter RequestedMetadata only all of History level" {
+		It "Parameter RequestedMetadata only all of Detail level" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allDetailMetadata)[0]
 			$ishEvent.ObjectRef["EventProgress"] -gt 0 | Should Be $true
-			#$ishEvent.ObjectRef["EventDetail"] -gt 0 | Should Be $true
-			$ishEvent.IshField.Count -ge 1 | Should Be $true  # At least 1 entries returned if BackgroundTask service is not running, otherwise more
+			$ishEvent.ObjectRef["EventDetail"] -gt 0 | Should Be $true
+			$ishEvent.IshField.Count -ge 20 | Should Be $true  # Perhaps expected 10 Progress level fields, but Get-IshEvent currently always retrieves details as well
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=PSObjectNoteProperty" {
 			$ishSession.PipelineObjectPreference | Should Be "PSObjectNoteProperty"
@@ -152,6 +152,7 @@ Describe “Get-IshEvent" -Tags "Create" {
 			[bool]($ishEvent.PSobject.Properties.name -match "status") | Should Be $true
 			[bool]($ishEvent.PSobject.Properties.name -match "userid") | Should Be $true
 			[bool]($ishEvent.PSobject.Properties.name -match "modificationdate") | Should Be $true
+			[bool]($ishEvent.PSobject.Properties.name -match "status_detail_value") | Should Be $true
 			$ishEvent.modificationdate -like "*/*" | Should Be $false  # It should be sortable date format: yyyy-MM-ddTHH:mm:ss
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=Off" {
@@ -162,15 +163,16 @@ Describe “Get-IshEvent" -Tags "Create" {
 			[bool]($ishEvent.PSobject.Properties.name -match "status") | Should Be $false
 			[bool]($ishEvent.PSobject.Properties.name -match "userid") | Should Be $false
 			[bool]($ishEvent.PSobject.Properties.name -match "modificationdate") | Should Be $false
+			[bool]($ishEvent.PSobject.Properties.name -match "status_detail_value") | Should Be $false
 			$ishSession.PipelineObjectPreference = $pipelineObjectPreference
 		}
-		It "Parameter MetadataFilter Filter to exactly one" {
-			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
-			$filterMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Level Progress -Name USERID -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name USERID) |
-			                  Set-IshMetadataFilterField -IshSession $ishSession -Level Progress -Name EVENTID -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID)
+		It "Parameter MetadataFilter" {
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$filterMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Level Progress -Name EVENTID -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID)
+			                # | Set-IshMetadataFilterField -IshSession $ishSession -Level Progress -Name USERID -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name USERID)  # Seems just like higher that USERID by valuetype retrieval and filtering are not working
 			$ishEventArray = Get-IshEvent -IshSession $ishSession -MetadataFilter $filterMetadata
 			#Write-Host ("ishEvent.IshRef["+ $ishEvent.IshRef + "] ishEventArray.IshRef["+ $ishEvent.IshRef + "]")
-			$ishEventArray.Count -ge 1 | Should Be $true  # earlier on, also filter on HISTORYID, but that is not always filled in, even with the windows service off
+			$ishEventArray.Count -ge 1 | Should Be $true
 		}
 		It "Parameter IshEvent invalid" {
 			{ Get-IshEvent -IshSession $ishSession -IshEvent "INVALIDISHEVENT" } | Should Throw

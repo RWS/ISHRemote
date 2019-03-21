@@ -201,7 +201,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
         {
             try
             {
-                IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());  // ToRequestedFields() should not be required if TableType like CardTypes pass IshTypeFieldSetup
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 string xmlIshEvents;
                 if (_retrievedIshEvents.Count == 0)
                 {
@@ -224,10 +224,9 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
                     xmlIshEvents = IshSession.EventMonitor25.RetrieveEventsByProgressIds(progressRefs.ToArray(), _eventLevel, lastDetailId, metadataFilter.ToXml(), requestedMetadata.ToXml());
                     _retrievedIshEvents = new IshEvents(xmlIshEvents).Events;
                 }
-                WriteVerbose("returned event count[" + _retrievedIshEvents.Count + "]");
 
-                //Every cmdlet should return as a promoted PSObject which allows up-to-date PSNoteProperty
-                WriteObject(WrapAsPSObjectAndAddNoteProperties(_retrievedIshEvents), true);
+                WriteVerbose("returned object count[" + _retrievedIshEvents.Count + "]");
+                WriteObject(IshSession, ISHType, _retrievedIshEvents.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

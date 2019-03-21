@@ -1062,23 +1062,90 @@
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
+          <!-- Progress -->
           <TableColumnHeader>
-            <Label>Progress--EVENTTYPE--Value</Label>
+            <Label>userid</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>eventid</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>description</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>creationdate</Label>
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Progress--EVENTID--Value</Label>
-            <Width>60</Width>
+            <Label>modificationdate</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Cur</Label>
+            <Width>3</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Max</Label>
+            <Width>3</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>status</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <!-- Detail -->
+          <TableColumnHeader>
+            <Label>action</Label>
+            <Width>25</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>datatype</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>hostname</Label>
+            <Width>15</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
+              <!-- Progress -->
               <TableColumnItem>
-                <PropertyName>EventType</PropertyName>
+                <PropertyName>userid</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>EventId</PropertyName>
+                <PropertyName>eventid</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>description</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>creationdate</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>modificationdate</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>currentprogress</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>maximumprogress</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>status</PropertyName>
+              </TableColumnItem>
+              <!-- Detail -->
+              <TableColumnItem>
+                <PropertyName>action_detail_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>eventdatatype_detail_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>hostname_detail_value</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

@@ -26,15 +26,15 @@ namespace Trisoft.ISHRemote.Objects.Public
     /// <summary>
     /// <para type="description">The IshEvent is one entry on the EventMonitor detail are, also holding progress top-level information.</para>
     /// </summary>
-    public class IshEvent
+    public class IshEvent : IshBaseObject
     {
         // Regular IshEvents look like
         //<ishevent ishprogressref="807" ishdetailref="16317">
         //<ishdata edt="EDTXML"><![CDATA[PFhNTEZJTEU+UHJvamVjdE1hbmFnZW1lbnQ/PC9YTUxGSUxFPg0K]]></ishdata>
 
 
-        private string _ishRef;
-        private Dictionary<Enumerations.ReferenceType,string> _eventRef;
+        private readonly string _ishRef;
+        private readonly Dictionary<Enumerations.ReferenceType,string> _eventRef;
         private IshFields _ishFields;
         private IshEventData _ishEventData;
 
@@ -95,11 +95,12 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// Gets and sets the IshFields property.
         /// The IshFields property is a collection of <see cref="IshFields"/>.
         /// </summary>
-        internal IshFields IshFields
+        internal override IshFields IshFields
         {
             get { return _ishFields; }
             set { _ishFields = value; }
         }
+
 
         /// <summary>
         /// Gets and sets the IshEventData property.
