@@ -334,7 +334,11 @@ namespace Trisoft.ISHRemote.Objects
             /// <summary>
             /// Background Task table
             /// </summary>
-            ISHBackgroundTask
+            ISHBackgroundTask,
+            /// <summary>
+            /// Event Monitor table
+            /// </summary>
+            ISHEvent
         }
 
 

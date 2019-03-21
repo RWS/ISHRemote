@@ -57,7 +57,7 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 			Get-IshTypeFieldDefinition -IshSession $ishSession
 			$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should BeExactly "IshTypeFieldDefinition"
 		}
-		It "Table ISHBackgroundTask (13.0.2)" {
+		It "Table ISHBackgroundTask (since 13.0.2)" {
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'Task').Count | Should Be 15
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'History').Count | Should Be 8
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnRead -EQ $true).Count | Should Be 23 # all columns are allowed to be read
@@ -66,6 +66,15 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsSystem -EQ $true).Count | Should Be 23 # all columns are system columns
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'STATUS').Type | Should Be 'DBACKGROUNDTASKSTATUS'
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').Type | Should Be 'USERNAME'
+		}
+		It "Table ISHEvent" {
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should Be 11
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Detail').Count | Should Be 12
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnRead -EQ $true).Count | Should Be 23 # all columns are allowed to be read
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should Be 23 # all columns are explicit api parameters and cannot be set over metadata
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsMultiValue -EQ $false).Count | Should Be 23 # all columns are single value
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsSystem -EQ $true).Count | Should Be 23 # all columns are system columns
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').Type | Should Be 'USERNAME'
 		}
 	}
 

@@ -113,8 +113,8 @@ Describe “Get-IshEvent" -Tags "Create" {
 		}
 		It "Parameter IshSession/UserFilter/MetadataFilter are optional" {
 			$ishEvent = (Get-IshEvent -ModifiedSince ((Get-Date).AddSeconds(-10)) -RequestedMetadata $allProgressMetadata)[0]
-			($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element).StartsWith('VUSER') | Should Be $true
-			($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element).StartsWith('VEVENT') | Should Be $true
+			($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID -ValueType Value).Length -gt 0 | Should Be $true
+			($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name USERID -ValueType Element).StartsWith('VUSER') | Should Be $false  # unexpected but ValueType Element is not returned by the API call
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
 			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
@@ -123,8 +123,7 @@ Describe “Get-IshEvent" -Tags "Create" {
 			(($ishEvent.IshField.Count -eq 1) -or ($ishEvent.IshField.Count -eq 2)) | Should Be $true  # Either BackgroundTask has run and you get progressid/detailid, or it didn't and you only get progressid
 			$ishSession.DefaultRequestedMetadata = "Basic"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
-			$ishEvent.status.Length -ge 1 | Should Be $true
-			$ishEvent.status_task_element.StartsWith('VEVENTSTATUS') | Should Be $true 
+			$ishEvent.status.Length -gt 0 | Should Be $true
 			(($ishEvent.IshField.Count -eq 13) -or ($ishEvent.IshField.Count -eq 19)) | Should Be $true
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
@@ -134,7 +133,7 @@ Describe “Get-IshEvent" -Tags "Create" {
 		It "Parameter ModifiedSince is now" {
 			(Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(1)) -UserFilter All).Count | Should Be 0
 		}
-		It "Parameter RequestedMetadata only all of Task level" {
+		It "Parameter RequestedMetadata only all of Progress level" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
 			$ishEvent.ObjectRef["EventProgress"] -gt 0 | Should Be $true
 			#$ishEvent.ObjectRef["EventDetail"] -gt 0 | Should Be $true
@@ -150,8 +149,8 @@ Describe “Get-IshEvent" -Tags "Create" {
 			$ishSession.PipelineObjectPreference | Should Be "PSObjectNoteProperty"
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
 			$ishEvent.GetType().Name | Should BeExactly "IshEvent"  # and not PSObject
-			[bool]($ishEvent.PSobject.Properties.name -match "status_task_element") | Should Be $true
-			[bool]($ishEvent.PSobject.Properties.name -match "userid_task_element") | Should Be $true
+			[bool]($ishEvent.PSobject.Properties.name -match "status") | Should Be $true
+			[bool]($ishEvent.PSobject.Properties.name -match "userid") | Should Be $true
 			[bool]($ishEvent.PSobject.Properties.name -match "modificationdate") | Should Be $true
 			$ishEvent.modificationdate -like "*/*" | Should Be $false  # It should be sortable date format: yyyy-MM-ddTHH:mm:ss
 		}
@@ -160,15 +159,15 @@ Describe “Get-IshEvent" -Tags "Create" {
 			$ishSession.PipelineObjectPreference = "Off"
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
 			$ishEvent.GetType().Name | Should BeExactly "IshEvent"
-			[bool]($ishEvent.PSobject.Properties.name -match "status_task_element") | Should Be $false
-			[bool]($ishEvent.PSobject.Properties.name -match "userid_task_element") | Should Be $false
+			[bool]($ishEvent.PSobject.Properties.name -match "status") | Should Be $false
+			[bool]($ishEvent.PSobject.Properties.name -match "userid") | Should Be $false
 			[bool]($ishEvent.PSobject.Properties.name -match "modificationdate") | Should Be $false
 			$ishSession.PipelineObjectPreference = $pipelineObjectPreference
 		}
 		It "Parameter MetadataFilter Filter to exactly one" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
-			$filterMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Level Task -Name USERID -ValueType Element -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element) |
-			                  Set-IshMetadataFilterField -IshSession $ishSession -Level Task -Name TASKID -ValueType Element -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID)
+			$filterMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Level Progress -Name USERID -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name USERID) |
+			                  Set-IshMetadataFilterField -IshSession $ishSession -Level Progress -Name EVENTID -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID)
 			$ishEventArray = Get-IshEvent -IshSession $ishSession -MetadataFilter $filterMetadata
 			#Write-Host ("ishEvent.IshRef["+ $ishEvent.IshRef + "] ishEventArray.IshRef["+ $ishEvent.IshRef + "]")
 			$ishEventArray.Count -ge 1 | Should Be $true  # earlier on, also filter on HISTORYID, but that is not always filled in, even with the windows service off
@@ -178,20 +177,20 @@ Describe “Get-IshEvent" -Tags "Create" {
 		}
 		It "Parameter IshEvent Single" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter Current)[0]
-			$taskId = $ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID
+			$eventId = $ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID
 			$ishEventArray = Get-IshEvent -IshSession $ishSession -IshEvent $ishEvent
 			$ishEventArray.Count -ge 1 | Should Be $true
-			$ishEventArray.IshRef | Should Be $taskId
+			$ishEventArray.IshRef | Should Be $eventId
 		}
 		<# TODO It "Parameter IshEvent Multiple" {
 		}
 		#>
 		It "Pipeline IshEvent Single" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter Current)[0]
-			$taskId = $ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID
+			$eventId = $ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID
 			$ishEventArray = $ishEvent | Get-IshEvent -IshSession $ishSession
 			$ishEventArray.Count -ge 1 | Should Be $true
-			$ishEventArray.IshRef | Should Be $taskId
+			$ishEventArray.IshRef | Should Be $eventId
 		}
 		<# TODO It "Pipeline IshEvent Multiple" {
 		}
