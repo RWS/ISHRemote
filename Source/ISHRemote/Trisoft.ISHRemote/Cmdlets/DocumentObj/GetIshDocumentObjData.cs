@@ -116,32 +116,52 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         // Get language ref
                         long lngRef = Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]);
                         long[] lngRefsArray = new long[1] { lngRef };
-                        var dataObjectResponse = IshSession.DocumentObj25.RetrieveObjectsByIshLngRefs(lngRefsArray, productDefinitionFeatures.ToXml(), "");
-                        XmlDocument xmlIshDataObject = new XmlDocument();
-                        xmlIshDataObject.LoadXml(dataObjectResponse);
-                        XmlElement ishDataObjectElement = (XmlElement)xmlIshDataObject.SelectSingleNode("ishobjects/ishobject/ishdata");
-                        IshData ishData = new IshData(ishDataObjectElement);
 
-                        if (FolderPath != null)
+                        using (var stringReader = new StringReader(IshSession.DocumentObj25.RetrieveObjectsByIshLngRefs(lngRefsArray, productDefinitionFeatures.ToXml(), "")))
                         {
-                            string tempLocation = Directory.CreateDirectory(FolderPath).FullName;
-                            WriteDebug($"Writing lngRef[{lngRef}] to [{tempLocation}] {++current}/{ishObjects.Length}");
-                            //Create the file.
-                            string tempFilePath = FileNameHelper.GetDefaultObjectFileName(tempLocation, ishObject, ishData.FileExtension);
-                            using (FileStream fs = File.Create(tempFilePath))
+                            byte[] bytearray = null;
+                            string edt = "";
+                            string fileExtension = "";
+
+                            using (XmlTextReader xmlTextReader = new XmlTextReader(stringReader))
                             {
-                                fs.Write(ishData.ByteArray, 0, ishData.Size());
+                                while (xmlTextReader.Read())
+                                {
+                                    if (xmlTextReader.NodeType == XmlNodeType.Element && xmlTextReader.Name == "ishdata")
+                                    {
+                                        edt = xmlTextReader.GetAttribute("edt");
+                                        fileExtension = xmlTextReader.GetAttribute("fileextension");
+                                    }
+
+                                    if (xmlTextReader.NodeType == XmlNodeType.CDATA)
+                                    {
+                                        bytearray = System.Convert.FromBase64String(xmlTextReader.Value);
+                                    }
+                                }
                             }
-                            // Append file info list
-                            fileInfo.Add(new FileInfo(tempFilePath));
-                            WriteObject(fileInfo, true);
+                            IshData ishData = new IshData(edt, fileExtension, bytearray);
+
+                            if (FolderPath != null)
+                            {
+                                string tempLocation = Directory.CreateDirectory(FolderPath).FullName;
+                                WriteDebug($"Writing lngRef[{lngRef}] to [{tempLocation}] {++current}/{ishObjects.Length}");
+                                //Create the file.
+                                string tempFilePath = FileNameHelper.GetDefaultObjectFileName(tempLocation, ishObject, ishData.FileExtension);
+                                using (FileStream fs = File.Create(tempFilePath))
+                                {
+                                    fs.Write(ishData.ByteArray, 0, ishData.Size());
+                                }
+                                // Append file info list
+                                fileInfo.Add(new FileInfo(tempFilePath));
+                                WriteObject(fileInfo, true);
+                            }
+                            else
+                            {
+                                WriteDebug($"Enriching ishObject[{ishObject.ObjectRef[Enumerations.ReferenceType.Lng]}] with IshData {++current}/{IshObject.Length}");
+                                ishObject.IshData = ishData;
+                                WriteObject(ishObject, true);
+                            }
                         }
-                        else
-                        {
-                            WriteDebug($"Enriching ishObject[{ishObject.ObjectRef[Enumerations.ReferenceType.Lng]}] with IshData {++current}/{IshObject.Length}");
-                            ishObject.IshData = ishData;
-                            WriteObject(IshSession, ISHType, ishObject, true);
-                        }       
                     }
                     WriteVerbose("returned file count[" + current + "]");
                 }
