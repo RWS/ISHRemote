@@ -42,6 +42,17 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// </code>
     /// <para>For all versions and languages retrieved, push them to status 'To Be Reviewed' and immediately to 'Release'. Note that also Find-IshDocumentObj or Get-IshFolderContent are ways to get to content objects.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $ishTopicMetadata = Set-IshMetadataField -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
+    ///                     Set-IshMetadataField -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+    ///                     Set-IshMetadataField -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
+    /// $ishObject = Add-IshDocumentObj -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+    /// $ishObject = Set-IshDocumentObj -IshObject $ishObject -Metadata (Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased)
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Typical mandatory metadata to create a content object. Then overwrite metadata in group on the specified one or more IshObjects.</para>
+    /// </example>	    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshDocumentObj", SupportsShouldProcess = true)]
     [OutputType(typeof(IshDocumentObj))]
     public sealed class SetIshDocumentObj : DocumentObjCmdlet
@@ -82,7 +93,9 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">The metadata to set for the document object</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup"), ValidateNotNull]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [ValidateNotNull]
         public IshField[] Metadata { get; set; }
 
         /// <summary>
@@ -160,7 +173,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         {
                             // Get language ref
                             long lngRef = Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]);
-                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
+                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
 
                             if (ishObject.IshData != null)
                             {
