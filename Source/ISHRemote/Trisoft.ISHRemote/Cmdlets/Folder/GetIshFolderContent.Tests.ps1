@@ -64,6 +64,16 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		It "ishObjects[0].ObjectRef[Enumerations.ReferenceType.Lng]" {
 			$ishObjects[0].ObjectRef["Lng"] | Should Not BeNullOrEmpty
 		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			#logical
+			$ishObjects[0].ftitle_logical_value.Length -ge 1 | Should Be $true 
+			#version
+			$ishObjects[0].version_version_value.Length -ge 1 | Should Be $true 
+			#language
+			$ishObjects[0].fstatus.Length -ge 1 | Should Be $true 
+			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
+		}
 	}
 
 	Context “Get-IshFolderContent BaseFolderGroup" {
@@ -127,11 +137,11 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		It "Parameter IshFolder invalid" {
 			{ Get-IshFolderContent -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			(Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderSystem).Count -eq 0 | Should Be $true
+		It "Parameter IshFolder Single with implicit IshSession" {
+			(Get-IshFolderContent -IshFolder $ishFolderSystem).Count -eq 0 | Should Be $true
 		}
-		It "Parameter IshFolder Multiple" {
-			$ishObjects = Get-IshFolderContent -IshSession $ishSession -IshFolder @($ishFolderData,$ishFolderSystem)
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			$ishObjects = Get-IshFolderContent -IshFolder @($ishFolderData,$ishFolderSystem)
 			$ishObjects.Count -eq 0| Should Be $true
 		}
 		It "Pipeline IshFolder Single" {

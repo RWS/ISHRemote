@@ -16,7 +16,7 @@ Describe "Add-IshUserRole" -Tags "Create" {
 		It "GetType().Name" {
 			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUserRole"
 			$ishObject.Count | Should Be 1
 		}
 		It "Parameter Metadata" {
@@ -32,6 +32,10 @@ Describe "Add-IshUserRole" -Tags "Create" {
 			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should Be $true
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERROLENAME -Level None).Length -gt 1 | Should Be $true
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishobjectactive.Length -ge 1 | Should Be $true 
+			$ishObject.fishuserrolename.Length -ge 1 | Should Be $true 
+			$ishObject.fishuserrolename_none_element.StartsWith('VUSERROLE') | Should Be $true 
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference
@@ -68,14 +72,14 @@ Describe "Add-IshUserRole" -Tags "Create" {
 		It "Parameter IshObject invalid" {
 			{ Add-IshUserRole -IShSession $ishSession -IshObject "INVALIDUSERROLE" } | Should Throw
 		}
-		It "Parameter IshObject Single" {
-			$ishObjects = Add-IshUserRole -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjects | Remove-IshUserRole -IshSession $ishSession
+		It "Parameter IshObject Single with implicit IshSession" {
+			$ishObjects = Add-IshUserRole -IshObject $ishObjectA
+			$ishObjects | Remove-IshUserRole
 			$ishObjects.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-			$ishObjects = Add-IshUserRole -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
-			$ishObjects | Remove-IshUserRole -IshSession $ishSession
+		It "Parameter IshObject Multiple with implicit IshSession" {
+			$ishObjects = Add-IshUserRole -IshObject @($ishObjectB,$ishObjectC)
+			$ishObjects | Remove-IshUserRole
 			$ishObjects.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

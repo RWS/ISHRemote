@@ -32,6 +32,15 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para type="description">The Remove-IshDocumentObj cmdlet removes the document objects that are passed through the pipeline or determined via provided parameters This commandlet allows to remove all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). 
     /// For publication (outputs) you need to use Remove-IshPublicationOutput.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Get-IshFolder -FolderPath $folderCmdletRootPath -Recurse | 
+    /// Get-IshFolderContent |
+    /// Remove-IshDocumentObj -Force
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Removes all content objects from the listed folder and its subfolders.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshDocumentObj", SupportsShouldProcess = true)]
     public sealed class RemoveIshDocumentObj : DocumentObjCmdlet
     {
@@ -39,8 +48,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -81,7 +90,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">Array with the objects to remove. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
         /// </summary>
-        /// TODO [Could] Promote parameter IshObject to IshObject[] processing
+        /// TODO [Should] Promote parameter IshObject to IshObject[] processing
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         public IshObject IshObject { get; set; }
 
@@ -93,6 +102,13 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         [ValidateNotNullOrEmpty]
         public SwitchParameter Force { get; set; }
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Remove-IshDocumentObj commandlet.

@@ -64,11 +64,11 @@ Describe “Remove-IshFolder" -Tags "Create" {
 		It "Parameter IshFolder invalid" {
 			{ Remove-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			{ Remove-IshFolder -IShSession $ishSession -IshFolder $ishFolderIshFoldersGroup } | Should Not Throw
+		It "Parameter IshFolder Single with implicit IshSession" {
+			{ Remove-IshFolder -IshFolder $ishFolderIshFoldersGroup } | Should Not Throw
 		}
-		It "Parameter IshFolder Multiple" {
-			{ Remove-IshFolder -IShSession $ishSession -IshFolder @($ishFolderIshFoldersGroupA,$ishFolderIshFoldersGroupB) } | Should Not Throw
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			{ Remove-IshFolder -IshFolder @($ishFolderIshFoldersGroupA,$ishFolderIshFoldersGroupB) } | Should Not Throw
 		}
 		It "Pipeline IshFolder" {
 			{  @($ishFolderData,$ishFolderSystem,$ishFolderFavorites) | Remove-IshFolder -IshSession $ishSession } | Should Throw

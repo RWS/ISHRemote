@@ -27,7 +27,11 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 			$ishTypeFieldDefinitions[0].DataType | Should Not BeNullOrEmpty
 		}
 		It "FXYEDITOR is not a standard field for <13.0.x" {
+			# Making sure the implicit IshSession stored in SessionState is temporarily removed
+			$restoreIshSession=$executioncontext.SessionState.PSVariable.GetValue("ISHRemoteSessionStateIshSession")
+			$executioncontext.SessionState.PSVariable.Set("ISHRemoteSessionStateIshSession", $null)
 			(Get-IshTypeFieldDefinition | Where-Object -Property Name -EQ -Value "FXYEDITOR").Count | Should Be 0
+			$executioncontext.SessionState.PSVariable.Set("ISHRemoteSessionStateIshSession", $restoreIshSession)
 		}
 		# More tests required for the IshTypeFieldDefinition properties
 		# Also test that there CardFields and TableFields present
@@ -52,6 +56,25 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 		It "IshSession.IshTypeFieldDefinition[0].GetType().Name" {
 			Get-IshTypeFieldDefinition -IshSession $ishSession
 			$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should BeExactly "IshTypeFieldDefinition"
+		}
+		It "Table ISHBackgroundTask (since 13.0.2)" {
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'Task').Count | Should Be 15
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'History').Count | Should Be 8
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnRead -EQ $true).Count | Should Be 23 # all columns are allowed to be read
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should Be 23 # all columns are explicit api parameters and cannot be set over metadata
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsMultiValue -EQ $false).Count | Should Be 23 # all columns are single value
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsSystem -EQ $true).Count | Should Be 23 # all columns are system columns
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'STATUS').Type | Should Be 'DBACKGROUNDTASKSTATUS'
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').Type | Should Be 'USERNAME'
+		}
+		It "Table ISHEvent" {
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should Be 11
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Detail').Count | Should Be 12
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnRead -EQ $true).Count | Should Be 23 # all columns are allowed to be read
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should Be 23 # all columns are explicit api parameters and cannot be set over metadata
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsMultiValue -EQ $false).Count | Should Be 23 # all columns are single value
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsSystem -EQ $true).Count | Should Be 23 # all columns are system columns
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').Type | Should Be 'USERNAME'
 		}
 	}
 

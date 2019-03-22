@@ -15,10 +15,20 @@ Describe “Add-IshBaseline" -Tags "Create" {
 	Context “Add-IshBaseline ParameterGroup" {
 		It "GetType().Name" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
+			$ishObject = Add-IshBaseline -Name $baselineName
+			(Get-IshMetadataField -IshObject $ishObject -Level None -Name "FISHDOCUMENTRELEASE").Length -gt 0 | Should Be $true
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
+			$ishObject.Count | Should Be 1
+		}
+		It "GetType().Name with optional IshSession" {
+			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Level None -Name "FISHDOCUMENTRELEASE").Length -gt 0 | Should Be $true
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 			$ishObject.Count | Should Be 1
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishdocumentrelease.Length -ge 1 | Should Be $true 
+			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should Be $true 
 		}
 	}
 

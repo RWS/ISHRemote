@@ -37,23 +37,23 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
     ///             Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level "none" -Value "TRUE" -ValueType Element |
     ///             Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level "none" -Value "TRUE" -ValueType Element |
     ///             Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBRESOLVEVARIABLES" -Level "none" -Value "TRUE" -ValueType Element
-    /// $outputFormat = Add-IshOutputFormat -IshSession $ishSession `
+    /// $outputFormat = Add-IshOutputFormat `
     /// -Name "MyOutputFormat" `
     /// -EDT "EDTPDF" `
     /// -Metadata $metadata
     /// </code>
-    /// <para>Adding a new output format</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Adding a new output format</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshOutputFormat", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshOutputFormat))]
     public sealed class AddIshOutputFormat : OutputFormatCmdlet
     {
 
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -81,6 +81,14 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Add-IshOutputFormat commandlet.
@@ -156,24 +164,19 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
 
                     // 3a. Retrieve added OutputFormat and write it out
                     WriteDebug("Retrieving");
-
-                    //TODO should be covered by ISHREMOTE-011 using IshTypeFieldSetup
-                    // Remove FISHDITADLVRCLIENTSECRET field explicitly, as we are not allowed to read it
-                    returnFields.RemoveField(FieldElements.DitaDeliveryClientSecret, Enumerations.Level.None, Enumerations.ValueType.All);
-
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshObjects = IshSession.OutputFormat25.RetrieveMetadata(
                         outputFormatIds.ToArray(),
                         OutputFormat25ServiceReference.ActivityFilter.None,
                         "",
                         requestedMetadata.ToXml());
 
-                    returnIshObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnIshObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
-                WriteObject(returnIshObjects, true);
+                WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

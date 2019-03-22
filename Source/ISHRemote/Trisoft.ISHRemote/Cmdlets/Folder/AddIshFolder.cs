@@ -33,14 +33,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
     /// $folderName = "New folder created by powershell"
     /// $parentFolderId = "7775" # provide a valid parent folder Id
-    /// $ishFolders = Add-IshFolder -IshSession $ishSession `
+    /// $ishFolders = Add-IshFolder `
     ///         -ParentFolderId $parentFolderId `
     ///         -FolderType "ISHModule" `
     ///         -FolderName $folderName `
     ///         -ReadAccess @("") `
     ///         -OwnedBy ""
     /// </code>
-    /// <para>Add a folder using input parameters</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Add a folder using input parameters</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshFolder", SupportsShouldProcess = true)]
     [OutputType(typeof(IshFolder))]
@@ -55,7 +55,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         //  [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
         // Creating base folders is not allowed, so no 
         //  [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFoldersGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFoldersGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -97,6 +97,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshFoldersGroup")]
         [AllowEmptyCollection]
         public IshFolder[] IshFolder { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Add-IshFolder commandlet.
@@ -183,7 +191,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     WriteDebug("Retrieving");
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                     string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(foldersToRetrieve.ToArray(), requestedMetadata.ToXml());
                     
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
@@ -192,8 +200,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 
                 // 3b. Write it
                 WriteVerbose("returned object count[" + returnedFolders.Count + "]");
-                WriteObject(returnedFolders,true);
-                base.EndProcessing();
+                WriteObject(IshSession, ISHType, returnedFolders.ConvertAll(x => (IshBaseObject)x), true);
             }
 
             catch (TrisoftAutomationException trisoftAutomationException)

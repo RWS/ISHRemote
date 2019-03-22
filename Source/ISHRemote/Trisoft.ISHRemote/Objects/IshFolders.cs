@@ -81,6 +81,14 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// Gets the current IshFolders as list
+        /// </summary>
+        public List<IshFolder> FolderList
+        {
+            get { return _folders; }
+        }
+
+        /// <summary>
         /// Gets the current IshFolders sorted by name
         /// </summary>
         public IshFolder[] SortedFolders

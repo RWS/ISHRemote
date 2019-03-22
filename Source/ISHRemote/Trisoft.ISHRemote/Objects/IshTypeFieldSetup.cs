@@ -60,8 +60,15 @@ namespace Trisoft.ISHRemote.Objects
                     _ishTypeFieldDefinitions.Add(ishTypeFieldDefinition.Key, ishTypeFieldDefinition);
                 }
             }
+
+            AddIshBackgroundTaskTableFieldSetup();
+            AddIshEventTableFieldSetup();
+            AddIshTranslationJobItemTableFieldSetup();
         }
 
+        /// <summary>
+        /// Returns a management object with sorting on the field definition key for comparison and nicer rendering
+        /// </summary>
         public IshTypeFieldSetup(ILogger logger, List<IshTypeFieldDefinition> ishTypeFieldDefinitions)
         {
             _logger = logger;
@@ -100,6 +107,110 @@ namespace Trisoft.ISHRemote.Objects
             set { _strictMetadataPreference = value; }
         }
 
+        #region Assist functions on Table (compared to Card) field setup
+        private void AddIshBackgroundTaskTableFieldSetup()
+        {
+            _logger.WriteDebug($"IshTypeFieldSetup ishType[ISHBackgroundTask]");
+            List<IshTypeFieldDefinition> ishTypeFieldDefinitions = new List<Public.IshTypeFieldDefinition>();
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, true, true, "TASKID", Enumerations.DataType.Number, "", "The column 'TASKID' contains the unique identifier of the background task. This value can only be used for filtering!"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, true, false, "USERID", Enumerations.DataType.ISHLov, "USERNAME", "The user that started the background task Note: For this field you can request the value (Admin) or the element name (VUSERADMIN)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, true, false, "STATUS", Enumerations.DataType.ISHLov, "DBACKGROUNDTASKSTATUS", "The status of the background task Note: For this field you can request the value (Pending) or the element name (VBACKGROUNDTASKSTATUSPENDING)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, false, false, "HASHID", Enumerations.DataType.String, "", "String containing the 'hash' representation for this background task. This will be used to skip older background task for the same action. For instance, synchronizing the same language object only once to SDL LiveContent."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, true, false, "EVENTTYPE", Enumerations.DataType.ISHLov, "DEVENTTYPE", "The type of the event (e.g PUBLISH)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, false, false, "PROGRESSID", Enumerations.DataType.Number, "", "The unique identifier of the event log linked with this background task"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, false, false, "TRACKINGID", Enumerations.DataType.Number, "", "Currently the trackingId is the same as the progressId"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "CREATIONDATE", Enumerations.DataType.DateTime, "", "The date time that the background task was created"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "MODIFICATIONDATE", Enumerations.DataType.DateTime, "", "The date time that the background task was last modified"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "EXECUTEAFTERDATE", Enumerations.DataType.DateTime, "", "The background task should not be executed before this date time."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "LEASEDON", Enumerations.DataType.DateTime, "", "The date and time when background task was leased"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "LEASEDBY", Enumerations.DataType.String, "", "The id of the process/thread that leased the background task"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "CURRENTATTEMPT", Enumerations.DataType.Number, "", "Number containing the current attempt"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, false, false, "INPUTDATAID", Enumerations.DataType.Number, "", "Data reference linking to the inputdata of the background task"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, false, false, "OUTPUTDATAID", Enumerations.DataType.Number, "", "Data reference linking to the outputdata of the last execution of the background task"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, true, false, true, false, false, false, true, true, true, "HISTORYID", Enumerations.DataType.Number, "", "The column 'HISTORYID' contains the unique identifier of one of the history record of the background task. This value can only be used for filtering!"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "EXITCODE", Enumerations.DataType.Number, "", "The exit code for this background task execution"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "ERRORNUMBER", Enumerations.DataType.Number, "", "The error number thrown by this background task execution"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, false, false, "OUTPUT", Enumerations.DataType.Number, "", "Data reference linking to the outputdata of this background task execution"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, false, false, "ERROR", Enumerations.DataType.Number, "", "Data reference linking to the detailed error of this background task execution"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "STARTDATE", Enumerations.DataType.DateTime, "", "The date time that this execution of the background task was started"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "ENDDATE", Enumerations.DataType.DateTime, "", "The date time that this execution of the background task was finished"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "HOSTNAME", Enumerations.DataType.String, "", "The host name from which the background task was created"));
+            foreach (var ishTypeFieldDefinition in ishTypeFieldDefinitions)
+            { 
+                _ishTypeFieldDefinitions.Add(ishTypeFieldDefinition.Key, ishTypeFieldDefinition);
+            }
+        }
+
+        private void AddIshEventTableFieldSetup()
+        {
+            _logger.WriteDebug($"IshTypeFieldSetup ishType[ISHEvent]");
+            List<IshTypeFieldDefinition> ishTypeFieldDefinitions = new List<Public.IshTypeFieldDefinition>();
+            //internal IshTypeFieldDefinition(ILogger logger, Enumerations.ISHType ishType, Enumerations.Level level,       bool isMandatory, bool isMultiValue, bool allowOnRead, bool allowOnCreate, bool allowOnUpdate, bool allowOnSearch, bool isSystem, bool isBasic, bool isDescriptive, string name, Enumerations.DataType dataType, string referenceLov, string description)
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, true, true, true, "PROGRESSID", Enumerations.DataType.Number, "", "The column 'PROGRESSID' contains the unique identifier of the event. This value can only be used for filtering!"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, true, true, true, "EVENTID", Enumerations.DataType.String, "", "The unique readable identifier of the event (e.g. CREATETRANSLATIONFROMLIST HOSTNAME01 20190321164905585 2115660297)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, true, true, false, "CREATIONDATE", Enumerations.DataType.DateTime, "", "The date time that the event was created"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, true, true, false, "MODIFICATIONDATE", Enumerations.DataType.DateTime, "", "The date time that the event was last modified"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, true, false, true, false, false, false, true, true, true, "EVENTTYPE", Enumerations.DataType.String, "", "The event type, typically directly linked to one of the background task message handlers. (e.g. CREATETRANSLATIONFROMLIST)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, true, false, true, false, false, false, true, true, false, "DESCRIPTION", Enumerations.DataType.String, "", "The free text description of the event. (e.g. Create translation for lngCardId[379780])"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, true, false, true, true, false, "STATUS", Enumerations.DataType.String, "", "The actual or aggregated/calculated status of event. Values range from Busy, Success, Warning, Failed to Calculate."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, true, true, false, "USERID", Enumerations.DataType.ISHLov, "USERNAME", "The user that started the event"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, true, false, false, "PARENTPROGRESSID", Enumerations.DataType.Number, "", "The column 'PARENTPROGRESSID' contains the unique identifier of the parent event. The system allows one-level hierarchical aggregation."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, true, false, true, true, false, "MAXIMUMPROGRESS", Enumerations.DataType.Number, "", "Number containing the expected maximum attempt. Could be a percentage indicated by 100, but also some total number."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, true, false, true, true, false, "CURRENTPROGRESS", Enumerations.DataType.Number, "", "Number containing the current attempt."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, false, false, false, true, true, true, "DETAILID", Enumerations.DataType.Number, "", "The column 'DETAILID' contains the unique identifier of one of the detail record of the event. This value can only be used for filtering!"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, false, false, false, true, true, false, "PROGRESSID", Enumerations.DataType.Number, "", "This detail record belongs to this progress identifier."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, true, true, false, "CREATIONDATE", Enumerations.DataType.DateTime, "", "The date time that the event detail was created"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, true, true, false, "HOSTNAME", Enumerations.DataType.String, "", "The host name from which the event detail was created"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, false, false, false, true, true, false, "ACTION", Enumerations.DataType.String, "", "The short action name that is currently being executed"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, false, false, false, true, true, false, "DESCRIPTION", Enumerations.DataType.String, "", "The longer description of the action that is currently being executed"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, false, false, false, true, true, false, "STATUS", Enumerations.DataType.String, "", "The actual status of the event detail that is later aggregated/calculated on the progress level. Values range from Success, Warning to Failed."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, false, false, false, true, true, false, "EVENTLEVEL", Enumerations.DataType.Number, "", "The log level of the event detail, allows 'Verbose' filtering. Values range from Exception(10), Warning(20), Configuration(30), Information(40), Verbose(50) to Debug(60)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, true, false, false, "PROCESSID", Enumerations.DataType.Number, "", "The operating system process id on the system identified by hostname that submitted this event detail."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, true, false, false, "THREADID", Enumerations.DataType.Number, "", "The thread id within the operating system process id on the system identified by hostname that submitted this event detail."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, false, false, false, true, true, false, "EVENTDATATYPE", Enumerations.DataType.Number, "", "The event data type that indicates the content data type of the referenced blob under the same detailid. Values range from None(0), String(1), List(2), Xml(3), SendEventData(10), LogObject, StatusReport(21), CommandOutput(30) to Other(99)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, true, true, false, "EVENTDATASIZE", Enumerations.DataType.Number, "", "The event data size that indicates the content data size of the referenced blob under the same detailid."));
+            foreach (var ishTypeFieldDefinition in ishTypeFieldDefinitions)
+            {
+                _ishTypeFieldDefinitions.Add(ishTypeFieldDefinition.Key, ishTypeFieldDefinition);
+            }
+        }
+
+        private void AddIshTranslationJobItemTableFieldSetup()
+        {
+            _logger.WriteDebug($"TODO IshTypeFieldSetup ishType[ISHTranslationJobItem]");
+            /*
+            List<IshTypeFieldDefinition> ishTypeFieldDefinitions = new List<Public.IshTypeFieldDefinition>();
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, true, true, "TASKID", Enumerations.DataType.Number, "", "The column 'TASKID' contains the unique identifier of the background task. This value can only be used for filtering!"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, true, false, "USERID", Enumerations.DataType.ISHLov, "USERNAME", "The user that started the background task Note: For this field you can request the value ( Admin) or the element name ( VUSERADMIN)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, true, false, "STATUS", Enumerations.DataType.ISHLov, "DBACKGROUNDTASKSTATUS", "The status of the background task Note: For this field you can request the value ( Pending) or the element name ( VBACKGROUNDTASKSTATUSPENDING)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, false, false, "HASHID", Enumerations.DataType.String, "", "String containing the 'hash' representation for this background task. This will be used to skip older background task for the same action. For instance, synchronizing the same language object only once to SDL LiveContent."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, true, false, "EVENTTYPE", Enumerations.DataType.ISHLov, "DEVENTTYPE", "The type of the event (e.g PUBLISH)"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, false, false, "PROGRESSID", Enumerations.DataType.Number, "", "The unique identifier of the event log linked with this background task"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, true, false, true, false, false, false, true, false, false, "TRACKINGID", Enumerations.DataType.Number, "", "Currently the trackingId is the same as the progressId"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "CREATIONDATE", Enumerations.DataType.DateTime, "", "The date time that the background task was created"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "MODIFICATIONDATE", Enumerations.DataType.DateTime, "", "The date time that the background task was last modified"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "EXECUTEAFTERDATE", Enumerations.DataType.DateTime, "", "The background task should not be executed before this date time."));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "LEASEDON", Enumerations.DataType.DateTime, "", "The date and time when background task was leased"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "LEASEDBY", Enumerations.DataType.String, "", "The id of the process/thread that leased the background task"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, true, false, "CURRENTATTEMPT", Enumerations.DataType.Number, "", "Number containing the current attempt"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, false, false, "INPUTDATAID", Enumerations.DataType.Number, "", "Data reference linking to the inputdata of the background task"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.Task, false, false, true, false, false, false, true, false, false, "OUTPUTDATAID", Enumerations.DataType.Number, "", "Data reference linking to the outputdata of the last execution of the background task"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, true, false, true, false, false, false, true, true, true, "HISTORYID", Enumerations.DataType.Number, "", "The column 'HISTORYID' contains the unique identifier of one of the history record of the background task. This value can only be used for filtering!"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "EXITCODE", Enumerations.DataType.Number, "", "The exit code for this background task execution"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "ERRORNUMBER", Enumerations.DataType.Number, "", "The error number thrown by this background task execution"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, false, false, "OUTPUT", Enumerations.DataType.Number, "", "Data reference linking to the outputdata of this background task execution"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, false, false, "ERROR", Enumerations.DataType.Number, "", "Data reference linking to the detailed error of this background task execution"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "STARTDATE", Enumerations.DataType.DateTime, "", "The date time that this execution of the background task was started"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "ENDDATE", Enumerations.DataType.DateTime, "", "The date time that this execution of the background task was finished"));
+            ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHBackgroundTask, Enumerations.Level.History, false, false, true, false, false, false, true, true, false, "HOSTNAME", Enumerations.DataType.String, "", "The host name from which the background task was created"));
+            foreach (var ishTypeFieldDefinition in ishTypeFieldDefinitions)
+            {
+                _ishTypeFieldDefinitions.Add(ishTypeFieldDefinition.Key, ishTypeFieldDefinition);
+            }
+            */
+        }
+        #endregion
+
 
         #region Assist functions on allowed field usage based on IshFieldDefinition[]
 
@@ -135,14 +246,15 @@ namespace Trisoft.ISHRemote.Objects
 
         /// <summary>
         /// Reverse lookup for all fields that are marked descriptive for the incoming ishTypes; then add them to ishFields.
+        /// Descriptive fields are fields who are database-object-wise consired primary key, so to uniquely identify an object.
         /// </summary>
-        private IshFields AddDescriptiveFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        private IshFields AddDescriptiveFields(Enumerations.ISHType[] ishTypes, IshFields ishFields)
         {
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
-                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.IsDescriptive == true))
+                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.IsDescriptive == true && d.AllowOnRead == true))
                 {
-                    //TODO [Could] IshTypeFieldSetup adding descriptive fields potentially has an issue with removing to many ValueType entries
+                    //TODO [Could] IshTypeFieldSetup adding descriptive fields potentially has an issue with removing too many ValueType entries
                     ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
                     if (ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHLov || ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHType)
                     {
@@ -154,17 +266,93 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// Reverse lookup for all fields that are marked basic for the incoming ishTypes; then add them to ishFields.
+        /// Basic fields are fields who offer user-friendly business logic.
+        /// </summary>
+        private IshFields AddBasicFields(Enumerations.ISHType[] ishTypes, IshFields ishFields)
+        {
+            foreach (Enumerations.ISHType ishType in ishTypes)
+            {
+                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.IsBasic == true && d.AllowOnRead == true))
+                {
+                    //TODO [Could] IshTypeFieldSetup adding basic fields potentially has an issue with removing too many ValueType entries
+                    ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
+                    if (ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHLov || ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHType)
+                    {
+                        ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Element), Enumerations.ActionMode.Read);
+                    }
+                }
+            }
+            return ishFields;
+        }
+
+        /// <summary>
+        /// Reverse lookup for all fields that are marked basic for the incoming ishTypes; then add them to ishFields.
+        /// All fields of the specified object ISHType, so all descriptive, basic, system fields.
+        /// </summary>
+        private IshFields AddAllFields(Enumerations.ISHType[] ishTypes, IshFields ishFields)
+        {
+            foreach (Enumerations.ISHType ishType in ishTypes)
+            {
+                foreach (var ishTypeFieldDefinition in _ishTypeFieldDefinitions.Values.Where(d => d.ISHType == ishType && d.AllowOnRead == true))
+                {
+                    //TODO [Could] IshTypeFieldSetup adding basic fields potentially has an issue with removing too many ValueType entries
+                    ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Value), Enumerations.ActionMode.Read);
+                    if (ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHLov || ishTypeFieldDefinition.DataType == Enumerations.DataType.ISHType)
+                    {
+                        ishFields.AddOrUpdateField(new IshRequestedMetadataField(ishTypeFieldDefinition.Name, ishTypeFieldDefinition.Level, Enumerations.ValueType.Element), Enumerations.ActionMode.Read);
+                    }
+                }
+            }
+            return ishFields;
+        }
+
+        /// <summary>
+        /// Returns the DataType of the specified field linked to the mentioned card type
+        /// </summary>
+        /// <param name="ishType">The card type</param>
+        /// <param name="ishField">Field object indicating level and name</param>
+        public Enumerations.DataType GetDataType(Enumerations.ISHType ishType, IshField ishField)
+        {
+            //_logger.WriteDebug($"GetDataType ISHType[{ishType}] Level[{ishField.Level}] Name[{ishField.Name}]");  //Remove slow logging
+            IshTypeFieldDefinition ishTypeFieldDefinition = _ishTypeFieldDefinitions.Values.FirstOrDefault(d => d.ISHType == ishType && d.Level == ishField.Level && d.Name == ishField.Name);
+            if (ishTypeFieldDefinition == null)
+            {
+                return Enumerations.DataType.String;
+            }
+            return ishTypeFieldDefinition.DataType;
+        }
+
+        /// <summary>
         /// Requested metadata fields will be duplicated and enriched to cater our Public Objects initilization.
         /// The minimal fields (IsDescriptive) will be added to allow initialization of the various IshObject types for all ValueTypes. 
         /// Unallowed fields for read operations (IshFieldDefinition.AllowOnRead) will be stripped with a Debug log message.
         /// </summary>
         /// <remarks>Logs debug entry for unknown combinations of ishTypes and ishField (name, level) entries - will not throw.</remarks>
+        /// <param name="requestedMetadataGroup">Initialize return field set given the default/initial requested metadata, this way interactive mode becomes a lot less chatty</param>
         /// <param name="ishTypes">Given ISHTypes (like ISHMasterDoc, ISHLibrary, ISHConfiguration,...) to verify/alter the IshFields for</param>
         /// <param name="ishFields">Incoming IshFields entries will be transformed to matching and allowed IshRequestedMetadataField entries</param>
         /// <param name="actionMode">RequestedMetadataFields only has value for read operations like Read, Find, Search,...</param>
-        public IshFields ToIshRequestedMetadataFields(Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
+        public IshFields ToIshRequestedMetadataFields(Enumerations.RequestedMetadataGroup requestedMetadataGroup, Enumerations.ISHType[] ishTypes, IshFields ishFields, Enumerations.ActionMode actionMode)
         {
             IshFields requestedMetadataFields = new IshFields();
+
+            // Preload RequestedMetadata by retrieving the selection specified by requestedMetadataGroup and ishTypes
+            switch (requestedMetadataGroup)
+            {
+                case Enumerations.RequestedMetadataGroup.All:
+                        requestedMetadataFields = AddAllFields(ishTypes, requestedMetadataFields);
+                        break;
+                case Enumerations.RequestedMetadataGroup.Basic:
+                        requestedMetadataFields = AddBasicFields(ishTypes, requestedMetadataFields);
+                        break;
+                case Enumerations.RequestedMetadataGroup.Descriptive:
+                    // always required, AddDescriptiveFields is called at the end of this function
+                    break;
+            }
+            _logger.WriteDebug($"ToIshRequestedMetadataFields loaded RequestedMetadataGroup[{requestedMetadataGroup}] resulting in requestedMetadataFields.Count[{requestedMetadataFields.Count()}]");
+
+            // AddOrUpdate with the specified RequestedMetadata
             foreach (Enumerations.ISHType ishType in ishTypes)
             {
                 // Check incoming IshField with IshTypeFieldDefinitions
@@ -233,7 +421,7 @@ namespace Trisoft.ISHRemote.Objects
                 }
             }
             //Add IsDescriptive fields for the incoming IshType to allow basic descriptive/minimal object initialization
-            requestedMetadataFields = AddDescriptiveFields(ishTypes, requestedMetadataFields, actionMode);
+            requestedMetadataFields = AddDescriptiveFields(ishTypes, requestedMetadataFields);
             //TODO [Should] Merges in IsDescriptive for all ValueTypes (for LOV/Card)... we cannot do IMetadataBinding fields yet. Server-side they are retrieved anyway, so the only penalty is xml transfer size.
             return requestedMetadataFields;
         }

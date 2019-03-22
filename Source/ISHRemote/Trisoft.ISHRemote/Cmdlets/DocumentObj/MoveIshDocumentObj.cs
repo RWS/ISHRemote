@@ -30,18 +30,24 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <summary>
     /// <para type="synopsis">The Move-IshDocumentObj cmdlet moves document objects that are passed through the pipeline or determined via provided parameters from one repository folder to another folder. This commandlet allows to move all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). 
     /// For publication (outputs) you need to use Move-IshPublicationOutput.</para>
-    /// <para type="description">The Move-IshDocumentObj cmdlet moves document objects that are passed through the pipeline or determined via provided parameters from one repository folder to another folder. This commandlet allows to move all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). 
-    /// For publication (outputs) you need to use Move-IshPublicationOutput.</para>
+    /// <para type="description">The Move-IshDocumentObj cmdlet moves document objects that are passed through the pipeline or determined via provided parameters from one repository folder to another folder. This commandlet allows to move all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). For publication (outputs) you need to use Move-IshPublicationOutput.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Move-IshDocumentObj -LogicalId ISHPUBLILLUSTRATIONMISSING -FromIshFolder (Get-IshFolder -BaseFolder System) -ToIshFolder (Get-IshDocumentObjFolderLocation -LogicalId ISHPUBLILLUSTRATIONMISSING)
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Moves DocumentObj (and PublicationOutput) to another folder.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Move, "IshDocumentObj", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshDocumentObj))]
     public sealed class MoveIshDocumentObj : DocumentObjCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -117,8 +123,16 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// Initially holds incoming IshObject entries from the pipeline to correct the incorrect array-objects from Trisoft.Automation
         /// </summary>
-        private List<IshObject> _retrievedIshObjects = new List<IshObject>();
+        private readonly List<IshObject> _retrievedIshObjects = new List<IshObject>();
         #endregion
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Move-IshDocumentObj commandlet.
@@ -186,7 +200,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 WriteDebug("Retrieving");
                 var returnIshObjects = new List<IshObject>();
                 // Add the required fields (needed for pipe operations)
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(), Enumerations.ActionMode.Read);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
                 if (_retrievedIshObjects.Count > 0)
                 {
                     var lngCardIds =_retrievedIshObjects.Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng])).ToList();
@@ -200,7 +214,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
                             lngCardIdBatch.ToArray(),
                             requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLngCardIdCount += lngCardIdBatch.Count;
                         WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
@@ -217,7 +231,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     {
                         // Process language card ids in batches
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, "", requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnIshObjects.AddRange(retrievedObjects.Objects);
                         currentLogicalIdCount += logicalIdBatch.Count;
                         WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");
@@ -226,7 +240,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 
                 // Write retrieved objects to pipeline
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
-                WriteObject(returnIshObjects, true);
+                WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

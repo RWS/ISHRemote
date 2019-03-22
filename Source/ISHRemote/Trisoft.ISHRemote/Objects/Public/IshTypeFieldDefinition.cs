@@ -242,6 +242,49 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         /// <summary>
+        /// IshTypeFieldDefinition creation with the full descriptive identifiers
+        /// </summary>
+        /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
+        /// <param name="ishType">Card type identifier</param>
+        /// <param name="level">The level of the field on this ISHType (card type)</param>
+        /// <param name="isMandatory">Boolean attribute indicating whether the field is mandatory or not. </param>
+        /// <param name="isMultiValue">Boolean attribute indicating whether the field can contain multiple values or not. </param>
+        /// <param name="allowOnRead">Boolean attribute indicating whether the field can be passed as filter or passed as requested metadata to an API READ method (e.g. GetMetadata, RetrieveMetadata, Find,...). </param>
+        /// <param name="allowOnCreate">Boolean attribute indicating whether the field can be set via metadata by an API CREATE method.  Note: Some fields(e.g.USERNAME) must be passed as a parameter to the CREATE method.So, although these fields are mandatory, they will have allowoncreate false! </param>
+        /// <param name="allowOnUpdate">Boolean attribute indicating whether the field can be set via metadata by an API UPDATE method (e.g. SetMetadata, Update,...). </param>
+        /// <param name="allowOnSearch">Boolean attribute indicating whether the field is part of the full text index and can be used as part of the search query. </param>
+        /// <param name="isSystem">Boolean attribute indicating whether this field is part of the internal Content Manager business logic. </param>
+        /// <param name="isBasic">Boolean attribute indicating whether this field is a basic field (e.g. FSTATUS) or a more advanced field (e.g. FISHSTATUSTYPE). </param>
+        /// <param name="isDescriptive">Boolean attribute indicating whether this field is one of the fields that define an object. Note: These fields are also used by the internal Content Manager business code, therefore they don't require an extra call to the database when requested. </param>
+        /// <param name="name">Name of the card field or the table column.</param>
+        /// <param name="dataType">The field data type, indicating reference field or simple type</param>
+        /// <param name="referenceLov">Lists the referenced list of values name (e.g. USERNAME or DBACKGROUNDTASKSTATUS)</param>
+        /// <param name="description">Free text description, anything which can help an implementor</param>
+        internal IshTypeFieldDefinition(ILogger logger, Enumerations.ISHType ishType, Enumerations.Level level,
+            bool isMandatory, bool isMultiValue, bool allowOnRead, bool allowOnCreate, bool allowOnUpdate, bool allowOnSearch, bool isSystem, bool isBasic, bool isDescriptive,
+            string name, Enumerations.DataType dataType, string referenceLov, string description)
+        {
+            _logger = logger;
+            ISHType = ishType;
+            Level = level;
+            Name = name;
+            DataType = dataType;
+            IsMandatory = isMandatory;
+            IsMultiValue = isMultiValue;
+            AllowOnRead = allowOnRead;
+            AllowOnCreate = allowOnCreate;
+            AllowOnUpdate = allowOnUpdate;
+            AllowOnSearch = allowOnSearch;
+            IsSystem = isSystem;
+            IsBasic = isBasic;
+            IsDescriptive = isDescriptive;
+            Label = "";
+            Description = description;
+            ReferenceLov = referenceLov;
+            ReferenceType = new List<Enumerations.ISHType>();
+        }
+
+        /// <summary>
         /// Copy constructor
         /// </summary>
         internal IshTypeFieldDefinition(IshTypeFieldDefinition ishTypeFieldDefinition)

@@ -34,13 +34,13 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
     /// # Remove publication output
-    /// Remove-IshPublicationOutput -IshSession $ishSession `
+    /// Remove-IshPublicationOutput `
     /// -LogicalId "GUID-F66C1BB5-076D-455C-B055-DAC5D61AB3D9" `
     /// -Version "1" `
     /// -OutputFormat "PDF (A4 Manual)" `
     /// -LanguageCombination "en"
     /// </code>
-    /// <para>Removing a publication output</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Removing a publication output</para>
     /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshPublicationOutput", SupportsShouldProcess = true)]
     public sealed class RemoveIshPublicationOutput : PublicationOutputCmdlet
@@ -49,8 +49,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -103,6 +103,14 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]        
         [ValidateNotNullOrEmpty]
         public SwitchParameter Force { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
 
         /// <summary>

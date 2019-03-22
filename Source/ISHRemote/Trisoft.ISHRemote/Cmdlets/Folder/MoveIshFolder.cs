@@ -28,6 +28,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// <para type="synopsis">The Move-IshFolder cmdlet moves folders that are passed through the pipeline or determined via provided parameters to a different folder.</para>
     /// <para type="description">The Move-IshFolder cmdlet moves folders that are passed through the pipeline or determined via provided parameters to a different folder.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// Move-IshFolder -IshFolders (Get-IshFolder -FolderPath "General\__ISHRemote" -Recurse -Depth 2) -ToFolderId (Add-IshFolder...)
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Moves all folders listed under "General\__ISHRemote" to some other folder.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Move, "IshFolder", SupportsShouldProcess = true)]
     [OutputType(typeof(IshFolder))]
     public sealed class MoveIshFolder : FolderCmdlet
@@ -36,8 +43,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFoldersGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFoldersGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -61,6 +68,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshFoldersGroup")]
         [AllowEmptyCollection]
         public IshFolder[] IshFolders { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Move-IshFolder commandlet.
@@ -125,7 +140,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     WriteDebug("Retrieving");
 
                     // Add the required fields (needed for pipe operations)
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(), Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
                     string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(foldersToRetrieve.ToArray(), requestedMetadata.ToXml());
 
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
@@ -133,7 +148,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 }
 
                 WriteVerbose("returned object count[" + returnedFolders.Count + "]");
-                WriteObject(returnedFolders,true);               
+                WriteObject(IshSession, ISHType, returnedFolders.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

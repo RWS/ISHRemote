@@ -48,18 +48,24 @@ Describe “Move-IshFolder" -Tags "Create" {
 		It "$ishFolderData.IshField" {
 			$ishFolderData.IshField | Should Not BeNullOrEmpty
 		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishFolderData.name.Length -ge 1 | Should Be $true 
+			$ishFolderData.fdocumenttype.Length -ge 1 | Should Be $true 
+			$ishFolderData.fdocumenttype_none_element.StartsWith('VDOCTYPE') | Should Be $true 
+		}
 	}
 
 	Context “Move-IshFolder IshFoldersGroup" {
 		It "Parameter IshFolder invalid" {
 			{ Move-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" -ToFolderId $ishFolderA.IshFolderRef } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			$ishFolders = Move-IshFolder -IShSession $ishSession -IshFolder $ishFolderC -ToFolderId $ishFolderA.IshFolderRef
+		It "Parameter IshFolder Single with implicit IshSession" {
+			$ishFolders = Move-IshFolder -IshFolder $ishFolderC -ToFolderId $ishFolderA.IshFolderRef
 			$ishFolders.Count | Should Be 1
 		}
-		It "Parameter IshFolder Multiple" {
-			$ishFolders = Move-IshFolder -IShSession $ishSession -IshFolder @($ishFolderD,$ishFolderE) -ToFolderId $ishFolderA.IshFolderRef
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			$ishFolders = Move-IshFolder -IshFolder @($ishFolderD,$ishFolderE) -ToFolderId $ishFolderA.IshFolderRef
 			$ishFolders.Count | Should Be 2
 		}
 		It "Pipeline IshFolder Single" {

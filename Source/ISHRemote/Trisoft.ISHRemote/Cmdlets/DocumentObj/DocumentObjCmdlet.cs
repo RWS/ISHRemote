@@ -19,7 +19,7 @@ using System.Management.Automation;
 using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
-
+using System.Collections.Generic;
 
 namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 {

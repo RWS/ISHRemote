@@ -33,19 +33,27 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// $baselineIds = @("GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534","GUID-F1361489-66F3-4E27-A5D1-71C97025815A")
-    /// Get-IshBaseline -IshSession $ishSession -Id $baselineIds -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE")
+    /// Get-IshBaseline -Id $baselineIds -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE")
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve metadata from the identified baselines</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $baselineIds = @("GUID-17443161-9CAD-4A9A-A3D3-F2942EDB0534","GUID-F1361489-66F3-4E27-A5D1-71C97025815A")
+    /// Get-IshBaseline -IshSesssion $ishSession -Id $baselineIds -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE")
     /// </code>
     /// <para>Retrieve metadata from the identified baselines</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshBaseline", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshBaseline))]
     public sealed class GetIshBaseline : BaselineCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -77,7 +85,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
-		
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {
@@ -94,7 +109,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                 else
                 {
                     IshFields metadataFilter = new IshFields(MetadataFilter);
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                     var ids = (IshObject != null) ? new IshObjects(IshObject).Ids : Id;
                     WriteDebug($"Retrieving Id.length[{ids.Length}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                     string xmlIshObjects = IshSession.Baseline25.RetrieveMetadata(
@@ -102,11 +117,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                         metadataFilter.ToXml(),
                         requestedMetadata.ToXml());
 
-                    returnedObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnedObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
-                WriteObject(returnedObjects, true);
+                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

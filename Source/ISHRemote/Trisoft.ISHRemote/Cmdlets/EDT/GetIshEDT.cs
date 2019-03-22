@@ -41,22 +41,22 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     ///  -Metadata $metadata
     /// $edtId = $edt[0].IshRef
     /// $ishRequestedFields = Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME" -Level "None"
-    /// $edtRetrieve = Get-IshEDT -IshSession $ishSession `
+    /// $edtRetrieve = Get-IshEDT `
     ///  -Id @($edtId) `
     ///  -ActivityFilter "None" `
     ///  -RequestedMetadata $ishRequestedFields
     /// </code>
-    /// <para>Retrieve Name of added EDT</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve Name of added EDT</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshEDT", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
-    public sealed class GetIshEDT : EDTCmdlet
+    [OutputType(typeof(IshEDT))]
+    public sealed class GetIshEdt : EDTCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -108,6 +108,14 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
         private Enumerations.ActivityFilter _activityFilter = Enumerations.ActivityFilter.None;
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
+
 
         /// <summary>
         /// Process the Get-IshEDT commandlet.
@@ -133,7 +141,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                 {
                     EDT25ServiceReference.ActivityFilter activityFilter = EnumConverter.ToActivityFilter<EDT25ServiceReference.ActivityFilter>(ActivityFilter);
                     IshFields metadataFilter = new IshFields(MetadataFilter);
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
                     var ids = (IshObject != null) ? new IshObjects(IshObject).Ids : Id;                    
                     WriteDebug($"Retrieving for Id.length[{ids.Length}] ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
@@ -142,11 +150,11 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                         activityFilter,
                         metadataFilter.ToXml(),
                         requestedMetadata.ToXml());
-                    returnIshObjects.AddRange(new IshObjects(xmlIshObjects).Objects);
+                    returnIshObjects.AddRange(new IshObjects(ISHType, xmlIshObjects).Objects);
                 }
 
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
-                WriteObject(returnIshObjects, true);
+                WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

@@ -27,14 +27,21 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
     /// <para type="synopsis">The Remove-IshUserGroup cmdlet removes the user groups that are passed through the pipeline or determined via provided parameters</para>
     /// <para type="description">The Remove-IshUserGroup cmdlet removes the user groups that are passed through the pipeline or determined via provided parameters</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Get-IshUserGroup -Id VUSERGROUPDEFAULTDEPARTMENT | Remove-IshUserGroup
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets the user group and tries to remove it, which will fail if the user group is linked to objects.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshUserGroup", SupportsShouldProcess = true)]
     public sealed class RemoveIshUserGroup : UserGroupCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -50,6 +57,14 @@ namespace Trisoft.ISHRemote.Cmdlets.UserGroup
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {

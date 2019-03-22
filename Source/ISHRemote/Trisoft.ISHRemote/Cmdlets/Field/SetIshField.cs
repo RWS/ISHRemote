@@ -34,6 +34,17 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
     /// * If none of the above applies, the fields in the MergeFields are returned
     /// Best practice is to supply IshSession for future functionality.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $ishMetadataFieldsAction = Set-IshMetadataField -Name "FISHUSERDISABLED" -Level "none" -ValueType "Element" -Value "TRUE" |
+    ///                            Set-IshMetadataField -Name "FISHOBJECTACTIVE" -Level "none" -ValueType "Element" -Value "FALSE"
+	/// $ishobject = $ishobject |
+    ///              Set-IshField -MergeFields $ishMetadataFieldsAction -ValueAction "Overwrite" |
+    ///              Set-IshUser -IshSession $ishSession
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Preferably use the specialized IshField cmdlets, more for testing purposes this one.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshField", SupportsShouldProcess = false)]
     [OutputType(typeof(IshField),typeof(IshObject))]
     public sealed class SetIshField : FieldCmdlet
@@ -41,8 +52,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -87,6 +98,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
 
         private List<IshField> _incomingIshField = new List<IshField>();
         #endregion
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {

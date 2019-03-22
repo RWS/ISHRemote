@@ -41,18 +41,23 @@ Describe "Find-IshBaseline" -Tags "Read" {
 							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHDOCUMENTRELEASE" -ValueType Element |
 							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHLABELRELEASED" -ValueType Element
 		$metadataFilter = Set-IshMetadataFilterField -IShSession $ishSession -Name "NAME" -Level None -FilterOperator Equal -Value $baselineId
-		$ishObject = Find-IshBaseline -IShSession $ishSession -RequestedMetadata $requestedMetadata | 
-		             Where-Object -Property IshRef -EQ -Value $baselineId
-		It "GetType()" {
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
-		}
-		It "$ishObject.IshRef" {
+		It "Parameter IshSession explicit" {
+			$ishObject = Find-IshBaseline -IShSession $ishSession -RequestedMetadata $requestedMetadata | 
+		                 Where-Object -Property IshRef -EQ -Value $baselineId
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
 			$ishObject.IshRef -ge 0 | Should Be $true
-		}
-		It "$ishObject.IshType" {
 			$ishObject.IshType | Should Not BeNullOrEmpty
+			$ishObject.IshField | Should Not BeNullOrEmpty
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishdocumentrelease.Length -ge 1 | Should Be $true 
+			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should Be $true 
 		}
-		It "$ishObject.IshField" {
+		It "Parameter IshSession/RequestedMetadata implicit" {
+			$ishObject = Find-IshBaseline | 
+		                 Where-Object -Property IshRef -EQ -Value $baselineId
+			$ishObject.GetType().Name | Should BeExactly "IshBaseline"
+			$ishObject.IshRef -ge 0 | Should Be $true
+			$ishObject.IshType | Should Not BeNullOrEmpty
 			$ishObject.IshField | Should Not BeNullOrEmpty
 		}
 	}

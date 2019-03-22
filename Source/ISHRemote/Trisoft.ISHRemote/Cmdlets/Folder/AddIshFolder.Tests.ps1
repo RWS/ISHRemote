@@ -27,14 +27,20 @@ Describe “Add-IshFolder" -Tags "Create" {
 		It "GetType().Name" {
 			$ishFolderCmdlet.GetType().Name | Should BeExactly "IshFolder"
 		}
-		It "$ishFolderCmdlet.IshFolderRef" {
+		It "ishFolderCmdlet.IshFolderRef" {
 			$ishFolderCmdlet.IshFolderRef -ge 0 | Should Be $true
 		}
-		It "$ishFolderCmdlet.IshFolderType" {
+		It "ishFolderCmdlet.IshFolderType" {
 			$ishFolderCmdlet.IshFolderType | Should Not BeNullOrEmpty
 		}
-		It "$ishFolderCmdlet.IshField" {
+		It "ishFolderCmdlet.IshField" {
 			$ishFolderCmdlet.IshField | Should Not BeNullOrEmpty
+		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishFolderCmdlet.name.Length -ge 1 | Should Be $true 
+			$ishFolderCmdlet.fdocumenttype.Length -ge 1 | Should Be $true 
+			$ishFolderCmdlet.fdocumenttype_none_element.StartsWith('VDOCTYPE') | Should Be $true 
 		}
 	}
 
@@ -90,15 +96,15 @@ Describe “Add-IshFolder" -Tags "Create" {
 		It "Parameter IshFolder invalid" {
 			{ Add-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should Throw
 		}
-		It "Parameter IshFolder Single" {
-			$ishFolderEditorTemplate = $ishFolderEditorTemplate | Set-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -Value "EditorTemplate IshFoldersGroup Parameter IshFolder Single"
-			$ishFolders = Add-IshFolder -IshSession $ishSession -IshFolder $ishFolderEditorTemplate -ParentFolderId $ishFolderCmdlet.IshFolderRef
+		It "Parameter IshFolder Single with implicit IshSession" {
+			$ishFolderEditorTemplate = $ishFolderEditorTemplate | Set-IshMetadataField -Name "FNAME" -Level None -Value "EditorTemplate IshFoldersGroup Parameter IshFolder Single"
+			$ishFolders = Add-IshFolder -IshFolder $ishFolderEditorTemplate -ParentFolderId $ishFolderCmdlet.IshFolderRef
 			$ishFolders.Count | Should Be 1
 		}
-		It "Parameter IshFolder Multiple" {
-			$ishFolderEditorTemplate = $ishFolderEditorTemplate | Set-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -Value "EditorTemplate IshFoldersGroup Parameter IshFolder Multiple"
-			$ishFolderFavorites = $ishFolderFavorites | Set-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -Value "Favorites IshFoldersGroup Parameter IshFolder Multiple"
-			$ishFolders = Add-IshFolder -IshSession $ishSession -IshFolder @($ishFolderEditorTemplate,$ishFolderFavorites) -ParentFolderId $ishFolderCmdlet.IshFolderRef
+		It "Parameter IshFolder Multiple with implicit IshSession" {
+			$ishFolderEditorTemplate = $ishFolderEditorTemplate | Set-IshMetadataField -Name "FNAME" -Level None -Value "EditorTemplate IshFoldersGroup Parameter IshFolder Multiple"
+			$ishFolderFavorites = $ishFolderFavorites | Set-IshMetadataField -Name "FNAME" -Level None -Value "Favorites IshFoldersGroup Parameter IshFolder Multiple"
+			$ishFolders = Add-IshFolder -IshFolder @($ishFolderEditorTemplate,$ishFolderFavorites) -ParentFolderId $ishFolderCmdlet.IshFolderRef
 			$ishFolders.Count | Should Be 2
 		}
 		It "Pipeline IshFolder Single" {

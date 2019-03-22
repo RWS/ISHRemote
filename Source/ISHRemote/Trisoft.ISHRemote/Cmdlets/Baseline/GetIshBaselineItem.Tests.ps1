@@ -16,27 +16,30 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 		$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 		$ishObject = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 		$ishObject = Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--AAA" -Version "1"
-		$ishBaselineItem = (Get-IshBaselineItem -IShSession $ishSession -IshObject $ishObject)[0]
-		It "GetType()" {
+		
+		It "Parameter IshSession explicit" {
+			$ishBaselineItem = (Get-IshBaselineItem -IShSession $ishSession -IshObject $ishObject)[0]
 			$ishBaselineItem.GetType().Name | Should BeExactly "IshBaselineItem"
-		}
-		It "$ishBaselineItem.IshRef" {
 			$ishBaselineItem.IshRef | Should Not BeNullOrEmpty
-		}
-		It "$ishBaselineItem.LogicalId" {
 			$ishBaselineItem.LogicalId | Should Not BeNullOrEmpty
-		}
-		It "$ishBaselineItem.Version" {
 			$ishBaselineItem.Version | Should Not BeNullOrEmpty
-		}
-		It "$ishBaselineItem.Author" {
 			$ishBaselineItem.Author | Should Not BeNullOrEmpty
-		}
-		It "$ishBaselineItem.CreatedOn" {
 			$ishBaselineItem.CreatedOn | Should Not BeNullOrEmpty
-		}
-		It "$ishBaselineItem.ModifiedOn" {
+			$ishBaselineItem.CreatedOnAsSortableDateTime | Should Not BeNullOrEmpty
 			$ishBaselineItem.ModifiedOn | Should Not BeNullOrEmpty
+			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should Not BeNullOrEmpty
+		}
+		It "Parameter IshSession implicit" {
+			$ishBaselineItem = (Get-IshBaselineItem -IshObject $ishObject)[0]
+			$ishBaselineItem.GetType().Name | Should BeExactly "IshBaselineItem"
+			$ishBaselineItem.IshRef | Should Not BeNullOrEmpty
+			$ishBaselineItem.LogicalId | Should Not BeNullOrEmpty
+			$ishBaselineItem.Version | Should Not BeNullOrEmpty
+			$ishBaselineItem.Author | Should Not BeNullOrEmpty
+			$ishBaselineItem.CreatedOn | Should Not BeNullOrEmpty
+			$ishBaselineItem.CreatedOnAsSortableDateTime | Should Not BeNullOrEmpty
+			$ishBaselineItem.ModifiedOn | Should Not BeNullOrEmpty
+			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should Not BeNullOrEmpty		
 		}
 	}
 

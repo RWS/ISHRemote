@@ -28,14 +28,21 @@ namespace Trisoft.ISHRemote.Cmdlets.User
     /// <para type="synopsis">The Find-IshUser cmdlet finds users using ActivityFilter and MetadataFilter that are provided</para>
     /// <para type="description">The Find-IshUser cmdlet finds users using ActivityFilter and MetadataFilter that are provided</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// (Find-IshUser).count
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Counting all users.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Find, "IshUser", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUser))]
     public sealed class FindIshUser : UserCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// ActivityFilter
@@ -70,13 +77,21 @@ namespace Trisoft.ISHRemote.Cmdlets.User
         private Enumerations.ActivityFilter _activityFilter = Enumerations.ActivityFilter.None;
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
+
         protected override void ProcessRecord()
         {
 
             try
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 var activityFilter = EnumConverter.ToActivityFilter<User25ServiceReference.ActivityFilter>(ActivityFilter);
                 WriteDebug($"Finding ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 string xmlIshObjects = IshSession.User25.Find(
@@ -84,9 +99,9 @@ namespace Trisoft.ISHRemote.Cmdlets.User
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
 
-                var returnedObjects = new IshObjects(xmlIshObjects).Objects;
-                WriteVerbose("returned object count[" + returnedObjects.Length + "]");
-                WriteObject(returnedObjects, true);
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
+                WriteVerbose("returned object count[" + returnedObjects.Count + "]");
+                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

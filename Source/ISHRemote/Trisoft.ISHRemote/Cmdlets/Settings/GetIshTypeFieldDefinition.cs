@@ -38,7 +38,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// <code>
     /// Get-IshTypeFieldDefinition | Where-Object -Property ISHType -eq "ISHUser"
     /// </code>
-    /// <para>Without IshSession the latest internal resource string will be loaded (based on Full-Export). The Where-Object allows filtering on chosen properties.</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
+    /// <para>If no IshSession set, the latest internal resource string will be loaded (based on Full-Export). The Where-Object allows filtering on chosen properties.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -92,17 +93,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         {
             try
             {
-                WriteDebug("Importing");
                 if (IshSession != null)
                 {
-                    WriteDebug($"Importing IshSession.ServerVersion[{IshSession.ServerVersion}]");
-                    if (13 <= Convert.ToInt64(IshSession.ServerVersion.Substring(0, IshSession.ServerVersion.IndexOf('.'))))
+                    WriteDebug($"Importing using explicit IshSession[{IshSession.Name}] IshSession.ServerVersion[{IshSession.ServerVersion}]");
+                    if (13 <= IshSession.ServerIshVersion.MajorVersion)
                     {
                         // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
                         WriteVerbose($"Importing Settings25.RetrieveFieldSetupByIshType in IshSession.ServerVersion[{IshSession.ServerVersion}]");
                         IshSession.IshTypeFieldDefinition = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null)).IshTypeFieldDefinition;
                         WriteObject(IshSession.IshTypeFieldDefinition, true);
-                        WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count()}]");
+                        WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count}]");
                     }
                     else
                     {
@@ -113,7 +113,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                             var triDKXmlSetupHelper = new TriDKXmlSetupHelper(Logger, File.ReadAllText(TriDKXmlSetupFilePath));
                             IshSession.IshTypeFieldDefinition = new IshTypeFieldSetup(Logger, triDKXmlSetupHelper.IshTypeFieldDefinition).IshTypeFieldDefinition;
                             WriteObject(IshSession.IshTypeFieldDefinition, true);
-                            WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count()}]");
+                            WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count}]");
                         }
                         else
                         {
@@ -122,26 +122,36 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                             var triDKXmlSetupHelper = new TriDKXmlSetupHelper(Logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
                             IshSession.IshTypeFieldDefinition = new IshTypeFieldSetup(Logger, triDKXmlSetupHelper.IshTypeFieldDefinition).IshTypeFieldDefinition;
                             WriteObject(IshSession.IshTypeFieldDefinition, true);
-                            WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count()}]");
+                            WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count}]");
                         }
                     }
                 }
                 else
                 {
-                    if (TriDKXmlSetupFilePath != null)
+                    IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession);
+                    if ((TriDKXmlSetupFilePath == null) && (IshSession != null) && (13 <= IshSession.ServerIshVersion.MajorVersion))
+                    {
+                        WriteDebug($"Importing using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+                        // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
+                        WriteVerbose($"Importing Settings25.RetrieveFieldSetupByIshType in IshSession.ServerVersion[{IshSession.ServerVersion}]");
+                        IshSession.IshTypeFieldDefinition = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null)).IshTypeFieldDefinition;
+                        WriteObject(IshSession.IshTypeFieldDefinition, true);
+                        WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count}]");
+                    }
+                    else if (TriDKXmlSetupFilePath != null)
                     {
                         // always allow? only when IshSession.ServerVersion < 13.0.0
                         WriteVerbose($"Importing TriDKXmlSetupFilePath[{TriDKXmlSetupFilePath}] without IshSession");
                         var triDKXmlSetupHelper = new TriDKXmlSetupHelper(Logger, File.ReadAllText(TriDKXmlSetupFilePath));
                         WriteObject(triDKXmlSetupHelper.IshTypeFieldDefinition, true);
-                        WriteVerbose($"returned object count[{triDKXmlSetupHelper.IshTypeFieldDefinition.Count()}]");
+                        WriteVerbose($"returned object count[{triDKXmlSetupHelper.IshTypeFieldDefinition.Count}]");
                     }
                     else
                     {
                         WriteWarning($"Importing best match local resource entry without IshSession. Note that custom metadata fields will be missing, either use option -TriDKXmlSetupFilePath or upgrade to 13.0.0 where your setup can dynamically be retrieved using Settings25.RetrieveFieldSetupByIshType API call.");
                         var triDKXmlSetupHelper = new TriDKXmlSetupHelper(Logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
                         WriteObject(triDKXmlSetupHelper.IshTypeFieldDefinition, true);
-                        WriteVerbose($"returned object count[{triDKXmlSetupHelper.IshTypeFieldDefinition.Count()}]");
+                        WriteVerbose($"returned object count[{triDKXmlSetupHelper.IshTypeFieldDefinition.Count}]");
                     }
                 }
             }

@@ -16,7 +16,7 @@ Describe “Add-IshUserGroup" -Tags "Create" {
 		It "GetType().Name" {
 			$userGroupName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshUserGroup -IshSession $ishSession -Name $userGroupName
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUserGroup"
 			$ishObject.Count | Should Be 1
 		}
 		It "Parameter Metadata" {
@@ -32,6 +32,10 @@ Describe “Add-IshUserGroup" -Tags "Create" {
 			$ishObject = Add-IshUserGroup -IshSession $ishSession -Name $userGroupName -Metadata $metadata
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should Be $true
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERGROUPNAME -Level None).Length -gt 1 | Should Be $true
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.fishobjectactive.Length -ge 1 | Should Be $true 
+			$ishObject.fishusergroupname.Length -ge 1 | Should Be $true 
+			$ishObject.fishusergroupname_none_element.StartsWith('VUSERGROUP') | Should Be $true 
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference
@@ -69,14 +73,14 @@ Describe “Add-IshUserGroup" -Tags "Create" {
 		It "Parameter IshObject invalid" {
 			{ Add-IshUserGroup -IShSession $ishSession -IshObject "INVALIDUSERGROUP" } | Should Throw
 		}
-		It "Parameter IshObject Single" {
-			$ishObjects = Add-IshUserGroup -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjects | Remove-IshUserGroup -IshSession $ishSession
+		It "Parameter IshObject Single with implicit IshSession" {
+			$ishObjects = Add-IshUserGroup -IshObject $ishObjectA
+			$ishObjects | Remove-IshUserGroup
 			$ishObjects.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-			$ishObjects = Add-IshUserGroup -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
-			$ishObjects | Remove-IshUserGroup -IshSession $ishSession
+		It "Parameter IshObject Multiple with implicit IshSession" {
+			$ishObjects = Add-IshUserGroup -IshObject @($ishObjectB,$ishObjectC)
+			$ishObjects | Remove-IshUserGroup
 			$ishObjects.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

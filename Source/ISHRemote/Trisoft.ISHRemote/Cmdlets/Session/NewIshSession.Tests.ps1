@@ -128,6 +128,12 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.StrictMetadataPreference" {
 			$ishSession.StrictMetadataPreference | Should Be "Continue"
 		}
+		It "IshSession.PipelineObjectPreference" {
+			$ishSession.PipelineObjectPreference | Should Be "PSObjectNoteProperty"
+		}
+		It "IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+		}
 		It "IshSession.WebServicesBaseUrl" {
 			$ishSession.WebServicesBaseUrl | Should Not BeNullOrEmpty
 		}

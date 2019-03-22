@@ -46,6 +46,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshEventGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBackgroundTaskGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -56,6 +57,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshEventGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBackgroundTaskGroup")]
         public string Name { get; set; }
 
         /// <summary>
@@ -65,6 +67,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshEventGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBackgroundTaskGroup")]
         public Enumerations.Level Level
         {
             get { return _level; }
@@ -78,6 +81,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshEventGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBackgroundTaskGroup")]
         public Enumerations.ValueType ValueType
         {
             get { return _valueType; }
@@ -108,6 +112,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshEventGroup")]
         public IshEvent[] IshEvent { get; set; }
 
+        /// <summary>
+        /// <para type="description">The objects container object, specialized for event handling</para>
+        /// </summary>
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshBackgroundTaskGroup")]
+        public IshBackgroundTask[] IshBackgroundTask { get; set; }
 
         #region Private fields
         /// <summary>
@@ -116,6 +125,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         private Enumerations.Level _level = Enumerations.Level.None;
         private Enumerations.ValueType _valueType = Enumerations.ValueType.Value;
         #endregion
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            //if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); } // don't throw as for Field cmdlets this trully is optional
+            //WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {
@@ -154,6 +171,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
                     foreach (IshEvent ishEvent in IshEvent)
                     {
                         WriteObject(ishEvent.IshFields.GetFieldValue(Name, Level, ValueType), true);
+                    }
+                }
+                else if (IshBackgroundTask != null)
+                {
+                    foreach (IshBackgroundTask ishBackgroundTask in IshBackgroundTask)
+                    {
+                        WriteObject(ishBackgroundTask.IshFields.GetFieldValue(Name, Level, ValueType), true);
                     }
                 }
             }

@@ -32,11 +32,12 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
     /// </summary>
     /// <example>
     /// <code>
-    /// $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTID" -Level "Progress" |
-    ///                      Set-IshRequestedMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level "Progress"
-    /// Get-IshEvent -IshSession $ishSession -EventTypes @("EXPORTFORPUBLICATION","SYNCHRONIZETOLIVECONTENT") -RequestedMetadata $requestedMetadata
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $requestedMetadata = Set-IshRequestedMetadataField -Name "EVENTID" -Level "Progress" |
+    ///                      Set-IshRequestedMetadataField -Name "EVENTTYPE" -Level "Progress"
+    /// Get-IshEvent -EventTypes @("EXPORTFORPUBLICATION","SYNCHRONIZETOLIVECONTENT") -RequestedMetadata $requestedMetadata
     /// </code>
-    /// <para>Gets all top-level (progress) ishevents filtered to publish and synchronize events.</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets all top-level (progress) ishevents filtered to publish and synchronize events.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -66,8 +67,8 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshEventsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshEventsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -156,6 +157,14 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
         private List<IshEvent> _retrievedIshEvents = new List<IshEvent>();
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
+
 
         /// <summary>
         /// Process the cmdlet.
@@ -192,7 +201,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
         {
             try
             {
-                IshFields requestedMetadata = AddRequiredFields(new IshFields(RequestedMetadata).ToRequestedFields());  // ToRequestedFields() should not be required if TableType like CardTypes pass IshTypeFieldSetup
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 string xmlIshEvents;
                 if (_retrievedIshEvents.Count == 0)
                 {
@@ -215,10 +224,9 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
                     xmlIshEvents = IshSession.EventMonitor25.RetrieveEventsByProgressIds(progressRefs.ToArray(), _eventLevel, lastDetailId, metadataFilter.ToXml(), requestedMetadata.ToXml());
                     _retrievedIshEvents = new IshEvents(xmlIshEvents).Events;
                 }
-                WriteVerbose("returned event count[" + _retrievedIshEvents.Count + "]");
 
-                //Every cmdlet should return as a promoted PSObject which allows up-to-date PSNoteProperty
-                WriteObject(WrapAsPSObjectAndAddNoteProperties(_retrievedIshEvents), true);
+                WriteVerbose("returned object count[" + _retrievedIshEvents.Count + "]");
+                WriteObject(IshSession, ISHType, _retrievedIshEvents.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

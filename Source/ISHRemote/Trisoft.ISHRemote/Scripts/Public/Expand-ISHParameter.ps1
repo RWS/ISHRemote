@@ -33,13 +33,20 @@ $function:tabexpansion2 = $function:tabexpansion2 -replace 'End\r\n{','End { if 
 
 Write-Debug ("[" + $MyInvocation.MyCommand + "] Parameter binding for *-IshLovValue:LovId")
 $starIshLovValueLovId = {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+	$ishSession = Get-IshAuxSessionState -Name "ISHRemoteSessionStateIshSession"
 	if (($null -ne $fakeBoundParameter['IshSession']) -And ($fakeBoundParameter['IshSession'].GetType().Name -eq 'IshSession') -And ($fakeBoundParameter['IshSession'].IshTypeFieldDefinition.Count -gt 0))
 	{
-		$fakeBoundParameter['IshSession'].IshTypeFieldDefinition | 
-		? { $_.ReferenceLov -like "$wordToComplete*" } | 
+		# Explicit -IshSession takes precedence over SessionState one
+		$ishSession = $fakeBoundParameter['IshSession']
+		
+	}
+	if ( $null -ne $ishSession)
+	{
+		$ishSession.IshTypeFieldDefinition | 
+		Where-Object { $_.ReferenceLov -like "$wordToComplete*" } | 
 		Sort-Object -Unique ReferenceLov | 
-		% { New-IshAuxCompletionResult $_.ReferenceLov }
+		ForEach-Object { New-IshAuxCompletionResult $_.ReferenceLov }
 	}
 }
 Register-IshAuxParameterCompleter -CommandName 'Add-IshLovValue' -ParameterName 'LovId' -ScriptBlock $starIshLovValueLovId
@@ -50,14 +57,20 @@ Register-IshAuxParameterCompleter -CommandName 'Set-IshLovValue' -ParameterName 
 
 Write-Debug ("[" + $MyInvocation.MyCommand + "] Parameter binding for *-*Field:Name (field names)")
 $fieldName = {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+	$ishSession = Get-IshAuxSessionState -Name "ISHRemoteSessionStateIshSession"
 	if (($null -ne $fakeBoundParameter['IshSession']) -And ($fakeBoundParameter['IshSession'].GetType().Name -eq 'IshSession') -And ($fakeBoundParameter['IshSession'].IshTypeFieldDefinition.Count -gt 0))
 	{
-        # TODO [Could] Expand parameter could take -Level into account to filter even more 
-		$fakeBoundParameter['IshSession'].IshTypeFieldDefinition | 
-		? { $_.Name -like "$wordToComplete*" } | 
+		# Explicit -IshSession takes precedence over SessionState one
+		$ishSession = $fakeBoundParameter['IshSession']
+	}
+	if ($ishSession -ne $null)
+	{
+		# TODO [Could] Expand parameter could take -Level into account to filter even more 
+		$ishSession.IshTypeFieldDefinition | 
+		Where-Object { $_.Name -like "$wordToComplete*" } | 
 		Sort-Object -Unique Name | 
-		% { New-IshAuxCompletionResult $_.Name -ToolTip ($_.Name + " (" + $_.Type + ") - " + $_.Description ) }
+		ForEach-Object { New-IshAuxCompletionResult $_.Name -ToolTip ($_.Name + " (" + $_.Type + ") - " + $_.Description ) }
 	}
 }
 Register-IshAuxParameterCompleter -CommandName 'Get-IshMetadataField' -ParameterName 'Name' -ScriptBlock $fieldName

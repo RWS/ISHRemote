@@ -44,5 +44,15 @@ namespace Trisoft.ISHRemote.Objects.Public
             : base(ishRequestedMetadataField._fieldName, ishRequestedMetadataField._fieldLevel, ishRequestedMetadataField._valueType)
         {
         }
+
+        /// <summary>
+        /// Debugging implementation
+        /// </summary>
+        /// <returns>string</returns>
+        public override string ToString()
+        {
+            return $"Set-IshRequestedMetadataField -Level {StringEnum.GetStringValue(Level)} -Name {Name} -ValueType {StringEnum.GetStringValue(_valueType)}";
+            //return $"<ishfield name='{Name}' level='{StringEnum.GetStringValue(Level)}' ishvaluetype='{StringEnum.GetStringValue(_valueType)}'></ishfield>";
+        }
     }
 }

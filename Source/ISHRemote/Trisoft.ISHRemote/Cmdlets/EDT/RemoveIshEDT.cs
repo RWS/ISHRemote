@@ -38,9 +38,9 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     ///  -Name "MYEDT" `
     ///  -Metadata $metadata
     /// #Remove EDT using pipeline
-    /// $edt | Remove-IshEDT -IshSession $ishSession
+    /// $edt | Remove-IshEDT
     /// </code>
-    /// <para>Remove added EDT</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Remove added EDT</para>
     /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshEDT", SupportsShouldProcess = true)]
     public sealed class RemoveIshEDT : EDTCmdlet
@@ -49,8 +49,8 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -66,6 +66,14 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Remove-IshEDT commandlet.

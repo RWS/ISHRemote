@@ -31,18 +31,25 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
+    /// Find-IshUserRole
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve all user roles with their Basic metadata.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
     /// Find-IshUserRole -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHUSERROLENAME")
     /// </code>
-    /// <para>Retrieve all user roles</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve one specific field for all user roles.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshUserRole", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshUserRole))]
     public sealed class FindIshUserRole : UserRoleCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -75,13 +82,21 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
         private Enumerations.ActivityFilter _activityFilter = Enumerations.ActivityFilter.None;
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
+
 
         protected override void ProcessRecord()
         {
             try
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
                 var activityFilter = EnumConverter.ToActivityFilter<UserRole25ServiceReference.ActivityFilter>(ActivityFilter);
 
                 WriteDebug($"Finding ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
@@ -90,9 +105,9 @@ namespace Trisoft.ISHRemote.Cmdlets.UserRole
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
 
-                var returnedObjects = new IshObjects(xmlIshObjects).Objects;
-                WriteVerbose("returned object count[" + returnedObjects.Length + "]");
-                WriteObject(returnedObjects, true);
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
+                WriteVerbose("returned object count[" + returnedObjects.Count + "]");
+                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

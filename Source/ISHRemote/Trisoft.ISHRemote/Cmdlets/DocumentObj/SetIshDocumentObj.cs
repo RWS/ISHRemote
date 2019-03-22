@@ -43,15 +43,15 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para>For all versions and languages retrieved, push them to status 'To Be Reviewed' and immediately to 'Release'. Note that also Find-IshDocumentObj or Get-IshFolderContent are ways to get to content objects.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshDocumentObj", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshDocumentObj))]
     public sealed class SetIshDocumentObj : DocumentObjCmdlet
     {
 
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -113,6 +113,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
 
         /// <summary>
@@ -184,9 +192,9 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         var returnFields = (IshObject[0] == null)
                             ? new IshFields()
                             : IshObject[0].IshFields;
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, returnFields, Enumerations.ActionMode.Read);
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(lngCardIds.ToArray(), requestedMetadata.ToXml());
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                     else
@@ -194,7 +202,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         string resolution = Resolution ?? "";
                         var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
 
-                        string version;
+                        string version = "-1";
                         if (Edt != null && FilePath != null)
                         {
                             IshData ishData = new IshData(Edt, FilePath);
@@ -211,8 +219,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     requiredCurrentMetadata.ToXml(),
                                     ishData.Edt,
                                     ishData.ByteArray));
+                                version = response.version;
                             }
-                            version = response.version;
                         }
                         else
                         {
@@ -227,23 +235,24 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                 resolution,
                                 metadata.ToXml(),
                                 requiredCurrentMetadata.ToXml()));
+                                version = response.version;
                             }
-                            version = response.version;
                         }
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                         var response2 = IshSession.DocumentObj25.GetMetadata(new GetMetadataRequest(LogicalId,
                             version,
                             Lng,
                             resolution,
                             requestedMetadata.ToXml()));
-                        IshObjects retrievedObjects = new IshObjects(response2.xmlObjectList);
+                        string xmlIshObjects = response2.xmlObjectList;
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
                     }
                 }            
 
                 // 3. Write it
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
-                WriteObject(returnedObjects.ToArray());
+                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

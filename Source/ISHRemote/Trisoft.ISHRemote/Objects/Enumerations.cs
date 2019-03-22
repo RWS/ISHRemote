@@ -46,7 +46,11 @@ namespace Trisoft.ISHRemote.Objects
             [StringValue("detail")]
             Detail = 310,
             [StringValue("data")]
-            Data = 320
+            Data = 320,
+            [StringValue("task")]
+            Task = 400,
+            [StringValue("history")]
+            History = 410,
         }
 
         /// <summary>
@@ -99,6 +103,47 @@ namespace Trisoft.ISHRemote.Objects
             /// </summary>
             [StringValue("off")]
             Off
+        }
+
+        /// <summary>
+        /// <para type="description">Allows tuning client-side object enrichment like no wrapping (off) or PSObject-with-PSNoteProperty wrapping.</para>
+        /// </summary>
+        public enum PipelineObjectPreference
+        {
+            /// <summary>
+            /// Wrap every possible pipeline object with PSObject and add PSNoteProperty for all IshFields
+            /// </summary>
+            [StringValue("psobjectnoteproperty")]
+            PSObjectNoteProperty,
+            /// <summary>
+            /// Deprecated legacy behavior (0.6 and earlier), so no pipeline PSObject wrapping
+            /// </summary>
+            [StringValue("off")]
+            Off
+        }
+
+        public enum RequestedMetadataGroup
+        {
+            /// <summary>
+            /// performance-optimized, only primary keys
+            /// </summary>
+            [StringValue("descriptive")]
+            Descriptive,
+            /// <summary>
+            /// user friendly fields used in tables
+            /// </summary>
+            [StringValue("basic")]
+            Basic,
+            // <summary>
+            // not performant, tech fields only
+            // </summary>
+            //[StringValue("system")]
+            //System,
+            /// <summary>
+            /// not performant
+            /// </summary>
+            [StringValue("all")]
+            All
         }
 
 
@@ -173,7 +218,7 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
-        /// <para type="description">Used by IshObject to set all reference types on a card</para>
+        /// <para type="description">Used by IshObject/IshEvent/IshBackgroundTask to set all reference types on a card</para>
         /// </summary>
         public enum ReferenceType
         {
@@ -198,7 +243,11 @@ namespace Trisoft.ISHRemote.Objects
             [StringValue("ishprogressref")]
             EventProgress,
             [StringValue("ishdetailref")]
-            EventDetail
+            EventDetail,
+            [StringValue("ishtaskref")]
+            BackgroundTask,
+            [StringValue("ishhistoryref")]
+            BackgroundTaskHistory
         }
 
         /// <summary>
@@ -281,7 +330,15 @@ namespace Trisoft.ISHRemote.Objects
             /// <summary>
             /// Conditional Context, available on FISHCONTEXT (used to be saved on CTCONTEXT card type)
             /// </summary>
-            ISHFeatures
+            ISHFeatures,
+            /// <summary>
+            /// Background Task table
+            /// </summary>
+            ISHBackgroundTask,
+            /// <summary>
+            /// Event Monitor table
+            /// </summary>
+            ISHEvent
         }
 
 
@@ -403,6 +460,29 @@ namespace Trisoft.ISHRemote.Objects
             /// No status filter
             /// </summary>
             ISHNoStatusFilter
+        }
+
+        /// <summary>
+        /// <para type="description">BackgroundTask Status Filter</para>
+        /// </summary>
+        public enum BackgroundTaskStatusFilter
+        {
+            /// <summary>
+            /// Filtering on the status Busy will return all with status: VBACKGROUNDTASKSTATUSEXECUTING, VBACKGROUNDTASKSTATUSPENDING
+            /// </summary>
+            Busy,
+            /// <summary>
+            /// Filtering on the status Success will return all with status: VBACKGROUNDTASKSTATUSSUCCESS, VBACKGROUNDTASKSTATUSSKIPPED
+            /// </summary>
+            Success,
+            /// <summary>
+            /// Filtering on the status Failed will return all with status: VBACKGROUNDTASKSTATUSFAILED, VBACKGROUNDTASKSTATUSABORTED (NotUsedIn-13.0.1), VBACKGROUNDTASKSTATUSCANCELPENDING (NotUsedIn-13.0.1), VBACKGROUNDTASKSTATUSCANCELLED (NotUsedIn-13.0.1)
+            /// </summary>
+            Failed,
+            /// <summary>
+            /// No filtering on the status is applied 
+            /// </summary>
+            All
         }
 
         /// <summary>

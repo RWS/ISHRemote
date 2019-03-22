@@ -31,7 +31,7 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 		$ishObject = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 		It "GetType().Name" {
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshDocumentObj"
 		}
 		It "$ishObject.IshData" {
 			{ $ishObject.IshData } | Should Not Throw
@@ -54,6 +54,18 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 		}
 		It "$ishObject.ObjectRef[Enumerations.ReferenceType.Lng]" {
 			$ishObject.ObjectRef["Lng"] | Should Not BeNullOrEmpty
+		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			#logical
+			$ishObject.ftitle_logical_value.Length -ge 1 | Should Be $true 
+			#version
+			$ishObject.version_version_value.Length -ge 1 | Should Be $true 
+			#language
+			$ishObject.fstatus.Length -ge 1 | Should Be $true 
+			$ishObject.fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
+			$ishObject.doclanguage.Length -ge 1 | Should Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
+			$ishObject.doclanguage_lng_element.StartsWith('VLANGUAGE') | Should Be $true 
 		}
 	}
 
@@ -129,23 +141,23 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 		It "Parameter IshObject invalid" {
 			{ Add-IshDocumentObj -IshSession $ishSession -IshFolder "INVALIDISHFOLDER" -IshObject "INVALIDISHOBJECT" } | Should Throw
 		}
-		It "Parameter IshObject Single" {
+		It "Parameter IshObject Single with implicit IshSession" {
 			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			             Get-IshDocumentObjData -IshSession $ishSession
+			$ishObject = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+			             Get-IshDocumentObjData
 			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObject
-			$ishObjectArray = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshObject $ishObject
+			$ishObjectArray = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshObject $ishObject
 			$ishObjectArray.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
+		It "Parameter IshObject Multiple with implicit IshSession" {
 			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
-			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
+			$ishObjectA = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+			              Get-IshDocumentObjData 
 			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-			              Get-IshDocumentObjData -IshSession $ishSession
-			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectB
-			$ishObjectArray = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshObject @($ishObjectA,$ishObjectB)
+			$ishObjectB = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+			              Get-IshDocumentObjData
+			Remove-IshDocumentObj -IshObject $ishObjectB
+			$ishObjectArray = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshObject @($ishObjectA,$ishObjectB)
 			$ishObjectArray.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

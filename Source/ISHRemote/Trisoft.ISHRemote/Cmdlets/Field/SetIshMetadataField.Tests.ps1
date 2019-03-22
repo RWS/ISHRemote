@@ -57,18 +57,18 @@ Describe “Set-IshMetadataField" -Tags "Read" {
 			$value = "SingleString"
 			(Set-IshMetadataField -IshSession $ishSession -IshField @($ishFieldA,$ishFieldB) -Name "FTITLE" -Level Logical -ValueType Element -value $value).Length | Should Be 1
 		}
-		It "Pipeline IshFields Single" {
+		It "Pipeline IshFields Single with implicit IshSession" {
 			$value = "OrginalString"
-			$ishFieldA =Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element -value $value
+			$ishFieldA =Set-IshMetadataField -Name "FTITLE" -Level Logical -ValueType Element -value $value
 			$value = "SingleString"
-			($ishFieldA | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element -value $value | Get-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element) -eq $value | Should Be $true
+			($ishFieldA | Set-IshMetadataField -Name "FTITLE" -Level Logical -ValueType Element -value $value | Get-IshMetadataField -Name "FTITLE" -Level Logical -ValueType Element) -eq $value | Should Be $true
 		}
-		It "Pipeline IshFields Multiple" {
+		It "Pipeline IshFields Multiple with implicit IshSession" {
 			$value = "OrginalString"
-			$ishFieldA =Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element -value $value
-			$ishFieldB =Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element -value $value
+			$ishFieldA =Set-IshMetadataField -Name "FTITLE" -Level Logical -ValueType Element -value $value
+			$ishFieldB =Set-IshMetadataField -Name "FTITLE" -Level Logical -ValueType Element -value $value
 			$value = "SingleString"
-			(@($ishFieldA,$ishFieldB) | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -ValueType Element -value $value).Length | Should Be 1
+			(@($ishFieldA,$ishFieldB) | Set-IshMetadataField -Name "FTITLE" -Level Logical -ValueType Element -value $value).Length | Should Be 1
 		}
 	}
 

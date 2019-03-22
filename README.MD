@@ -160,3 +160,12 @@ of our module the option would be:
 Warning: If you get a security warning, run the above exact powershell.exe command using Run As Administrator, 
 then execute `Set-ExecutionPolicy Unrestricted`
 
+## Static Code Analysis (experiment)
+
+1. Using `Docker Desktop` and `PowerShell Core 6` started `docker run -d --name sonarqube -p 9000:9000 sonarqube`
+1. Navigated to `http://localhost:9000/` going to through the new project wizard (admin, ISHRemote)
+1. Using `MSBuild Command Prompt for VS2015` triggered
+    1. `C:\TEMP\sonar\sonarscanner-msbuild\SonarScanner.MSBuild.exe begin /k:"ISHRemote" /d:sonar.host.url="http://localhost:9000" /d:sonar.login="9e96746fe7c2c8d11f6be0eed88cf3fb08c586d3"`
+    1. `MsBuild.exe /t:Rebuild`
+    1. `C:\TEMP\sonar\sonarscanner-msbuild\SonarScanner.MSBuild.exe end /d:sonar.login="9e96746fe7c2c8d11f6be0eed88cf3fb08c586d3"`
+1. Then look at the analysis :)

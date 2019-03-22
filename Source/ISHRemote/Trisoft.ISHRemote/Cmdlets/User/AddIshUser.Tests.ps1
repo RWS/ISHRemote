@@ -19,7 +19,7 @@ Describe "Add-IshUser" -Tags "Create" {
                          Set-IshMetadataField -IshSession $ishSession -Name FUSERGROUP -Level None -ValueType Element -Value "VUSERGROUPDEFAULTDEPARTMENT" |
                          Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "SomethingSecret"
 			$ishObject = Add-IshUser -IshSession $ishSession -Name $userName -Metadata $metadata
-			$ishObject.GetType().Name | Should BeExactly "IshObject"
+			$ishObject.GetType().Name | Should BeExactly "IshUser"
 			$ishObject.Count | Should Be 1
 		}
 		It "Parameter Metadata" {
@@ -42,6 +42,10 @@ Describe "Add-IshUser" -Tags "Create" {
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FUSERGROUP -Level None -ValueType Element).Length -gt 1 | Should Be $true # added user field by element name
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FUSERGROUP -Level None -ValueType Value).Length -gt 1 | Should Be $true # added user field by element name, value added by AddDescriptiveFields
 			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name USERNAME -Level None).Length -gt 1 | Should Be $true
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishObject.username.Length -ge 1 | Should Be $true 
+			$ishObject.fishusertype.Length -ge 1 | Should Be $true 
+			$ishObject.fishusertype_none_element.StartsWith('VUSERTYPE') | Should Be $true 
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off with INVALIDFIELDNAME" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference
@@ -137,17 +141,17 @@ Describe "Add-IshUser" -Tags "Create" {
 		It "Parameter IshObject invalid" {
 			{ Add-IshUser -IShSession $ishSession -IshObject "INVALIDUSER" } | Should Throw
 		}
-		It "Parameter IshObject Single" {
-			$ishObjectA = $ishObjectA | Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
-		    $ishObjects = Add-IshUser -IshSession $ishSession -IshObject $ishObjectA
-			$ishObjects | Remove-IshUser -IshSession $ishSession
+		It "Parameter IshObject Single with implicit IshSession" {
+			$ishObjectA = $ishObjectA | Set-IshMetadataField -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
+		    $ishObjects = Add-IshUser -IshObject $ishObjectA
+			$ishObjects | Remove-IshUser
 			$ishObjects.Count | Should Be 1
 		}
-		It "Parameter IshObject Multiple" {
-		    $ishObjectB = $ishObjectB | Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
-			$ishObjectC = $ishObjectC | Set-IshMetadataField -IshSession $ishSession -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
-			$ishObjects = Add-IshUser -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
-			$ishObjects | Remove-IshUser -IshSession $ishSession
+		It "Parameter IshObject Multiple with implicit IshSession" {
+		    $ishObjectB = $ishObjectB | Set-IshMetadataField -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
+			$ishObjectC = $ishObjectC | Set-IshMetadataField -Name PASSWORD -Level None -Value "PasswordNotPutOnThePipeline"
+			$ishObjects = Add-IshUser -IshObject @($ishObjectB,$ishObjectC)
+			$ishObjects | Remove-IshUser
 			$ishObjects.Count | Should Be 2
 		}
 		It "Pipeline IshObject Single" {

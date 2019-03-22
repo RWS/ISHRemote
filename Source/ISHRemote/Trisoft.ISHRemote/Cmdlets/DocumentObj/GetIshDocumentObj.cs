@@ -31,15 +31,22 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para type="description">Uses DocumentObj25 API to retrieve ishobjects.</para>
     /// <para type="description">The Get-IshDocumentObj cmdlet retrieves metadata of the document objects that are passed through the pipeline or determined via provided parameters. This commandlet allows to retrieve all types of objects(Illustrations, Maps, etc. ), except for publication(outputs). For publication(outputs) you need to use Get-IshPublicationOutput.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Get-IshDocumentObj -LogicalId ISHPUBLILLUSTRATIONMISSING
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Returns all versions/language of object identified through LogicalId Get-IshDocumentObj -LogicalId ISHPUBLILLUSTRATIONMISSING (typically also GUIDs).</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshDocumentObj", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshDocumentObj))]
     public sealed class GetIshDocumentObj : DocumentObjCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory =false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory =false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -119,6 +126,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         private bool _includeData = false;
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
+
         /// <summary>
         /// Process the Get-IshDocumentObj commandlet.
         /// </summary>
@@ -142,7 +157,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 else
                 {
                     WriteDebug("Retrieving");
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
                     if (IshObject != null)
                     {
@@ -164,7 +179,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                 string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
                                     lngCardIdBatch.ToArray(),
                                     requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLngCardIdCount += lngCardIdBatch.Count;
                                 WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
@@ -185,7 +200,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     lngCardIdBatch.ToArray(),
                                     productDefinitionFeatures.ToXml(),
                                     requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLngCardIdCount += lngCardIdBatch.Count;
                                 WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
@@ -212,7 +227,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     statusFilter,
                                     metadataFilter.ToXml(),
                                     requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLogicalIdCount += logicalIdBatch.Count;
                                 WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");
@@ -235,7 +250,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                                     metadataFilter.ToXml(),
                                     productDefinitionFeatures.ToXml(),
                                     requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(retrievedObjects.Objects);
                                 currentLogicalIdCount += logicalIdBatch.Count;
                                 WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");
@@ -245,7 +260,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 }
 
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
-                WriteObject(returnIshObjects.ToArray());
+                WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

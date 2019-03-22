@@ -100,5 +100,15 @@ namespace Trisoft.ISHRemote.Objects.Public
             xmlWriter.WriteString(_value);
             xmlWriter.WriteEndElement();
         }
+
+        /// <summary>
+        /// Debugging implementation
+        /// </summary>
+        /// <returns>string</returns>
+        public override string ToString()
+        {
+            return $"Set-IshMetadataFilterField -Level {StringEnum.GetStringValue(Level)} -Name {Name} -FilterOperator {StringEnum.GetStringValue(_filterOperator)} -ValueType {StringEnum.GetStringValue(_valueType)} -Value \"{_value}\"";
+            //return $"<ishfield name='{Name}' level='{StringEnum.GetStringValue(Level)}' ishoperator='{StringEnum.GetStringValue(_filterOperator)}' ishvaluetype='{StringEnum.GetStringValue(_valueType)}'>{_value}</ishfield>";
+        }
     }
 }

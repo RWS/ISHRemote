@@ -62,12 +62,12 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>ishtype</Label>
-            <Width>11</Width>
+            <Label>ISHType</Label>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>ishref</Label>
-            <Width>40</Width>
+            <Label>LogicalId</Label>
+            <Width>41</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>ishobjectref</Label>
@@ -86,6 +86,635 @@
               <TableColumnItem>
                 <PropertyName>ObjectRef</PropertyName>
               </TableColumnItem>              
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshBaseline -->
+    <View>
+      <Name>IshBaseline</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshBaseline</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Id</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>(R)</Label>
+            <Width>4</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishdocumentrelease</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishlabelreleased</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishbaselineactive</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshDocumentObj -->
+    <View>
+      <Name>IshDocumentObj</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshDocumentObj</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LogicalId</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Version</Label>
+            <Width>7</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Lang</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Res</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Status</Label>
+            <Width>18</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ModifiedBy</Label>
+            <Width>19</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ModifiedOn</Label>
+            <Width>19</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ftitle_logical_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>version_version_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>doclanguage</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fresolution</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fstatus</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishlastmodifiedby</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishlastmodifiedon</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshEDT -->
+    <View>
+      <Name>IshEDT</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshEDT</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LogicalId</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Extension</Label>
+            <Width>9</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Mimetype</Label>
+            <Width>33</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Candidate</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishedtname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>edtfileextension</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>edtmimetype</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>edtcandidate</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshFolder -->
+    <View>
+      <Name>IshFolder</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshFolder</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>FolderName</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>FolderType</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>DocumentType</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserGroup</Label>
+            <Width>33</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ReadAccess</Label>
+            <Width>33</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshFolderType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fdocumenttype</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fusergroup</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>readaccess</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshOutputFormat -->
+    <View>
+      <Name>IshOutputFormat</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshOutputFormat</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Id</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>OutputEDT</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>StyleProcessor</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>TransType</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Clean</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishoutputformatname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishoutputedt</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fstyleprocessor</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fditaottranstype</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishcleanup</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshPublicationOutput -->
+    <View>
+      <Name>IshPublicationOutput</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshPublicationOutput</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Title</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LogicalId</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Version</Label>
+            <Width>7</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Lang</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>OutputFormat</Label>
+            <Width>13</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Status</Label>
+            <Width>18</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Publisher</Label>
+            <Width>19</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>PublishStartDate</Label>
+            <Width>19</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>PublishEndDate</Label>
+            <Width>19</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>(R)</Label>
+            <Width>4</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Depl</Label>
+            <Width>4</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ftitle_logical_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IshRef</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>version_version_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpublngcombination</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishoutputformatref</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpubstatus</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpublisher</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpubstartdate</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpubenddate</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishisreleased_version_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpubisdeployed</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+     <!-- Trisoft.ISHRemote.Objects.Public.IshUser -->
+    <View>
+      <Name>IshUser</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshUser</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>DisplayName</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserGroup</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserRole</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Lng</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Email</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UserType</Label>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ExternalId</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LastLogin</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Disabled</Label>
+            <Width>8</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Locked</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishuserdisplayname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>username</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fusergroup</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishuserroles</PropertyName>
+              </TableColumnItem>
+            <TableColumnItem>
+                <PropertyName>fishuserlanguage</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishemail</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishusertype</PropertyName>
+              </TableColumnItem>
+                <TableColumnItem>
+                <PropertyName>fishexternalid</PropertyName>
+              </TableColumnItem>
+                <TableColumnItem>
+                <PropertyName>fishlastloginon</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishuserdisabled</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishlocked</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshUserGroup -->
+    <View>
+      <Name>IshUserGroup</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshUserGroup</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Description</Label>
+            <Width>60</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishusergroupname</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fdescription</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshUserRole -->
+    <View>
+      <Name>IshUserRole</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshUserRole</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Description</Label>
+            <Width>60</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Active</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishuserrolename</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fdescription</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishobjectactive</PropertyName>
+              </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
         </TableRowEntries>
@@ -425,37 +1054,6 @@
       </TableControl>
 
     </View>
-    <!-- Trisoft.ISHRemote.Objects.Public.IshFolder -->
-    <View>
-      <Name>IshFolder</Name>
-      <ViewSelectedBy>
-        <TypeName>Trisoft.ISHRemote.Objects.Public.IshFolder</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-          <TableColumnHeader>
-            <Label>ishtype</Label>
-            <Width>20</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Label>ishref</Label>
-            <Width>60</Width>
-          </TableColumnHeader>
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-              <TableColumnItem>
-                <PropertyName>IshFolderType</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>IshFolderRef</PropertyName>
-              </TableColumnItem>
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshEvent -->
     <View>
       <Name>IshEvent</Name>
@@ -464,23 +1062,207 @@
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
+          <!-- Progress -->
           <TableColumnHeader>
-            <Label>Progress--EVENTTYPE--Value</Label>
+            <Label>userid</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>eventid</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>description</Label>
+            <Width>40</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>creationdate</Label>
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Progress--EVENTID--Value</Label>
-            <Width>60</Width>
+            <Label>modificationdate</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Cur</Label>
+            <Width>3</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Max</Label>
+            <Width>3</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>status</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <!-- Detail -->
+          <TableColumnHeader>
+            <Label>action</Label>
+            <Width>25</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>datatype</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>hostname</Label>
+            <Width>15</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
+              <!-- Progress -->
               <TableColumnItem>
-                <PropertyName>EventType</PropertyName>
+                <PropertyName>userid</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>EventId</PropertyName>
+                <PropertyName>eventid</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>description</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>creationdate</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>modificationdate</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>currentprogress</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>maximumprogress</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>status</PropertyName>
+              </TableColumnItem>
+              <!-- Detail -->
+              <TableColumnItem>
+                <PropertyName>action_detail_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>eventdatatype_detail_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>hostname_detail_value</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshBackgroundTask -->
+    <View>
+      <Name>IshBackgroundTask</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshBackgroundTask</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <!-- Task -->
+          <TableColumnHeader>
+            <Label>taskid</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>userid</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>eventtype</Label>
+            <Width>25</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>status</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ca</Label>
+            <Width>2</Width>
+          </TableColumnHeader>
+          <!--<TableColumnHeader><Label>executeafterdate</Label><Width>20</Width></TableColumnHeader>-->
+          <TableColumnHeader>
+            <Label>leasedby</Label>
+            <Width>25</Width>
+          </TableColumnHeader>
+          <!--<TableColumnHeader><Label>leasedon</Label><Width>20</Width></TableColumnHeader>-->
+          <!--<TableColumnHeader><Label>modificationdate</Label><Width>20</Width></TableColumnHeader>-->
+          <!-- History -->
+          <TableColumnHeader>
+            <Label>histid</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>hostname</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>startdate</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>enddate</Label>
+            <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>errn</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>exitc</Label>
+            <Width>5</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <!-- Task -->
+              <TableColumnItem>
+                <PropertyName>taskid</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>userid</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>eventtype</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>status</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>currentattempt</PropertyName>
+              </TableColumnItem>
+              <!--<TableColumnItem>
+                <PropertyName>executeafterdate</PropertyName>
+              </TableColumnItem>-->
+              <TableColumnItem>
+                <PropertyName>leasedby</PropertyName>
+              </TableColumnItem>
+              <!--<TableColumnItem>
+                <PropertyName>leasedon</PropertyName>
+              </TableColumnItem>-->
+              <!--<TableColumnItem>
+                <PropertyName>modificationdate</PropertyName>
+              </TableColumnItem>-->
+              <!-- History -->
+              <TableColumnItem>
+                <PropertyName>historyid_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>hostname_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>startdate_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>enddate_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>errornumber_history_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>exitcode_history_value</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -542,7 +1324,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>20</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Level</Label>
@@ -553,7 +1335,7 @@
             <Width>25</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Type</Label>
+            <Label>DataType</Label>
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -586,7 +1368,7 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Type</PropertyName>
+                <PropertyName>DataType</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>SDB</PropertyName>
@@ -619,7 +1401,7 @@
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>ISHType</Label>
-            <Width>20</Width>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Level</Label>
@@ -715,11 +1497,11 @@
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>CreatedOn</Label>
-            <Width>20</Width>
+            <Width>19</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>ModifiedOn</Label>
-            <Width>20</Width>
+            <Width>19</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -741,10 +1523,10 @@
                 <PropertyName>Source</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>CreatedOn</PropertyName>
+                <PropertyName>CreatedOnAsSortableDateTime</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>ModifiedOn</PropertyName>
+                <PropertyName>ModifiedOnAsSortableDateTime</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

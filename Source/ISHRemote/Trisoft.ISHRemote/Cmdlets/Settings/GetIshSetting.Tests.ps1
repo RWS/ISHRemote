@@ -17,11 +17,9 @@ Describe “Get-IshSetting" -Tags "Read" {
 	}
 
 	Context “Get-IshSetting ParameterGroup returns string object" {
-		$fieldValue = Get-IshSetting -IShSession $ishSession -FieldName "NAME"
-		It "GetType().Name" {
+		It "Parameter IshSession implicit" {
+			$fieldValue = Get-IshSetting -IShSession $ishSession -FieldName "NAME"
 			$fieldValue.GetType().Name | Should BeExactly "String"
-		}
-		It "NAME is 'Configuration card'" {
 			$fieldValue | Should Be "Configuration card"
 		}
 	}
@@ -56,27 +54,44 @@ Describe “Get-IshSetting" -Tags "Read" {
 
 	Context "Get-IshSetting RequestedMetadataGroup returns IshFields object" {
 		$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FINBOXCONFIGURATION" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHBACKGROUNDTASKCONFIG" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHCHANGETRACKERCONFIG" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHENRICHURI" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHEXTENSIONCONFIG" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHLCURI" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHPUBSTATECONFIG" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHSYSTEMRESOLUTION" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHTRANSJOBSTATECONFIG" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHWRITEOBJPLUGINCFG" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FSTATECONFIGURATION" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "FTRANSLATIONCONFIGURATION" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "MODIFIED-ON" |
-                             Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME"
-		$ishFields = Get-IshSetting -IshSession $ishSession -RequestedMetadata $requestedMetadata
-		It "GetType().Name" {
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHBACKGROUNDTASKCONFIG" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHCHANGETRACKERCONFIG" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHENRICHURI" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHEXTENSIONCONFIG" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHLCURI" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHPUBSTATECONFIG" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHSYSTEMRESOLUTION" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHTRANSJOBSTATECONFIG" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHWRITEOBJPLUGINCFG" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FSTATECONFIGURATION" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "FTRANSLATIONCONFIGURATION" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "MODIFIED-ON" |
+							 Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME"
+		It "Parameter IshSession.DefaultRequestedMetadata=Descriptive" {
+			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
+			$ishSession.DefaultRequestedMetadata = "Descriptive"
+			$ishFields = Get-IshSetting -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 			$ishFields.GetType().Name | Should BeExactly "Object[]"
+			$ishFields.Length | Should Be 14
+			(Get-IshMetadataField -IshSession $ishSession -IshField $ishFields -Name "NAME" -Level None) | Should Be "Configuration card"
 		}
-		It "ishFields.Length" {
-			$ishFields.Length| Should Be 14
+		It "Parameter IshSession.DefaultRequestedMetadata=Basic" {
+			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
+			$ishSession.DefaultRequestedMetadata = "Basic"
+			$ishFields = Get-IshSetting -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
+			$ishFields.GetType().Name | Should BeExactly "Object[]"
+			$ishFields.Length | Should Be 19
+			(Get-IshMetadataField -IshSession $ishSession -IshField $ishFields -Name "NAME" -Level None) | Should Be "Configuration card"
 		}
-		It "xml NAME is 'Configuration card'" {
+		It "Parameter IshSession.DefaultRequestedMetadata=All" {
+			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
+			$ishSession.DefaultRequestedMetadata = "All"
+			$ishFields = Get-IshSetting -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
+			$ishFields.GetType().Name | Should BeExactly "Object[]"
+			$ishFields.Length | Should Be 31
 			(Get-IshMetadataField -IshSession $ishSession -IshField $ishFields -Name "NAME" -Level None) | Should Be "Configuration card"
 		}
 	}

@@ -152,7 +152,7 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
                         {
                             using (XmlReader xmlReader = XmlReader.Create(streamReader, _xmlReaderSettings))
                             {
-                                while (xmlReader.Read()) { }
+                                while (xmlReader.Read());
                             }
                         }
                         WriteObject(true);

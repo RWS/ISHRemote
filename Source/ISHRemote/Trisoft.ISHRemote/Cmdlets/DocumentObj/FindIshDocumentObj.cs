@@ -30,15 +30,32 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <para type="description">The Find-IshDocumentObj cmdlet finds document objects (which include illustrations) using MetadataFilter, TypeFilter and StatusFilter that are provided This commandlet allows to find all types of objects (Illustrations, Maps, etc. ), except for publication (outputs). 
     /// For publication (outputs) you need to use Find-IshPublicationOutput.</para>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $yesterday = (Get-Date).AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss")
+    /// Find-IshDocumentObj -MetadataFilter(Set-IshMetadataFilterField -Level Lng -Name MODIFIED-ON -FilterOperator GreaterThan -Value $yesterday)
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Returns the documents that are touched since yesterday.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $yesterday = (Get-Date).AddDays(-2000).ToString("dd/MM/yyyy HH:mm:ss")
+    /// $ishObjects = Find-IshDocumentObj -MetadataFilter(Set-IshMetadataFilterField -Level Lng -Name MODIFIED-ON -FilterOperator GreaterThan -Value $yesterday) `
+    ///                                   -RequestedMetadata(Set-IshRequestedMetadataField -Level Lng -Name FISHLASTMODIFIEDON)
+    /// $ishObjects | Select-Object -Property IshType, IshRef, version_version_value, doc-language, fresolution, fishlastmodifiedon, fishlastmodifiedby, fstatus, checked-out-by, ftitle_logical_value | Format-Table
+    /// </code>
+    /// <para></para>
+    /// </example>
     [Cmdlet(VerbsCommon.Find, "IshDocumentObj", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshDocumentObj))]
     public sealed class FindIshDocumentObj : DocumentObjCmdlet
     {
 
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -78,6 +95,22 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         private Enumerations.StatusFilter _statusFilter = Enumerations.StatusFilter.ISHNoStatusFilter;
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+            // Working code, but breaks backward behavior compatibility in projected 0.7/1.0 release, see #49
+            // if (MetadataFilter == null)
+            // {
+            //     var fieldName = "MODIFIED-ON";
+            //     var dateTime = DateTime.Today.AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss");
+            //     var metadataFilter = new IshMetadataFilterField(fieldName, Enumerations.Level.Lng, Enumerations.FilterOperator.GreaterThanOrEqual, dateTime, Enumerations.ValueType.Value);
+            //     WriteVerbose($"Filtering to 1 day using -MetadataFilter {metadataFilter}");
+            //     MetadataFilter = new IshFields().AddField(metadataFilter).Fields();
+            // }
+        }
 
         /// <summary>
         /// Process the Find-IshDocumentObj commandlet.
@@ -91,8 +124,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
             try
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
-                string ishTypeFilter = (IshTypeFilter != null) ? String.Join(IshSession.Seperator, IshTypeFilter) : "";
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                string ishTypeFilter = (IshTypeFilter != null) ? String.Join(IshSession.Seperator, IshTypeFilter) : String.Join(IshSession.Seperator, new Enumerations.ISHType[] { Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHTemplate, Enumerations.ISHType.ISHIllustration });  // explicitly exclude ISHReusedObject which is still returned by DocumentObj25.Find?!
                 var statusFilter = EnumConverter.ToStatusFilter<DocumentObj25ServiceReference.StatusFilter>(StatusFilter);
 
                 // Finding any hits with extra requested metadata if specified.
@@ -103,10 +136,10 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     statusFilter,
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
-                var returnIshObjects = new IshObjects(xmlIshObjects).Objects;
+                var returnIshObjects = new IshObjects(ISHType, xmlIshObjects);
 
-                WriteVerbose("returned object count[" + returnIshObjects.Length + "]");
-                WriteObject(returnIshObjects, true);
+                WriteVerbose("returned object count[" + returnIshObjects.ObjectList.Count + "]");
+                WriteObject(IshSession, ISHType, returnIshObjects.ObjectList.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

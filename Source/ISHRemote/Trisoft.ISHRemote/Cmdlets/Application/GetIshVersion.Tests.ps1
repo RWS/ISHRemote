@@ -7,12 +7,31 @@ try {
 Describe “Get-IshVersion" -Tags "Read" {
 	Context “Get-IshVersion Parameters" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshVersion -IShSession "INVALIDISHSESSION" } | Should Throw
+			{ Get-IshVersion -IshSession "INVALIDISHSESSION" } | Should Throw
 		}
 	}
 
 	Context "Get-IshVersion returns IshVersion object" {
-		$ishVersion = Get-IshVersion -IShSession $ishSession
+		$ishVersion = Get-IshVersion -IshSession $ishSession
+		It "GetType()" {
+			$ishVersion.GetType().Name | Should BeExactly "IshVersion"
+		}
+		It "IshVersion.MajorVersion" {
+			$ishVersion.MajorVersion -ge 0 | Should Be $true
+		}
+		It "IshVersion.MinorVersion" {
+			$ishVersion.MinorVersion -ge 0 | Should Be $true
+		}
+		It "IshVersion.BuildVersion" {
+			$ishVersion.BuildVersion -ge 0 | Should Be $true
+		}
+		It "IshSession.RevisionVersion" {
+			$ishVersion.RevisionVersion -ge 0 | Should Be $true
+		}
+	}
+
+	Context "Get-IshVersion without IshSession returns IshVersion object" {
+		$ishVersion = Get-IshVersion
 		It "GetType()" {
 			$ishVersion.GetType().Name | Should BeExactly "IshVersion"
 		}

@@ -42,11 +42,9 @@ Describe “Get-IshTimeZone" -Tags "Read" {
 	}
 
 	Context "Get-IshTimeZone returns IshApplicationSettings (plural) object" {
-		$ishApplicationSettings = Get-IshTimeZone -IShSession $ishSession -Count 2
-		It "GetType()" {
+		It "Parameter IshSession implicit" {
+			$ishApplicationSettings = Get-IshTimeZone -IShSession $ishSession -Count 2
 			$ishApplicationSettings.GetType().Name | Should BeExactly "IshApplicationSettings"
-		}
-		It "IshApplicationSettings.TimeZoneId" {
 			$ishApplicationSettings.TimeZoneId -ge 0 | Should Not BeNullOrEmpty
 		}
 	}

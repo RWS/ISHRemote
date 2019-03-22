@@ -41,19 +41,19 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     ///                              Set-IshRequestedMetadataField -IshSession $ishSession -Name 'FISHPUBENDDATE' -Level "Lng" |
     ///                              Set-IshRequestedMetadataField -IshSession $ishSession -Name 'VERSION' -Level "Version"
     /// $metadataFilterRetrieve = Set-IshMetadataFilterField -IshSession $ishSession -Name 'FISHPUBSTATUS' -Level 'Lng' -ValueType "Value" -FilterOperator "Equal" -Value "To Be Published" 
-    /// $publicationOutputs = Find-IshPublicationOutput -IshSession $ishSession -StatusFilter "ishnostatusfilter" -MetadataFilter $metadataFilterRetrieve -RequestedMetadata $requestedMetadataRetrieve
+    /// $publicationOutputs = Find-IshPublicationOutput -StatusFilter "ishnostatusfilter" -MetadataFilter $metadataFilterRetrieve -RequestedMetadata $requestedMetadataRetrieve
     /// </code>
-    /// <para>Finding publication outputs</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Finding publication outputs</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshPublicationOutput", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshPublicationOutput))]
     public sealed class FindIshPublicationOutput : PublicationOutputCmdlet
     {
 
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -85,6 +85,23 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         private Enumerations.StatusFilter _statusFilter = Enumerations.StatusFilter.ISHNoStatusFilter;
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+            // Working code, but breaks backward behavior compatibility in projected 0.7/1.0 release, see #49
+            // if (MetadataFilter == null)
+            // {
+            //     var fieldName = "MODIFIED-ON";
+            //     var dateTime = DateTime.Today.AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss");
+            //     var metadataFilter = new IshMetadataFilterField(fieldName, Enumerations.Level.Lng, Enumerations.FilterOperator.GreaterThanOrEqual, dateTime, Enumerations.ValueType.Value);
+            //     WriteVerbose($"Filtering to 1 day using -MetadataFilter {metadataFilter}");
+            //     MetadataFilter = new IshFields().AddField(metadataFilter).Fields();
+            // }
+        }
+
 
         /// <summary>
         /// Process the Find-IshPublicationOutput commandlet.
@@ -100,16 +117,16 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                 PublicationOutput25ServiceReference.StatusFilter statusFilter = EnumConverter.ToStatusFilter<PublicationOutput25ServiceReference.StatusFilter>(StatusFilter);
                 IshFields metadataFilter = new IshFields(MetadataFilter);
                 // Add the required fields (needed for pipe operations)
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
                 WriteDebug($"Finding StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 xmlIshObjects = IshSession.PublicationOutput25.Find(
                     statusFilter, 
                     metadataFilter.ToXml(), 
                     requestedMetadata.ToXml());
+                var returnIshObjects = new IshObjects(ISHType, xmlIshObjects);
 
-                var returnedObjects = new IshObjects(xmlIshObjects).Objects;
-                WriteVerbose("returned object count[" + returnedObjects.Length + "]");
-                WriteObject(returnedObjects, true);
+                WriteVerbose("returned object count[" + returnIshObjects.ObjectList.Count + "]");
+                WriteObject(IshSession, ISHType, returnIshObjects.ObjectList.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

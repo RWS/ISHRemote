@@ -80,5 +80,21 @@ namespace Trisoft.ISHRemote.Objects.Public
             DateTime modifiedOn;
             ModifiedOn = DateTime.TryParse(xmlIshBaselineItem.Attributes["modified"].Value, out modifiedOn) ? modifiedOn : DateTime.MinValue;
         }
+
+        /// <summary>
+        /// Property overload for *.format.ps1xml usage to allow sorting
+        /// </summary>
+        public string CreatedOnAsSortableDateTime
+        {
+            get { return CreatedOn.ToString("s"); }
+        }
+
+        /// <summary>
+        /// Property overload for *.format.ps1xml usage to allow sorting
+        /// </summary>
+        public string ModifiedOnAsSortableDateTime
+        {
+            get { return ModifiedOn.ToString("s"); }
+        }
     }
 }

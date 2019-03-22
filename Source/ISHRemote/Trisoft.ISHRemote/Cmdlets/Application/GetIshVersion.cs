@@ -30,10 +30,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Application
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "username" -IshUserPassword  "userpassword"
-    /// $version = Get-Version -IshSession $ishSession
-    /// Write-Host $version
+    /// Get-IshVersion -IshSession $ishSession
     /// </code>
-    /// <para>Get version example</para>
+    /// <para>Get version example with explicit IshSession</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "username" -IshUserPassword  "userpassword"
+    /// Get-IshVersion
+    /// </code>
+    /// <para>Get version example with implicit IshSession</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshVersion", SupportsShouldProcess = false)]
     [OutputType(typeof(IshVersion))]
@@ -42,13 +48,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Application
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]       
-        public IshSession IShSession { get; set; }
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
+        [ValidateNotNullOrEmpty]
+        public IshSession IshSession { get; set; }
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {
             //Get the version of the application
-            string version = IShSession.Application25.GetVersion();
+            string version = IshSession.Application25.GetVersion();
             IshVersion versionObject = new IshVersion(version);
             WriteObject(versionObject);
         }

@@ -26,7 +26,7 @@ namespace Trisoft.ISHRemote.Objects.Public
     /// <summary>
     /// <para type="description">Generic pipeline object for the API holding various references (logical id, card id,...), object type, ishfields (metadata ) and optionally ishdata (file/blob)</para>
     /// </summary>
-    public class IshObject
+    public class IshObject : IshBaseObject
     {
         // Regular IshObjects look like
         //<ishobject ishref="GUID-AF99C63E-7887-4485-A7ED-ACED50781F70" ishtype="ISHLibrary" ishlogicalref="16333">
@@ -40,9 +40,9 @@ namespace Trisoft.ISHRemote.Objects.Public
         //<ishdata edt="EDTXML"><![CDATA[PFhNTEZJTEU+UHJvamVjdE1hbmFnZW1lbnQ/PC9YTUxGSUxFPg0K]]></ishdata>
 
 
-        private string _ishRef;
-        private Enumerations.ISHType _ishType; 
-        private Dictionary<Enumerations.ReferenceType,string> _objectRef;
+        private readonly string _ishRef;
+        private readonly Enumerations.ISHType _ishType; 
+        private readonly Dictionary<Enumerations.ReferenceType,string> _objectRef;
         private IshFields _ishFields;
         private IshData _ishData;
 
@@ -115,7 +115,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// Gets and sets the IshFields property.
         /// The IshFields property is a collection of <see cref="IshFields"/>.
         /// </summary>
-        internal IshFields IshFields
+        internal override IshFields IshFields
         {
             get { return _ishFields; }
             set { _ishFields = value; }

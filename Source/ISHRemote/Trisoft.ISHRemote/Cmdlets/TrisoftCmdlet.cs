@@ -25,7 +25,9 @@ using System.Threading;
 using System.Xml;
 using Trisoft.ISHRemote.Interfaces;
 using Trisoft.ISHRemote.Folder25ServiceReference;
+using System.Runtime.InteropServices;
 
+[assembly: ComVisible(false)]
 namespace Trisoft.ISHRemote.Cmdlets
 {
     /// <summary>
@@ -40,18 +42,26 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// <summary>
         /// Sleep constant used to slow down the progress bars to check the messages.
         /// </summary>
-        const int SleepTime = 0;
+        protected const int SleepTime = 0;
 
         public readonly ILogger Logger;
 
-        private string _levelNameValueTypeSeparator = "--";
+        private readonly string _levelNameValueTypeSeparator = "--";     // consider removing and get from IshSession.NameHelper
         private int _tickCountStart;
         
-        private ProgressRecord _parentProgressRecord;
+        private readonly ProgressRecord _parentProgressRecord;
         protected int _parentCurrent;
         protected int _parentTotal;
-        private ProgressRecord _childProgressRecord;
+        private readonly ProgressRecord _childProgressRecord;
 
+        /// <summary>
+        /// Name of the PSVariable so you don't have to specify '-IshSession $ishSession' anymore, should be set by New-IshSession
+        /// </summary>
+        internal const string ISHRemoteSessionStateIshSession = "ISHRemoteSessionStateIshSession";
+        /// <summary>
+        /// Error message you get when you didn't pass an explicit -IshSession on the cmdlet, or New-IshSession didn't set the SessionState variable
+        /// </summary>
+        internal const string ISHRemoteSessionStateIshSessionException = "IshSession is null. Please create a session first using New-IshSession. Or explicitly pass parameter -IshSession to your cmdlet.";
 
         /// <summary>
         /// Returns the PSObject NoteProperty separator to generate additional auxiliary properties
@@ -61,7 +71,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             get { return _levelNameValueTypeSeparator; }
         }
 
-        public TrisoftCmdlet()
+        protected TrisoftCmdlet()
         {
             Logger = TrisoftCmdletLogger.Instance();
             TrisoftCmdletLogger.Initialize(this);
@@ -86,6 +96,35 @@ namespace Trisoft.ISHRemote.Cmdlets
         {
             base.EndProcessing();
             WriteDebug($"EndProcessing  elapsed:{(Environment.TickCount - _tickCountStart)}ms");
+        }
+
+        protected void WriteObject(IshSession ishSession, Enumerations.ISHType[] ishType, List<IshBaseObject> ishBaseObjects, bool enumerateCollection)
+        {
+            switch (ishSession.PipelineObjectPreference)
+            {
+                case Enumerations.PipelineObjectPreference.PSObjectNoteProperty:
+                    List<PSObject> psObjects = new List<PSObject>();
+                    foreach (var IshBaseObject in ishBaseObjects)
+                    {
+                        PSObject psObject = PSObject.AsPSObject(IshBaseObject);  // returning a PSObject object that inherits from ishObject
+                        foreach (IshField ishField in IshBaseObject.IshFields.Fields())
+                        {
+                            psObject.Properties.Add(ishSession.NameHelper.GetPSNoteProperty(ishType, (IshMetadataField)ishField));
+                        }
+                        psObjects.Add(psObject);
+                    }
+                    WriteObject(psObjects, enumerateCollection);
+                    break;
+                case Enumerations.PipelineObjectPreference.Off:
+                    WriteObject(ishBaseObjects, true);
+                    break;
+            }
+        }
+        protected void WriteObject(IshSession ishSession, Enumerations.ISHType[] ishType, IshBaseObject ishBaseObject, bool enumerateCollection)
+        {
+            List<IshBaseObject> ishBaseObjectList = new List<IshBaseObject>();
+            ishBaseObjectList.Add(ishBaseObject);
+            WriteObject(ishSession, ishType, ishBaseObjectList, enumerateCollection);
         }
 
         /// <summary>
@@ -154,16 +193,26 @@ namespace Trisoft.ISHRemote.Cmdlets
             }
         }
 
+        /// <summary>
+        /// Intentional override to include cmdlet origin
+        /// </summary>
         public new void WriteVerbose(string message)
         {
             base.WriteVerbose(base.GetType().Name + "  " + message);
+            WriteDebug(message);
         }
 
+        /// <summary>
+        /// Intentional override to include cmdlet origin and timestamp
+        /// </summary>
         public new void WriteDebug(string message)
         {
             base.WriteDebug($"{base.GetType().Name} {DateTime.Now.ToString("yyyyMMdd.HHmmss.fff")} {message}");
         }
 
+        /// <summary>
+        /// Intentional override to include cmdlet origin 
+        /// </summary>
         public new void WriteWarning(string message)
         {
             base.WriteWarning(base.GetType().Name + "  " + message);
@@ -192,7 +241,6 @@ namespace Trisoft.ISHRemote.Cmdlets
                 BaseFolder.System,
                 new string[] { "'" + baseFolderLabel + "'" },  // Use faulty folder path with quotes added, so we can throw the expected exception with errorcode=102001
                 "");
-
             return BaseFolder.Data;
         }
 

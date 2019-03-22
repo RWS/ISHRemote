@@ -26,7 +26,7 @@ namespace Trisoft.ISHRemote.Objects.Public
     /// <summary>
     /// <para type="description">Generic pipeline object for the Folder API holding folder reference like "ishfolderref", "ishfoldertype", "ishfields"</para>
     /// </summary>
-    public class IshFolder
+    public class IshFolder : IshBaseObject
     {
         /* IshFolder looks like:
          
@@ -43,8 +43,9 @@ namespace Trisoft.ISHRemote.Objects.Public
          </ishfolder>
          */
 
-        private long _ishFolderRef;
-        private Enumerations.IshFolderType _ishFolderType;
+        private readonly long _ishFolderRef;
+        private readonly Enumerations.ISHType _ishType = Enumerations.ISHType.ISHFolder;
+        private readonly Enumerations.IshFolderType _ishFolderType;
         private IshFields _ishFields;
 
         /// <summary>
@@ -70,6 +71,14 @@ namespace Trisoft.ISHRemote.Objects.Public
             long.TryParse(xmlIshFolder.Attributes["ishfolderref"].Value, out _ishFolderRef);
             _ishFolderType = (Enumerations.IshFolderType)Enum.Parse(typeof(Enumerations.IshFolderType), xmlIshFolder.Attributes["ishfoldertype"].Value);
             _ishFields = new IshFields((XmlElement)xmlIshFolder.SelectSingleNode("ishfields"));
+        }
+
+        /// <summary>
+        /// Gets the IshType property.
+        /// </summary>
+        public Enumerations.ISHType IshType
+        {
+            get { return _ishType; }
         }
 
         /// <summary>
@@ -100,7 +109,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// Gets and sets the IshFields property.
         /// The IshFields property is a collection of <see cref="IshFields"/>.
         /// </summary>
-        internal IshFields IshFields
+        internal override IshFields IshFields
         {
             get { return _ishFields; }
             set { _ishFields = value; }

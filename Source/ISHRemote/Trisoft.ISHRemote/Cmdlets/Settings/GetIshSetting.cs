@@ -83,8 +83,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "RequestedMetadataGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "RequestedMetadataGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -116,6 +116,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         [ValidateNotNullOrEmpty]
         public SwitchParameter Force { get; set; }
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {
@@ -135,10 +142,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                     requestedMetadata.AddField(new IshRequestedMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value));
                 }
 
-                var metadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, requestedMetadata, Enumerations.ActionMode.Read);
+                var metadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, requestedMetadata, Enumerations.ActionMode.Read);
                 string xmlIshObjects = IshSession.Settings25.GetMetadata(metadata.ToXml());
                 var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
-                if (RequestedMetadata != null)
+                if (FieldName == null)
                 {
                     // 3. Write it
                     WriteVerbose("returned object count[1]");
@@ -177,12 +184,20 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                                     File.SetAttributes(FilePath, FileAttributes.Normal);
                                 }
                                 // Write it as a text file
-                                using (var stream = new FileStream(FilePath, fileMode, FileAccess.ReadWrite))
+                                Stream stream = null;
+                                try
                                 {
-                                    using (System.IO.StreamWriter writer = new System.IO.StreamWriter(stream, Encoding.UTF8))
+                                    stream = new FileStream(FilePath, fileMode, FileAccess.ReadWrite);
+                                    using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
                                     {
+                                        stream = null;
                                         writer.Write(value);
                                     }
+                                }
+                                finally
+                                {
+                                    if (stream != null)
+                                        stream.Dispose();
                                 }
                             }
                         }                        

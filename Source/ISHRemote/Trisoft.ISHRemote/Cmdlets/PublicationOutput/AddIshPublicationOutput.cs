@@ -43,18 +43,18 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// -LanguageCombination "en" `
     /// -Metadata $metaDataCreate
     /// </code>
-    /// <para>Creating a new publication output</para>
+    /// <para>Creating a new publication output. New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshPublicationOutput", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshPublicationOutput))]
     public sealed class AddIshPublicationOutput : PublicationOutputCmdlet
     {
 
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -142,6 +142,14 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         private long _folderId = -1;
         #endregion
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
+
         /// <summary>
         /// Process the Add-IshPublicationOutput commandlet.
         /// </summary>
@@ -190,14 +198,14 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                     metadata.ToXml()));
                         }
 
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                         var response2 =
                             IshSession.PublicationOutput25.GetMetadata(new PublicationOutput25ServiceReference.
                                 GetMetadataRequest(
                                 response.logicalId, response.version, outputFormat, languageCombination,
                                 requestedMetadata.ToXml()));
                         string xmlIshObjects = response2.xmlObjectList;
-                        IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                        IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                         returnedObjects.AddRange(retrievedObjects.Objects);
 
                     }
@@ -220,20 +228,20 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             metadata.ToXml()));
                     }
 
-                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                    IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                     var response2 =
                         IshSession.PublicationOutput25.GetMetadata(new PublicationOutput25ServiceReference.
                             GetMetadataRequest(
                             response.logicalId, response.version, OutputFormat, LanguageCombination,
                             requestedMetadata.ToXml()));
                     string xmlIshObjects = response2.xmlObjectList;
-                    IshObjects retrievedObjects = new IshObjects(xmlIshObjects);
+                    IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
                     returnedObjects.AddRange(retrievedObjects.Objects);
                 }
 
                 // Write objects to the pipeline               
                 WriteVerbose("returned object count[" + returnedObjects.Count + "]");
-                WriteObject(returnedObjects, true);
+                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

@@ -81,6 +81,8 @@
   <ItemGroup>
     <Compile Include="Cmdlets\Application\ApplicationCmdlet.cs" />
     <Compile Include="Cmdlets\Application\GetIshVersion.cs" />
+    <Compile Include="Cmdlets\BackgroundTask\BackgroundTaskCmdlet.cs" />
+    <Compile Include="Cmdlets\BackgroundTask\GetIshBackgroundTask.cs" />
     <Compile Include="Cmdlets\Baseline\AddIshBaseline.cs" />
     <Compile Include="Cmdlets\Baseline\BaselineCmdlet.cs" />
     <Compile Include="Cmdlets\Baseline\FindIshBaseline.cs" />
@@ -134,6 +136,7 @@
     <Compile Include="Cmdlets\OutputFormat\GetIshOutputFormat.cs" />
     <Compile Include="Cmdlets\OutputFormat\SetIshOutputFormat.cs" />
     <Compile Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.cs" />
+    <None Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.Tests.ps1" />
     <Compile Include="Cmdlets\PublicationOutput\FindIshPublicationOutput.cs" />
     <Compile Include="Cmdlets\PublicationOutput\PublicationOutputCmdlet.cs">
       <SubType>Code</SubType>
@@ -174,8 +177,10 @@
     <Compile Include="Cmdlets\User\RemoveIshUser.cs" />
     <Compile Include="Cmdlets\User\SetIshUser.cs" />
     <Compile Include="Cmdlets\User\UserCmdlet.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HelperClasses\IshObfuscator.cs" />
     <Compile Include="HelperClasses\NonClosingStreamWrapper.cs" />
+    <Compile Include="HelperClasses\NameHelper.cs" />
     <Compile Include="HelperClasses\ServicePointManagerHelper.cs" />
     <Compile Include="Objects\FieldElements.cs" />
     <Compile Include="HelperClasses\CertificateValidationHelper.cs" />
@@ -185,12 +190,24 @@
     <Compile Include="InfoShareWcfConnection.cs" />
     <Compile Include="InfoShareWcfConnectionParameters.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Objects\IshBackgroundTasks.cs" />
     <Compile Include="Objects\IshBaselineItems.cs" />
+    <Compile Include="Objects\IshBaseObject.cs" />
+    <Compile Include="Objects\IshObjectFactory.cs" />
+    <Compile Include="Objects\Public\IshBackgroundTask.cs" />
+    <Compile Include="Objects\Public\IshBaseline.cs" />
     <Compile Include="Objects\Public\IshBaselineItem.cs" />
+    <Compile Include="Objects\Public\IshDocumentObj.cs" />
+    <Compile Include="Objects\Public\IshEDT.cs" />
+    <Compile Include="Objects\Public\IshOutputFormat.cs" />
+    <Compile Include="Objects\Public\IshPublicationOutput.cs" />
     <Compile Include="Objects\Public\IshRequestedMetadataField.cs" />
     <Compile Include="Objects\Public\IshTypeFieldDefinition.cs" />
     <Compile Include="Objects\Public\IshTypeFieldDefinitionCompare.cs" />
     <Compile Include="Objects\IshTypeFieldSetup.cs" />
+    <Compile Include="Objects\Public\IshUser.cs" />
+    <Compile Include="Objects\Public\IshUserGroup.cs" />
+    <Compile Include="Objects\Public\IshUserRole.cs" />
     <Compile Include="Properties\Resouces\ISHTypeFieldSetup.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -319,12 +336,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\Public\IshVersion.cs" />
+    <None Include="Cmdlets\BackgroundTask\GetIshBackgroundTask.Tests.ps1" />
     <None Include="Cmdlets\Baseline\AddIshBasline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\FindIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\GetIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\GetIshBaselineItem.Tests.ps1" />
     <None Include="Cmdlets\Baseline\SetIshBaseline.Tests.ps1" />
     <None Include="Cmdlets\Baseline\SetIshBaselineItem.Tests.ps1" />
+    <None Include="Cmdlets\DocumentObj\FindIshDocumentObj.Performance.ps1" />
     <None Include="Cmdlets\DocumentObj\GetIshDocumentObjData.Tests.ps1" />
     <None Include="Cmdlets\FileProcessor\NewIshDitaGeneralizedXml.Tests.ps1" />
     <None Include="Cmdlets\FileProcessor\NewIshObfuscatedFile.Tests.ps1" />
@@ -688,6 +707,12 @@
     <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\dtd\xnalDomain.ent" />
     <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\xsd\xnalDomain.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Scripts\Private\Get-IshAuxSessionState.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\Private\Set-IshAuxSessionState.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\Public\Expand-ISHParameter.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1157,6 +1182,7 @@
     </None>
     <None Include="Cmdlets\User\AddIshUser.Tests.ps1" />
     <None Include="Cmdlets\Session\TestIshSession.Tests.ps1" />
+    <None Include="Cmdlets\EventMonitor\GetIshEvent.Tests.ps1" />
     <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />

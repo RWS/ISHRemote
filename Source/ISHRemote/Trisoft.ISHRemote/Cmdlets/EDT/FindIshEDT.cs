@@ -33,21 +33,21 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
     /// $ishMetadataFilterFields = Set-IshMetadataFilterField -IshSession $ishSession -Name "EDT-FILE-EXTENSION" -Level "None" -FilterOperator "Like" -Value "%xml%"
     /// $ishRequestedFields = Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME" -Level "None"
-    /// $edtList = Find-IshEDT -IshSession $ishSession `
+    /// $edtList = Find-IshEDT `
     ///       -ActivityFilter "None" `
     ///       -MetadataFilter $ishMetadataFilterFields `
     ///       -RequestedMetadata $ishRequestedFields
     /// </code>
-    /// <para>Find EDTs with names containing "edt" text</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Find EDTs with names containing "edt" text</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshEDT", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
-    public sealed class FindIshEDT : EDTCmdlet
+    [OutputType(typeof(IshEDT))]
+    public sealed class FindIshEdt : EDTCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -78,7 +78,14 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
         /// </summary>
         private Enumerations.ActivityFilter _activityFilter = Enumerations.ActivityFilter.None;
         #endregion
-        
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
         protected override void ProcessRecord()
         {
             try
@@ -89,7 +96,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                 var activityFilter = EnumConverter.ToActivityFilter<EDT25ServiceReference.ActivityFilter>(ActivityFilter);
                 IshFields metadataFilter = new IshFields(MetadataFilter);
                 // add more fields required for pipe operations
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
 
                 // 2. Finding 
                 WriteDebug($"Finding ActivityFilter[{activityFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
@@ -100,9 +107,9 @@ namespace Trisoft.ISHRemote.Cmdlets.EDT
                 WriteVerbose("xmlIshObjects.length[" + xmlIshObjects.Length + "]");
 
                 // 3. Write it
-                var returnedObjects = new IshObjects(xmlIshObjects).Objects;
-                WriteVerbose("returned object count[" + returnedObjects.Length + "]");
-                WriteObject(returnedObjects, true);
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
+                WriteVerbose("returned object count[" + returnedObjects.Count + "]");
+                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

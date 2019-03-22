@@ -74,16 +74,30 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// </code>
     /// <para>Submit all Xml Settings configuration entries from your prepared folder (or standard EnterViaUI folder).</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential "username"
+    /// Set-IshSetting -FieldName FISHLCURI -Value https://something/deleteThis
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Update CTCONFIGURATION field with the presented value.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential "username"
+    /// Set-IshSetting -FieldName FISHLCURI 
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Update CTCONFIGURATION field with the value empty string ("").</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshSetting", SupportsShouldProcess = true)]
-    [OutputType(typeof(IshFields))]
+    [OutputType(typeof(IshField))]
     public sealed class SetIshSetting : SettingsCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldsGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ValueGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ValueGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -105,7 +119,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         /// <summary>
         /// <para type="description">The value to set</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ValueGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ValueGroup")]
         [ValidateNotNullOrEmpty]
         public string Value { get; set; }
 
@@ -127,6 +141,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
+
         protected override void ProcessRecord()
         {
             try
@@ -139,10 +161,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                 if (Metadata != null)
                 {
                     metadata = new IshFields(Metadata);
-                }
-                else if (Value != null)
-                {
-                    metadata.AddField(new IshMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value, Value));
                 }
                 else if (FilePath != null)
                 {
@@ -166,6 +184,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                         metadata.AddField(new IshMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value, value));
                     }
                 }
+                else
+                {
+                    Value = Value ?? "";  // if the value is not offered we presumse empty string ("")
+                    metadata.AddField(new IshMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value, Value));
+                }
 
                 if (ShouldProcess("CTCONFIGURATION"))
                 {
@@ -176,13 +199,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                            
                 // 2. Retrieve the updated material from the database and write it out
                 WriteDebug("Retrieving");
-                var requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, metadata, Enumerations.ActionMode.Read);
+                var requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, metadata, Enumerations.ActionMode.Read);
                 string xmlIshObjects = IshSession.Settings25.GetMetadata(requestedMetadata.ToXml());
-                var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
+                var ishFieldArray = new IshObjects(xmlIshObjects).Objects[0].IshFields.Fields();
 
                 // 3. Write it
                 WriteVerbose("returned object count[1]");
-                WriteObject(ishFields);
+                WriteObject(ishFieldArray, true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

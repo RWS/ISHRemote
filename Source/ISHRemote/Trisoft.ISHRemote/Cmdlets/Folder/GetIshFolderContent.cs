@@ -38,11 +38,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// </summary>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// $folderId = 7775 #use correct folder id
-    /// $ishObjects = Get-IshFolderContent -IshSession $ishSession -FolderId $folderId
+    /// $ishObjects = Get-IshFolderContent -FolderId $folderId
     /// </code>
-    /// <para>Retrieve contents of a given folder</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve contents of a given folder</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshFolderContent", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
@@ -52,10 +52,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -123,6 +123,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshFolderGroup")]
         public IshFolder[] IshFolder { get; set; }
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         /// <summary>
         /// Process the Get-IshFolderContent commandlet.
@@ -204,8 +211,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     .ToList();
                         if (documentLogicalIds.Any())
                         {
-                            Enumerations.ISHType[] ISHDocumentTypes = { Enumerations.ISHType.ISHIllustration, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHTemplate };
-                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHDocumentTypes, new IshFields(), Enumerations.ActionMode.Read);
+                            Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHIllustration, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHTemplate };
+                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
 
                             xmlIshObjects = IshSession.DocumentObj25.RetrieveLanguageMetadata(documentLogicalIds.ToArray(),
                                 VersionFilter, LanguagesFilter,
@@ -222,8 +229,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     .ToList();
                         if (publicationLogicalIds.Any())
                         {
-                            Enumerations.ISHType[] ISHPublicationTypes = { Enumerations.ISHType.ISHPublication };
-                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHPublicationTypes, new IshFields(), Enumerations.ActionMode.Read);
+                            Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHPublication };
+                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
                             xmlIshObjects = IshSession.PublicationOutput25.RetrieveVersionMetadata(publicationLogicalIds.ToArray(),
                                 VersionFilter, "");
                             var publicationIshObjects = new IshObjects(xmlIshObjects);
@@ -251,7 +258,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     }
                 }
                 WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
-                WriteObject(returnIshObjects, true);
+                WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

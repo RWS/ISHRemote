@@ -37,19 +37,20 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
-    /// Find-IshBaseline -IshSession $ishSession -MetadataFilter (Set-IshMetadataFilterField -IshSession $ishSession -Name "FISHBASELINEACTIVE" -ValueType Element -Value "FALSE")
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// Find-IshBaseline -MetadataFilter (Set-IshMetadataFilterField -IshSession $ishSession -Name "FISHBASELINEACTIVE" -ValueType Element -Value "FALSE")
     /// </code>
-    /// <para>Retrieve all active baselines</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve all active baselines with Basic metadata.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshBaseline", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshBaseline))]
     public sealed class FindIshBaseline : BaselineCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
+        [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
@@ -64,22 +65,38 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNull]
         public IshField[] RequestedMetadata { get; set; }
 
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+            // Working code, but not required for Baseline object type
+            //if (MetadataFilter == null)
+            //{
+            //    var fieldName = "FISHMODIFIEDON";
+            //    var dateTime = DateTime.Today.AddDays(-1).ToString("dd/MM/yyyy HH:mm:ss");
+            //    var metadataFilter = new IshMetadataFilterField(fieldName, Enumerations.Level.None, Enumerations.FilterOperator.GreaterThanOrEqual, dateTime, Enumerations.ValueType.Value);
+            //    WriteVerbose($"Filtering to 1 day using -MetadataFilter {metadataFilter}");
+            //    MetadataFilter = new IshFields().AddField(metadataFilter).Fields();
+            //}
+        }
 
         protected override void ProcessRecord()
         {
             try
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
-                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
+                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
 
                 WriteDebug($"Finding MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 string xmlIshObjects = IshSession.Baseline25.GetList(
                     metadataFilter.ToXml(),
                     requestedMetadata.ToXml());
 
-                var returnedObjects = new IshObjects(xmlIshObjects).Objects;
-                WriteVerbose("returned object count[" + returnedObjects.Length + "]");
-                WriteObject(returnedObjects, true);
+                var returnedObjects = new IshObjects(ISHType, xmlIshObjects).ObjectList;
+                WriteVerbose("returned object count[" + returnedObjects.Count + "]");
+                WriteObject(IshSession, ISHType, returnedObjects.ConvertAll(x => (IshBaseObject)x), true);
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

@@ -49,6 +49,9 @@ namespace Trisoft.ISHRemote.Objects.Public
         private IshVersion _clientVersion;
         private IshTypeFieldSetup _ishTypeFieldSetup;
         private Enumerations.StrictMetadataPreference _strictMetadataPreference = Enumerations.StrictMetadataPreference.Continue;
+        private NameHelper _nameHelper;
+        private Enumerations.PipelineObjectPreference _pipelineObjectPreference = Enumerations.PipelineObjectPreference.PSObjectNoteProperty;
+        private Enumerations.RequestedMetadataGroup _defaultRequestedMetadata = Enumerations.RequestedMetadataGroup.Basic;
 
         private int _chunkSize = 10485760;
         private int _metadataBatchSize = 1000;
@@ -199,18 +202,35 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
+        internal NameHelper NameHelper
+        {
+            get
+            {
+                if (_nameHelper == null)
+                {
+                    _nameHelper = new NameHelper(this);
+                }
+                return _nameHelper;
+            }
+        }
+
         public string WebServicesBaseUrl
         {
             get { return _webServicesBaseUri.ToString(); }
         }
 
         /// <summary>
-        /// The user name used to authenticate to the serice, is initialized to Environment.UserName in case of Windows Authentication through NetworkCredential()
+        /// The user name used to authenticate to the service, is initialized to Environment.UserName in case of Windows Authentication through NetworkCredential()
         /// </summary>
         public string IshUserName
         {
             get { return _ishUserName; }
             set { _ishUserName = value; }
+        }
+
+        internal string Name
+        {
+            get { return $"[{WebServicesBaseUrl}][{IshUserName}]"; }
         }
 
         /// <summary>
@@ -232,6 +252,11 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
+        internal IshVersion ServerIshVersion
+        {
+            get { return _serverVersion; }
+        }
+
         public string ServerVersion
         {
             get { return _serverVersion.ToString(); }
@@ -240,7 +265,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <summary>
         /// Retrieving assembly file version, actually can take up to 500 ms to get this initialized, so moved code to JIT property
         /// </summary>
-        public string ClientVersion
+        internal IshVersion ClientIshVersion
         {
             get
             {
@@ -248,8 +273,13 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     _clientVersion = new IshVersion(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVer‌​sion);
                 }
-                return _clientVersion.ToString();
+                return _clientVersion;
             }
+        }
+        
+        public string ClientVersion
+        {
+            get { return ClientIshVersion.ToString(); }
         }
 
         public List<IshTypeFieldDefinition> IshTypeFieldDefinition
@@ -332,6 +362,25 @@ namespace Trisoft.ISHRemote.Objects.Public
                 _strictMetadataPreference = value;
                 IshTypeFieldSetup.StrictMetadataPreference = value;
             }
+        }
+
+        /// <summary>
+        /// Allows tuning client-side object enrichment like no wrapping (off) or PSObject-with-PSNoteProperty wrapping.
+        /// </summary>
+        public Enumerations.PipelineObjectPreference PipelineObjectPreference
+        {
+            get { return _pipelineObjectPreference; }
+            set { _pipelineObjectPreference = value; }
+        }
+
+        /// <summary>
+        /// Any RequestedMetadata will be preloaded with the Descriptive/Basic/All metadata fields known for the ISHType[] in use by the cmdlet
+        /// A potential override/append by the specified -RequestedMetadata is possible.
+        /// </summary>
+        public Enumerations.RequestedMetadataGroup DefaultRequestedMetadata
+        {
+            get { return _defaultRequestedMetadata; }
+            set { _defaultRequestedMetadata = value; }
         }
 
         /// <summary>

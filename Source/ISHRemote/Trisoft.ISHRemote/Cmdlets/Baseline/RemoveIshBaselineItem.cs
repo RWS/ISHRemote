@@ -41,14 +41,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
     /// <para>Removes the LogicalId as baseline entry for the identified baselines</para>
     /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshBaselineItem", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshObject))]
+    [OutputType(typeof(IshBaseline))]
     public sealed class RemoveIshBaselineItem : BaselineCmdlet
     {
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBaselineItemsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshBaselineItemsGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -73,7 +73,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
         //[AllowEmptyCollection]
         //public IshBaselineItem[] IshBaselineItem { get; set; }
 
-        private Dictionary<string, List<IshBaselineItem>> _baselineItemsToProcess = new Dictionary<string, List<Objects.Public.IshBaselineItem>>();
+        private readonly Dictionary<string, List<IshBaselineItem>> _baselineItemsToProcess = new Dictionary<string, List<Objects.Public.IshBaselineItem>>();
+
+        protected override void BeginProcessing()
+        {
+            if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
+            if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
+            WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+            base.BeginProcessing();
+        }
 
         protected override void ProcessRecord()
         {
@@ -107,8 +115,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                     WriteDebug($"Id[{baselineId}] {++current}/{_baselineItemsToProcess.Keys.Count}");
                     if (ShouldProcess(baselineId))
                     {
-                        StringWriter stringWriter;
-                        using (stringWriter = new StringWriter())
+                        using (StringWriter stringWriter = new StringWriter())
                         {
                             using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
                             {
@@ -124,11 +131,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                                 }
                                 xmlWriter.WriteEndElement();
                             }
+                            IshSession.Baseline25.Update(baselineId, stringWriter.ToString());
                         }
-                        IshSession.Baseline25.Update(baselineId, stringWriter.ToString());
                     }
                 }
-                WriteObject(IshObject, true);
+                WriteObject(IshObject, true);  // Incoming IshObject is not altered, already contains optional PSNoteProperty, so continuing the pipeline
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {
