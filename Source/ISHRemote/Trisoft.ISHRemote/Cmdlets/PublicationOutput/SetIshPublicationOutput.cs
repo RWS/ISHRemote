@@ -97,7 +97,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <para type="description">The metadata to set for the publication output object.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNull]
         public IshField[] Metadata { get; set; }
 
@@ -106,8 +106,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <para type="description">If the metadata is still the same, the metadata will be set.</para>
         /// <para type="description">If the metadata is not the same anymore, an error is given and the metadata will be set.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
 
@@ -154,7 +154,10 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             WriteDebug($"Id[{ishObject.IshRef}] {++current}/{IshObject.Length}");
                             // Get language ref
                             long lngRef = Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]);
-                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
+                            // Use incoming Metadata for update operation, or re-submit metadata of incoming IshObjects
+                            var metadata = (Metadata != null) ?
+                                IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update) :
+                                IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
                             if (ShouldProcess(Convert.ToString(lngRef)))
                             {
                                 IshSession.PublicationOutput25.SetMetadataByIshLngRef(

@@ -52,7 +52,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// $ishObject = Set-IshDocumentObj -IshObject $ishObject -Metadata (Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased)
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Typical mandatory metadata to create a content object. Then overwrite metadata in group on the specified one or more IshObjects.</para>
-    /// </example>	    /// </example>
+    /// </example>
     [Cmdlet(VerbsCommon.Set, "IshDocumentObj", SupportsShouldProcess = true)]
     [OutputType(typeof(IshDocumentObj))]
     public sealed class SetIshDocumentObj : DocumentObjCmdlet
@@ -94,7 +94,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">The metadata to set for the document object</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [ValidateNotNull]
         public IshField[] Metadata { get; set; }
 
@@ -173,8 +173,10 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         {
                             // Get language ref
                             long lngRef = Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]);
-                            var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update);
-
+                            // Use incoming Metadata for update operation, or re-submit metadata of incoming IshObjects
+                            var metadata = (Metadata != null) ?
+                                IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Update) :
+                                IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishObject.IshFields, Enumerations.ActionMode.Update);
                             if (ishObject.IshData != null)
                             {
                                 WriteDebug($"lngRef[{lngRef}] Metadata.length[{metadata.ToXml().Length}] dataSize[{ishObject.IshData.Size()}] {++current}/{ishObjects.Length}");
