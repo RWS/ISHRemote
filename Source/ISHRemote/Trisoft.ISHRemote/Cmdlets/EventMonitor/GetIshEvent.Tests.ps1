@@ -102,14 +102,25 @@ Describe “Get-IshEvent" -Tags "Create" {
 		It "ishEvent.ObjectRef[Enumerations.ReferenceType.EventProgress]" {
 			$ishEvent.ObjectRef["EventProgress"] | Should Not BeNullOrEmpty
 		}
-		It "ishEvent.ObjectRef[Enumerations.ReferenceType.EventDetail]" {
-			$ishEvent.ObjectRef["EventDetail"] | Should Not BeNullOrEmpty
-		}
+		#It "ishEvent.ObjectRef[Enumerations.ReferenceType.EventDetail]" {  # Requires BackgroundTask to be running to get detail entries
+		#	$ishEvent.ObjectRef["EventDetail"] | Should Not BeNullOrEmpty
+		#}
 		It "Parameter IshSession/ModifiedSince/UserFilter invalid" {
 			{ Get-IshEvent -IShSession "INVALIDISHSESSION" -ModifiedSince "INVALIDDATE" -UserFilter "INVALIDUSERFILTER" } | Should Throw
 		}
 		It "Parameter RequestedMetadata/MetadataFile invalid" {
 			{ Get-IshEvent -IShSession $ishSession -RequestedMetadata "INVALIDMETADATA" -MetadataFilter "INVALIDFILTER"  } | Should Throw
+		}
+		It "Parameter RequestedMetadata only Progress level on unstarted event" {
+			$eventPrefix = $cmdletName
+			$startEventRequest = New-Object -TypeName Trisoft.ISHRemote.EventMonitor25ServiceReference.StartEventRequest
+			$startEventRequest.description = $eventPrefix + " Progress-level-only Event created by ISHRemote PowerShell test"
+			$startEventRequest.eventType = $eventPrefix
+			$startEventRequest.maximumProgress = 100
+			$event = $ishSession.EventMonitor25.StartEvent($startEventRequest)
+			$metadataFilter = Set-IshMetadataFilterField -Name "EVENTID" -Level "Progress" -FilterOperator "Equal" -Value $event.eventId
+			$ishEvent = Get-IshEvent -IshSession $ishSession -EventTypes @($startEventRequest.eventType) -RequestedMetadata $allProgressMetadata -MetadataFilter $metaDataFilter
+			$ishEvent.Count | Should Be 1
 		}
 		It "Parameter IshSession/UserFilter/MetadataFilter are optional" {
 			$ishEvent = (Get-IshEvent -ModifiedSince ((Get-Date).AddSeconds(-10)) -RequestedMetadata $allProgressMetadata)[0]
@@ -124,10 +135,10 @@ Describe “Get-IshEvent" -Tags "Create" {
 			$ishSession.DefaultRequestedMetadata = "Basic"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
 			$ishEvent.status.Length -gt 0 | Should Be $true
-			$ishEvent.IshField.Count | Should Be 18
+			$ishEvent.IshField.Count | Should Be 9
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
-			$ishEvent.IshField.Count | Should Be 21
+			$ishEvent.IshField.Count | Should Be 10
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 		}
 		It "Parameter ModifiedSince is now" {
@@ -137,7 +148,7 @@ Describe “Get-IshEvent" -Tags "Create" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
 			$ishEvent.ObjectRef["EventProgress"] -gt 0 | Should Be $true
 			#$ishEvent.ObjectRef["EventDetail"] -gt 0 | Should Be $true
-			$ishEvent.IshField.Count -ge 19 | Should Be $true  # Perhaps expected 10 Progress level fields, but Get-IshEvent currently always retrieves details as well
+			$ishEvent.IshField.Count | Should Be 10
 		}
 		It "Parameter RequestedMetadata only all of Detail level" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allDetailMetadata)[0]

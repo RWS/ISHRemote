@@ -212,11 +212,22 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
                     _retrievedIshEvents = new IshEvents(xmlIshEvents).Events;
                 }
 
+                // If incoming RequestedMetadata only requests Progress level, then limit to that
+                var checkRequestedMetadataDetailLevelCount = (new IshFields(RequestedMetadata)).ToRequestedFields(Enumerations.Level.Detail).Count();
+                if (checkRequestedMetadataDetailLevelCount == 0)
+                {
+                    // Note on iteratively retrieving and filtering...
+                    // RetrieveEventsByProgressIds eventually selects from a simple join of ISH_EVENTPROGRESSDETAILS.PROGRESSID with ISH_EVENTPROGRESS.PROGRESSID; 
+                    // so if there are no entries in ISH_EVENTPROGRESSDETAILS, then there are no results. Left outer join might have been better but will not be fixed across 10+ fielded product versions.
+                    requestedMetadata = requestedMetadata.ToRequestedFields(Enumerations.Level.Progress);
+                    WriteDebug("Limiting requestedMetadata to Progress level");
+                }
+
                 // if there is a filter RetrieveEventsByProgressIds after RetrieveEventOverview or on incoming IShEvents
                 var progressRefs = _retrievedIshEvents.Select(ishEvent => Convert.ToInt64(ishEvent.ObjectRef[Enumerations.ReferenceType.EventProgress])).ToList();
+                WriteVerbose("Retrieving details for " + progressRefs.Count + " overview events");
                 if (progressRefs.Count != 0)
                 {
-                    WriteVerbose("Retrieving details");
                     IshFields metadataFilter = new IshFields(MetadataFilter);
                     //TODO: [Could]  could become the highest ishdetailref value to retrieve less, but then you need to 'append' to the incoming IshEvents so low priority
                     long lastDetailId = 0;
