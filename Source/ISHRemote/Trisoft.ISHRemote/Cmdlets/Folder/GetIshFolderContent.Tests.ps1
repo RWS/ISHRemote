@@ -40,7 +40,8 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 			$ishObjects.GetType().Name | Should BeExactly "Object[]"
 		}
 		It "[0]GetType().BaseType.Name" {
-			$ishObjects[0].GetType().Name | Should BeExactly "IshObject"
+			# Used to be IshObject, but more specific ISHType like IshDocumentObj or IshPublicationOutput is put on the pipeline
+			$ishObjects[0].GetType().Name | Should BeExactly "IshDocumentObj"  
 		}
 		It "ishObjects[0].IshData" {
 			{ $ishObjects[0].IshData } | Should Not Throw
@@ -55,14 +56,17 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 			$ishObjects[0].IshType | Should Not BeNullOrEmpty
 		}
 		# Double check following 3 ReferenceType enum usage 
-		It "ishObjects[0].ObjectRef[Enumerations.ReferenceType.Logical]" {
-			$ishObjects[0].ObjectRef["Logical"] | Should Not BeNullOrEmpty
+		It "ishObjects[0].ObjectRef" {
+			$ishObjects[0].ObjectRef | Should Not BeNullOrEmpty
 		}
-		It "ishObjects[0].ObjectRef[Enumerations.ReferenceType.Version]" {
-			$ishObjects[0].ObjectRef["Version"] | Should Not BeNullOrEmpty
+		It "ishObjects[0].VersionRef" {
+			$ishObjects[0].VersionRef | Should Not BeNullOrEmpty
 		}
-		It "ishObjects[0].ObjectRef[Enumerations.ReferenceType.Lng]" {
-			$ishObjects[0].ObjectRef["Lng"] | Should Not BeNullOrEmpty
+		It "ishObjects[0].LngRef" {
+			$ishObjects[0].LngRef | Should Not BeNullOrEmpty
+		}
+		It "ishObjects[0] ConvertTo-Json" {
+			(ConvertTo-Json $ishObjects[0]).Length -gt 2 | Should Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
 			$ishSession.DefaultRequestedMetadata | Should Be "Basic"

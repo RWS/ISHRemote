@@ -224,7 +224,7 @@ namespace Trisoft.ISHRemote.Cmdlets.EventMonitor
                 }
 
                 // if there is a filter RetrieveEventsByProgressIds after RetrieveEventOverview or on incoming IShEvents
-                var progressRefs = _retrievedIshEvents.Select(ishEvent => Convert.ToInt64(ishEvent.ObjectRef[Enumerations.ReferenceType.EventProgress])).ToList();
+                var progressRefs = _retrievedIshEvents.Select(ishEvent => Convert.ToInt64(ishEvent.ProgressRef)).ToList();
                 WriteVerbose("Retrieving details for " + progressRefs.Count + " overview events");
                 if (progressRefs.Count != 0)
                 {

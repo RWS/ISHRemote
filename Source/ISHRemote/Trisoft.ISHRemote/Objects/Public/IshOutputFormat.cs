@@ -31,5 +31,13 @@ namespace Trisoft.ISHRemote.Objects.Public
         public IshOutputFormat(XmlElement xmlIshObject)
             : base(xmlIshObject)
         { }
+
+        /// <summary>
+        /// Returns the card_id
+        /// </summary>
+        public new string ObjectRef
+        {
+            get { return _objectRef[Enumerations.ReferenceType.OutputFormat]; }
+        }
     }
 }

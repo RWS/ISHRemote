@@ -99,12 +99,15 @@ Describe “Get-IshEvent" -Tags "Create" {
 			$ishEvent.IshRef | Should Not BeNullOrEmpty
 		}
 		# Double check following 2 ReferenceType enum usage 
-		It "ishEvent.ObjectRef[Enumerations.ReferenceType.EventProgress]" {
-			$ishEvent.ObjectRef["EventProgress"] | Should Not BeNullOrEmpty
+		It "ishEvent.ProgressRef" {
+			$ishEvent.ProgressRef | Should Not BeNullOrEmpty
 		}
-		#It "ishEvent.ObjectRef[Enumerations.ReferenceType.EventDetail]" {  # Requires BackgroundTask to be running to get detail entries
-		#	$ishEvent.ObjectRef["EventDetail"] | Should Not BeNullOrEmpty
+		#It "ishEvent.DetailRef" {  # Requires BackgroundTask to be running to get detail entries
+		#	$ishEvent.DetailRef | Should Not BeNullOrEmpty
 		#}
+		It "ishEvent ConvertTo-Json" {
+			(ConvertTo-Json $ishEvent).Length -gt 2 | Should Be $true
+		}
 		It "Parameter IshSession/ModifiedSince/UserFilter invalid" {
 			{ Get-IshEvent -IShSession "INVALIDISHSESSION" -ModifiedSince "INVALIDDATE" -UserFilter "INVALIDUSERFILTER" } | Should Throw
 		}
@@ -146,14 +149,14 @@ Describe “Get-IshEvent" -Tags "Create" {
 		}
 		It "Parameter RequestedMetadata only all of Progress level" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
-			$ishEvent.ObjectRef["EventProgress"] -gt 0 | Should Be $true
-			#$ishEvent.ObjectRef["EventDetail"] -gt 0 | Should Be $true
+			$ishEvent.ProgressRef -gt 0 | Should Be $true
+			#$ishEvent.DetailRef -gt 0 | Should Be $true
 			$ishEvent.IshField.Count | Should Be 10
 		}
 		It "Parameter RequestedMetadata only all of Detail level" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allDetailMetadata)[0]
-			$ishEvent.ObjectRef["EventProgress"] -gt 0 | Should Be $true
-			$ishEvent.ObjectRef["EventDetail"] -gt 0 | Should Be $true
+			$ishEvent.ProgressRef -gt 0 | Should Be $true
+			$ishEvent.DetailRef -gt 0 | Should Be $true
 			$ishEvent.IshField.Count -ge 20 | Should Be $true  # Perhaps expected 10 Progress level fields, but Get-IshEvent currently always retrieves details as well
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=PSObjectNoteProperty" {

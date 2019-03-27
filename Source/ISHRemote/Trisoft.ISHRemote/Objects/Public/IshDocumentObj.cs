@@ -31,5 +31,29 @@ namespace Trisoft.ISHRemote.Objects.Public
         public IshDocumentObj(XmlElement xmlIshObject)
             : base(xmlIshObject)
         { }
+
+        /// <summary>
+        /// Returns the logical card_id
+        /// </summary>
+        public new string ObjectRef
+        {
+            get { return _objectRef[Enumerations.ReferenceType.Logical]; }
+        }
+
+        /// <summary>
+        /// Returns the version card_id
+        /// </summary>
+        public string VersionRef
+        {
+            get { return _objectRef[Enumerations.ReferenceType.Version]; }
+        }
+
+        /// <summary>
+        /// Returns the language card_id
+        /// </summary>
+        public string LngRef
+        {
+            get { return _objectRef[Enumerations.ReferenceType.Lng]; }
+        }
     }
 }

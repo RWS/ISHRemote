@@ -43,24 +43,27 @@ Describe “Add-IshPublicationOutput" -Tags "Create" {
         It "GetType().Name" {
 			$ishObjectPub.GetType().Name | Should BeExactly "IshPublicationOutput"
 		}
-		It "$ishObjectPub.IshField" {
+		It "ishObjectPub.IshField" {
 			$ishObjectPub.IshField | Should Not BeNullOrEmpty
 		}
-		It "$ishObjectPub.IshRef" {
+		It "ishObjectPub.IshRef" {
 			$ishObjectPub.IshRef | Should Not BeNullOrEmpty
 		}
-		It "$ishObjectPub.IshType" {
+		It "ishObjectPub.IshType" {
 			$ishObjectPub.IshType | Should Not BeNullOrEmpty
 		}
 		# Double check following 3 ReferenceType enum usage 
-		It "$ishObjectPub.ObjectRef[Enumerations.ReferenceType.Logical]" {
-			$ishObjectPub.ObjectRef["Logical"] | Should Not BeNullOrEmpty
+		It "ishObjectPub.ObjectRef" {
+			$ishObjectPub.ObjectRef | Should Not BeNullOrEmpty
 		}
-		It "$ishObjectPub.ObjectRef[Enumerations.ReferenceType.Version]" {
-			$ishObjectPub.ObjectRef["Version"] | Should Not BeNullOrEmpty
+		It "ishObjectPub.VersionRef" {
+			$ishObjectPub.VersionRef | Should Not BeNullOrEmpty
 		}
-		It "$ishObjectPub.ObjectRef[Enumerations.ReferenceType.Lng]" {
-			$ishObjectPub.ObjectRef["Lng"] | Should Not BeNullOrEmpty
+		It "ishObjectPub.LngRef" {
+			$ishObjectPub.LngRef | Should Not BeNullOrEmpty
+		}
+		It "ishObjectPub ConvertTo-Json" {
+			(ConvertTo-Json $ishObjectPub).Length -gt 2 | Should Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
 			$ishSession.DefaultRequestedMetadata | Should Be "Basic"

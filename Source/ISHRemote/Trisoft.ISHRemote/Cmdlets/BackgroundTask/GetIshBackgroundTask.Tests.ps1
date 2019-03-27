@@ -92,12 +92,15 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 			$ishBackgroundTask.IshRef | Should Not BeNullOrEmpty
 		}
 		# Double check following 2 ReferenceType enum usage 
-		It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTask]" {
-			$ishBackgroundTask.ObjectRef["BackgroundTask"] | Should Not BeNullOrEmpty
+		It "ishBackgroundTask.TaskRef" {
+			$ishBackgroundTask.TaskRef | Should Not BeNullOrEmpty
 		}
-		#It "ishBackgroundTask.ObjectRef[Enumerations.ReferenceType.BackgroundTaskHistory]" {
-		#	$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] | Should Not BeNullOrEmpty
+		#It "ishBackgroundTask.HistoryRef" {
+		#	$ishBackgroundTask.HistoryRef | Should Not BeNullOrEmpty
 		#}
+		It "ishBackgroundTask ConvertTo-Json" {
+			(ConvertTo-Json $ishBackgroundTask).Length -gt 2 | Should Be $true
+		}
 		It "Parameter IshSession/ModifiedSince/UserFilter invalid" {
 			{ Get-IshBackgroundTask -IShSession "INVALIDISHSESSION" -ModifiedSince "INVALIDDATE" -UserFilter "INVALIDUSERFILTER" } | Should Throw
 		}
@@ -129,14 +132,13 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 		}
 		It "Parameter RequestedMetadata only all of Task level" {
 			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
-			$ishBackgroundTask.ObjectRef["BackgroundTask"] -gt 0 | Should Be $true
-			#$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] -gt 0 | Should Be $true
+			$ishBackgroundTask.TaskRef -gt 0 | Should Be $true
 			$ishBackgroundTask.IshField.Count -ge 16 | Should Be $true
 		}
 		It "Parameter RequestedMetadata only all of History level" {
 			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allHistMetadata)[0]
-			$ishBackgroundTask.ObjectRef["BackgroundTask"] -gt 0 | Should Be $true
-			#$ishBackgroundTask.ObjectRef["BackgroundTaskHistory"] -gt 0 | Should Be $true
+			$ishBackgroundTask.TaskRef -gt 0 | Should Be $true
+			#$ishBackgroundTask.HistoryRef -gt 0 | Should Be $true
 			$ishBackgroundTask.IshField.Count -ge 1 | Should Be $true  # At least 1 entries returned if BackgroundTask service is not running, otherwise more
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=PSObjectNoteProperty" {

@@ -33,27 +33,30 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 		It "GetType().Name" {
 			$ishObject.GetType().Name | Should BeExactly "IshDocumentObj"
 		}
-		It "$ishObject.IshData" {
+		It "ishObject.IshData" {
 			{ $ishObject.IshData } | Should Not Throw
 		}
-		It "$ishObject.IshField" {
+		It "ishObject.IshField" {
 			$ishObject.IshField | Should Not BeNullOrEmpty
 		}
-		It "$ishObject.IshRef" {
+		It "ishObject.IshRef" {
 			$ishObject.IshRef | Should Not BeNullOrEmpty
 		}
-		It "$ishObject.IshType" {
+		It "ishObject.IshType" {
 			$ishObject.IshType | Should Not BeNullOrEmpty
 		}
 		# Double check following 3 ReferenceType enum usage 
-		It "$ishObject.ObjectRef[Enumerations.ReferenceType.Logical]" {
-			$ishObject.ObjectRef["Logical"] | Should Not BeNullOrEmpty
+		It "ishObject.ObjectRef" {
+			$ishObject.ObjectRef | Should Not BeNullOrEmpty
 		}
-		It "$ishObject.ObjectRef[Enumerations.ReferenceType.Version]" {
-			$ishObject.ObjectRef["Version"] | Should Not BeNullOrEmpty
+		It "ishObject.VersionRef" {
+			$ishObject.VersionRef | Should Not BeNullOrEmpty
 		}
-		It "$ishObject.ObjectRef[Enumerations.ReferenceType.Lng]" {
-			$ishObject.ObjectRef["Lng"] | Should Not BeNullOrEmpty
+		It "ishObject.LngRef" {
+			$ishObject.LngRef | Should Not BeNullOrEmpty
+		}
+		It "ishObject ConvertTo-Json" {
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
 			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
@@ -84,21 +87,21 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 			    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -LogicalId "MYOWNGENERATEDLOGICALIDTOPIC" -Version '2' -Lng $ishLng -Metadata $ishTopicMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+			$ishObject.LngRef -gt 0 | Should Be $true
 		}
 		It "All Parameters (Map)" {
 			$ishMapMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Map $timestamp" |
 						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 			                  Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderMap -IshType ISHMasterDoc -LogicalId "MYOWNGENERATEDLOGICALIDMAP" -Version '3' -Lng $ishLng -Metadata $ishMapMetadata -Edt "EDTXML" -FileContent $ditaMapFileContent
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+			$ishObject.LngRef -gt 0 | Should Be $true
 		}
 		It "All Parameters (Lib)" {
 			$ishLibMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Lib $timestamp" |
 						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 			    			  Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderLib -IshType ISHLibrary -LogicalId "MYOWNGENERATEDLOGICALIDLIB" -Version '4' -Lng $ishLng -Metadata $ishLibMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+			$ishObject.LngRef -gt 0 | Should Be $true
 		}
 	}
 	
@@ -122,7 +125,7 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 			}
 			$bmp.Save($tempFilePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderImage -IshType ISHIllustration -LogicalId "MYOWNGENERATEDLOGICALIDIMAGE" -Version '5' -Lng $ishLng -Resolution $ishResolution -Metadata $ishImageMetadata -Edt "EDTJPEG" -FilePath $tempFilePath
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+			$ishObject.LngRef -gt 0 | Should Be $true
 		}
 		It "All Parameters (Other like EDT-TEXT)" {
 			$ishOtherMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Other $timestamp" |
@@ -130,7 +133,7 @@ Describe “Add-IshDocumentObj" -Tags "Create" {
 			    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			Get-Process | Out-File $tempFilePath
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderOther -IshType ISHTemplate -LogicalId "MYOWNGENERATEDLOGICALIDOTHER" -Version '6' -Lng $ishLng -Metadata $ishOtherMetadata -Edt "EDT-TEXT" -FilePath $tempFilePath
-			$ishObject.ObjectRef["Lng"] -gt 0 | Should Be $true
+			$ishObject.LngRef -gt 0 | Should Be $true
 		}
 	}
 

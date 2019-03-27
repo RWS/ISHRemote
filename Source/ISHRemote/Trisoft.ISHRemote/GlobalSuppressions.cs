@@ -26,3 +26,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S101:Types should be named in camel case", Justification = "<Pending>", Scope = "type", Target = "~T:Trisoft.ISHRemote.Objects.Public.IshEDT")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S2365:Properties should not make collection or array copies", Justification = "<Pending>", Scope = "member", Target = "~P:Trisoft.ISHRemote.Objects.IshTypeFieldSetup.IshTypeFieldDefinition")]
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1066:Collapsible \"if\" statements should be merged", Justification = "<Pending>", Scope = "member", Target = "~M:Trisoft.ISHRemote.Cmdlets.DocumentObj.RemoveIshDocumentObj.ProcessRecord")]
+
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1066:Collapsible \"if\" statements should be merged", Justification = "<Pending>", Scope = "member", Target = "~M:Trisoft.ISHRemote.Cmdlets.PublicationOutput.RemoveIshPublicationOutput.ProcessRecord")]

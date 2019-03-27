@@ -207,7 +207,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 string xmlIshBackgroundTasks;
                 if (_retrievedIshBackgroundTask.Count != 0)
                 {
-                    var backgroundTaskIds = _retrievedIshBackgroundTask.Select(ishEvent => Convert.ToInt64(ishEvent.ObjectRef[Enumerations.ReferenceType.BackgroundTask])).ToList();
+                    var backgroundTaskIds = _retrievedIshBackgroundTask.Select(ishBackgroundTask => Convert.ToInt64(ishBackgroundTask.TaskRef)).ToList();
                     if (backgroundTaskIds.Count != 0)
                     {
                         var backgroundTaskIdsAsString = string.Join(", ", backgroundTaskIds.ToArray());

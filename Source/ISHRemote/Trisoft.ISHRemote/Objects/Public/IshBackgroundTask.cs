@@ -111,11 +111,19 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         /// <summary>
-        /// Stores the variations of progressref, ishlogicalref, ishuserref, ishoutputformatref,... If there are more references, like log/ver/Lng then they are available in the dictionary.
+        /// Returns the task id
         /// </summary>
-        public Dictionary<Enumerations.ReferenceType, string> ObjectRef
+        public string TaskRef
         {
-            get { return _backgroundTaskRef; }
+            get { return _backgroundTaskRef[Enumerations.ReferenceType.BackgroundTask]; }
+        }
+
+        /// <summary>
+        /// Returns the history id
+        /// </summary>
+        public string HistoryRef
+        {
+            get { return _backgroundTaskRef[Enumerations.ReferenceType.BackgroundTaskHistory]; }
         }
     }
 }

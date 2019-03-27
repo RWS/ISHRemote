@@ -113,11 +113,19 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         /// <summary>
-        /// Stores the variations of progressref, ishlogicalref, ishuserref, ishoutputformatref,... If there are more references, like log/ver/Lng then they are available in the dictionary.
+        /// Returns the progress id
         /// </summary>
-        public Dictionary<Enumerations.ReferenceType, string> ObjectRef
+        public string ProgressRef
         {
-            get { return _eventRef; }
+            get { return _eventRef[Enumerations.ReferenceType.EventProgress]; }
+        }
+
+        /// <summary>
+        /// Returns the detail id
+        /// </summary>
+        public string DetailRef
+        {
+            get { return _eventRef[Enumerations.ReferenceType.EventDetail]; }
         }
     }
 }

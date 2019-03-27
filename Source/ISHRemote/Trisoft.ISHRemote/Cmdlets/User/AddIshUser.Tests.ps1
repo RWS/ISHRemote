@@ -21,6 +21,7 @@ Describe "Add-IshUser" -Tags "Create" {
 			$ishObject = Add-IshUser -IshSession $ishSession -Name $userName -Metadata $metadata
 			$ishObject.GetType().Name | Should BeExactly "IshUser"
 			$ishObject.Count | Should Be 1
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should Be $true
 		}
 		It "Parameter Metadata" {
 			$userName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")

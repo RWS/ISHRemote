@@ -245,7 +245,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
                     string requestedMetadata = "<ishfields><ishfield name='USERNAME' level='none'/></ishfields>";
                     string xmlIshObjects = User25.GetMyMetadata(requestedMetadata);
-                    IshObjects ishObjects = new IshObjects(xmlIshObjects);
+                    Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
+                    IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
                     _userName = ishObjects.Objects[0].IshFields.GetFieldValue("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
                 }
                 return _userName;

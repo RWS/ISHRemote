@@ -30,9 +30,9 @@ namespace Trisoft.ISHRemote.Objects.Public
     {
         const string DefaultEDT = "EDTUNDEFINED";
 
-        private string _edt = DefaultEDT;
-        private byte[] _byteArray = null;
-        private string _fileExtension = "";
+        private readonly string _edt = DefaultEDT;
+        private readonly byte[] _byteArray = null;
+        private readonly string _fileExtension = "";
 
         /// <summary>
         /// Creates a new instance of the <see cref="IshData"/> class.

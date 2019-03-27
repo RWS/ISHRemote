@@ -217,7 +217,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             xmlIshObjects = IshSession.DocumentObj25.RetrieveLanguageMetadata(documentLogicalIds.ToArray(),
                                 VersionFilter, LanguagesFilter,
                                 new string[0], DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, requestedMetadata.ToXml());
-                            var documentIshObjects = new IshObjects(xmlIshObjects);
+                            var documentIshObjects = new IshObjects(ISHType, xmlIshObjects);
                             returnIshObjects.AddRange(documentIshObjects.Objects);
                         }
 
@@ -251,7 +251,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     IshSession.PublicationOutput25.RetrieveMetadataByIshVersionRefs(versionRefs.ToArray(),
                                         PublicationOutput25ServiceReference.StatusFilter.ISHNoStatusFilter, metadataFilterFields.ToXml(),
                                         requestedMetadata.ToXml());
-                                publicationIshObjects = new IshObjects(xmlIshObjects);
+                                publicationIshObjects = new IshObjects(ISHType, xmlIshObjects);
                                 returnIshObjects.AddRange(publicationIshObjects.Objects);
                             }
                         }

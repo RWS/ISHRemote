@@ -42,7 +42,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         private readonly string _ishRef;
         private readonly Enumerations.ISHType _ishType; 
-        private readonly Dictionary<Enumerations.ReferenceType,string> _objectRef;
+        protected readonly Dictionary<Enumerations.ReferenceType,string> _objectRef;
         private IshFields _ishFields;
         private IshData _ishData;
 
@@ -134,7 +134,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <summary>
         /// Stores the variations of ishlogicalref, ishuserref, ishoutputformatref,... If there are more references, like log/ver/Lng then they are available in the dictionary.
         /// </summary>
-        public Dictionary<Enumerations.ReferenceType, string> ObjectRef
+        internal Dictionary<Enumerations.ReferenceType, string> ObjectRef
         {
             get { return _objectRef; }
         }

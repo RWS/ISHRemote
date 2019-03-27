@@ -18,6 +18,7 @@ Describe “Add-IshUserGroup" -Tags "Create" {
 			$ishObject = Add-IshUserGroup -IshSession $ishSession -Name $userGroupName
 			$ishObject.GetType().Name | Should BeExactly "IshUserGroup"
 			$ishObject.Count | Should Be 1
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should Be $true
 		}
 		It "Parameter Metadata" {
 			$userGroupName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")

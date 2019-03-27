@@ -46,7 +46,6 @@ namespace Trisoft.ISHRemote.Cmdlets
 
         public readonly ILogger Logger;
 
-        private readonly string _levelNameValueTypeSeparator = "--";     // consider removing and get from IshSession.NameHelper
         private int _tickCountStart;
         
         private readonly ProgressRecord _parentProgressRecord;
@@ -62,14 +61,6 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// Error message you get when you didn't pass an explicit -IshSession on the cmdlet, or New-IshSession didn't set the SessionState variable
         /// </summary>
         internal const string ISHRemoteSessionStateIshSessionException = "IshSession is null. Please create a session first using New-IshSession. Or explicitly pass parameter -IshSession to your cmdlet.";
-
-        /// <summary>
-        /// Returns the PSObject NoteProperty separator to generate additional auxiliary properties
-        /// </summary>
-        public string LevelNameValueTypeSeparator
-        {
-            get { return _levelNameValueTypeSeparator; }
-        }
 
         protected TrisoftCmdlet()
         {
