@@ -25,7 +25,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
 			$ishObject.GetType().Name | Should BeExactly "IshOutputFormat"
 			$ishObject.Count | Should Be 1
-			(ConvertTo-Json $ishObjects[0]).Length -gt 2 | Should Be $true
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should Be $true
 		}
 		It "Parameter Metadata" {
 			$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")

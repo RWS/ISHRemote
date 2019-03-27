@@ -18,7 +18,7 @@ Get-IshBackgroundTask | Where-Object -Property status -EQ "Pending"
 Get-IshBackgroundTask | Out-GridView
 ```
 
-![ISHRemote-0.7--Session-DStatus-EDT-BackgroundTaskPending-BackgroundTaskGridview](./Images/ISHRemote-0.7--Session-DStatus-EDT-BackgroundTaskPending-BackgroundTaskGridview2.gif)
+![ISHRemote-0.7--Session-DStatus-EDT-BackgroundTaskPending-BackgroundTaskGridview 1024x512](./Images/ISHRemote-0.7--Session-DStatus-EDT-BackgroundTaskPending-BackgroundTaskGridview2.gif)
 
 ## Sample - Descriptive, Basic and All Fields
 
@@ -34,7 +34,7 @@ $ishSession.DefaultRequestedMetadata = 'All'  # v0.7, new optional all fields
 Find-IshOutputFormat | Select-Object -Property * | Out-GridView
 ```
 
-![ISHRemote-0.7--Session-BackgroundTask-DescriptiveBasicAllField](./Images/ISHRemote-0.7--Session-BackgroundTask-DescriptiveBasicAllField.gif)
+![ISHRemote-0.7--Session-BackgroundTask-DescriptiveBasicAllField 1024x512](./Images/ISHRemote-0.7--Session-BackgroundTask-DescriptiveBasicAllField.gif)
 
 ## Sample - Descriptive, Basic and All Fields Performance
 
@@ -55,84 +55,30 @@ $ishSession.PipelineObjectPreference = 'PSObjectNoteProperty' # v0.7, new defaul
 (Measure-Command { $o = Find-IshDocumentObj -MetadataFilter $metadataFilter }).TotalMilliseconds
 ```
 
-![ISHRemote-0.7--Session-DocumentObj-DescriptiveBasicAllFieldPerformance](./Images/ISHRemote-0.7--Session-DocumentObj-DescriptiveBasicAllFieldPerformance.gif)
+![ISHRemote-0.7--Session-DocumentObj-DescriptiveBasicAllFieldPerformance 1024x512](./Images/ISHRemote-0.7--Session-DocumentObj-DescriptiveBasicAllFieldPerformance.gif)
 
-## Sample - JSON
+## Sample - Validate and Obfuscate Xml and Images
 
-Showing a _potential_ JSON version derived from the public objects.
+Showing how to create a simple OASIS DITA test file, validate using local DTDs, obfuscate and validate the obfuscated OASIS DITA test file using remote DTDs (over IIS which is very slow, but works).
 
 ```powershell
-Get-IshUser | ConvertTo-JsonEx -Depth 1 -AsArray
+# Create a test file for demo purposes
+$ditaTaskFileContent = @"
+<?xml version="1.0" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="GUID-TASK"><title>Enter the title of your task here.</title><shortdesc>Enter a short description of your task here (optional).</shortdesc><taskbody><prereq>Enter the prerequisites here (optional).</prereq><context>Enter the context of your task here (optional).</context><steps><step><cmd>Enter your first step here.</cmd><stepresult>Enter the result of your step here (optional).</stepresult></step></steps><example>Enter an example that illustrates the current task (optional).</example><postreq>Enter the tasks the user should do after finishing this task (optional).</postreq></taskbody></task>
+"@
+$taskFilePath = "C:\temp\MyTask.xml"
+Set-Content -Path $taskFilePath -Value $ditaTaskFileContent -Encoding UTF8
+# validate locally
+Test-IshValidXml -XmlCatalogFilePath "C:\InfoShare\WebDITA\Author\ASP\DocTypes\catalog.xml" -FilePath $taskFilePath
+# incoming array of fileinfos
+Get-ChildItem "C:\temp\MyTask*.xml" |
+New-IshObfuscatedFile -FolderPath C:\temp\out\
+# resulting obfuscated file
+Get-Content C:\temp\out\MyTask.xml
+# validate remote which works but is very slow!!
+Test-IshValidXml -XmlCatalogFilePath " https://medevddemeyer10.global.sdl.corp/InfoShareAuthorDita/DocTypes/catalog.xml" -FilePath C:\temp\out\MyTask.xml
 ```
-results in
-```
-[
-  {
-    "IshRef": "VUSERADMIN2",
-    "IshType": 8,
-    "IshField": "Set-IshMetadataField -Level none -Name CREATED-ON -ValueType value -Value \"13/03/2007
- 11:19:12\" Set-IshMetadataField -Level none -Name FISHEMAIL -ValueType value -Value \"ishremote@sdl.co
-m\" Set-IshMetadataField -Level none -Name FISHEXTERNALID -ValueType value -Value \"Admin2\" Set-IshMet
-adataField -Level none -Name FISHFAILEDATTEMPTS -ValueType value -Value \"0\" Set-IshMetadataField -Lev
-el none -Name FISHLASTLOGINON -ValueType value -Value \"23/03/2019 14:11:47\" Set-IshMetadataField -Lev
-el none -Name FISHLOCKED -ValueType value -Value \"No\" Set-IshMetadataField -Level none -Name FISHLOCK
-ED -ValueType element -Value \"FALSE\" Set-IshMetadataField -Level none -Name FISHLOCKEDSINCE -ValueTyp
-e value -Value \"\" Set-IshMetadataField -Level none -Name FISHOBJECTACTIVE -ValueType value -Value \"Y
-es\" Set-IshMetadataField -Level none -Name FISHOBJECTACTIVE -ValueType element -Value \"TRUE\" Set-Ish
-MetadataField -Level none -Name FISHPASSWORDMODIFIEDON -ValueType value -Value \"13/03/2007 11:19:12\" 
-Set-IshMetadataField -Level none -Name FISHUSERDISABLED -ValueType value -Value \"No\" Set-IshMetadataF
-ield -Level none -Name FISHUSERDISABLED -ValueType element -Value \"FALSE\" Set-IshMetadataField -Level
- none -Name FISHUSERDISPLAYNAME -ValueType value -Value \"Admin2 Display Name\" Set-IshMetadataField -L
-evel none -Name FISHUSERTYPE -ValueType value -Value \"Internal\" Set-IshMetadataField -Level none -Nam
-e FISHUSERTYPE -ValueType element -Value \"VUSERTYPEINTERNAL\" Set-IshMetadataField -Level none -Name M
-ODIFIED-ON -ValueType value -Value \"23/03/2019 14:11:47\" Set-IshMetadataField -Level none -Name NAME 
--ValueType value -Value \"Admin2\" Set-IshMetadataField -Level none -Name OSUSER -ValueType value -Valu
-e \"GLOBAL\\Admin2\" Set-IshMetadataField -Level none -Name FISHUSERLANGUAGE -ValueType value -Value \"
-en\" Set-IshMetadataField -Level none -Name FISHUSERLANGUAGE -ValueType element -Value \"VLANGUAGEEN\" 
-Set-IshMetadataField -Level none -Name FISHUSERROLES -ValueType value -Value \"Administrator, Author, P
-lanning, Reviewer, Translator\" Set-IshMetadataField -Level none -Name FISHUSERROLES -ValueType element
- -Value \"VUSERROLEADMINISTRATOR, VUSERROLEAUTHOR, VUSERROLEPLANNING, VUSERROLEREVIEWER, VUSERROLETRANS
-LATOR\" Set-IshMetadataField -Level none -Name FUSERGROUP -ValueType value -Value \"Default Department,
- Project team, Research and Development, Sales Marketing, Support, System management\" Set-IshMetadataF
-ield -Level none -Name FUSERGROUP -ValueType element -Value \"VUSERGROUPDEFAULTDEPARTMENT, VUSERGROUPPR
-OJECTTEAM, VUSERGROUPRESEARCHANDDEVELOPMENT, VUSERGROUPSALESMARKETING, VUSERGROUPSUPPORT, VUSERGROUPSYS
-TEMMANAGEMENT\" Set-IshMetadataField -Level none -Name RIGHTS -ValueType value -Value \"Default Departm
-ent, Project team, Research and Development, Sales Marketing, Support, System management\" Set-IshMetad
-ataField -Level none -Name RIGHTS -ValueType element -Value \"VUSERGROUPDEFAULTDEPARTMENT, VUSERGROUPPR
-OJECTTEAM, VUSERGROUPRESEARCHANDDEVELOPMENT, VUSERGROUPSALESMARKETING, VUSERGROUPSUPPORT, VUSERGROUPSYS
-TEMMANAGEMENT\" Set-IshMetadataField -Level none -Name USERNAME -ValueType value -Value \"Admin2\" Set-
-IshMetadataField -Level none -Name USERNAME -ValueType element -Value \"VUSERADMIN2\"",
-    "IshData": "Trisoft.ISHRemote.Objects.Public.IshData",
-    "ObjectRef": "System.Collections.Generic.Dictionary`2[Trisoft.ISHRemote.Objects.Enumerations+ReferenceType,System.String]",
-    "createdon": "2007-03-13T11:19:12",
-    "fishemail": "ishremote@sdl.com",
-    "fishexternalid": "Admin2",
-    "fishfailedattempts": "0",
-    "fishlastloginon": "2019-03-23T14:11:47",
-    "fishlocked": "No",
-    "fishlocked_none_element": "FALSE",
-    "fishlockedsince": "",
-    "fishobjectactive": "Yes",
-    "fishobjectactive_none_element": "TRUE",
-    "fishpasswordmodifiedon": "2007-03-13T11:19:12",
-    "fishuserdisabled": "No",
-    "fishuserdisabled_none_element": "FALSE",
-    "fishuserdisplayname": "Admin2 Display Name",
-    "fishusertype": "Internal",
-    "fishusertype_none_element": "VUSERTYPEINTERNAL",
-    "modifiedon": "2019-03-23T14:11:47",
-    "name": "Admin2",
-    "osuser": "GLOBAL\\Admin2",
-    "fishuserlanguage": "en",
-    "fishuserlanguage_none_element": "VLANGUAGEEN",
-    "fishuserroles": "Administrator, Author, Planning, Reviewer, Translator",
-    "fishuserroles_none_element": "VUSERROLEADMINISTRATOR, VUSERROLEAUTHOR, VUSERROLEPLANNING, VUSERROLEREVIEWER, VUSERROLETRANSLATOR",
-    "fusergroup": "Default Department, Project team, Research and Development, Sales Marketing, Support, System management",
-    "fusergroup_none_element": "VUSERGROUPDEFAULTDEPARTMENT, VUSERGROUPPROJECTTEAM, VUSERGROUPRESEARCHANDDEVELOPMENT, VUSERGROUPSALESMARKETING, VUSERGROUPSUPPORT, VUSERGROUPSYSTEMMANAGEMENT",
-    "rights": "Default Department, Project team, Research and Development, Sales Marketing, Support, System management",
-    "rights_none_element": "VUSERGROUPDEFAULTDEPARTMENT, VUSERGROUPPROJECTTEAM, VUSERGROUPRESEARCHANDDEVELOPMENT, VUSERGROUPSALESMARKETING, VUSERGROUPSUPPORT, VUSERGROUPSYSTEMMANAGEMENT",
-    "username": "Admin2",
-    "username_none_element": "VUSERADMIN2"
-  }
-]
-```
+![ISHRemote-0.7--TestData-ValidXmlLocal-ObfuscatedXml-ValidXmlRemote 1024x512](./Images/ISHRemote-0.7--TestData-ValidXmlLocal-ObfuscatedXml-ValidXmlRemote.gif)
+
