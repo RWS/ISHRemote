@@ -160,6 +160,15 @@ of our module the option would be:
 Warning: If you get a security warning, run the above exact powershell.exe command using Run As Administrator, 
 then execute `Set-ExecutionPolicy Unrestricted`
 
+## Debugging in Visual Studio Code
+
+Setting up your Visual Studio Code is explained on the internet, see [Scripting Guys](https://rkeithhill.wordpress.com/2017/02/19/scripting-guys-blog-posts-on-using-visual-studio-code-for-powershell-development/) who in turn link to
+- [Get started with PowerShell development in Visual Studio Code](https://blogs.technet.microsoft.com/heyscriptingguy/2016/12/05/get-started-with-powershell-development-in-visual-studio-code/)
+- [Visual Studio Code editing features for PowerShell development – Part 1](https://blogs.technet.microsoft.com/heyscriptingguy/2017/01/11/visual-studio-code-editing-features-for-powershell-development-part-1/)
+- [Visual Studio Code editing features for PowerShell development – Part 2](https://blogs.technet.microsoft.com/heyscriptingguy/2017/01/12/visual-studio-code-editing-features-for-powershell-development-part-2/)
+- [Debugging PowerShell script in Visual Studio Code – Part 1](https://blogs.technet.microsoft.com/heyscriptingguy/2017/02/06/debugging-powershell-script-in-visual-studio-code-part-1/)
+- [Debugging PowerShell script in Visual Studio Code – Part 2](https://blogs.technet.microsoft.com/heyscriptingguy/2017/02/13/debugging-powershell-script-in-visual-studio-code-part-2/)
+
 ## Static Code Analysis (experiment)
 
 1. Using `Docker Desktop` and `PowerShell Core 6` started `docker run -d --name sonarqube -p 9000:9000 sonarqube`
