@@ -40,6 +40,8 @@ Open a PowerShell, then you can find and install the ISHRemote module. CurrentUs
 
 		Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
 
+![ISHRemote-0.7--InstallModuleFromPSGallery 1024x512](./Doc/Images/ISHRemote-0.7--InstallModuleFromPSGallery.gif)
+
 ## Update
 
 Open a PowerShell and run.
