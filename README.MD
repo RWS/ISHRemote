@@ -8,14 +8,14 @@
 
 Have a look at the [Automating tasks in SDL Tridion Docs using PowerShell](https://youtu.be/3ItM2LDwh20) webinar. Supporting material, so you can easily copy-paste is on 
 
-* [Getting started with Microsoft PowerShell](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell-getting-started-with-microsoft-powershell)
-* [Examples](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell)
+* [Webinar Blogpost - Getting started with Microsoft PowerShell](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell-getting-started-with-microsoft-powershell)
+* [Webinar Blogpost - Examples](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell)
 
 # Features & Samples
 
 * This library is a relatively thin client layer on top of the business API. 
 * `-WhatIf`/`-Confirm` are implemented on write operations.
-* `Add-*` cmdlets will immediately create objects in the CMS, and return you an in-memory result holding descriptive identifiers to continue the pipeline.
+* `Add-*` cmdlets will immediately create objects in the CMS, and return you an in-memory result holding basic identifiers (`$ishSession.DefaultRequestedMetadata`) to continue the pipeline.
 * `Remove-*` cmdlets will not return any in-memory result.
 * `Set-*`, `Move-*`, `Publish-*` and `Stop-*` cmdlets will immediately update existing objects in the CMS, and return you an in-memory result holding descriptive identifiers to continue the pipeline. You cannot use `Set-*` for creation.
 * `New-*` cmdlets will create in-memory objects to locally update and then potentially pass to `Add-*` and`Set-*` cmdlets.
@@ -29,9 +29,9 @@ Have a look at the [Automating tasks in SDL Tridion Docs using PowerShell](https
 ## Prerequisites
 
 When you have Windows PowerShell 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 5.0... and PackageManagement is there implicitly.
-When you have a Windows PowerShell version lower than 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 4.0 or even 3.0. Note that the latest Knowledge Center 2016SP4/12.0.4 release is only verified with Windows PowerShell 4, so don't upgrade your servers. While Tridion Docs 13/13.0.0 is verified for Windows PowerShell 5. As ISHRemote is about a client-side web services driven library I actually don't expect you to even install it on a server.
+When you have a Windows PowerShell version lower than 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 4.0 or even 3.0. Note that the latest Knowledge Center 2016SP4/12.0.4 release is only verified with Windows PowerShell 4, so don't upgrade your servers. While Tridion Docs 13/13.0.0 is verified for Windows PowerShell 5.
 
-So either upgrade to [Windows Management Framework 5.0](https://www.microsoft.com/en-us/download/details.aspx?id=50395) or stay on Windows PowerShell 4 and install [Package Management Preview – March 2016 for PowerShell 4 & 3](https://blogs.msdn.microsoft.com/powershell/2016/03/08/package-management-preview-march-2016-for-powershell-4-3-is-now-available/).
+So we prefer you to upgrade to [Windows Management Framework 5.0](https://www.microsoft.com/en-us/download/details.aspx?id=50395).
 
 Note that we rely on `Windows PowerShell` (FullCLR), and not `PowerShell Core` (CoreCLR) which relies on `.NET Core`. Main reason is that the Core edition doesn't offer all supporting libraries for `WS-Trust` based authentication like `System.IdentityModel` and `System.ServiceModel`.
 
@@ -63,7 +63,7 @@ Any feedback is welcome. Please log a GitHub issue, make sure you submit your ve
 # Known Issues & FAQ
 
 ## Execution Known Issues
-* If you get `New-IshSession : Reference to undeclared entity 'raquo'. Line 98, position 121.`, most likely you specified an existing "Web Services API" url. Make sure your url ends with an ending slash `/`.
+* If you get `New-IshSession : Reference to undeclared entity 'raquo'. Line 98, position 121.`, most likely you specified an unexisting "Web Services API" url. Make sure your url ends with an ending slash `/`.
 * If a test fails with `The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.`,
   it probably means you didn't provide enough (mandatory) parameters to the WCF/SVC code so passing null parameters. Typically an `-IshPassword` is missing or using an existing username.
 * ISHDeploy `Enable-ISHIntegrationSTSInternalAuthentication/Disable-ISHIntegrationSTSInternalAuthentication` adds a /ISHWS/Internal/connectionconfiguration.xml that a different issuer should be used. As ISHRemote doesn't have an app.config, all the artifacts are derived from the RelyingParty WSDL provided mex endpoint (e.g. /ISHSTS/issue/wstrust/mex).  
@@ -128,7 +128,7 @@ synchronized with the code.
 [src1](http://www.powershellmagazine.com/2014/03/12/get-started-with-pester-powershell-unit-testing-framework/) [src2](http://www.powershellmagazine.com/2014/03/27/testing-your-powershell-scripts-with-pester-assertions-and-more/) [src3](https://www.simple-talk.com/sysadmin/powershell/practical-powershell-unit-testing-getting-started/) [src4](https://github.com/pester/Pester/wiki
 Prerequisites)
 
-In `ISHRemote.PesterSetup.ps1` override the global variables used for tests. Look for the region `Placeholder to inject your variable overrides. DONT FORGET TO DELETE`. **Don't forget not to commit those custom values**.
+In `ISHRemote.PesterSetup.Debug.ps1` override the global variables used for tests. **Don't forget not to commit those custom values**.
 
 ### Prerequisites
 
@@ -160,7 +160,7 @@ of our module the option would be:
 Warning: If you get a security warning, run the above exact powershell.exe command using Run As Administrator, 
 then execute `Set-ExecutionPolicy Unrestricted`
 
-## Debugging in Visual Studio Code
+## Debugging PowerShell in Visual Studio Code
 
 Setting up your Visual Studio Code is explained on the internet, see [Scripting Guys](https://rkeithhill.wordpress.com/2017/02/19/scripting-guys-blog-posts-on-using-visual-studio-code-for-powershell-development/) who in turn link to
 - [Get started with PowerShell development in Visual Studio Code](https://blogs.technet.microsoft.com/heyscriptingguy/2016/12/05/get-started-with-powershell-development-in-visual-studio-code/)

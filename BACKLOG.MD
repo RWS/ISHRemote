@@ -1,7 +1,7 @@
 # BACKLOG ORDER	
 
 1. [ISHREMOTE-052] Add `Get-IshBaseline`, `Find-IshBaseline` and `Get-IshBaselineItem` for metrics/insights purposes ISSUE #2
-1. [ISHREMOTE-011] `IshField` promotion to properties
+1. [ISHREMOTE-011] `IshField` promotion to properties #48
 1. [ISHREMOTE-022] Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required fields by dynamic ones ISSUE #3
 1. [ISHREMOTE-047] `Set-IshMetadataField`/`Set-IshMetadataFilterField` take `object[]` instead of `string` and convert internally
 1. [ISHREMOTE-049] Overload `Set-IshRequestedMetadataField` to accept `IshTypeFieldDefinition[]` to generate `IshMetadataField[]`
@@ -11,7 +11,7 @@
 1. [ISHREMOTE-033] Add `Get-IshTranslationTemplate`, `Remove-IshTranslationTemplate` and `Add-IshTranslationTemplate`
 1. [ISHREMOTE-030] Fix `Stop-IshPublicationOutput` failing with null reference exception on `-WhatIf` usage
 1. [ISHREMOTE-025] Add `Get-IshField` that returns `<ishfields>` based `ISHType[]` and switch flags
-1. [ISHREMOTE-020] Overload all `-RequestedMetadata` on `Find-`/`Get-` cmdlets using `IshTypeFieldSetup`
+1. [ISHREMOTE-020] Overload all `-RequestedMetadata` on `Find-`/`Get-` cmdlets using `IshTypeFieldSetup` #48
 1. [ISHREMOTE-024] Add `Filter-IshValueField`, actually `Filter-IshMetadataField`
 1. [ISHREMOTE-001] Prepare for OpenSourceSoftware and Continues Integration ISSUE #1
 1. [ISHREMOTE-002] Performance boost for legacy imports to avoid Retrieve API calls to feed the pipeline
@@ -28,7 +28,7 @@
 1. [ISHREMOTE-013] Optimize with logical delete on `Remove-IshDocumentObj` and `Remove-IshPublicationOutput`
 1. [ISHREMOTE-010] IshSession should refresh token
 1. [ISHREMOTE-051] Mandatory AllowOnCreate fields for `Add-` cmdlets should have their own ParameterSetName `MandatoryParameterGroup`
-1. [ISHREMOTE-028] Add `Search-IshDocumentObj`
+1. [ISHREMOTE-028] Add `Search-IshDocumentObj` #52
 1. [ISHREMOTE-050] `Get-IshSetting` should return same output type IshField for `-FieldName` (string) and `-RequestedMetadata`. String output could be achieved by `-Raw` flag for both.
 1. [ISHREMOTE-012] Respect IshSession.BatchSize and IshSession.BatchSize
 1. [ISHREMOTE-005] Implement Client Library retry mechanism next to existing timeout implementation
@@ -145,7 +145,7 @@ DocumentObj data migration cmdlets like `Get-IshDocumentObjData`, `Save-IshDocum
 * Token inside IshSession doesn't refresh itself (like in the Client Tools), introduce [-AutoRefresh] which sets clients to null when InfoShareWcfConnection.IsValid.  
   Perhaps a Refresh-IshSession cmdlet (hmm better implicit/silent). Preferably make it work for the ISHRemote as client library as well, or doc it.
 
-## <a name="ISHREMOTE-011"></a>[ISHREMOTE-011]
+## <a name="ISHREMOTE-011"></a>[ISHREMOTE-011]  *DONE*
 `IshField` promotion to properties. Either by more advanced `IshObject` inheritance or by `NoteProperty` solutions.
 * Dynamic Members/Properties on all ishobject types allowing an easy $ishobject.FISHEMAIL. As an optional 
   switch parameter perhaps respecting a variable like $DebugPreference. Or make it a toggle property on IshSession. [TS-10266]
@@ -212,7 +212,7 @@ Add `IshSession.IshTypeFieldSetup` allowing `Get-IshTypeFieldDefinition` and `Co
 	* Compare result could be `IshTypeFieldDefinitionCompare` which inherits `IshTypeFieldDefinition` and adds change property which printed by formats.xml could look #1 column holding typical git-conpare `+` and `-`. Or first column `==` `<<` `>>` `<>` and always print type level field… and only columns with differences, the rest of the cells are empty. So every `IshTypeFieldDefinitionCompare` should be printed as two rows with an additional compare column or without but `+`/`-` (preferably green/red color highlighting)
 	* Note that JIT `IshSession` load and `Get-IshTypeFieldDefinition` over TriDKXmlSetup-FullExport allow a comparison between systems on standard/custom.
 
-## <a name="ISHREMOTE-020"></a>[ISHREMOTE-020]
+## <a name="ISHREMOTE-020"></a>[ISHREMOTE-020]  *DONE*
 Overload all `-RequestedMetadata` on `Find-`/`Get-` cmdlets using `IshTypeFieldSetup`
 * `-RequestedMetadata` is not mandatory (check all). So when not specified, we can fall back to `IshTypeFieldSetup` descriptive/essential/minimal/basic fields (not all as that includes FISHLINKS, etc). 
 * See also [ISHREMOTE-025].
@@ -238,14 +238,14 @@ Refactor to `IshTypeFieldSetup` by replacing hardcoded System and Required field
 
 ## <a name="ISHREMOTE-024"></a>[ISHREMOTE-024]
 Add `Filter-IshValueField` (alias `Filter-IshFieldValue`, actually `Filter-IshMetadataField`), a bit simpler and cleaner than the `-MetadataFilter` complexity of `Filter-IshObject` in [ISHREMOTE-016].
-* Requires [ISHREMOTE-017]
+* Requires [ISHREMOTE-017]  *DONE*
 * Filter-ishfield(value) -name -level -eq(operator) -value and ishields/ishobject should be lightweight regarding memorymodel (so no ishfield promotion of a field because you now can know it is a date or multivalue?!). If the field is not incoming then remove the object from the pipeline, same of course if the test fails.
-* Respect the the `IshSession` date format `dd/MM/yyy HH:mm:ss` but thanks to `IshTypeFieldSetup` you also know which fields are dates, allowing easier compare operators (so iso format avoiding string compare workaround through format yyyyMMdd.HHmmss). 
+* Respect the the `IshSession` date format `dd/MM/yyy HH:mm:ss` but thanks to `IshTypeFieldSetup` you also know which fields are dates, allowing easier compare operators (so iso format avoiding string compare workaround through format yyyyMMdd.HHmmss).   *DONE*
 
 ## <a name="ISHREMOTE-025"></a>[ISHREMOTE-025]
 Add `Get-IshField` that returns `<ishfields>` based `ISHType[]` and switch flags
 * `Get-IshField` or better name `Get-IshRequestedMetadataField`, see [ISHREMOTE-021]
-* Requires [ISHREMOTE-017].
+* Requires [ISHREMOTE-017]  *DONE*
 * Switch flags could be `-Descriptive`/`-System`/`-Basic`/`-All`. Idea needs to align with [ISHREMOTE-011]
 * This would allow a `Find-IshDocumentObj -IshSess... -RequestedMetadata (Get-IshField -IshSession $ishSession -IshTypeFilter @('ISHLibrary','ISHModule','ISHMasterDoc') -All)`
 
@@ -347,7 +347,7 @@ Respect single type for `IshObjects`/`IshFolders`/`IshEvents`/`IshLovValues`, so
 ## <a name="ISHREMOTE-042"></a>[ISHREMOTE-042]  *DONE*
 Respect single type for `IshFeatures`, so mark `internal`, improve `ps1xml` formatting"
 
-## <a name="ISHREMOTE-043"></a>[ISHREMOTE-043]
+## <a name="ISHREMOTE-043"></a>[ISHREMOTE-043]  *DONE*
 Respect single type for `IshFields`, so mark `internal`, improve `ps1xml` formatting"
 * Verify the `Fields()` usage, should no longer return `IshFields` (plural) but `IshField[]`
 * Various `IshField` derivations should print nicer through improved `ps1xml` formatting
@@ -355,7 +355,7 @@ Respect single type for `IshFields`, so mark `internal`, improve `ps1xml` format
 ## <a name="ISHREMOTE-044"></a>[ISHREMOTE-044]  *DONE*
 Respect single type for `IshApplicationSettings` which is used for statistics when `-Count` is specified, `IshApplicationSetting` (single) without `-Count`"
 
-## <a name="ISHREMOTE-045"></a>[ISHREMOTE-045]
+## <a name="ISHREMOTE-045"></a>[ISHREMOTE-045]  *DONE*
 Add parameter argument completion for interactive usage.
 You can parameter matching for wildcard-cmdlet names. I would first think about IshTypeFieldDefinition derived things like field name and level. Another scenario is element name completion (e.g. Find-... when 5+ characters are there for a GUID). The tooltip could show the readable label while the code actually can continue with the element name. FolderPath autocompletion.
     * 20160614.ITProceed.TheArtofPowerShellToolmaking.pptx
@@ -392,7 +392,7 @@ Mandatory AllowOnCreate fields for `Add-` cmdlets should have their own Paramete
     * The metadata for an Add-IshUser requires fields FUSERGROUP, PASSWORD (Internal only) which could as well be explicit cmdlet parameters
 	* Same goes for other ISHTypes. Alternative could be some `New-IshUser` or `New-IshDocumentObj` that creates an in-memory object. See also [ISHREMOTE-009]
 
-## <a name="ISHREMOTE-052"></a>[ISHREMOTE-052]
+## <a name="ISHREMOTE-052"></a>[ISHREMOTE-052]  *DONE*
 Add `Get-IshBaseline`, `Find-IshBaseline` and `Get-IshBaselineItem` for analysis purposes
 * Add `Get-IshBaseline` of a single `IshBaseline` always fully initializes by several API calls, and returns 
     1. `IshBaseline` respecting `IshTypeFieldSetup`, see [ISHREMOTE-017]

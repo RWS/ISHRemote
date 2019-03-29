@@ -3,7 +3,7 @@
 Actual detailed release notes are on [Github](https://github.com/sdl/ISHRemote/releases/tag/v0.7), below some code samples.
 
 Remember
-* All C# source code of the ISHRemote library is online at [Source](https://github.com/sdl/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of WS-Trust protocol.
+* All C# source code of the ISHRemote library is online at [Source](https://github.com/sdl/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of WS-Trust protocol ([InfoShareWcfConnection.cs](https://github.com/sdl/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/InfoShareWcfConnection.cs)).
 * All PowerShell-based Pester integration tests are located per cmdlet complying with the `*.tests.ps1` file naming convention. See for example [AddIshDocumentObj.Tests.ps1](https://github.com/sdl/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/DocumentObj/AddIshDocumentObj.Tests.ps1) or [TestIshValidXml.Tests.ps1](https://github.com/sdl/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/FileProcessor/TestIshValidXml.Tests.ps1)
 
 ## Sample - Create Session and List Pending Background Task
@@ -11,7 +11,7 @@ Remember
 Showing implicit IshSession behavior, avoiding explicit `-IshSession` and `-RequestedMetadata` parameters. Less typing and a lot of information. Note that explicit parameters are still possible like before.
 
 ```powershell
-New-IshSession -WsBaseUrl https://medevddemeyer10.global.sdl.corp/InfoShareWSDita/ -PSCredential Admin2
+New-IshSession -WsBaseUrl https://example.com/ISHWS/ -PSCredential Admin
 Get-IshLovValue -LovId DSTATUS
 Find-IshEDT
 Get-IshBackgroundTask | Where-Object -Property status -EQ "Pending"
@@ -25,7 +25,7 @@ Get-IshBackgroundTask | Out-GridView
 Showing the implicit defaulting of the `-RequestedMetadata` parameter. By defaulting to `Basic` with matching default table rendering, you get a clean overview of your requested objects. Think about listing User Profiles (`Find-IshUser`) or Event (`Get-IshEvent`).
 
 ```powershell
-$ishSession = New-IshSession -WsBaseUrl https://medevddemeyer10.global.sdl.corp/InfoShareWSDita/ -PSCredential Admin2
+$ishSession = New-IshSession -WsBaseUrl https://example.com/ISHWS/ -PSCredential Admin
 $ishSession.DefaultRequestedMetadata = 'Descriptive' # v0.6 and before, only identifying fields
 Find-IshOutputFormat 
 $ishSession.DefaultRequestedMetadata = 'Basic' # v0.7, new default readable fields
@@ -41,7 +41,7 @@ Find-IshOutputFormat | Select-Object -Property * | Out-GridView
 Showing the performance effect of implicit defaulting of the `-RequestedMetadata` parameter. And also the option to return to the previous behavior. Usability is high for the negliable overhead of retrieving a lot more info, generating read only object properties (`PSNoteProperty`) and table style rendering.
 
 ```powershell
-$ishSession = New-IshSession -WsBaseUrl https://medevddemeyer10.global.sdl.corp/InfoShareWSDita/ -PSCredential Admin2
+$ishSession = New-IshSession -WsBaseUrl https://example.com/ISHWS/ -PSCredential Admin
 $metadataFilter = Set-IshMetadataFilterField -Level Lng -Name MODIFIED-ON -FilterOperator GreaterThanOrEqual -Value "01/01/2016" |
                   Set-IshMetadataFilterField -Level Lng -Name MODIFIED-ON -FilterOperator LessThan -Value "01/01/2017" 
 $ishSession.DefaultRequestedMetadata = 'Descriptive' # v0.6 and before, only identifying fields
@@ -78,7 +78,7 @@ New-IshObfuscatedFile -FolderPath C:\temp\out\
 # resulting obfuscated file
 Get-Content C:\temp\out\MyTask.xml
 # validate remote which works but is very slow!!
-Test-IshValidXml -XmlCatalogFilePath " https://medevddemeyer10.global.sdl.corp/InfoShareAuthorDita/DocTypes/catalog.xml" -FilePath C:\temp\out\MyTask.xml
+Test-IshValidXml -XmlCatalogFilePath "https://example.com/ISHCM/DocTypes/catalog.xml" -FilePath C:\temp\out\MyTask.xml
 ```
 ![ISHRemote-0.7--TestData-ValidXmlLocal-ObfuscatedXml-ValidXmlRemote 1024x512](./Images/ISHRemote-0.7--TestData-ValidXmlLocal-ObfuscatedXml-ValidXmlRemote.gif)
 
