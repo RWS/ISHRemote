@@ -52,12 +52,22 @@ namespace Trisoft.ISHRemote.Objects
             xmlDocument.LoadXml(xmlIshFieldSetup);
             foreach (XmlNode xmlIshTypeDefinition in xmlDocument.SelectNodes("ishfieldsetup/ishtypedefinition"))
             {
-                Enumerations.ISHType ishType = (Enumerations.ISHType)Enum.Parse(typeof(Enumerations.ISHType), xmlIshTypeDefinition.Attributes.GetNamedItem("name").Value);
-                _logger.WriteDebug($"IshTypeFieldSetup ishType[{ishType}]");
-                foreach (XmlNode xmlIshFieldDefinition in xmlIshTypeDefinition.SelectNodes("ishfielddefinition"))
-                { 
-                    IshTypeFieldDefinition ishTypeFieldDefinition = new IshTypeFieldDefinition(_logger, ishType, (XmlElement)xmlIshFieldDefinition);
-                    _ishTypeFieldDefinitions.Add(ishTypeFieldDefinition.Key, ishTypeFieldDefinition);
+                string name = xmlIshTypeDefinition.Attributes.GetNamedItem("name").Value;
+
+                Enumerations.ISHType ishType;
+                if (Enum.TryParse(name, true, out ishType))
+                {
+                    _logger.WriteDebug($"IshTypeFieldSetup ishType[{ishType}]");
+                    foreach (XmlNode xmlIshFieldDefinition in xmlIshTypeDefinition.SelectNodes("ishfielddefinition"))
+                    {
+                        IshTypeFieldDefinition ishTypeFieldDefinition =
+                            new IshTypeFieldDefinition(_logger, ishType, (XmlElement) xmlIshFieldDefinition);
+                        _ishTypeFieldDefinitions.Add(ishTypeFieldDefinition.Key, ishTypeFieldDefinition);
+                    }
+                }
+                else
+                {
+                    _logger.WriteWarning($"IshType '{name}' is not supported");
                 }
             }
 
