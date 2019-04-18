@@ -51,6 +51,10 @@ namespace Trisoft.ISHRemote.Objects
             Task = 400,
             [StringValue("history")]
             History = 410,
+            [StringValue("annotation")]
+            Annotation = 500,
+            [StringValue("reply")]
+            Reply = 510
         }
 
         /// <summary>
@@ -338,7 +342,11 @@ namespace Trisoft.ISHRemote.Objects
             /// <summary>
             /// Event Monitor table
             /// </summary>
-            ISHEvent
+            ISHEvent, 
+            /// <summary>
+            /// Annotations
+            /// </summary>
+            ISHAnnotation
         }
 
 
