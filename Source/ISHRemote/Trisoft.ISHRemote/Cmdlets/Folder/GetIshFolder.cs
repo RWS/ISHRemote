@@ -169,7 +169,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 if (IshFolder != null)
                 {
                     foreach(IshFolder ishFolder in IshFolder)
-                    { 
+                    {
                         _retrievedIshFolders.Add(ishFolder);
                     }
                 }
@@ -287,7 +287,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     foreach (IshFolder ishFolder in returnIshFolders)
                     {
                         WriteParentProgress("Recursive folder retrieve...", ++_parentCurrent, returnIshFolders.Count);
-                        RetrieveRecursive(ishFolder, 0, _maxDepth);
+                        if (_maxDepth > 0)
+                        {
+                            RetrieveRecursive(ishFolder, 0, _maxDepth);
+                        }
                     }
                 }
             }
@@ -306,13 +309,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         }
         private void RetrieveRecursive(IshFolder ishFolder, int currentDepth, int maxDepth)
         {
-            if (currentDepth < maxDepth)
-            {
-                // put them on the pipeline depth-first-traversel
-                string folderName = ishFolder.IshFields.GetFieldValue("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
-                WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
-                WriteObject(IshSession, ISHType, ishFolder, true);
+            // put them on the pipeline depth-first-traversel
+            string folderName = ishFolder.IshFields.GetFieldValue("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
+            WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
+            WriteObject(IshSession, ISHType, ishFolder, true);
 
+            if (currentDepth < (maxDepth - 1))
+            {
                 WriteDebug($"RetrieveRecursive IshFolderRef[{ishFolder.IshFolderRef}] folderName[{folderName}] ({currentDepth}<{maxDepth})");
                 string xmlIshFolders = IshSession.Folder25.GetSubFoldersByIshFolderRef(ishFolder.IshFolderRef);
                 // GetSubFolders contains ishfolder for the parent folder + ishfolder inside for the subfolders
