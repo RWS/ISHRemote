@@ -23,8 +23,7 @@ Describe “Get-IshEvent" -Tags "Create" {
 						Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 	# Forcing a status transition to release, triggers Translation Management which means a BackgroundTask and EventMonitor entry
 	$ishObject = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-	             Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased |
-				 Set-IshDocumentObj -IshSession $ishSession
+				 Set-IshDocumentObj -IshSession $ishSession -Metadata (Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased)
 
 
     $allProgressMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Progress -Name PROGRESSID | 

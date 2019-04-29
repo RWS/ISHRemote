@@ -22,8 +22,7 @@ Describe “Get-IshBackgroundTask" -Tags "Create" {
 						Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 						Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 	$ishObject = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
-	             Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased |
-				 Set-IshDocumentObj -IshSession $ishSession
+				 Set-IshDocumentObj -IshSession $ishSession -Metadata (Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased)
 
 
     $allTaskMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name CREATIONDATE  | 
