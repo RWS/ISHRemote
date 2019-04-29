@@ -323,7 +323,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 if (retrievedFolders.Ids.Length > 0)
                 {
                     // Add the required fields (needed for pipe operations)
-                    //TODO: [Should] most likely superfluous avoidable call as we have AddRequiredFields anyway to allow FNAME sorting. Skip if metadata is default?
                     xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids,_requestedMetadata.ToXml());
                     retrievedFolders = new IshFolders(xmlIshFolders);
                     // sort them
