@@ -17,11 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Security;
-using System.Text;
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Interfaces;
 
@@ -42,7 +40,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private string _ishUserName;
         private string _userName;
         private readonly SecureString _ishSecurePassword;
-        private readonly string _seperator = ", ";
+        private readonly string _separator = ", ";
         private readonly string _folderPathSeparator = @"\";
 
         private IshVersion _serverVersion;
@@ -64,6 +62,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         private InfoShareWcfConnection _connection;
 
+        private Annotation25ServiceReference.Annotation _annotation25;
         private Application25ServiceReference.Application _application25;
         private DocumentObj25ServiceReference.DocumentObj _documentObj25;
         private Folder25ServiceReference.Folder _folder25;
@@ -306,9 +305,9 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        public string Seperator
+        public string Separator
         {
-            get { return _seperator; }
+            get { return _separator; }
         }
 
         public string FolderPathSeparator
@@ -403,6 +402,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         #region Web Services Getters
+
+        public Annotation25ServiceReference.Annotation Annotation25
+        {
+            get
+            {
+                VerifyTokenValidity();
+
+                if (_annotation25 == null)
+                {
+                    _annotation25 = _connection.GetAnnotation25Channel();
+                }
+                return _annotation25;
+            }
+        }
 
         public Application25ServiceReference.Application Application25
         {

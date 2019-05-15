@@ -141,7 +141,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         folderId = ishFolder.IshFolderRef;
                         WriteDebug($"folderId[{folderId}] {++current}/{ishFolders.Length}");
                         string readAccessString = ishFolder.IshFields.GetFieldValue("READ-ACCESS", Enumerations.Level.None, Enumerations.ValueType.Value);
-                        readAccess = readAccessString.Split(new[] { IshSession.Seperator }, StringSplitOptions.RemoveEmptyEntries);
+                        readAccess = readAccessString.Split(new[] { IshSession.Separator }, StringSplitOptions.RemoveEmptyEntries);
                         newFolderName = ishFolder.IshFields.GetFieldValue("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
                         if (readAccess == null)
                         {

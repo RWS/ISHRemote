@@ -180,7 +180,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                     catch (Exception)
                     {
                         // Read it as a text file
-                        string value = String.Join(IshSession.Seperator, File.ReadAllLines(FilePath));
+                        string value = String.Join(IshSession.Separator, File.ReadAllLines(FilePath));
                         metadata.AddField(new IshMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value, value));
                     }
                 }
