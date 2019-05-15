@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Imports">
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?xsd=xsd0" namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?xsd=xsd2" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="Annotation_Create_InputMessage">
+    <wsdl:part name="parameters" element="tns:Create" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Create_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateResponse" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Create_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Delete_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Update_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Update_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Update_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_RetrieveMetadata_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadata" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_RetrieveMetadata_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadataResponse" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_RetrieveMetadata_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q4:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Find_InputMessage">
+    <wsdl:part name="parameters" element="tns:Find" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Find_OutputMessage">
+    <wsdl:part name="parameters" element="tns:FindResponse" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_Find_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q5:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_CreateReply_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateReply" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_CreateReply_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateReplyResponse" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_CreateReply_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q6:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_UpdateReply_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateReply" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_UpdateReply_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateReplyResponse" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_UpdateReply_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q7="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q7:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_DeleteReply_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteReply" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_DeleteReply_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteReplyResponse" />
+  </wsdl:message>
+  <wsdl:message name="Annotation_DeleteReply_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q8="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q8:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:portType name="Annotation">
+    <wsdl:operation name="Create">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/Create" message="tns:Annotation_Create_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/CreateResponse" message="tns:Annotation_Create_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/CreateInfoShareFault" name="InfoShareFault" message="tns:Annotation_Create_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/Delete" message="tns:Annotation_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/DeleteResponse" message="tns:Annotation_Delete_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/DeleteInfoShareFault" name="InfoShareFault" message="tns:Annotation_Delete_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/Update" message="tns:Annotation_Update_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/UpdateResponse" message="tns:Annotation_Update_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/UpdateInfoShareFault" name="InfoShareFault" message="tns:Annotation_Update_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveMetadata">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/RetrieveMetadata" message="tns:Annotation_RetrieveMetadata_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/RetrieveMetadataResponse" message="tns:Annotation_RetrieveMetadata_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/RetrieveMetadataInfoShareFault" name="InfoShareFault" message="tns:Annotation_RetrieveMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Find">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/Find" message="tns:Annotation_Find_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/FindResponse" message="tns:Annotation_Find_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/FindInfoShareFault" name="InfoShareFault" message="tns:Annotation_Find_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateReply">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/CreateReply" message="tns:Annotation_CreateReply_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/CreateReplyResponse" message="tns:Annotation_CreateReply_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/CreateReplyInfoShareFault" name="InfoShareFault" message="tns:Annotation_CreateReply_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateReply">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/UpdateReply" message="tns:Annotation_UpdateReply_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/UpdateReplyResponse" message="tns:Annotation_UpdateReply_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/UpdateReplyInfoShareFault" name="InfoShareFault" message="tns:Annotation_UpdateReply_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteReply">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/DeleteReply" message="tns:Annotation_DeleteReply_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/DeleteReplyResponse" message="tns:Annotation_DeleteReply_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Annotation/DeleteReplyInfoShareFault" name="InfoShareFault" message="tns:Annotation_DeleteReply_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

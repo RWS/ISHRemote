@@ -220,6 +220,11 @@
     <Compile Include="Objects\Public\IshLovValue.cs" />
     <Compile Include="Objects\IshFolders.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\Annotation25ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\Application25ServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -717,6 +722,20 @@
     <None Include="Scripts\Public\Expand-ISHParameter.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Service References\Annotation25ServiceReference\Annotation.wsdl" />
+    <None Include="Service References\Annotation25ServiceReference\Annotation.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Annotation25ServiceReference\Annotation1.wsdl" />
+    <None Include="Service References\Annotation25ServiceReference\Annotation1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Annotation25ServiceReference\Annotation2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Annotation25ServiceReference\Annotation3.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask.wsdl" />
     <None Include="Service References\BackgroundTask25ServiceReference\BackgroundTask.xsd">
       <SubType>Designer</SubType>
@@ -1157,6 +1176,13 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\Annotation25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\Annotation25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\Annotation25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\Annotation25ServiceReference\Annotation.disco" />
     <None Include="Service References\BackgroundTask25ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -1374,6 +1400,7 @@
     <None Include="ISHRemote.PostBuild.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\Annotation25ServiceReference\" />
     <WCFMetadataStorage Include="Service References\Application25ServiceReference\" />
     <WCFMetadataStorage Include="Service References\BackgroundTask25ServiceReference\" />
     <WCFMetadataStorage Include="Service References\Baseline25ServiceReference\" />
