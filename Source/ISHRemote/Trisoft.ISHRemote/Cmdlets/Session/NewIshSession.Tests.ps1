@@ -244,6 +244,9 @@ Describe "New-IshSession" -Tags "Read" {
 
 	Context "New-IshSession returns IshSession ServiceReferences" {
 		$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		It "IshSession.Annotation25" {
+			$ishSession.Annotation25 -ne $null | Should Not BeNullOrEmpty
+		}
 		It "IshSession.Application25" {
 			$ishSession.Application25 -ne $null | Should Not BeNullOrEmpty
 		}
