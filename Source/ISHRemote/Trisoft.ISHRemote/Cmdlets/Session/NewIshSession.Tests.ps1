@@ -104,8 +104,8 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.MetadataBatchSize" {
 			$ishSession.MetadataBatchSize -gt 0 | Should Be $true
 		}
-		It "IshSession.Seperator" {
-			$ishSession.Seperator | Should Be ", "
+		It "IshSession.Separator" {
+			$ishSession.Separator | Should Be ", "
 		}
 		It "IshSession.ServerVersion empty (ISHWS down?)" {
 			$ishSession.ServerVersion | Should Not BeNullOrEmpty
