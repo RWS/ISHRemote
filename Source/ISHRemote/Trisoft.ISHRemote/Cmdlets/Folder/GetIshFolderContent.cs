@@ -241,7 +241,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 {
                                     metadataFilterFields.AddField(new IshMetadataFilterField("DOC-LANGUAGE", Enumerations.Level.Lng,
                                         Enumerations.FilterOperator.In,
-                                        String.Join(IshSession.Seperator, LanguagesFilter),
+                                        String.Join(IshSession.Separator, LanguagesFilter),
                                         Enumerations.ValueType.Value));
                                 }
                                 var versionRefs = publicationIshObjects.Objects

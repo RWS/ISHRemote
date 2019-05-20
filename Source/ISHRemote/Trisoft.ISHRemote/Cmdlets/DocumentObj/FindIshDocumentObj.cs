@@ -125,7 +125,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
             {
                 IshFields metadataFilter = new IshFields(MetadataFilter);
                 IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Find);
-                string ishTypeFilter = (IshTypeFilter != null) ? String.Join(IshSession.Seperator, IshTypeFilter) : String.Join(IshSession.Seperator, new Enumerations.ISHType[] { Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHTemplate, Enumerations.ISHType.ISHIllustration });  // explicitly exclude ISHReusedObject which is still returned by DocumentObj25.Find?!
+                string ishTypeFilter = (IshTypeFilter != null) ? String.Join(IshSession.Separator, IshTypeFilter) : String.Join(IshSession.Separator, new Enumerations.ISHType[] { Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHTemplate, Enumerations.ISHType.ISHIllustration });  // explicitly exclude ISHReusedObject which is still returned by DocumentObj25.Find?!
                 var statusFilter = EnumConverter.ToStatusFilter<DocumentObj25ServiceReference.StatusFilter>(StatusFilter);
 
                 // Finding any hits with extra requested metadata if specified.

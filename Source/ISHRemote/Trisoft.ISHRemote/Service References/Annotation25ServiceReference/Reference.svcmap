@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="032f8d15-b233-417a-b9e2-1791d07a8c4a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Annotation.xsd" MetadataType="Schema" ID="2a7b5d20-4b05-422e-97e8-d53529c724e4" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?xsd=xsd1" />
+    <MetadataFile FileName="Annotation.disco" MetadataType="Disco" ID="828b77b2-4348-49a4-94e7-6dc82d961aa6" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?disco" />
+    <MetadataFile FileName="Annotation.wsdl" MetadataType="Wsdl" ID="ad2d1405-f48e-44b4-ad39-85b60bc1d317" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?wsdl" />
+    <MetadataFile FileName="Annotation1.xsd" MetadataType="Schema" ID="e9274efa-e975-4dfb-b896-04e5c4d333c5" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?xsd=xsd3" />
+    <MetadataFile FileName="Annotation2.xsd" MetadataType="Schema" ID="307449dd-2500-464c-9674-dc59081260ab" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?xsd=xsd0" />
+    <MetadataFile FileName="Annotation1.wsdl" MetadataType="Wsdl" ID="5a116662-e6c7-409c-a649-8392171d89cb" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="Annotation3.xsd" MetadataType="Schema" ID="429a9e80-ec90-4c0e-bb39-2242cd7b7fbc" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/Annotation.svc?xsd=xsd2" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

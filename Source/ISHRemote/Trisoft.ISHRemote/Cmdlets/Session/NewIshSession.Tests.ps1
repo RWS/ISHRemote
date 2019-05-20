@@ -104,8 +104,8 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.MetadataBatchSize" {
 			$ishSession.MetadataBatchSize -gt 0 | Should Be $true
 		}
-		It "IshSession.Seperator" {
-			$ishSession.Seperator | Should Be ", "
+		It "IshSession.Separator" {
+			$ishSession.Separator | Should Be ", "
 		}
 		It "IshSession.ServerVersion empty (ISHWS down?)" {
 			$ishSession.ServerVersion | Should Not BeNullOrEmpty
@@ -244,6 +244,9 @@ Describe "New-IshSession" -Tags "Read" {
 
 	Context "New-IshSession returns IshSession ServiceReferences" {
 		$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		It "IshSession.Annotation25" {
+			$ishSession.Annotation25 -ne $null | Should Not BeNullOrEmpty
+		}
 		It "IshSession.Application25" {
 			$ishSession.Application25 -ne $null | Should Not BeNullOrEmpty
 		}

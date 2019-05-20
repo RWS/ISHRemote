@@ -38,6 +38,10 @@ namespace Trisoft.ISHRemote
     {
         #region Constants
         /// <summary>
+        /// Annotation25
+        /// </summary>
+        private const string Annotation25 = "Annotation25";
+        /// <summary>
         /// Application25
         /// </summary>
         private const string Application25 = "Application25";
@@ -160,6 +164,10 @@ namespace Trisoft.ISHRemote
         /// Binding that is common for every endpoint.
         /// </summary>
         private Binding _commonBinding;
+        /// <summary>
+        /// Proxy for annotation
+        /// </summary>
+        private Annotation25ServiceReference.AnnotationClient _annotationClient;
         /// <summary>
         /// Proxy for application
         /// </summary>
@@ -370,6 +378,20 @@ namespace Trisoft.ISHRemote
         #endregion Properties
 
         #region Public Methods
+        /// <summary>
+        /// Create a /Wcf/API25/Annotation.svc proxy
+        /// </summary>
+        /// <returns>The proxy</returns>
+        public Annotation25ServiceReference.Annotation GetAnnotation25Channel()
+        {
+            if (_annotationClient == null)
+            {
+                _annotationClient = new Annotation25ServiceReference.AnnotationClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[Annotation25]));
+            }
+            return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+        }
         /// <summary>
         /// Create a /Wcf/API25/Application.svc proxy
         /// </summary>
@@ -692,6 +714,7 @@ namespace Trisoft.ISHRemote
 
         private void ResolveServiceUris()
         {
+            _serviceUriByServiceName.Add(Annotation25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Annotation.svc"));
             _serviceUriByServiceName.Add(Application25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Application.svc"));
             _serviceUriByServiceName.Add(DocumentObj25, new Uri(InfoShareWSBaseUri, "Wcf/API25/DocumentObj.svc"));
             _serviceUriByServiceName.Add(Folder25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Folder.svc"));
