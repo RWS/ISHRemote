@@ -245,13 +245,17 @@ Describe "New-IshSession" -Tags "Read" {
 	Context "New-IshSession returns IshSession ServiceReferences" {
 		$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		It "IshSession.Annotation25" {
-			$ishSession.Annotation25 -ne $null | Should Not BeNullOrEmpty
+			if (([Version]$ishSession.ServerVersion).Major -ge 14) { # new service since 14/14.0.0
+				 $ishSession.Annotation25 -ne $null | Should Not BeNullOrEmpty
+			}
 		}
 		It "IshSession.Application25" {
 			$ishSession.Application25 -ne $null | Should Not BeNullOrEmpty
 		}
-		It "IshSession.BackgroundTask25" -skip { # Only available starting 13SP2/13.0.2
-			$ishSession.BackgroundTask25 -ne $null | Should Not BeNullOrEmpty
+		It "IshSession.BackgroundTask25" { # new service since 13SP2/13.0.2
+			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { 
+				$ishSession.BackgroundTask25 -ne $null | Should Not BeNullOrEmpty
+			}
 		}
 		It "IshSession.Baseline25" {
 			$ishSession.Baseline25 -ne $null | Should Not BeNullOrEmpty
