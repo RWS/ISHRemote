@@ -28,7 +28,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// <summary>
     /// <para type="synopsis">The New-IshSession cmdlet creates a new IshSession object using the parameters that are provided.</para>
     /// <para type="description">The New-IshSession cmdlet creates a new IshSession object using the parameters that are provided.</para>
-    /// <para type="description">The object contains the service endpoint proxies, and api contract information like multi-value seperator, date format, etc</para>
+    /// <para type="description">The object contains the service endpoint proxies, and api contract information like multi-value separator, date format, etc</para>
     /// </summary>
     /// <example>
     /// <code>
