@@ -37,7 +37,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// </summary>
         private const string UserReference = "ISHCNFG";
         /// <summary>
-        /// Fixed seperator for the UserReference
+        /// Fixed separator for the UserReference
         /// The UserReference is created by a combination of the UserReference and the ProcessId.
         /// </summary>
         private const string UserReferenceSeparator = ":";

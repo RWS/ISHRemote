@@ -28,7 +28,7 @@ namespace Trisoft.ISHRemote.Objects.Public
     /// <summary>
     /// <para type="description">Client session object to the InfoShare server instance required for every remote operation as it holds the web service url and authentication.</para>
     /// <para type="description">Furthermore it tracks your security token, provides direct client access to the web services API.</para>
-    /// <para type="description">Gives access to contract parameters like seperators, date formats, batch and chunk sizes.</para>
+    /// <para type="description">Gives access to contract parameters like separators, date formats, batch and chunk sizes.</para>
     /// </summary>
     public class IshSession : IDisposable
     {

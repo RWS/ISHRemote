@@ -31,7 +31,7 @@ try
 	$userRoleIshObjects = Find-IshUserRole -IshSession $ishSession -ActivityFilter "None" -RequestedMetadata $userRoleIshMetadataFields
 	foreach ($userRoleIshObject in $userRoleIshObjects)
 	{
-		$userRoles = $userRoles + $ishSession.Seperator + $userRoleIshObject.IshField.RetrieveFirst("FISHUSERROLENAME", "None", "Element").Value
+		$userRoles = $userRoles + $ishSession.Separator + $userRoleIshObject.IshField.RetrieveFirst("FISHUSERROLENAME", "None", "Element").Value
 	}
 	$userRoles = $userRoles.TrimStart(", ")
 	$userRoles
@@ -41,7 +41,7 @@ try
 	$userGroupIshObjects = Find-IshUserGroup -IshSession $ishSession -ActivityFilter "None" -RequestedMetadata $userGroupIshMetadataFields
 	foreach ($userGroupIshObject in $userGroupIshObjects)
 	{
-		$userGroups = $userGroups + $ishSession.Seperator + $userGroupIshObject.IshField.RetrieveFirst("FISHUSERGROUPNAME", "None", "Element").Value
+		$userGroups = $userGroups + $ishSession.Separator + $userGroupIshObject.IshField.RetrieveFirst("FISHUSERGROUPNAME", "None", "Element").Value
 	}
 	$userGroups = $userGroups.TrimStart(", ")
 	$userGroups

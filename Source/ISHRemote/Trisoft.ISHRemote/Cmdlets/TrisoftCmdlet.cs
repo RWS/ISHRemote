@@ -238,7 +238,7 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// <summary>
         /// Convert a BaseFolder enumeration value into a base folder label
         /// </summary>
-        /// <param name="ishSession">Client session object to the InfoShare server instance. Keeps track of your security tokens and provide you clients to the various API end points. Holds matching contract parameters like seperators, batch and chunk sizes.</param>
+        /// <param name="ishSession">Client session object to the InfoShare server instance. Keeps track of your security tokens and provide you clients to the various API end points. Holds matching contract parameters like separators, batch and chunk sizes.</param>
         /// <param name="baseFolder">BaseFolder enumeration value</param>
         /// <returns>base folder label</returns>
         internal virtual string BaseFolderEnumToLabel(IshSession ishSession, Folder25ServiceReference.BaseFolder baseFolder)
