@@ -98,7 +98,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 WriteDebug("Validating");
                 List<long> returnFolderIds = new List<long>();
 
-                if (IshFolder != null)
+                if (ParameterSetName == "IshFolderGroup")
                 {
                     // 1a. Retrieve using IshFolder object
                     foreach (IshFolder ishFolder in IshFolder)
@@ -106,13 +106,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         returnFolderIds.Add(ishFolder.IshFolderRef);
                     }
                 }
-                else if (FolderId != 0)
+
+                if (ParameterSetName == "FolderIdGroup")
                 {
                     // 1b. Retrieve using FolderId
                     WriteDebug($"folderId[{FolderId}]");
                     returnFolderIds.Add(FolderId);
                 }
-                else if (FolderPath != null)
+
+                if (ParameterSetName == "FolderPathGroup")
                 {
                     // 1c. Retrieve using provided parameter FolderPath
                     // Parse FolderPath input parameter: get basefolderName(1st element of an array)
@@ -133,7 +135,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     IshFolders ishFolder = new IshFolders(xmlIshFolder, "ishfolder");
                     returnFolderIds.Add(ishFolder.Folders[0].IshFolderRef);
                 }
-                else
+
+                if (ParameterSetName == "BaseFolderGroup")
                 {
                     // 1d. Retrieve subfolder(s) from the specified root folder using BaseFolder string (enumeration)
                     var baseFolder = EnumConverter.ToBaseFolder<Folder25ServiceReference.BaseFolder>(BaseFolder);
