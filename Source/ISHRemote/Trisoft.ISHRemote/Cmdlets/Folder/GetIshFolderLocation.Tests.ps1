@@ -57,6 +57,9 @@ Describe “Get-IshFolderLocation" -Tags "Read" {
 		It "Parameter FolderId from EditorTemplate" {
 			Get-IshFolderLocation -IshSession $ishSession -FolderId $ishFolderEditorTemplateFolderRef | Should Not BeNullOrEmpty
 		}
+		It "Parameter FolderId 0 no longer returns BaseFolder" {
+			{ Get-IshFolderLocation -FolderId 0 } | Should Throw "-105001"
+		}
 		It "Pipeline FolderId" {
 			$ishObjects = @($ishFolderDataFolderRef,$ishFolderSystemFolderRef,$ishFolderFavoritesFolderRef,$ishFolderEditorTemplateFolderRef) | Get-IshFolderLocation -IshSession $ishSession
 			$ishObjects.Count | Should Be 4
