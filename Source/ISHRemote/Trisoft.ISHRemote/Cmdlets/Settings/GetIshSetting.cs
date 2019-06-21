@@ -44,33 +44,29 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// </summary>
     /// <example>
     /// <code>
-    /// Param(
-    ///     $wsBaseUrl = 'https://example.com/InfoShareWS/',
-    ///     $userName = 'admin',
-    ///     $password = 'admin',
-    ///     $settingsFolderPath = 'D:\temp'
-    /// )
-    /// $ishSession = New-IshSession -WsBaseUrl $wsBaseUrl -IshUserName $userName -IshPassword $password
-    /// $settingsFolderPath = Join-Path -Path $settingsFolderPath -ChildPath ((Get-Date -Format yyyyMMddHHmmss) + "=" + $wsBaseUrl.Replace(":","-").Replace("/","-") + "=" + (Get-IshVersion -IshSession $ishSession).ToString())
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $settingsFolderPath = 'C:\temp'
     /// Write-Verbose "Saving in $settingsFolderPath"
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLInboxConfiguration.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FINBOXCONFIGURATION" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FINBOXCONFIGURATION" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLBackgroundTaskConfiguration.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FISHBACKGROUNDTASKCONFIG" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FISHBACKGROUNDTASKCONFIG" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLChangeTrackerConfig.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FISHCHANGETRACKERCONFIG" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FISHCHANGETRACKERCONFIG" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLExtensionConfiguration.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FISHEXTENSIONCONFIG" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FISHEXTENSIONCONFIG" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLPluginConfig.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FISHPLUGINCONFIGXML" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FISHPLUGINCONFIGXML" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLStatusConfiguration.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FSTATECONFIGURATION" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FSTATECONFIGURATION" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLTranslationConfiguration.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FTRANSLATIONCONFIGURATION" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FTRANSLATIONCONFIGURATION" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLWriteObjPluginConfig.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FISHWRITEOBJPLUGINCFG" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FISHWRITEOBJPLUGINCFG" -FilePath $filePath
     /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLPublishPluginConfiguration.xml"
-    /// Get-IshSetting -IshSession $ishSession -FieldName "FISHPUBLISHPLUGINCONFIG" -FilePath $filePath
+    /// Get-IshSetting -FieldName "FISHPUBLISHPLUGINCONFIG" -FilePath $filePath
+    /// $filePath = Join-Path -Path $settingsFolderPath -ChildPath "Admin.XMLCollectiveSpacesConfiguration.xml"
+    /// Get-IshSetting -FieldName "FISHCOLLECTIVESPACESCFG" -FilePath $filePath
     /// Write-Host "Done, see $settingsFolderPath"
     /// </code>
     /// <para>Retrieve all Settings xml configuration entries and save them in a folder to desk allowing file-to-file comparison with EnterViaUI folder.</para>
