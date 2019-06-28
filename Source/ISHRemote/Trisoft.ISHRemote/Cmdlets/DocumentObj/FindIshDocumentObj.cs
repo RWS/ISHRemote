@@ -40,12 +40,20 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// </example>
     /// <example>
     /// <code>
-    /// $yesterday = (Get-Date).AddDays(-2000).ToString("dd/MM/yyyy HH:mm:ss")
-    /// $ishObjects = Find-IshDocumentObj -MetadataFilter(Set-IshMetadataFilterField -Level Lng -Name MODIFIED-ON -FilterOperator GreaterThan -Value $yesterday) `
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $dateInThePast = (Get-Date).AddDays(-2000).ToString("dd/MM/yyyy HH:mm:ss")
+    /// $ishObjects = Find-IshDocumentObj -MetadataFilter(Set-IshMetadataFilterField -Level Lng -Name MODIFIED-ON -FilterOperator GreaterThan -Value $dateInThePast) `
     ///                                   -RequestedMetadata(Set-IshRequestedMetadataField -Level Lng -Name FISHLASTMODIFIEDON)
     /// $ishObjects | Select-Object -Property IshType, IshRef, version_version_value, doc-language, fresolution, fishlastmodifiedon, fishlastmodifiedby, fstatus, checked-out-by, ftitle_logical_value | Format-Table
     /// </code>
-    /// <para></para>
+    /// <para>Timesliced retrieval based on the metadata MODIFIED-ON date. Note that adding a second MODIFIED-ON filter using LessThan is possible.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Find-IshDocumentObj -MetadataFilter (Set-IshMetadataFilterField -Name ED -Level Lng -FilterOperator Equal -Value GUID-92073CF5-ADFD-4FE4-9671-8196FCE5AE1D)
+    /// </code>
+    /// <para>Suppose you get a 'revisionId' back through some error message, then the above cmdlet is a way to return you the LogicalId (typically GUID), version and language back of the content object. The ED field holds the currently latest 'revisionId' while FISHREVISIONS holds the previously ones.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Find, "IshDocumentObj", SupportsShouldProcess = false)]
     [OutputType(typeof(IshDocumentObj))]
