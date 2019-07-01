@@ -123,7 +123,22 @@ synchronized with the code.
 * Using the -Tag with "Create", "Read", "Update", "Delete" to allow [Pester grouping](See https://github.com/pester/Pester/wiki/Describe) Tags
 * Data initialization and breakdown are key but also time consuming. BeforeEach/AfterEach are run for every It block, so makes things slow.
 
-# Coding Prerequisites  
+# Coding Prerequisites and Best Practices
+
+## Release Build and Publish To PowerShell Gallery
+
+Rought steps to release...
+1. Use Visual Studio to build a `Debug` build. Run an `Invoke-Pester` on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
+1. Use Visual Studio to build a `Release` build. Change `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\ISHRemote.PesterSetup.ps1` to forcefully load `\bin\release\` (instead of `\bin\debug\`). Run an `Invoke-Pester` on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
+1. The folder content of `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Release\` will be published
+    1. Check all files, especially `Scripts` that you have all files.
+    1. Check version number of `ISHRemote.dll`
+1. Execute steps regarding signing and publishing from `SignAndPublish.ps1` available on internal repository https://stash.sdl.com/users/ddemeyer/repos/ishremote-build/
+1. Check availability of latest version on https://www.powershellgallery.com/packages/ISHRemote/
+1. Github releases
+    1. Edit and release the notes on https://github.com/sdl/ISHRemote/releases/
+    1. Start new release notes, under a new version number like `v0.10-beta`
+1. Close version milestone on https://github.com/sdl/ISHRemote/milestone/
 
 ## Testing and Debugging using Pester in Visual Studio 2015
 
