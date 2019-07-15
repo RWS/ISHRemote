@@ -107,6 +107,20 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ActivityFilter", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/")]
+    public enum ActivityFilter : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        None = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Active = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Inactive = 2,
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="BaselineAutoCompleteMode", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/")]
     public enum BaselineAutoCompleteMode : int {
         
@@ -137,6 +151,26 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference {
             "taResponse")]
         [return: System.ServiceModel.MessageParameterAttribute(Name="xmlObjectList")]
         System.Threading.Tasks.Task<string> RetrieveMetadataAsync(string[] baselineIds, string xmlMetadataFilter, string xmlRequestedMetadata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetada" +
+            "ta2", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetada" +
+            "ta2Response")]
+        [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.Baseline25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetada" +
+            "ta2InfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
+        string RetrieveMetadata2(string[] baselineIds, Trisoft.ISHRemote.Baseline25ServiceReference.ActivityFilter activityFilter, string xmlMetadataFilter, string xmlRequestedMetadata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetada" +
+            "ta2", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetada" +
+            "ta2Response")]
+        System.Threading.Tasks.Task<string> RetrieveMetadata2Async(string[] baselineIds, Trisoft.ISHRemote.Baseline25ServiceReference.ActivityFilter activityFilter, string xmlMetadataFilter, string xmlRequestedMetadata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Find", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/FindResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.Baseline25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/FindInfoShareF" +
+            "ault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
+        string Find(Trisoft.ISHRemote.Baseline25ServiceReference.ActivityFilter activityFilter, string xmlMetadataFilter, string xmlRequestedMetadata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Find", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/FindResponse")]
+        System.Threading.Tasks.Task<string> FindAsync(Trisoft.ISHRemote.Baseline25ServiceReference.ActivityFilter activityFilter, string xmlMetadataFilter, string xmlRequestedMetadata);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetMetadata", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetMetadataRes" +
             "ponse")]
@@ -563,6 +597,22 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference {
         
         public System.Threading.Tasks.Task<string> RetrieveMetadataAsync(string[] baselineIds, string xmlMetadataFilter, string xmlRequestedMetadata) {
             return base.Channel.RetrieveMetadataAsync(baselineIds, xmlMetadataFilter, xmlRequestedMetadata);
+        }
+        
+        public string RetrieveMetadata2(string[] baselineIds, Trisoft.ISHRemote.Baseline25ServiceReference.ActivityFilter activityFilter, string xmlMetadataFilter, string xmlRequestedMetadata) {
+            return base.Channel.RetrieveMetadata2(baselineIds, activityFilter, xmlMetadataFilter, xmlRequestedMetadata);
+        }
+        
+        public System.Threading.Tasks.Task<string> RetrieveMetadata2Async(string[] baselineIds, Trisoft.ISHRemote.Baseline25ServiceReference.ActivityFilter activityFilter, string xmlMetadataFilter, string xmlRequestedMetadata) {
+            return base.Channel.RetrieveMetadata2Async(baselineIds, activityFilter, xmlMetadataFilter, xmlRequestedMetadata);
+        }
+        
+        public string Find(Trisoft.ISHRemote.Baseline25ServiceReference.ActivityFilter activityFilter, string xmlMetadataFilter, string xmlRequestedMetadata) {
+            return base.Channel.Find(activityFilter, xmlMetadataFilter, xmlRequestedMetadata);
+        }
+        
+        public System.Threading.Tasks.Task<string> FindAsync(Trisoft.ISHRemote.Baseline25ServiceReference.ActivityFilter activityFilter, string xmlMetadataFilter, string xmlRequestedMetadata) {
+            return base.Channel.FindAsync(activityFilter, xmlMetadataFilter, xmlRequestedMetadata);
         }
         
         public string GetMetadata(string baselineId, string xmlRequestedMetadata) {

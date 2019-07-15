@@ -18,6 +18,24 @@
   <wsdl:message name="Baseline_RetrieveMetadata_InfoShareFault_FaultMessage">
     <wsdl:part xmlns:q1="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q1:InfoShareFault" />
   </wsdl:message>
+  <wsdl:message name="Baseline_RetrieveMetadata2_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadata2" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_RetrieveMetadata2_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadata2Response" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_RetrieveMetadata2_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Find_InputMessage">
+    <wsdl:part name="parameters" element="tns:Find" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Find_OutputMessage">
+    <wsdl:part name="parameters" element="tns:FindResponse" />
+  </wsdl:message>
+  <wsdl:message name="Baseline_Find_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+  </wsdl:message>
   <wsdl:message name="Baseline_GetMetadata_InputMessage">
     <wsdl:part name="parameters" element="tns:GetMetadata" />
   </wsdl:message>
@@ -25,7 +43,7 @@
     <wsdl:part name="parameters" element="tns:GetMetadataResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetMetadata_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q2="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q2:InfoShareFault" />
+    <wsdl:part xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q4:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetList_InputMessage">
     <wsdl:part name="parameters" element="tns:GetList" />
@@ -34,7 +52,7 @@
     <wsdl:part name="parameters" element="tns:GetListResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetList_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q3="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q3:InfoShareFault" />
+    <wsdl:part xmlns:q5="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q5:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetBaselineName_InputMessage">
     <wsdl:part name="parameters" element="tns:GetBaselineName" />
@@ -43,7 +61,7 @@
     <wsdl:part name="parameters" element="tns:GetBaselineNameResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetBaselineName_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q4="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q4:InfoShareFault" />
+    <wsdl:part xmlns:q6="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q6:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetBaselineId_InputMessage">
     <wsdl:part name="parameters" element="tns:GetBaselineId" />
@@ -52,7 +70,7 @@
     <wsdl:part name="parameters" element="tns:GetBaselineIdResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetBaselineId_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q5="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q5:InfoShareFault" />
+    <wsdl:part xmlns:q7="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q7:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_Containing_InputMessage">
     <wsdl:part name="parameters" element="tns:Containing" />
@@ -61,7 +79,7 @@
     <wsdl:part name="parameters" element="tns:ContainingResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_Containing_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q6="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q6:InfoShareFault" />
+    <wsdl:part xmlns:q8="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q8:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetBaseline_InputMessage">
     <wsdl:part name="parameters" element="tns:GetBaseline" />
@@ -70,7 +88,7 @@
     <wsdl:part name="parameters" element="tns:GetBaselineResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetBaseline_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q7="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q7:InfoShareFault" />
+    <wsdl:part xmlns:q9="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q9:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetReport_InputMessage">
     <wsdl:part name="parameters" element="tns:GetReport" />
@@ -79,7 +97,7 @@
     <wsdl:part name="parameters" element="tns:GetReportResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_GetReport_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q8="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q8:InfoShareFault" />
+    <wsdl:part xmlns:q10="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q10:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_ExpandBaseline_InputMessage">
     <wsdl:part name="parameters" element="tns:ExpandBaseline" />
@@ -88,7 +106,7 @@
     <wsdl:part name="parameters" element="tns:ExpandBaselineResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_ExpandBaseline_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q9="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q9:InfoShareFault" />
+    <wsdl:part xmlns:q11="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q11:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_ExpandReport_InputMessage">
     <wsdl:part name="parameters" element="tns:ExpandReport" />
@@ -97,7 +115,7 @@
     <wsdl:part name="parameters" element="tns:ExpandReportResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_ExpandReport_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q10="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q10:InfoShareFault" />
+    <wsdl:part xmlns:q12="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q12:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_CompleteBaselineByMode_InputMessage">
     <wsdl:part name="parameters" element="tns:CompleteBaselineByMode" />
@@ -106,7 +124,7 @@
     <wsdl:part name="parameters" element="tns:CompleteBaselineByModeResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_CompleteBaselineByMode_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q11="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q11:InfoShareFault" />
+    <wsdl:part xmlns:q13="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q13:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_CompleteReportByMode_InputMessage">
     <wsdl:part name="parameters" element="tns:CompleteReportByMode" />
@@ -115,7 +133,7 @@
     <wsdl:part name="parameters" element="tns:CompleteReportByModeResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_CompleteReportByMode_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q12="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q12:InfoShareFault" />
+    <wsdl:part xmlns:q14="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q14:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_CompleteBaselineByCandidateAndMode_InputMessage">
     <wsdl:part name="parameters" element="tns:CompleteBaselineByCandidateAndMode" />
@@ -124,7 +142,7 @@
     <wsdl:part name="parameters" element="tns:CompleteBaselineByCandidateAndModeResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_CompleteBaselineByCandidateAndMode_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q13="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q13:InfoShareFault" />
+    <wsdl:part xmlns:q15="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q15:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_CompleteReportByCandidateAndMode_InputMessage">
     <wsdl:part name="parameters" element="tns:CompleteReportByCandidateAndMode" />
@@ -133,7 +151,7 @@
     <wsdl:part name="parameters" element="tns:CompleteReportByCandidateAndModeResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_CompleteReportByCandidateAndMode_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q14="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q14:InfoShareFault" />
+    <wsdl:part xmlns:q16="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q16:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_ExtendReportByBaseline_InputMessage">
     <wsdl:part name="parameters" element="tns:ExtendReportByBaseline" />
@@ -142,7 +160,7 @@
     <wsdl:part name="parameters" element="tns:ExtendReportByBaselineResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_ExtendReportByBaseline_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q15="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q15:InfoShareFault" />
+    <wsdl:part xmlns:q17="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q17:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_ExtendReportByCandidate_InputMessage">
     <wsdl:part name="parameters" element="tns:ExtendReportByCandidate" />
@@ -151,7 +169,7 @@
     <wsdl:part name="parameters" element="tns:ExtendReportByCandidateResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_ExtendReportByCandidate_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q16="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q16:InfoShareFault" />
+    <wsdl:part xmlns:q18="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q18:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_Create_InputMessage">
     <wsdl:part name="parameters" element="tns:Create" />
@@ -160,7 +178,7 @@
     <wsdl:part name="parameters" element="tns:CreateResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_Create_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q17="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q17:InfoShareFault" />
+    <wsdl:part xmlns:q19="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q19:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_Delete_InputMessage">
     <wsdl:part name="parameters" element="tns:Delete" />
@@ -169,7 +187,7 @@
     <wsdl:part name="parameters" element="tns:DeleteResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_Delete_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q18="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q18:InfoShareFault" />
+    <wsdl:part xmlns:q20="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q20:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_Update_InputMessage">
     <wsdl:part name="parameters" element="tns:Update" />
@@ -178,7 +196,7 @@
     <wsdl:part name="parameters" element="tns:UpdateResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_Update_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q19="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q19:InfoShareFault" />
+    <wsdl:part xmlns:q21="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q21:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_SetMetadata_InputMessage">
     <wsdl:part name="parameters" element="tns:SetMetadata" />
@@ -187,7 +205,7 @@
     <wsdl:part name="parameters" element="tns:SetMetadataResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_SetMetadata_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q20="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q20:InfoShareFault" />
+    <wsdl:part xmlns:q22="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q22:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_Freeze_InputMessage">
     <wsdl:part name="parameters" element="tns:Freeze" />
@@ -196,7 +214,7 @@
     <wsdl:part name="parameters" element="tns:FreezeResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_Freeze_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q21="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q21:InfoShareFault" />
+    <wsdl:part xmlns:q23="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q23:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_CanBeFrozen_InputMessage">
     <wsdl:part name="parameters" element="tns:CanBeFrozen" />
@@ -205,7 +223,7 @@
     <wsdl:part name="parameters" element="tns:CanBeFrozenResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_CanBeFrozen_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q22="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q22:InfoShareFault" />
+    <wsdl:part xmlns:q24="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q24:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_CleanUp_InputMessage">
     <wsdl:part name="parameters" element="tns:CleanUp" />
@@ -214,7 +232,7 @@
     <wsdl:part name="parameters" element="tns:CleanUpResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_CleanUp_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q23="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q23:InfoShareFault" />
+    <wsdl:part xmlns:q25="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q25:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="Baseline_Copy_InputMessage">
     <wsdl:part name="parameters" element="tns:Copy" />
@@ -223,13 +241,23 @@
     <wsdl:part name="parameters" element="tns:CopyResponse" />
   </wsdl:message>
   <wsdl:message name="Baseline_Copy_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q24="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q24:InfoShareFault" />
+    <wsdl:part xmlns:q26="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q26:InfoShareFault" />
   </wsdl:message>
   <wsdl:portType name="Baseline">
     <wsdl:operation name="RetrieveMetadata">
       <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadata" message="tns:Baseline_RetrieveMetadata_InputMessage" />
       <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadataResponse" message="tns:Baseline_RetrieveMetadata_OutputMessage" />
       <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadataInfoShareFault" name="InfoShareFault" message="tns:Baseline_RetrieveMetadata_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveMetadata2">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadata2" message="tns:Baseline_RetrieveMetadata2_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadata2Response" message="tns:Baseline_RetrieveMetadata2_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/RetrieveMetadata2InfoShareFault" name="InfoShareFault" message="tns:Baseline_RetrieveMetadata2_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Find">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/Find" message="tns:Baseline_Find_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/FindResponse" message="tns:Baseline_Find_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/FindInfoShareFault" name="InfoShareFault" message="tns:Baseline_Find_InfoShareFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetMetadata">
       <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/Baseline/GetMetadata" message="tns:Baseline_GetMetadata_InputMessage" />
