@@ -81,7 +81,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <summary>
         /// <para type="description">Unique folder identifier</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup"), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup"), ValidateNotNullOrEmpty, ValidateRange(1, long.MaxValue)]
         public long FolderId { get; set; }
 
         /// <summary>
@@ -166,14 +166,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         {
             try
             {
-                if (IshFolder != null)
+                if (ParameterSetName == "IshFolderGroup")
                 {
-                    foreach(IshFolder ishFolder in IshFolder)
+                    foreach (IshFolder ishFolder in IshFolder)
                     {
                         _retrievedIshFolders.Add(ishFolder);
                     }
                 }
-                else if (FolderId > 0)
+
+                if (ParameterSetName == "FolderIdGroup")
                 {
                     _retrievedFolderIds.Add(FolderId);
                 }
@@ -207,7 +208,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 WriteDebug("Retrieving");
                 _requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
-                if (_retrievedIshFolders.Count > 0)
+                if (ParameterSetName == "IshFolderGroup" && _retrievedIshFolders.Count > 0)
                 {
                     var folderCardIds = _retrievedIshFolders.Select(ishFolder => Convert.ToInt64(ishFolder.IshFolderRef)).ToList();
                     WriteDebug($"Retrieving CardIds.length[{folderCardIds.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] 0/{folderCardIds.Count}");
@@ -224,7 +225,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         WriteDebug($"Retrieving CardIds.length[{ folderCardIdBatch.Count}] RequestedMetadata.length[{ _requestedMetadata.ToXml().Length}] {currentFolderCardIdCount}/{folderCardIds.Count}");
                     }
                 }
-                else if (_retrievedFolderIds.Count > 0)
+
+                if (ParameterSetName == "FolderIdGroup" && _retrievedFolderIds.Count > 0)
                 {
                     WriteDebug($"Retrieving CardIds.length[{ _retrievedFolderIds.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] 0/{_retrievedFolderIds.Count}");
                     // Devides the list of folder card ids in different lists that all have maximally MetadataBatchSize elements
@@ -240,7 +242,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         WriteDebug($"Retrieving CardIds.length[{folderCardIdBatch.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] {currentFolderCardIdCount}/{_retrievedFolderIds.Count}");
                     }
                 }
-                else if (FolderPath != null)
+
+                if (ParameterSetName == "FolderPathGroup")
                 {
                     // Retrieve using provided parameter FolderPath
                     // Parse FolderPath input parameter: get basefolderName(1st element of an array)
@@ -261,7 +264,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolder, "ishfolder");
                     returnIshFolders.AddRange(retrievedFolders.Folders);
                 }
-                else
+
+                if (ParameterSetName == "BaseFolderGroup")
                 {
                     // Retrieve using BaseFolder string (enumeration)
                     var baseFolder = EnumConverter.ToBaseFolder<Folder25ServiceReference.BaseFolder>(BaseFolder);
