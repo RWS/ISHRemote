@@ -89,6 +89,9 @@ Describe “Get-IshFolder" -Tags "Read" {
 		It "Parameter FolderId invalid" {
 			{ Get-IshFolder -IShSession $ishSession -FolderId "INVALIDFOLDERID" } | Should Throw
 		}
+		It "Parameter FolderId zero" {
+			{ Get-IshFolder -IShSession $ishSession -FolderId 0 } | Should Throw
+		}
 		It "Parameter FolderId from Data" {
 			(Get-IshFolder -IshSession $ishSession -FolderId $ishFolderDataFolderRef).IshFolderRef -ge 0 | Should Be $true
 		}
