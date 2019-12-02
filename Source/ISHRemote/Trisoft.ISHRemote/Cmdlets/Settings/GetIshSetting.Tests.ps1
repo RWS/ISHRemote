@@ -83,7 +83,9 @@ Describe “Get-IshSetting" -Tags "Read" {
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 			$ishFields.GetType().Name | Should BeExactly "Object[]"
 			if ((Get-IshVersion).MajorVersion -le 13) { $ishFields.Length | Should Be 19 }
-			if ((Get-IshVersion).MajorVersion -ge 14) { $ishFields.Length | Should Be 22 } # 14.0.0, fields FISHCOLLECTIVESPACESCFG, FISHPREVIEWRESOLUTION(value), FISHPREVIEWRESOLUTION(element) were added
+			if ((Get-IshVersion).MajorVersion -ge 14) { $ishFields.Length | Should Be 23 } 
+				# 14.0.0, fields FISHCOLLECTIVESPACESCFG, FISHPREVIEWRESOLUTION(value), FISHPREVIEWRESOLUTION(element) were added
+				# 14.0.1, field FISHANNOTATIONSTATECONFG was added
 			(Get-IshMetadataField -IshSession $ishSession -IshField $ishFields -Name "NAME" -Level None) | Should Be "Configuration card"
 		}
 		It "Parameter IshSession.DefaultRequestedMetadata=All" {
@@ -93,7 +95,9 @@ Describe “Get-IshSetting" -Tags "Read" {
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 			$ishFields.GetType().Name | Should BeExactly "Object[]"
 			if ((Get-IshVersion).MajorVersion -le 13) { $ishFields.Length | Should Be 31 }
-			if ((Get-IshVersion).MajorVersion -ge 14) { $ishFields.Length | Should Be 34 } # 14.0.0, fields FISHCOLLECTIVESPACESCFG, FISHPREVIEWRESOLUTION(value), FISHPREVIEWRESOLUTION(element) were added
+			if ((Get-IshVersion).MajorVersion -ge 14) { $ishFields.Length | Should Be 35 } 
+				# 14.0.0, fields FISHCOLLECTIVESPACESCFG, FISHPREVIEWRESOLUTION(value), FISHPREVIEWRESOLUTION(element) were added
+				# 14.0.1, field FISHANNOTATIONSTATECONFG was added
 			(Get-IshMetadataField -IshSession $ishSession -IshField $ishFields -Name "NAME" -Level None) | Should Be "Configuration card"
 		}
 	}
