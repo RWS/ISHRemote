@@ -34,7 +34,8 @@ try {
 
 Describe “New-IshObfuscatedFile" -Tags "Read" {
 	Write-Host "Initializing Test Data and Variables"
-	$rootFolder = Join-Path -Path $env:TEMP -ChildPath $cmdletName 
+	$tempFolder = [System.IO.Path]::GetTempPath()
+	$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
 	New-Item -ItemType Directory -Path $rootFolder
 	$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
 	New-Item -ItemType Directory -Path $inputFolder
