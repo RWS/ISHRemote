@@ -101,7 +101,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
     /// </code>
     /// <para>Add annotation providing IshAnnotation object.</para>
     /// </example>
-    [Cmdlet(VerbsCommon.Add, "IshAnnotation", SupportsShouldProcess = true)]
+    [Cmdlet(VerbsCommon.Add, "IshAnnotation", SupportsShouldProcess = false)]
     [OutputType(typeof(IshAnnotation))]
     public sealed class AddIshAnnotation :AnnotationCmdlet
     {
