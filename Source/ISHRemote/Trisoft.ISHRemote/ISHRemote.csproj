@@ -79,6 +79,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cmdlets\Annotation\AnnotationCmdlet.cs" />
+    <Compile Include="Cmdlets\Annotation\AddIshAnnotation.cs" />
     <Compile Include="Cmdlets\Application\ApplicationCmdlet.cs" />
     <Compile Include="Cmdlets\Application\GetIshVersion.cs" />
     <Compile Include="Cmdlets\BackgroundTask\BackgroundTaskCmdlet.cs" />
@@ -199,6 +201,7 @@
     <Compile Include="Objects\Public\IshBaselineItem.cs" />
     <Compile Include="Objects\Public\IshDocumentObj.cs" />
     <Compile Include="Objects\Public\IshEDT.cs" />
+    <Compile Include="Objects\Public\IshAnnotation.cs" />
     <Compile Include="Objects\Public\IshOutputFormat.cs" />
     <Compile Include="Objects\Public\IshPublicationOutput.cs" />
     <Compile Include="Objects\Public\IshRequestedMetadataField.cs" />

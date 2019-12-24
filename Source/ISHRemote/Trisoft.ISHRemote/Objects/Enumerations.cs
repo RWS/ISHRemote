@@ -251,7 +251,9 @@ namespace Trisoft.ISHRemote.Objects
             [StringValue("ishtaskref")]
             BackgroundTask,
             [StringValue("ishhistoryref")]
-            BackgroundTaskHistory
+            BackgroundTaskHistory,
+            [StringValue("ishannotationref")]
+            Annotation
         }
 
         /// <summary>
