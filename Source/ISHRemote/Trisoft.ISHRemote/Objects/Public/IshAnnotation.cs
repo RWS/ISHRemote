@@ -33,11 +33,19 @@ namespace Trisoft.ISHRemote.Objects.Public
         { }
 
         /// <summary>
-        /// Returns the card_id
+        /// Returns the card_id for the Annotation
         /// </summary>
         public new string ObjectRef
         {
             get { return _objectRef[Enumerations.ReferenceType.Annotation]; }
+        }
+
+        /// <summary>
+        /// Returns the card_id for the Annotation reply
+        /// </summary>
+        public string ReplyRef
+        {
+            get { return _objectRef[Enumerations.ReferenceType.AnnotationReply]; }
         }
 
     }
