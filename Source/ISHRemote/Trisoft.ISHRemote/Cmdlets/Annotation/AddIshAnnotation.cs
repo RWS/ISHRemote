@@ -101,7 +101,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
     /// </code>
     /// <para>Add annotation providing IshAnnotation object.</para>
     /// </example>
-    [Cmdlet(VerbsCommon.Add, "IshAnnotation", SupportsShouldProcess = false)]
+    [Cmdlet(VerbsCommon.Add, "IshAnnotation", SupportsShouldProcess = true)]
     [OutputType(typeof(IshAnnotation))]
     public sealed class AddIshAnnotation :AnnotationCmdlet
     {
@@ -247,8 +247,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                 if (ParameterSetName == "MetadataGroup")
                 {
                     var metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, new IshFields(Metadata), Enumerations.ActionMode.Create);
-                    string annotationId = IshSession.Annotation25.Create(metadata.ToXml());
-                    returnAnnotations.Add(annotationId);
+                    if (ShouldProcess("AnnotationAddress: '" + 
+                        metadata.GetFieldValue(FieldElements.AnnotationAddress, Enumerations.Level.Annotation, Enumerations.ValueType.Value) +
+                        "' AnnotationText: '" + 
+                        metadata.GetFieldValue(FieldElements.AnnotationText, Enumerations.Level.Annotation, Enumerations.ValueType.Value) + "'"))
+                    {
+                        string annotationId = IshSession.Annotation25.Create(metadata.ToXml());
+                        returnAnnotations.Add(annotationId);
+                    }
                     returnFields = metadata;
                 }
 
@@ -303,8 +309,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                     metadata.AddOrUpdateField(new IshMetadataField(FieldElements.AnnotationCategory, Enumerations.Level.Annotation, Category), Enumerations.ActionMode.Update);
 
                     metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, metadata, Enumerations.ActionMode.Create);
-                    string annotationId = IshSession.Annotation25.Create(metadata.ToXml());
-                    returnAnnotations.Add(annotationId);
+
+                    if (ShouldProcess("AnnotationAddress: '" +
+                        metadata.GetFieldValue(FieldElements.AnnotationAddress, Enumerations.Level.Annotation, Enumerations.ValueType.Value) +
+                        "' AnnotationText: '" +
+                        metadata.GetFieldValue(FieldElements.AnnotationText, Enumerations.Level.Annotation, Enumerations.ValueType.Value) + "'"))
+                    {
+                        string annotationId = IshSession.Annotation25.Create(metadata.ToXml());
+                        returnAnnotations.Add(annotationId);
+                    }
                     returnFields = metadata;
                 }
 
@@ -313,9 +326,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                     foreach(IshAnnotation ishAnnotation in IshAnnotation)
                     {
                        IshFields metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, ishAnnotation.IshFields, Enumerations.ActionMode.Create);
-                       string annotationId = IshSession.Annotation25.Create(metadata.ToXml());
-                       returnAnnotations.Add(annotationId);
+                        if (ShouldProcess("AnnotationAddress: '" +
+                            metadata.GetFieldValue(FieldElements.AnnotationAddress, Enumerations.Level.Annotation, Enumerations.ValueType.Value) +
+                            "' AnnotationText: '" +
+                            metadata.GetFieldValue(FieldElements.AnnotationText, Enumerations.Level.Annotation, Enumerations.ValueType.Value) + "'"))
+                        {
+                            string annotationId = IshSession.Annotation25.Create(metadata.ToXml());
+                            returnAnnotations.Add(annotationId);
+                        }
                     }
+                    returnFields = (IshAnnotation[0] == null) ? new IshFields() : IshAnnotation[0].IshFields;
                 }
 
                 //2. Retrieve added annotations
