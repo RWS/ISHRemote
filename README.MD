@@ -185,6 +185,8 @@ Setting up your Visual Studio Code is explained on the internet, see [Scripting 
 - [Visual Studio Code editing features for PowerShell development – Part 2](https://blogs.technet.microsoft.com/heyscriptingguy/2017/01/12/visual-studio-code-editing-features-for-powershell-development-part-2/)
 - [Debugging PowerShell script in Visual Studio Code – Part 1](https://blogs.technet.microsoft.com/heyscriptingguy/2017/02/06/debugging-powershell-script-in-visual-studio-code-part-1/)
 - [Debugging PowerShell script in Visual Studio Code – Part 2](https://blogs.technet.microsoft.com/heyscriptingguy/2017/02/13/debugging-powershell-script-in-visual-studio-code-part-2/)
+- [Tyler Leonhardt - Visual Studio Code: deep dive into debugging your PowerShell scripts](https://www.youtube.com/watch?v=cSbIXmlkr8o)
+- [Writing Compiled PowerShell Cmdlets by Thomas Rayner](https://www.youtube.com/watch?v=O0lk92W799)
 
 ## Static Code Analysis (experiment)
 
