@@ -83,7 +83,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
 
             if ((IshSession.ServerIshVersion.MajorVersion < 14) || ((IshSession.ServerIshVersion.MajorVersion == 14) && (IshSession.ServerIshVersion.RevisionVersion < 1)))
             {
-                throw new PlatformNotSupportedException($"Add-IshAnnotation requires server-side Annotation API which is only available starting from 14.0.1 and up. ServerIshVersion[{IshSession.ServerVersion}]");
+                throw new PlatformNotSupportedException($"Remove-IshAnnotation requires server-side Annotation API which is only available starting from 14.0.1 and up. ServerIshVersion[{IshSession.ServerVersion}]");
             }
             base.BeginProcessing();
         }
