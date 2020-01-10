@@ -43,13 +43,14 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationText = "by ISHRemote Pester [MetadataGroup] on $timestamp"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$ishAnnotationMetadata = Set-IshMetadataField -Name "FISHREVISIONID" -Level Annotation -Value $revisionId | `
-		    Set-IshMetadataField -Name "FISHPUBLOGICALID" -Level Annotation -Value $ishObjectPub.IshRef | `
-		    Set-IshMetadataField -Name "FISHPUBVERSION" -Level Annotation -Value $ishObjectPub.version_version_value | `
-		    Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -Value "VANNOTATIONSTATUSUNSHARED" | `
-		    Set-IshMetadataField -Name "FISHANNOTATIONADDRESS" -Level Annotation -Value $annotationAddress | `
-		    Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationText | `
-		    Set-IshMetadataField -Name "FISHANNOTATIONCATEGORY" -Level Annotation -Value $annotationCategory | `
+		$ishAnnotationMetadata = Set-IshMetadataField -Name "FISHREVISIONID" -Level Annotation -Value $revisionId |
+		    Set-IshMetadataField -Name "FISHPUBLOGICALID" -Level Annotation -Value $ishObjectPub.IshRef |
+		    Set-IshMetadataField -Name "FISHPUBVERSION" -Level Annotation -Value $ishObjectPub.version_version_value |
+		    Set-IshMetadataField -Name "FISHPUBLANGUAGE" -Level Annotation -Value $ishObjectPub.fishpubsourcelanguages_version_value |
+		    Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -Value "VANNOTATIONSTATUSUNSHARED" -ValueType Element |
+		    Set-IshMetadataField -Name "FISHANNOTATIONADDRESS" -Level Annotation -Value $annotationAddress |
+		    Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationText |
+		    Set-IshMetadataField -Name "FISHANNOTATIONCATEGORY" -Level Annotation -Value $annotationCategory |
 		    Set-IshMetadataField -Name "FISHANNOTATIONTYPE" -Level Annotation -Value $annotationType
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession -Metadata $ishAnnotationMetadata
 		
@@ -68,7 +69,16 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		It "ishAnnotation.ObjectRef" {
 			$ishAnnotation.ObjectRef | Should Not BeNullOrEmpty
 		}
-		It "ishAnnotation RevisionId" {
+        It "ishAnnotation PubLogicalId" {
+			$ishAnnotation.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
+		}
+        It "ishAnnotation PubVersion" {
+			$ishAnnotation.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		}
+        It "ishAnnotation PubLng" {
+			$ishAnnotation.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+		}
+        It "ishAnnotation RevisionId" {
 			$ishAnnotation.fishrevisionid_annotation_value | Should BeExactly $revisionId
 		}
 		It "ishAnnotation Address" {
@@ -94,10 +104,11 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationText = "by ISHRemote Pester [ParametersGroup] on $timestamp"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$annotationStatus = "VANNOTATIONSTATUSUNSHARED"
+		$annotationStatus = "Unshared"
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
                             -LogicalId $ishObjectTopic.IshRef `
                             -Version $ishObjectTopic.version_version_value `
                             -Lng $ishObjectTopic.doclanguage `
@@ -110,6 +121,15 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		It "ishAnnotation RevisionId" {
 			$ishAnnotation.fishrevisionid_annotation_value | Should BeExactly $revisionId
 		}
+        It "ishAnnotation PubLogicalId" {
+			$ishAnnotation.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
+		}
+        It "ishAnnotation PubVersion" {
+			$ishAnnotation.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		}
+        It "ishAnnotation PubLng" {
+			$ishAnnotation.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+		}
 		It "ishAnnotation LogicalId" {
 			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should BeExactly $ishObjectTopic.IshRef
 		}
@@ -120,7 +140,7 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should BeExactly $ishObjectTopic.doclanguage
 		}		
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_element | Should BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should BeExactly $annotationStatus
 		}
 		It "ishAnnotation Address" {
 			$ishAnnotation.fishannotationaddress_annotation_value | Should BeExactly $annotationAddress
@@ -142,23 +162,25 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationText = "by ISHRemote Pester [ParametersGroup] on $timestamp"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$annotationStatus = "VANNOTATIONSTATUSUNSHARED"
+		$annotationStatus = "Unshared"
 		# this should not be overrided
 		$proposedChangeText = "Proposed change in this annotation"
 		
-		$metadataProvided = Set-IshMetadataField -Name "FISHREVISIONID" -Level Annotation -Value "GUID-123-REVISION-ID" | `
-            Set-IshMetadataField -Name "FISHPUBLOGICALID" -Level Annotation -Value "GUID-123-PUBLICATION-ID" | `
-            Set-IshMetadataField -Name "FISHPUBVERSION" -Level Annotation -Value "100" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -Value "Metadata status" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONADDRESS" -Level Annotation -Value "Metadata address" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "Metadata text" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONCATEGORY" -Level Annotation -Value "Metadata comment" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONTYPE" -Level Annotation -Value "Metadata type" | `
+		$metadataProvided = Set-IshMetadataField -Name "FISHREVISIONID" -Level Annotation -Value "GUID-123-REVISION-ID" |
+            Set-IshMetadataField -Name "FISHPUBLOGICALID" -Level Annotation -Value "GUID-123-PUBLICATION-ID" |
+            Set-IshMetadataField -Name "FISHPUBVERSION" -Level Annotation -Value "100" |
+            Set-IshMetadataField -Name "FISHPUBLANGUAGE" -Level Annotation -Value "aa" |
+            Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -Value "Metadata status" |
+            Set-IshMetadataField -Name "FISHANNOTATIONADDRESS" -Level Annotation -Value "Metadata address" |
+            Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "Metadata text" |
+            Set-IshMetadataField -Name "FISHANNOTATIONCATEGORY" -Level Annotation -Value "Metadata comment" |
+            Set-IshMetadataField -Name "FISHANNOTATIONTYPE" -Level Annotation -Value "Metadata type" |
 			Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeText
 		
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
                             -LogicalId $ishObjectTopic.IshRef `
                             -Version $ishObjectTopic.version_version_value `
                             -Lng $ishObjectTopic.doclanguage `
@@ -182,13 +204,16 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 			$ishAnnotation.fishannotationtype_annotation_value | Should BeExactly $annotationType
 		}
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_element | Should BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should BeExactly $annotationStatus
 		}
 		It "ishAnnotation PublogicalId" {
 			$ishAnnotation.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
 		}
 		It "ishAnnotation PubVersion" {
 			$ishAnnotation.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		}
+        It "ishAnnotation PubLng" {
+			$ishAnnotation.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
 		}
 		It "ishAnnotation RevisionId" {
 			$ishAnnotation.fishrevisionid_annotation_value | Should BeExactly $revisionId
@@ -213,10 +238,11 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationText = "by ISHRemote Pester [IshObjectGroup] on $timestamp"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$annotationStatus = "VANNOTATIONSTATUSUNSHARED"
+		$annotationStatus = "Unshared"
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
 							-IshObject $ishObjectTopic `
                             -Type $annotationType `
                             -Text $annotationText `
@@ -236,8 +262,17 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		It "ishAnnotation Lng" {
 			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should BeExactly $ishObjectTopic.doclanguage
 		}		
+		It "ishAnnotation PublogicalId" {
+			$ishAnnotation.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
+		}
+		It "ishAnnotation PubVersion" {
+			$ishAnnotation.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		}
+        It "ishAnnotation PubLng" {
+			$ishAnnotation.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+		}
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_element | Should BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should BeExactly $annotationStatus
 		}
 		It "ishAnnotation Address" {
 			$ishAnnotation.fishannotationaddress_annotation_value | Should BeExactly $annotationAddress
@@ -255,6 +290,7 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 			{$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
 							-IshObject $ishObjectPub `
                             -Type $annotationType `
                             -Text $annotationText `
@@ -271,22 +307,24 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationText = "by ISHRemote Pester [IshObjectGroup] on $timestamp"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$annotationStatus = "VANNOTATIONSTATUSUNSHARED"
+		$annotationStatus = "Unshared"
 		# this should not be overrided
 		$proposedChangeText = "Proposed change in this annotation"
 		$metadataProvided = Set-IshMetadataField -Name "FISHREVISIONID" -Level Annotation -Value "GUID-123-REVISION-ID" | `
-            Set-IshMetadataField -Name "FISHPUBLOGICALID" -Level Annotation -Value "GUID-123-PUBLICATION-ID" | `
-            Set-IshMetadataField -Name "FISHPUBVERSION" -Level Annotation -Value "100" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -Value "Metadata status" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONADDRESS" -Level Annotation -Value "Metadata address" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "Metadata text" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONCATEGORY" -Level Annotation -Value "Metadata comment" | `
-            Set-IshMetadataField -Name "FISHANNOTATIONTYPE" -Level Annotation -Value "Metadata type" | `
+            Set-IshMetadataField -Name "FISHPUBLOGICALID" -Level Annotation -Value "GUID-123-PUBLICATION-ID" |
+            Set-IshMetadataField -Name "FISHPUBVERSION" -Level Annotation -Value "100" |
+            Set-IshMetadataField -Name "FISHPUBLANGUAGE" -Level Annotation -Value "aa" |
+            Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -Value "Metadata status" |
+            Set-IshMetadataField -Name "FISHANNOTATIONADDRESS" -Level Annotation -Value "Metadata address" |
+            Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "Metadata text" |
+            Set-IshMetadataField -Name "FISHANNOTATIONCATEGORY" -Level Annotation -Value "Metadata comment" |
+            Set-IshMetadataField -Name "FISHANNOTATIONTYPE" -Level Annotation -Value "Metadata type" |
 			Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeText
 		
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
 							-IshObject $ishObjectTopic `
                             -Type $annotationType `
                             -Text $annotationText `
@@ -306,9 +344,18 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		}
 		It "ishAnnotation Lng" {
 			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should BeExactly $ishObjectTopic.doclanguage
-		}		
+		}	
+		It "ishAnnotation PublogicalId" {
+			$ishAnnotation.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
+		}
+		It "ishAnnotation PubVersion" {
+			$ishAnnotation.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		}
+        It "ishAnnotation PubLng" {
+			$ishAnnotation.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+		}
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_element | Should BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should BeExactly $annotationStatus
 		}
 		It "ishAnnotation Address" {
 			$ishAnnotation.fishannotationaddress_annotation_value | Should BeExactly $annotationAddress
@@ -333,10 +380,11 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationText = "by ISHRemote Pester [IshObjectGroup] pipeline on $timestamp"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$annotationStatus = "VANNOTATIONSTATUSUNSHARED"
+		$annotationStatus = "Unshared"
 		$ishAnnotation = $ishObjectTopic | Add-IshAnnotation -IshSession $ishsession `
 				                            -PubLogicalId $ishObjectPub.IshRef `
 				                            -PubVersion $ishObjectPub.version_version_value `
+                                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
 				                            -Type $annotationType `
 				                            -Text $annotationText `
 				                            -Status $annotationStatus `
@@ -349,14 +397,23 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		It "ishAnnotation LogicalId" {
 			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should BeExactly $ishObjectTopic.IshRef
 		}
-		It "ishAnnotation Version" {
+		It "ishAnnotation PublogicalId" {
+			$ishAnnotation.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
+		}
+		It "ishAnnotation PubVersion" {
+			$ishAnnotation.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		}
+        It "ishAnnotation PubLng" {
+			$ishAnnotation.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+		}		
+        It "ishAnnotation Version" {
 			$ishAnnotation.fishcontentobjversion_annotation_value | Should BeExactly $ishObjectTopic.version_version_value
 		}
 		It "ishAnnotation Lng" {
 			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should BeExactly $ishObjectTopic.doclanguage
 		}		
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_element | Should BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should BeExactly $annotationStatus
 		}
 		It "ishAnnotation Address" {
 			$ishAnnotation.fishannotationaddress_annotation_value | Should BeExactly $annotationAddress
@@ -378,13 +435,14 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationText = "by ISHRemote Pester [IshAnnotationGroup] on $timestamp"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$annotationStatus = "VANNOTATIONSTATUSUNSHARED"
+		$annotationStatus = "Unshared"
 		$proposedChangeText = "Proposed change in this annotation"
 		$metadata = Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeText
 		
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
 							-IshObject $ishObjectTopic `
                             -Type $annotationType `
                             -Text $annotationText `
@@ -395,8 +453,8 @@ Describe “Add-IshAnnotation" -Tags "Create" {
         
 		$proposedChangeTextUpdated = $proposedChangeText + "updated"
 		$annotationTextUpdated = $annotationText + "updated"
-		$ishAnnotation = $ishAnnotation | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated `
-										| Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
+		$ishAnnotation = $ishAnnotation | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated |
+										  Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
 		
 		$ishAnnotationUpdated = Add-IshAnnotation -IshSession $ishsession `
 												  -IshAnnotation $ishAnnotation
@@ -407,6 +465,15 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		It "ishAnnotation LogicalId" {
 			$ishAnnotationUpdated.fishcontentobjlogicalid_annotation_value | Should BeExactly $ishObjectTopic.IshRef
 		}
+		It "ishAnnotation PublogicalId" {
+			$ishAnnotation.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
+		}
+		It "ishAnnotation PubVersion" {
+			$ishAnnotation.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		}
+        It "ishAnnotation PubLng" {
+			$ishAnnotation.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+		}
 		It "ishAnnotation Version" {
 			$ishAnnotationUpdated.fishcontentobjversion_annotation_value | Should BeExactly $ishObjectTopic.version_version_value
 		}
@@ -414,7 +481,7 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 			$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should BeExactly $ishObjectTopic.doclanguage
 		}		
 		It "ishAnnotation Status" {
-			$ishAnnotationUpdated.fishannotationstatus_annotation_element | Should BeExactly $annotationStatus
+			$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should BeExactly $annotationStatus
 		}
 		It "ishAnnotation Address" {
 			$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should BeExactly $annotationAddress
@@ -431,7 +498,6 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		It "ishAnnotation ProposedChngText" {
 			$ishAnnotationUpdated.fishannotproposedchngtxt_annotation_value | Should BeExactly $proposedChangeTextUpdated
 		}
-
 	}
 
 	Context "Add-IshAnnotation IshAnnotationGroup array from pipeline" {
@@ -440,12 +506,13 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$annotationStatus = "VANNOTATIONSTATUSUNSHARED"
+		$annotationStatus = "Unshared"
 		$proposedChangeText = "Proposed change in this annotation"
 		$metadata = Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeText
 		$ishAnnotation1 = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
 							-IshObject $ishObjectTopic `
                             -Type $annotationType `
                             -Text $annotationText `
@@ -457,6 +524,7 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$ishAnnotation2 = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
 							-IshObject $ishObjectTopic `
                             -Type $annotationType `
                             -Text $annotationText `
@@ -468,10 +536,10 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		
 		$proposedChangeTextUpdated = $proposedChangeText + "updated"
 		$annotationTextUpdated = $annotationText1 + "updated"
-		$ishAnnotation1 = $ishAnnotation1 | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated `
-										| Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
-		$ishAnnotation2 = $ishAnnotation2 | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated `
-										| Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
+		$ishAnnotation1 = $ishAnnotation1 | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated |
+										    Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
+		$ishAnnotation2 = $ishAnnotation2 | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated |
+										    Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
 		
 		$ishAnnotationsUpdated = @($ishAnnotation1, $ishAnnotation2) | Add-IshAnnotation -IshSession $ishsession
 		It "ishAnnotations array count" {
@@ -491,9 +559,18 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 			}
 			It "ishAnnotation Lng" {
 				$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should BeExactly $ishObjectTopic.doclanguage
-			}		
+			}	
+		    It "ishAnnotation PublogicalId" {
+			    $ishAnnotationUpdated.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
+		    }
+		    It "ishAnnotation PubVersion" {
+			    $ishAnnotationUpdated.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		    }
+            It "ishAnnotation PubLng" {
+			    $ishAnnotationUpdated.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+		    }	
 			It "ishAnnotation Status" {
-				$ishAnnotationUpdated.fishannotationstatus_annotation_element | Should BeExactly $annotationStatus
+				$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should BeExactly $annotationStatus
 			}
 			It "ishAnnotation Address" {
 				$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should BeExactly $annotationAddress
@@ -519,12 +596,13 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationCategory = "Comment"
 		$annotationType = "General"
-		$annotationStatus = "VANNOTATIONSTATUSUNSHARED"
+		$annotationStatus = "Unshared"
 		$proposedChangeText = "Proposed change in this annotation"
 		$metadata = Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeText
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
+                            -PubLng $ishObjectPub.fishpubsourcelanguages_version_value `
 							-IshObject $ishObjectTopic `
                             -Type $annotationType `
                             -Text $annotationText `
@@ -535,8 +613,8 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		
 		$proposedChangeTextUpdated = $proposedChangeText + "updated"
 		$annotationTextUpdated = $annotationText1 + "updated"
-		$ishAnnotation = $ishAnnotation | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated `
-										| Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
+		$ishAnnotation = $ishAnnotation | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated |
+										  Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
 		
 		$ishAnnotationUpdated = $ishAnnotation | Add-IshAnnotation -IshSession $ishsession
 		
@@ -551,9 +629,18 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		}
 		It "ishAnnotation Lng" {
 			$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should BeExactly $ishObjectTopic.doclanguage
-		}		
+		}	
+		It "ishAnnotation PublogicalId" {
+			$ishAnnotation.fishpublogicalid_annotation_value | Should BeExactly $ishObjectPub.IshRef
+		}
+		It "ishAnnotation PubVersion" {
+			$ishAnnotation.fishpubversion_annotation_value | Should BeExactly $ishObjectPub.version_version_value
+		}
+        It "ishAnnotation PubLng" {
+			$ishAnnotation.fishpublanguage_annotation_value | Should BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+		}	
 		It "ishAnnotation Status" {
-			$ishAnnotationUpdated.fishannotationstatus_annotation_element | Should BeExactly $annotationStatus
+			$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should BeExactly $annotationStatus
 		}
 		It "ishAnnotation Address" {
 			$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should BeExactly $annotationAddress
@@ -576,16 +663,20 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 } finally {
 	Write-Host "Cleaning Test Data and Variables"
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
-    try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse | `
-		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" | `
-		  Get-IshFolderContent -IshSession $ishSession | `
-		  Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
-    try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse | `
-		  Where-Object -Property IshFolderType -EQ -Value "ISHMasterDoc" | `
-		  Get-IshFolderContent -IshSession $ishSession | `
+    try { $publicationOutputs = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
+		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" |
+		  Get-IshFolderContent -IshSession $ishSession
+          $publicationOutputs |
+          Get-IshAnnotation -IshSession $ishSession |
+          Remove-IshAnnotation -IshSession $ishSession -Force
+          $publicationOutputs |
+          Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
+    try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
+		  Where-Object -Property IshFolderType -EQ -Value "ISHMasterDoc" |
+		  Get-IshFolderContent -IshSession $ishSession |
 		  Remove-IshDocumentObj -IshSession $ishSession -Force } catch { }
-	try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse | `
-		  Get-IshFolderContent -IshSession $ishSession | `
+	try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
+		  Get-IshFolderContent -IshSession $ishSession |
 		  Remove-IshDocumentObj -IshSession $ishSession -Force } catch { }
 	try { Remove-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse } catch { }
 	

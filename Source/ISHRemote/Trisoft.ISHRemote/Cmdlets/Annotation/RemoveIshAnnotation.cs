@@ -20,6 +20,7 @@ using System.Management.Automation;
 using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
+using System.Linq;
 
 namespace Trisoft.ISHRemote.Cmdlets.Annotation
 {
@@ -75,6 +76,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         [ValidateNotNullOrEmpty]
         public IshAnnotation[] IshAnnotation { get; set; }
         
+        #region Private fields
+        private readonly List<IshAnnotation> _retrievedIshAnnotations = new List<IshAnnotation>();
+        #endregion
+
         protected override void BeginProcessing()
         {
             if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession); }
@@ -89,11 +94,36 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         }
 
         /// <summary>
+        /// Process the cmdlet.
+        /// </summary>
+        protected override void ProcessRecord()
+        {
+            try
+            {
+                if (IshAnnotation != null)
+                {
+                    foreach (IshAnnotation ishAnnotation in IshAnnotation)
+                    {
+                        _retrievedIshAnnotations.Add(ishAnnotation);
+                    }
+                }
+            }
+            catch (TrisoftAutomationException trisoftAutomationException)
+            {
+                ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (Exception exception)
+            {
+                ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+        }
+
+        /// <summary>
         /// Process the Remove-IshAnnotation commandlet.
         /// </summary>
         /// <exception cref="TrisoftAutomationException"></exception>
         /// <exception cref="Exception"></exception>
-        protected override void ProcessRecord()
+        protected override void EndProcessing()
         {
             try
             {
@@ -107,7 +137,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                         annotationIdsToDelete.Add(AnnotationId);
                         break;
                     case "IshAnnotationGroup":
-                        annotationIdsToDelete.AddRange(Array.ConvertAll(IshAnnotation, ishAnnotation => ishAnnotation.IshRef));
+                        annotationIdsToDelete = _retrievedIshAnnotations.Select(ishAnnotation => Convert.ToString(ishAnnotation.IshRef)).ToList();
                         break;
                 }
 
@@ -118,13 +148,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                     // find replies for the required annotation(s)
                     IshFields requestedMetadata = new IshFields();
                     List<IshObject> ishObjectsList = new List<IshObject>();
-
+                    IshFields ishMetadataFilterField = new IshFields();
+                    ishMetadataFilterField.AddField(new IshMetadataFilterField(FieldElements.AnnotationReplies, Enumerations.Level.Annotation, Enumerations.FilterOperator.NotEmpty, "", Enumerations.ValueType.Value));
                     requestedMetadata.AddField(new IshRequestedMetadataField(FieldElements.AnnotationText, Enumerations.Level.Reply, Enumerations.ValueType.Value));
-                    requestedMetadata.AddField(new IshRequestedMetadataField(FieldElements.AnnotationReplies, Enumerations.Level.Annotation, Enumerations.ValueType.Value));
-                    string xmlIshAnnotationReplies = IshSession.Annotation25.RetrieveMetadata(annotationIdsToDelete.ToArray(), "", requestedMetadata.ToXml());
+                    string xmlIshAnnotationReplies = IshSession.Annotation25.RetrieveMetadata(annotationIdsToDelete.ToArray(), ishMetadataFilterField.ToXml(), requestedMetadata.ToXml());
                     ishObjectsList.AddRange(new IshObjects(ISHType, xmlIshAnnotationReplies).Objects);
-                    var ishObjectsAnnotationReplies = ishObjectsList.FindAll(i => i.IshFields.GetFieldValue(FieldElements.AnnotationReplies, Enumerations.Level.Annotation, Enumerations.ValueType.Value) != "");
-                    foreach (var ishAnnotationReply in ishObjectsAnnotationReplies.ConvertAll(x => (IshAnnotation)x))
+                    foreach (var ishAnnotationReply in ishObjectsList.ConvertAll(x => (IshAnnotation)x))
                     {
                         string replyText = ishAnnotationReply.IshFields.GetFieldValue(FieldElements.AnnotationText, Enumerations.Level.Reply, Enumerations.ValueType.Value);
                         if (ShouldProcess(ishAnnotationReply.ReplyRef + " " + replyText))

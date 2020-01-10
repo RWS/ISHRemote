@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cmdlets\Annotation\GetIshAnnotation.cs" />
     <Compile Include="Cmdlets\Annotation\AnnotationCmdlet.cs" />
     <Compile Include="Cmdlets\Annotation\AddIshAnnotation.cs" />
     <Compile Include="Cmdlets\Annotation\RemoveIshAnnotation.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Cmdlets\OutputFormat\SetIshOutputFormat.cs" />
     <Compile Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.cs" />
     <None Include="Cmdlets\Annotation\AddIshAnnotation.Tests.ps1" />
+    <None Include="Cmdlets\Annotation\GetIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\Annotation\RemoveIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.Tests.ps1" />
     <Compile Include="Cmdlets\PublicationOutput\FindIshPublicationOutput.cs" />
