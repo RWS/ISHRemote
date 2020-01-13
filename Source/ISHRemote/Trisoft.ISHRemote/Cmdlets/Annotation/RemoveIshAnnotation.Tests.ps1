@@ -47,7 +47,6 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 	
 	# Add annotations - ParametersGroup
 	$ishAnnotationPG1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$ishAnnotationPG2 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationPGWithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationPGWithReplies.IshRef)</ishfield></ishfields>"
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationPGWithReplies.IshRef, $strMetadataReply)
@@ -55,7 +54,6 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 	
 	# Add annotations - IshAnnotationGroup
 	$ishAnnotationIAG1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$ishAnnotationIAG2 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationIAGWithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGWithReplies.IshRef)</ishfield></ishfields>"
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGWithReplies.IshRef, $strMetadataReply)
@@ -70,10 +68,8 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 	$ishsession.Annotation25.CreateReply($ishAnnotationIAGMixedWithReplies.IshRef, $strMetadataReply)
 	
 	# Add annotations - IshAnnotationGroup (pipeline)
-	$ishAnnotationIAGpipeline1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationIAGpipeline2 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$ishAnnotationIAGpipeline3 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$ishAnnotationIAGpipeline4 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
+	$ishAnnotationIAGpipeline1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationIAGpipeline1WithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGpipeline1WithReplies.IshRef)</ishfield></ishfields>"
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGpipeline1WithReplies.IshRef, $strMetadataReply)
@@ -90,6 +86,7 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationPipelineMixedWithReplies.IshRef, $strMetadataReply)
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationPipelineMixedWithReplies.IshRef, $strMetadataReply)
 	
+
 	Context "Remove-IshAnnotation ParametersGroup" {
 		It "Parameter AnnotationId is empty" {
 			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId ""} | Should Throw
@@ -98,89 +95,66 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 		It "Parameter AnnotationId non-existing Id" {
 			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId "GUID-NON-EXISTING"} | Should Throw
 		}
-		It "Parameter AnnotationId is empty Force ON" {
-			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId "" -Force} | Should Throw
-		}
-		It "Parameter AnnotationId is empty Force OFF" {
+		It "Parameter AnnotationId is empty" {
 			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId ""} | Should Throw
 		}
-		It "Annotation with replies Force OFF" {
-		{Remove-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPGWithReplies.IshRef} | Should Throw
-		}
-		It "Annotation with replies Force ON" {
-			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPGWithReplies.IshRef -Force
+		It "Annotation with replies" {
+			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPGWithReplies.IshRef
 			$ishAnnotation -eq $null | Should Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPGWithReplies.IshRef
             $ishAnnotation.Count | Should Be 0
 		}
-		It "Annotation without replies Force OFF" {
+		It "Annotation without replies" {
 			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPG1.IshRef
 			$ishAnnotation -eq $null | Should Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPG1.IshRef
             $ishAnnotation.Count | Should Be 0
 		}
-		It "Annotation without replies Force ON" {
-			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPG2.IshRef -Force
-			$ishAnnotation -eq $null | Should Be $true
-            $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPG2.IshRef
-            $ishAnnotation.Count | Should Be 0
-		}
     }
 
 	Context "Remove-IshAnnotation IshAnnotationGroup" {
-		It "Remove-IshAnnotation Annotation with replies Force OFF" {
-		{Remove-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAGWithReplies } | Should Throw
-		}
-		It "Annotation with replies Force ON" {
-			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAGWithReplies -Force
+		It "Annotation with replies" {
+			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAGWithReplies
 			$ishAnnotation -eq $null | Should Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationIAGWithReplies.IshRef
             $ishAnnotation.Count | Should Be 0
 		}
-		It "Annotation without replies Force OFF" {
+		It "Annotation without replies" {
 			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAG1
 			$ishAnnotation -eq $null | Should Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationIAG1.IshRef
             $ishAnnotation.Count | Should Be 0
 		}
-		It "Annotation without replies Force ON" {
-			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAG2 -Force
-			$ishAnnotation -eq $null | Should Be $true
-            $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationIAG2.IshRef
-            $ishAnnotation.Count | Should Be 0
-		}
-		It "Annotations mixed(with and without replies), Force ON, passing as array" {
-			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation @($ishAnnotationIAGMixed1, $ishAnnotationIAGMixedWithReplies, $ishAnnotationIAGMixed2) -Force
+		It "Annotations mixed(with and without replies), passing as array" {
+			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation @($ishAnnotationIAGMixed1, $ishAnnotationIAGMixedWithReplies, $ishAnnotationIAGMixed2)
 			$ishAnnotation -eq $null | Should Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationIAGMixed1.IshRef, $ishAnnotationIAGMixedWithReplies.IshRef, $ishAnnotationIAGMixed2.IshRef)
             $ishAnnotation.Count | Should Be 0
 		}
     }
-
+	
     Context "Remove-IshAnnotation IshAnnotationGroup pipeline" {
-		It "Annotations with replies, Force OFF, passing one by one" {
-			{@($ishAnnotationIAGpipeline1WithReplies, $ishAnnotationIAGpipeline2WithReplies) | Remove-IshAnnotation -IshSession $ishsession} | Should Throw
+		It "Passing empty collection via pipeline"{
+            $ishObjects = Get-Ishfolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) | Get-IshFolderContent -IshSession $ishsession
+            $ishObjects.Count | Should Be 0
+            {Get-Ishfolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) |
+            Get-IshFolderContent -IshSession $ishsession |
+            Remove-IshAnnotation -IshSession $ishsession} | Should Not Throw
 		}
-		It "Annotations with replies, Force ON, passing one by one" {
-			$ishAnnotation = @($ishAnnotationIAGpipeline1WithReplies, $ishAnnotationIAGpipeline2WithReplies) | Remove-IshAnnotation -IshSession $ishsession -Force
+		It "Annotations with replies, passing one by one" {
+			$ishAnnotation = @($ishAnnotationIAGpipeline1WithReplies, $ishAnnotationIAGpipeline2WithReplies) | Remove-IshAnnotation -IshSession $ishsession
 			$ishAnnotation -eq $null | Should Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationIAGpipeline1WithReplies.IshRef, $ishAnnotationIAGpipeline2WithReplies.IshRef)
             $ishAnnotation.Count | Should Be 0
 		}
-		It "Annotations without replies, Force OFF, passing one by one" {
-			$ishAnnotation = @($ishAnnotationIAGpipeline1, $ishAnnotationIAGpipeline2) | Remove-IshAnnotation -IshSession $ishsession
+		It "Annotations without replies, passing one by one" {
+			$ishAnnotation = @($ishAnnotationIAGpipeline2, $ishAnnotationIAGpipeline1) | Remove-IshAnnotation -IshSession $ishsession
 			$ishAnnotation -eq $null | Should Be $true
-            $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationIAGpipeline1.IshRef, $ishAnnotationIAGpipeline2.IshRef)
+            $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationIAGpipeline2.IshRef,  $ishAnnotationIAGpipeline1.IshRef)
             $ishAnnotation.Count | Should Be 0
 		}
-		It "Annotations without replies, Force ON, passing one by one" {
-			$ishAnnotation = @($ishAnnotationIAGpipeline3, $ishAnnotationIAGpipeline4) | Remove-IshAnnotation -IshSession $ishsession -Force
-			$ishAnnotation -eq $null | Should Be $true
-            $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationIAGpipeline3.IshRef,  $ishAnnotationIAGpipeline4.IshRef)
-            $ishAnnotation.Count | Should Be 0
-		}
-		It "Annotations mixed(with and without replies), Force ON, passing whole array" {
-			$ishAnnotation = @($ishAnnotationPipelineMixed, $ishAnnotationPipelineMixedWithReplies) | Remove-IshAnnotation -IshSession $ishsession -Force
+		It "Annotations mixed(with and without replies), passing whole array" {
+			$ishAnnotation = @($ishAnnotationPipelineMixed, $ishAnnotationPipelineMixedWithReplies) | Remove-IshAnnotation -IshSession $ishsession
 			$ishAnnotation -eq $null | Should Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationPipelineMixed.IshRef, $ishAnnotationPipelineMixedWithReplies.IshRef)
             $ishAnnotation.Count | Should Be 0
@@ -192,13 +166,10 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 	Write-Host "Cleaning Test Data and Variables"
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
     try { $publicationOutputs = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
-		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" |
-		  Get-IshFolderContent -IshSession $ishSession
-          $publicationOutputs |
-          Get-IshAnnotation -IshSession $ishSession |
-          Remove-IshAnnotation -IshSession $ishSession -Force
-          $publicationOutputs |
-          Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
+		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" | Get-IshFolderContent -IshSession $ishSession
+		  $publicationOutputs | Get-IshAnnotation -IshSession $ishSession | Remove-IshAnnotation -IshSession $ishSession
+		  $publicationOutputs | Remove-IshPublicationOutput -IshSession $ishSession -Force 
+         } catch { }
     try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
 		  Where-Object -Property IshFolderType -EQ -Value "ISHMasterDoc" |
 		  Get-IshFolderContent -IshSession $ishSession |

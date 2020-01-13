@@ -76,6 +76,27 @@ Describe “Get-IshAnnotation" -Tags "Create" {
                       Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBSOURCELANGUAGES" -Level Version -ValueType Element -Value $ishLng |
                       Set-IshMetadataField -IshSession $ishSession -Name "FISHREQUIREDRESOLUTIONS" -Level Version -ValueType Element -Value $ishResolution
 	$ishObjectPub2 = Add-IshPublicationOutput -IshSession $ishSession -IshFolder $ishFolderPub -Version '1' -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Metadata $ishPubMetadata2
+
+	## Publication 3 (annotation has replies)
+    #add topic
+	$ishTopicMetadata3 = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic 3 $timestamp" |
+						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
+	$ishObjectTopic3 = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata3 -FileContent $ditaTopicFileContent `
+					  | Get-IshDocumentObj -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng)
+	#add map
+	$ditaMap3 = $ditaMapWithTopicrefFileContent.Replace("<GUID-PLACEHOLDER>", $ishObjectTopic3.IshRef)
+	$ishMapMetadata3 = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Map $timestamp" |
+				      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+	                  Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
+	$ishObjectMap3 = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderMap -IshType ISHMasterDoc -Version '1' -Lng $ishLng -Metadata $ishMapMetadata3 -Edt "EDTXML" -FileContent $ditaMap3
+	
+	#add publication
+    $ishPubMetadata3 = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Pub $timestamp" |
+				      Set-IshMetadataField -IshSession $ishSession -Name "FISHMASTERREF" -Level Version -ValueType Element -Value $ishObjectMap3.IshRef |
+                      Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBSOURCELANGUAGES" -Level Version -ValueType Element -Value $ishLng |
+                      Set-IshMetadataField -IshSession $ishSession -Name "FISHREQUIREDRESOLUTIONS" -Level Version -ValueType Element -Value $ishResolution
+	$ishObjectPub3 = Add-IshPublicationOutput -IshSession $ishSession -IshFolder $ishFolderPub -Version '1' -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Metadata $ishPubMetadata3
 	
     #add annotations
 	$revisionId = $ishObjectTopic.ed
@@ -97,9 +118,18 @@ Describe “Get-IshAnnotation" -Tags "Create" {
 	$metadata =	Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChngText
     $ishAnnotation1P2 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub2.IshRef -PubVersion $ishObjectPub2.version_version_value -PubLng $ishObjectPub2.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic2.IshRef -Version $ishObjectTopic2.version_version_value -Lng $ishObjectTopic2.doclanguage -Type $annotationType -Text $annotationTextCustom1 -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress -Metadata $metadata
 	$ishAnnotation2P2 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub2.IshRef -PubVersion $ishObjectPub2.version_version_value -PubLng $ishObjectPub2.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic2.IshRef -Version $ishObjectTopic2.version_version_value -Lng $ishObjectTopic2.doclanguage -Type $annotationType -Text $annotationTextCustom2 -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress -Metadata $metadata
-    
+
+    # Add annotations with replies - Publication 3
+	$metadata =	Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChngText
+    $ishAnnotation1P3 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub3.IshRef -PubVersion $ishObjectPub3.version_version_value -PubLng $ishObjectPub3.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic3.IshRef -Version $ishObjectTopic3.version_version_value -Lng $ishObjectTopic3.doclanguage -Type $annotationType -Text $annotationTextCustom1 -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress -Metadata $metadata
+	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotation1P3.IshRef)</ishfield></ishfields>"
+	$replyRef1 = $ishsession.Annotation25.CreateReply($ishAnnotation1P3.IshRef, $strMetadataReply)
+	$replyRef2 = $ishsession.Annotation25.CreateReply($ishAnnotation1P3.IshRef, $strMetadataReply)
+	$replyIdsP3 = @($replyRef1, $replyRef2)
+	
     # array with all added annotations
     $annotationIdsP1P2 = @($ishAnnotation1P1.IshRef, $ishAnnotation2P1.IshRef,$ishAnnotation1P2.IshRef, $ishAnnotation2P2.IshRef)
+	$annotationIdsP1P2P3 = @($ishAnnotation1P1.IshRef, $ishAnnotation2P1.IshRef,$ishAnnotation1P2.IshRef, $ishAnnotation2P2.IshRef, $ishAnnotation1P3.IshRef)
 	
     Context "Get-IshAnnotation ParametersGroup" {
 		It "Parameter AnnotationId is an empty array" {
@@ -219,32 +249,37 @@ Describe “Get-IshAnnotation" -Tags "Create" {
             $annotationIdsP1P2 -contains $ishAnnotations[2].IshRef | Should Be $true
             $annotationIdsP1P2 -contains $ishAnnotations[3].IshRef | Should Be $true
         }
+		It "Get for Publication3 where annotation has 2 replies"{
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
+			$ishAnnotations = $ishObjectPub3 | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
+			$ishAnnotations.Count | Should BeExactly 2
+			$replyIdsP3 -contains $ishAnnotations[0].ReplyRef | Should Be $true 
+			$replyIdsP3 -contains $ishAnnotations[1].ReplyRef | Should Be $true 
+		}
     }
-    
-    Context "Get-IshAnnotation IshObjectGroup mixied IshObjects from Get-IshFolderContent" {
-        It "Get Annotations, pipeline all objects" {
-            $ishAnnotations = Get-Ishfolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) -Recurse |
+    Context "Get-IshAnnotation IshObjectGroup mixed IshObjects from Get-IshFolderContent" {
+        It "Get Annotations, pipeline all objects from all folders" {
+            $ishAnnotations = Get-IshFolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) -Recurse |
                               Get-IshFolderContent -IshSession $ishsession |
                               Get-IshAnnotation -IshSession $ishsession
-            $ishAnnotations.Count | Should BeExactly 4
-            $annotationIdsP1P2 -contains $ishAnnotations[0].IshRef | Should Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[1].IshRef | Should Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[2].IshRef | Should Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[3].IshRef | Should Be $true
+            $ishAnnotations.Count | Should BeExactly 6
+			foreach($ishAnnotation in $ishAnnotations)
+			{
+				$annotationIdsP1P2P3 -contains $ishAnnotation.IshRef | Should Be $true
+			}
          }
 
-         It "Get Annotations, pass all objects via parameter" {
+         It "Get-IshAnnotation IshObjectGroup, pass all mixed IshObjects via parameter" {
             $ishObjects = Get-Ishfolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) -Recurse |
                           Get-IshFolderContent -IshSession $ishsession                              
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshObject $ishObjects 
-            $ishAnnotations.Count | Should BeExactly 4
-            $annotationIdsP1P2 -contains $ishAnnotations[0].IshRef | Should Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[1].IshRef | Should Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[2].IshRef | Should Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[3].IshRef | Should Be $true
+            $ishAnnotations.Count | Should BeExactly 6
+			foreach($ishAnnotation in $ishAnnotations)
+			{
+				$annotationIdsP1P2P3 -contains $ishAnnotation.IshRef | Should Be $true
+			}
         }
     }
-
     Context "Get-IshAnnotation IshAnnotationGroup" {
         It "Get array of IshAnnotation without RequestedMetadata" {
 			$ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshAnnotation @($ishAnnotation1P1, $ishAnnotation2P1)
@@ -297,13 +332,9 @@ Describe “Get-IshAnnotation" -Tags "Create" {
 	Write-Host "Cleaning Test Data and Variables"
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
     try { $publicationOutputs = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
-		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" |
-		  Get-IshFolderContent -IshSession $ishSession
-          $publicationOutputs |
-          Get-IshAnnotation -IshSession $ishSession |
-          Remove-IshAnnotation -IshSession $ishSession -Force
-          $publicationOutputs |
-          Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
+		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" | Get-IshFolderContent -IshSession $ishSession
+          $publicationOutputs | Get-IshAnnotation -IshSession $ishSession | Remove-IshAnnotation -IshSession $ishSession
+          $publicationOutputs | Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
     try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
 		  Where-Object -Property IshFolderType -EQ -Value "ISHMasterDoc" |
 		  Get-IshFolderContent -IshSession $ishSession |

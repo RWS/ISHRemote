@@ -25,15 +25,15 @@ using System.Linq;
 namespace Trisoft.ISHRemote.Cmdlets.Annotation
 {
     /// <summary>
-    /// <para type="synopsis">The Remove-IshAnnotation cmdlet removes annotation</para>
-    /// <para type="description">The Remove-IshAnnotation cmdlet removes annotation</para>
+    /// <para type="synopsis">The Remove-IshAnnotation cmdlet removes annotation and all of its replies</para>
+    /// <para type="description">The Remove-IshAnnotation cmdlet removes annotation and all of its replies</para>
     /// </summary>
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
     /// Remove-IshAnnotation -IshSession $ishsession -AnnotationId "MYANNOTATIONREF"
     /// </code>
-    /// <para>Remove annotation providing AnnotationId. For the $ishAnnotation variable holding IshAnnotation object, AnnotationId is saved as property $ishAnnotation.IshRef</para>
+    /// <para>Remove annotation providing AnnotationId. For the $ishAnnotation variable holding IshAnnotation object, AnnotationId is stored as property $ishAnnotation.IshRef</para>
     /// </example>
     /// <example>
     /// <code>
@@ -60,20 +60,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
         [ValidateNotNullOrEmpty]
         public string AnnotationId { get; set; }
-
-        /// <summary>
-        /// <para type="description">When the Force switch is set, all annotation replies will be deleted prior to deletion of an annotation(s)</para>
-        /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshAnnotationGroup")]
-        [ValidateNotNullOrEmpty]
-        public SwitchParameter Force { get; set; }
        
         /// <summary>
         /// <para type="description">The IshAnnotation array that needs to be deleted. Pipeline</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshAnnotationGroup")]
-        [ValidateNotNullOrEmpty]
         public IshAnnotation[] IshAnnotation { get; set; }
         
         #region Private fields
@@ -142,9 +133,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                 }
 
                 //2. Delete required annotations
-                //2.1 Check if Force is enabled (so need to delete replies)
-                if (Force)
+                //2.1 Delete replies first
+                if (annotationIdsToDelete.Count > 0)
                 {
+                    // remove duplicates of AnnotationIds (IshRef of IshAnnotation object)
+                    annotationIdsToDelete = annotationIdsToDelete.Distinct().ToList();
+
                     // find replies for the required annotation(s)
                     IshFields requestedMetadata = new IshFields();
                     List<IshObject> ishObjectsList = new List<IshObject>();

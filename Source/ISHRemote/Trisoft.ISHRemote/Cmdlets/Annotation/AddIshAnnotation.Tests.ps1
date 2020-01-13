@@ -664,13 +664,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 	Write-Host "Cleaning Test Data and Variables"
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
     try { $publicationOutputs = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
-		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" |
-		  Get-IshFolderContent -IshSession $ishSession
-          $publicationOutputs |
-          Get-IshAnnotation -IshSession $ishSession |
-          Remove-IshAnnotation -IshSession $ishSession -Force
-          $publicationOutputs |
-          Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
+		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" | Get-IshFolderContent -IshSession $ishSession
+          $publicationOutputs | Get-IshAnnotation -IshSession $ishSession | Remove-IshAnnotation -IshSession $ishSession
+          $publicationOutputs | Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
     try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
 		  Where-Object -Property IshFolderType -EQ -Value "ISHMasterDoc" |
 		  Get-IshFolderContent -IshSession $ishSession |
