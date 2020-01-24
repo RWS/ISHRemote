@@ -91,12 +91,8 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 		It "Parameter AnnotationId is empty" {
 			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId ""} | Should Throw
 		}
-		
 		It "Parameter AnnotationId non-existing Id" {
 			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId "GUID-NON-EXISTING"} | Should Throw
-		}
-		It "Parameter AnnotationId is empty" {
-			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId ""} | Should Throw
 		}
 		It "Annotation with replies" {
 			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPGWithReplies.IshRef
