@@ -23,6 +23,14 @@ $ditaMapFileContent = @"
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map><title>Enter the title of your map here.<?ish-replace-title?></title></map>
 "@
+$ditaMapWithTopicrefFileContent = @"
+<?xml version="1.0" ?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map><title>Enter the title of your map here.<?ish-replace-title?></title>
+<topicref href="<GUID-PLACEHOLDER>"><topicmeta></topicmeta></topicref>
+</map>
+"@
+
 Write-Verbose "Initializing variables for UserName/Password based tests, so ISHSTS-like..."
 $baseUrl = 'https://ish.example.com'
 $webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
