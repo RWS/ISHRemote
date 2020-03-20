@@ -535,7 +535,7 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 
 		
 		$proposedChangeTextUpdated = $proposedChangeText + "updated"
-		$annotationTextUpdated = $annotationText1 + "updated"
+		$annotationTextUpdated = $annotationText + "updated"
 		$ishAnnotation1 = $ishAnnotation1 | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated |
 										    Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
 		$ishAnnotation2 = $ishAnnotation2 | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated |
@@ -612,7 +612,7 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 							-Metadata $metadata
 		
 		$proposedChangeTextUpdated = $proposedChangeText + "updated"
-		$annotationTextUpdated = $annotationText1 + "updated"
+		$annotationTextUpdated = $annotationText + "updated"
 		$ishAnnotation = $ishAnnotation | Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeTextUpdated |
 										  Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
 		
@@ -663,11 +663,12 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 } finally {
 	Write-Host "Cleaning Test Data and Variables"
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
-    try { $publicationOutputs = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
-		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" | Get-IshFolderContent -IshSession $ishSession
-          $publicationOutputs | Get-IshAnnotation -IshSession $ishSession | Remove-IshAnnotation -IshSession $ishSession
-          $publicationOutputs | Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
-    try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
+	$publicationOutputs = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
+                          Where-Object -Property IshFolderType -EQ -Value "ISHPublication" | 
+                          Get-IshFolderContent -IshSession $ishSession
+    try { $publicationOutputs | Get-IshAnnotation -IshSession $ishSession | Remove-IshAnnotation -IshSession $ishSession } catch { }
+	try { $publicationOutputs | Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
+	try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
 		  Where-Object -Property IshFolderType -EQ -Value "ISHMasterDoc" |
 		  Get-IshFolderContent -IshSession $ishSession |
 		  Remove-IshDocumentObj -IshSession $ishSession -Force } catch { }

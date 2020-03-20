@@ -161,11 +161,11 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 } finally {
 	Write-Host "Cleaning Test Data and Variables"
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
-    try { $publicationOutputs = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
-		  Where-Object -Property IshFolderType -EQ -Value "ISHPublication" | Get-IshFolderContent -IshSession $ishSession
-		  $publicationOutputs | Get-IshAnnotation -IshSession $ishSession | Remove-IshAnnotation -IshSession $ishSession
-		  $publicationOutputs | Remove-IshPublicationOutput -IshSession $ishSession -Force 
-         } catch { }
+    $publicationOutputs = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
+                          Where-Object -Property IshFolderType -EQ -Value "ISHPublication" | 
+                          Get-IshFolderContent -IshSession $ishSession
+    try { $publicationOutputs | Get-IshAnnotation -IshSession $ishSession | Remove-IshAnnotation -IshSession $ishSession } catch { }
+	try { $publicationOutputs | Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { }
     try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse |
 		  Where-Object -Property IshFolderType -EQ -Value "ISHMasterDoc" |
 		  Get-IshFolderContent -IshSession $ishSession |
