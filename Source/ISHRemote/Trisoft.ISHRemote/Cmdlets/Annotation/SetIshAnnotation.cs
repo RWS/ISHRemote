@@ -166,7 +166,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                         int current = 0;
                         foreach (IshObject ishObject in _ishAnnotationsToSet)
                         {
-                            WriteDebug($" AnnotationId[{ishObject.IshRef}] Metadata.length[{metadata.ToXml().Length}] RequiredCurrentMetadata.length[{requiredCurrentMetadata.ToXml().Length}] {++current}/{_ishAnnotationsToSet.Count}");
+                            WriteDebug($"AnnotationId[{ishObject.IshRef}] Metadata.length[{metadata.ToXml().Length}] RequiredCurrentMetadata.length[{requiredCurrentMetadata.ToXml().Length}] {++current}/{_ishAnnotationsToSet.Count}");
                             if (ShouldProcess(Convert.ToString(ishObject.IshRef)))
                             {
                                 IshSession.Annotation25.Update(ishObject.IshRef, metadata.ToXml(), requiredCurrentMetadata.ToXml());
@@ -177,7 +177,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                         break;
 
                     case "ParametersGroup":
-                        WriteDebug($" AnnotationId[{AnnotationId}] Metadata.length[{metadata.ToXml().Length}]");
+                        WriteDebug($"AnnotationId[{AnnotationId}] Metadata.length[{metadata.ToXml().Length}]");
                         if (ShouldProcess(AnnotationId))
                         {
                             IshSession.Annotation25.Update(AnnotationId, metadata.ToXml(), requiredCurrentMetadata.ToXml());

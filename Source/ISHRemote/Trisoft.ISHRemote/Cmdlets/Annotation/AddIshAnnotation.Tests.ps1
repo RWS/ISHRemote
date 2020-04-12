@@ -41,13 +41,13 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationText = "by ISHRemote Pester [MetadataGroup] on $timestamp"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
 		$ishAnnotationMetadata = Set-IshMetadataField -Name "FISHREVISIONID" -Level Annotation -Value $revisionId |
 		    Set-IshMetadataField -Name "FISHPUBLOGICALID" -Level Annotation -Value $ishObjectPub.IshRef |
 		    Set-IshMetadataField -Name "FISHPUBVERSION" -Level Annotation -Value $ishObjectPub.version_version_value |
 		    Set-IshMetadataField -Name "FISHPUBLANGUAGE" -Level Annotation -Value $ishObjectPub.fishpubsourcelanguages_version_value |
-		    Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -Value "VANNOTATIONSTATUSUNSHARED" -ValueType Element |
+		    Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -ValueType Element -Value "VANNOTATIONSTATUSUNSHARED" |
 		    Set-IshMetadataField -Name "FISHANNOTATIONADDRESS" -Level Annotation -Value $annotationAddress |
 		    Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationText |
 		    Set-IshMetadataField -Name "FISHANNOTATIONCATEGORY" -Level Annotation -Value $annotationCategory |
@@ -102,9 +102,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationText = "by ISHRemote Pester [ParametersGroup] on $timestamp"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
-		$annotationStatus = "Unshared"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
@@ -160,9 +160,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationText = "by ISHRemote Pester [ParametersGroup] on $timestamp"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
-		$annotationStatus = "Unshared"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		# this should not be overrided
 		$proposedChangeText = "Proposed change in this annotation"
 		
@@ -236,9 +236,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationText = "by ISHRemote Pester [IshObjectGroup] on $timestamp"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
-		$annotationStatus = "Unshared"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
                             -PubLogicalId $ishObjectPub.IshRef `
                             -PubVersion $ishObjectPub.version_version_value `
@@ -305,9 +305,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationText = "by ISHRemote Pester [IshObjectGroup] on $timestamp"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
-		$annotationStatus = "Unshared"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		# this should not be overrided
 		$proposedChangeText = "Proposed change in this annotation"
 		$metadataProvided = Set-IshMetadataField -Name "FISHREVISIONID" -Level Annotation -Value "GUID-123-REVISION-ID" | `
@@ -378,9 +378,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationText = "by ISHRemote Pester [IshObjectGroup] pipeline on $timestamp"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
-		$annotationStatus = "Unshared"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		$ishAnnotation = $ishObjectTopic | Add-IshAnnotation -IshSession $ishsession `
 				                            -PubLogicalId $ishObjectPub.IshRef `
 				                            -PubVersion $ishObjectPub.version_version_value `
@@ -433,9 +433,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 		$annotationText = "by ISHRemote Pester [IshAnnotationGroup] on $timestamp"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
-		$annotationStatus = "Unshared"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		$proposedChangeText = "Proposed change in this annotation"
 		$metadata = Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeText
 		
@@ -504,9 +504,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationText = "by ISHRemote Pester [IshAnnotationGroup] pipeline on $timestamp"
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
-		$annotationStatus = "Unshared"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		$proposedChangeText = "Proposed change in this annotation"
 		$metadata = Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeText
 		$ishAnnotation1 = Add-IshAnnotation -IshSession $ishsession `
@@ -594,9 +594,9 @@ Describe “Add-IshAnnotation" -Tags "Create" {
 		$revisionId = $ishObjectTopic.ed
 		$annotationText = "by ISHRemote Pester [IshAnnotationGroup] pipeline on $timestamp"
 		$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
-		$annotationCategory = "Comment"
-		$annotationType = "General"
-		$annotationStatus = "Unshared"
+		$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		$proposedChangeText = "Proposed change in this annotation"
 		$metadata = Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChangeText
 		$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `

@@ -54,15 +54,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
     /// $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
     /// $ishAnnotations = @($ishDocumentObj1, $ishDocumentObj2) | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
     /// </code>
-    /// <para>Get annotations by providing ISHModule or ISHMasterDoc objects through the pipeline</para>
+    /// <para>Get annotations by providing DocumentObj (like ISHModule, ISHMasterDoc,...) objects through the pipeline</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
-    /// $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
-    /// $ishAnnotations = Get-Ishfolder -IshSession $ishsession -FolderPath "General\Myfolder" -Recurse |
-    ///                   Get-IshFolderContent -IshSession $ishsession |
-    ///                   Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential username
+    /// $requestedMetadata = Set-IshRequestedMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
+    /// $ishAnnotations = Get-Ishfolder -FolderPath "General\Myfolder" -Recurse |
+    ///                   Get-IshFolderContent |
+    ///                   Get-IshAnnotation -RequestedMetadata $requestedMetadata
     /// </code>
     /// <para>Get annotations by piping Get-IshFolderContent output</para>
     /// </example>
@@ -198,13 +198,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                                 ishMetadataFilterFind.AddField(new IshMetadataFilterField(FieldElements.AnnotationPublicationLogicalId, Enumerations.Level.Annotation, Enumerations.FilterOperator.Equal, ishObject.IshRef, Enumerations.ValueType.Element));
                                 string pubVersion = ishObject.IshFields.GetFieldValue(FieldElements.Version, Enumerations.Level.Version, Enumerations.ValueType.Value);
                                 ishMetadataFilterFind.AddField(new IshMetadataFilterField(FieldElements.AnnotationPublicationVersion, Enumerations.Level.Annotation, Enumerations.FilterOperator.Equal, pubVersion, Enumerations.ValueType.Value));
-                                string pubLanguage = ishObject.IshFields.GetFieldValue(FieldElements.PublicationSourceLanguages, Enumerations.Level.Version, Enumerations.ValueType.Value);
-                                ishMetadataFilterFind.AddField(new IshMetadataFilterField("FISHPUBLANGUAGE", Enumerations.Level.Annotation, Enumerations.FilterOperator.Equal, pubLanguage, Enumerations.ValueType.Value));
+                                string pubLanguage = ishObject.IshFields.GetFieldValue(FieldElements.PublicationSourceLanguages, Enumerations.Level.Version, Enumerations.ValueType.Value);  // TODO [Could] PublicationSourceLanguage theoretically is multi-value but passed below with an equal filter operator
+                                ishMetadataFilterFind.AddField(new IshMetadataFilterField(FieldElements.AnnotationPublicationLanguage, Enumerations.Level.Annotation, Enumerations.FilterOperator.Equal, pubLanguage, Enumerations.ValueType.Value));
                                 xmlIshAnnotations = IshSession.Annotation25.Find(ishMetadataFilterFind.ToXml(), "");
                                 foundObjects.AddRange(new IshObjects(ISHType, xmlIshAnnotations).Objects);
                                 break;
                             case Enumerations.ISHType.ISHMasterDoc:
                             case Enumerations.ISHType.ISHModule:
+                            case Enumerations.ISHType.ISHLibrary:
+                            case Enumerations.ISHType.ISHIllustration:
+                            case Enumerations.ISHType.ISHTemplate:
                                 ishMetadataFilterFind = new IshFields();
                                 ishMetadataFilterFind.AddField(new IshMetadataFilterField(FieldElements.AnnotationContentObjectLogicalId, Enumerations.Level.Annotation, Enumerations.FilterOperator.Equal, ishObject.IshRef, Enumerations.ValueType.Element));
                                 string documentVersion = ishObject.IshFields.GetFieldValue(FieldElements.Version, Enumerations.Level.Version, Enumerations.ValueType.Value);
@@ -227,7 +230,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                     annotationIds = AnnotationId.ToList();
                 }
 
-                 if( ParameterSetName == "IshAnnotationGroup")
+                if( ParameterSetName == "IshAnnotationGroup")
                 {
                     annotationIds = _retrievedIshAnnotations.Select(ishAnnotation => Convert.ToString(ishAnnotation.IshRef)).ToList();
                 }

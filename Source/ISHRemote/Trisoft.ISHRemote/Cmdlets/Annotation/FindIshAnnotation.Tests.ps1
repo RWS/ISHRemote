@@ -22,8 +22,8 @@ Describe “Find-IshAnnotation" -Tags "Create" {
 	$ishTopicMetadata1 = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
 						 Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 						 Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-	$ishObjectTopic1 = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata1 -FileContent $ditaTopicFileContent `
-					  | Get-IshDocumentObj -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng)
+	$ishObjectTopic1 = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata1 -FileContent $ditaTopicFileContent |
+	                   Get-IshDocumentObj -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng)
 	#add map
 	$ditaMap1 = $ditaMapWithTopicrefFileContent.Replace("<GUID-PLACEHOLDER>", $ishObjectTopic1.IshRef)
 	$ishMapMetadata1 = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Map $timestamp" |
@@ -43,8 +43,8 @@ Describe “Find-IshAnnotation" -Tags "Create" {
 	$ishTopicMetadata2 = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic 2 $timestamp" |
 						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-	$ishObjectTopic2 = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata2 -FileContent $ditaTopicFileContent `
-					  | Get-IshDocumentObj -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng)
+	$ishObjectTopic2 = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata2 -FileContent $ditaTopicFileContent |
+					   Get-IshDocumentObj -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng)
 	#add map
 	$ditaMap2 = $ditaMapWithTopicrefFileContent.Replace("<GUID-PLACEHOLDER>", $ishObjectTopic2.IshRef)
 	$ishMapMetadata2 = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Map $timestamp" |
@@ -62,9 +62,9 @@ Describe “Find-IshAnnotation" -Tags "Create" {
     #add annotations
 	$revisionId = $ishObjectTopic.ed
 	$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
-	$annotationCategory = "Comment"
-	$annotationType = "General"
-	$annotationStatus = "Unshared"
+	$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+	$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+	$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 	$proposedChngText = "My proposed change text"
 
 	# Add annotations - Publication 1
@@ -79,7 +79,7 @@ Describe “Find-IshAnnotation" -Tags "Create" {
 	$metadata =	Set-IshMetadataField -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation -Value $proposedChngText
     $annotationText = "by ISHRemote Pester on $timestamp"
 	$ishAnnotation1P2 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub2.IshRef -PubVersion $ishObjectPub2.version_version_value -PubLng $ishObjectPub2.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic2.IshRef -Version $ishObjectTopic2.version_version_value -Lng $ishObjectTopic2.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress -Metadata $metadata
-	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotation1P2.IshRef)</ishfield></ishfields>"
+	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotation1P2.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
 	$replyRef1 = $ishsession.Annotation25.CreateReply($ishAnnotation1P2.IshRef, $strMetadataReply)
 	$replyRef2 = $ishsession.Annotation25.CreateReply($ishAnnotation1P2.IshRef, $strMetadataReply)
 	$replyIdsP2 = @($replyRef1, $replyRef2)

@@ -103,9 +103,9 @@ Describe “Get-IshAnnotation" -Tags "Create" {
 	$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
     $annotationTextCustom1 = "by #1 ISHRemote Pester on $timestamp"
     $annotationTextCustom2 = "by #2 ISHRemote Pester on $timestamp"
-	$annotationCategory = "Comment"
-	$annotationType = "General"
-	$annotationStatus = "Unshared"
+    $annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+	$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+	$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 	$proposedChngText = "My proposed change text"
 
 	# Add annotations - Publication 1

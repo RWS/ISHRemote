@@ -41,21 +41,21 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 	$revisionId = $ishObjectTopic.ed
 	$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
 	$annotationText = "by ISHRemote Pester on $timestamp"
-	$annotationCategory = "Comment"
-	$annotationType = "General"
-	$annotationStatus = "Unshared"
+	$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
+	$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
+	$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 	
 	# Add annotations - ParametersGroup
 	$ishAnnotationPG1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationPGWithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationPGWithReplies.IshRef)</ishfield></ishfields>"
+	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationPGWithReplies.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationPGWithReplies.IshRef, $strMetadataReply)
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationPGWithReplies.IshRef, $strMetadataReply)
 	
 	# Add annotations - IshAnnotationGroup
 	$ishAnnotationIAG1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationIAGWithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGWithReplies.IshRef)</ishfield></ishfields>"
+	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGWithReplies.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGWithReplies.IshRef, $strMetadataReply)
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGWithReplies.IshRef, $strMetadataReply)
 	
@@ -63,7 +63,7 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 	$ishAnnotationIAGMixed1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationIAGMixed2 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationIAGMixedWithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGWithReplies.IshRef)</ishfield></ishfields>"
+	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGWithReplies.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
 	$ishsession.Annotation25.CreateReply($ishAnnotationIAGMixedWithReplies.IshRef, $strMetadataReply)
 	$ishsession.Annotation25.CreateReply($ishAnnotationIAGMixedWithReplies.IshRef, $strMetadataReply)
 	
@@ -71,18 +71,18 @@ Describe “Remove-IshAnnotation" -Tags "Create" {
 	$ishAnnotationIAGpipeline2 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationIAGpipeline1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationIAGpipeline1WithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGpipeline1WithReplies.IshRef)</ishfield></ishfields>"
+	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGpipeline1WithReplies.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGpipeline1WithReplies.IshRef, $strMetadataReply)
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGpipeline1WithReplies.IshRef, $strMetadataReply)
 	$ishAnnotationIAGpipeline2WithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGpipeline2WithReplies.IshRef)</ishfield></ishfields>"
+	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGpipeline2WithReplies.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGpipeline2WithReplies.IshRef, $strMetadataReply)
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGpipeline2WithReplies.IshRef, $strMetadataReply)
 	
 	# annotations for mixed test (with and without replies)
 	$ishAnnotationPipelineMixed = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 	$ishAnnotationPipelineMixedWithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
-	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGpipeline2WithReplies.IshRef)</ishfield></ishfields>"
+	$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationIAGpipeline2WithReplies.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationPipelineMixedWithReplies.IshRef, $strMetadataReply)
 	$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationPipelineMixedWithReplies.IshRef, $strMetadataReply)
 	

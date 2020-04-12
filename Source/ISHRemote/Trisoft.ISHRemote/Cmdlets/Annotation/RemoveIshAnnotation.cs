@@ -37,8 +37,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
-    /// $ishAnnotations | Remove-IshAnnotation -IshSession $ishsession
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential username
+    /// $ishAnnotations | Remove-IshAnnotation
     /// </code>
     /// <para>Remove annotations passing IshAnnotation array(or a single object) through the pipeline</para>
     /// </example>

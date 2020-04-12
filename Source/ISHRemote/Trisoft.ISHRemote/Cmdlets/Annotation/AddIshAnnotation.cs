@@ -320,8 +320,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                     metadata.AddOrUpdateField(new IshMetadataField(FieldElements.AnnotationStatus, Enumerations.Level.Annotation, Status), Enumerations.ActionMode.Update);
                     metadata.AddOrUpdateField(new IshMetadataField(FieldElements.AnnotationAddress, Enumerations.Level.Annotation, Address), Enumerations.ActionMode.Update);
                     metadata.AddOrUpdateField(new IshMetadataField(FieldElements.AnnotationCategory, Enumerations.Level.Annotation, Category), Enumerations.ActionMode.Update);
-                    metadata.AddOrUpdateField(new IshMetadataField("FISHPUBLANGUAGE", Enumerations.Level.Annotation, PubLng), Enumerations.ActionMode.Update);
-
+                    metadata.AddOrUpdateField(new IshMetadataField(FieldElements.AnnotationPublicationLanguage, Enumerations.Level.Annotation, PubLng), Enumerations.ActionMode.Update);
                     metadata = IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, metadata, Enumerations.ActionMode.Create);
 
                     if (ShouldProcess("AnnotationAddress: '" +

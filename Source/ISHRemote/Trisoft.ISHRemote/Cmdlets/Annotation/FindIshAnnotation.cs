@@ -29,6 +29,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
     /// </summary>
     /// <example>
     /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential username
+    /// $ishAnnotations = Find-IshAnnotation
+    /// </code>
+    /// <para>Find all annotations, beware that large results could be requested here</para>
+    /// </example>
+    /// <example>
+    /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
     /// $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTATIONREPLIES" -Level Annotation
     /// $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator Like -Value "Test%"

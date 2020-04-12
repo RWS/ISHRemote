@@ -923,6 +923,11 @@ namespace Trisoft.ISHRemote.Objects
         /// </summary>
         public const string AnnotationPublicationVersion = "FISHPUBVERSION";
         /// <summary>
+        /// The element of the Field FISHPUBLANGUAGE.
+        /// The publication language indicates the (working) language of the publication for which the annotation applies.
+        /// </summary>
+        public const string AnnotationPublicationLanguage = "FISHPUBLANGUAGE";
+        /// <summary>
         /// The element of the Field FISHANNOTATIONTYPE.
         /// The type of annotation.
         /// </summary>
