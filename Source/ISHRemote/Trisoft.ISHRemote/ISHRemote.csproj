@@ -147,6 +147,8 @@
     <None Include="Cmdlets\Annotation\GetIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\Annotation\RemoveIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\Annotation\SetIshAnnotation.Tests.ps1" />
+    <None Include="Cmdlets\ListOfValues\AddIshLovValue.Tests.ps1" />
+    <None Include="Cmdlets\ListOfValues\GetIshLovValue.Tests.ps1" />
     <None Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.Tests.ps1" />
     <Compile Include="Cmdlets\PublicationOutput\FindIshPublicationOutput.cs" />
     <Compile Include="Cmdlets\PublicationOutput\PublicationOutputCmdlet.cs">
@@ -836,7 +838,6 @@
     <None Include="Cmdlets\Folder\GetIshFolderContent.Tests.ps1" />
     <None Include="Cmdlets\Folder\GetIshFolderLocation.Tests.ps1" />
     <None Include="Cmdlets\Folder\SetIshFolder.Tests.ps1" />
-    <None Include="Cmdlets\ListOfValues\AddIshLovValue.Tests.ps1" />
     <None Include="Cmdlets\PublicationOutput\GetPublicationOutputFolderLocation.Tests.ps1" />
     <None Include="Cmdlets\Session\NewIshSession.Tests.ps1" />
     <None Include="Cmdlets\Settings\GetIshSetting.Tests.ps1" />
