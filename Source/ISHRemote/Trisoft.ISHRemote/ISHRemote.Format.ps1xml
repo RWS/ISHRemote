@@ -1278,20 +1278,20 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>lovid</Label>
+            <Label>LovId</Label>
             <Width>17</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>ishref</Label>
+            <Label>IshRef</Label>
             <Width>29</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>active</Label>
-            <Width>5</Width>
+            <Label>Label</Label>
+            <Width>29</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>label</Label>
-            <Width>29</Width>
+            <Label>Active</Label>
+            <Width>6</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -1304,10 +1304,10 @@
                 <PropertyName>IshRef</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Active</PropertyName>
+                <PropertyName>Label</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Label</PropertyName>
+                <PropertyName>ActiveAsString</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

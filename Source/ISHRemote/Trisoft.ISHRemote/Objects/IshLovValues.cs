@@ -29,7 +29,8 @@ namespace Trisoft.ISHRemote.Objects
     /// </summary>
     internal class IshLovValues
     {
-        private List<IshLovValue> _lovValues;
+        private Dictionary<string, IshLovValue> _lovValues;
+        private const string keySeparator = "===";
 
         /// <summary>
         /// Creates a new instance of the <see cref="IshLovValues"/> class.
@@ -39,13 +40,14 @@ namespace Trisoft.ISHRemote.Objects
         {
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xmlIshLovValues);
-            _lovValues = new List<IshLovValue>();
+            _lovValues = new Dictionary<string, IshLovValue>();
             foreach (XmlNode ishLov in xmlDocument.SelectNodes("ishlovs/ishlov"))
             {
                 string lovId = ishLov.Attributes["ishref"].Value;
-                foreach (XmlNode ishLovValue in ishLov.SelectNodes("./ishlovvalues/ishlovvalue"))
+                foreach (XmlNode xmlIshLovValue in ishLov.SelectNodes("./ishlovvalues/ishlovvalue"))
                 {
-                    _lovValues.Add(new IshLovValue(lovId, (XmlElement)ishLovValue));
+                    var ishLovValue = new IshLovValue(lovId, (XmlElement)xmlIshLovValue);
+                    _lovValues.Add((lovId + keySeparator + ishLovValue.IshRef), ishLovValue);
                 }
             }
         }
@@ -56,7 +58,28 @@ namespace Trisoft.ISHRemote.Objects
         /// <param name="ishLovValues">An <see cref="IshLovValue"/> array.</param>
         public IshLovValues(IshLovValue[] ishLovValues)
         {
-             _lovValues = new List<IshLovValue>(ishLovValues ?? new IshLovValue[0]);
+            _lovValues = new Dictionary<string, IshLovValue>();
+            foreach (IshLovValue ishLovValue in ishLovValues)
+            {
+                _lovValues.Add((ishLovValue.LovId + keySeparator + ishLovValue.IshRef), ishLovValue);
+            }
+            //TODO [COULD] Earlier List<> implementation initialized by:  _lovValues = new List<IshLovValue>(ishLovValues ?? new IshLovValue[0]);
+        }
+
+        /// <summary>
+        /// Returns the IshLovValue identified by LovId and LovValueId
+        /// </summary>
+        /// <param name="lovId">List of Value identifier like 'DRESOLUTION'</param>
+        /// <param name="lovValueId">List of Value Value identifier, aka IshRef, like 'VRESHIGH'</param>
+        /// <param name="ishLovValue">The complete initialized object including label and active flag</param>
+        /// <returns></returns>
+        public bool TryGetIshLovValue(string lovId, string lovValueId, out IshLovValue ishLovValue)
+        {
+            if (_lovValues.TryGetValue(lovId + keySeparator + lovValueId, out ishLovValue))
+            {
+                return true;
+            }
+            return false;
         }
         
         /// <summary>
@@ -64,7 +87,7 @@ namespace Trisoft.ISHRemote.Objects
         /// </summary>
         public IshLovValue[] LovValues
         {
-            get { return _lovValues.ToArray(); }
+            get { return _lovValues.Values.ToArray(); }
         }
 
         /// <summary>
