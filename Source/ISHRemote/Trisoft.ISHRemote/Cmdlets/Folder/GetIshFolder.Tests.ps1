@@ -175,6 +175,12 @@ Describe “Get-IshFolder" -Tags "Read" {
 		It "Get-IshFolder ishFolderCmdlet Traversal 'aLL'" {
 			Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -IshField((Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -Recurse)[7].IshField) | Should MatchExactly "aLL yOUR bASE bELONG tO uS!"
 		}
+		It "Get-IshFolder ishFolderCmdlet FolderTypeFilter" {
+			(Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -Recurse).Count | Should Be 8
+			(Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -Recurse -FolderTypeFilter ISHModule).Count | Should Be 7
+			(Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -Recurse -FolderTypeFilter ('ISHModule','ISHMasterDoc')).Count | Should Be 7
+			(Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -Recurse -FolderTypeFilter ('ISHMasterDoc','ISHLibrary')).Count | Should Be 0
+		}
 	}
 
 	Context "Get-IshFolder System Recurse Pipeline" {

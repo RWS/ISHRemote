@@ -135,6 +135,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             set { _maxDepth = value; }
         }
 
+        /// <summary>
+        /// <para type="description">Recursive retrieval will loop all folder, this filter will only return folder matching the filter to the pipeline</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup")]
+        public Enumerations.IshFolderType[] FolderTypeFilter { get; set; }
+
         #region Private fields 
         /// <summary>
         /// Initially holds incoming IshObject entries from the pipeline to correct the incorrect array-objects from Trisoft.Automation
@@ -318,7 +327,19 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             // put them on the pipeline depth-first-traversel
             string folderName = ishFolder.IshFields.GetFieldValue("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
             WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
-            WriteObject(IshSession, ISHType, ishFolder, true);
+
+            // only return IshFolder objects to the pipeline if the filter is either not set, or the current filter passes the filter criteria
+            if (FolderTypeFilter != null && FolderTypeFilter.Length > 0)
+            {
+                if (FolderTypeFilter.Contains<Enumerations.IshFolderType>(ishFolder.IshFolderType))
+                {
+                    WriteObject(IshSession, ISHType, ishFolder, true);
+                }
+            }
+            else
+            {
+                WriteObject(IshSession, ISHType, ishFolder, true);
+            }
 
             if (currentDepth < (maxDepth - 1))
             {
