@@ -19,13 +19,13 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 
 	$ishFolderCmdlet = Add-IshFolder -IShSession $ishSession -ParentFolderId $folderIdTestRootOriginal -FolderType $folderTypeTestRootOriginal -FolderName $cmdletName -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
 	$ishFolderTopic = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHModule -FolderName "Topic" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-	$count = 3
-	for($current=1;$current -le $count;$current++)
+	$ishTopicCount = 3
+	for($current=1;$current -le $ishTopicCount;$current++)
 	{
 		$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $current" |
 						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value "VUSERADMIN" |
 						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value "VSTATUSDRAFT"
-		Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng VLANGUAGEEN -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+		Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 	}
 
 	Context “Get-IshFolderContent ParameterGroup" {
@@ -107,7 +107,7 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		}
 		It "Parameter FolderPath Topic" {
 			$folderPath = Get-IshFolderLocation -IshSession $ishSession -IshFolder $ishFolderTopic
-			(Get-IshFolderContent -IshSession $ishSession -FolderPath $folderPath).Count | Should Be $count
+			(Get-IshFolderContent -IshSession $ishSession -FolderPath $folderPath).Count | Should Be $ishTopicCount
 		}
 	}
 
@@ -156,6 +156,20 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 			$ishObjects = @($ishFolderData,$ishFolderSystem) | Get-IshFolderContent -IshSession $ishSession
 			$ishObjects.Count -eq 0| Should Be $true
 		}
+	}
+
+	Context “Get-IshFolderContent IshFoldersGroup using VersionFilter and LanguagesFilter" {
+		$ishDocumentObjsVersionOne = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -VersionFilter 1 -LanguagesFilter ($ishLng,'VLANGUAGEES')
+		$ishDocumentObjsVersionLatest = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -VersionFilter LATEST -LanguagesFilter ($ishLng,'VLANGUAGEES')
+		$ishDocumentObjsAllLanguages = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic 
+		$ishDocumentObjsExplicitLanguage = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng
+		It "Parameter VersionFilter" {
+			$ishDocumentObjsVersionOne.Count -eq $ishDocumentObjsVersionLatest.Count | Should Be $true
+		}
+		It "Parameter LanguagesFilter" {
+			$ishDocumentObjsAllLanguages.Count -eq $ishDocumentObjsExplicitLanguage.Count | Should Be $true
+		}
+
 	}
 }
 
