@@ -44,6 +44,24 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieve contents of a given folder</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $metadataFilter = Set-IshMetadataFilterField -Level Lng -Name FSTATUS -ValueType Element -FilterOperator In -Value 'VSTATUSTOBETRANSLATED, VSTATUSINTRANSLATION' |
+    ///                   Set-IshMetadataFilterField -Level Lng -Name FSOURCELANGUAGE -FilterOperator NotEmpty
+    /// Get-IshFolder -FolderPath "\General\Mobile Phones Demo" -Recurse | 
+    /// Get-IshFolderContent -MetadataFilter $metadataFilter
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. The metadata filter will filter out target languages/stubs in a certain status (in this example probably the ones holding deprecated pretranslation). The recursive folder allows you to control which area you do a check/conversion in, and give you progress as well.</para>
+    /// </example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $metadataFilter = Set-IshMetadataFilterField -Level Lng -Name FSOURCELANGUAGE -FilterOperator Empty
+    /// Get-IshFolder -FolderPath "\General\Mobile Phones Demo" -Recurse | 
+    /// Get-IshFolderContent -VersionFilter LATEST -MetadataFilter $metadataFilter
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. The metadata filter will filter out source languages/stubs and the VersionFilter will only return latest versions of any object. The recursive folder allows you to control which area you do a check/conversion in, and give you progress as well.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshFolderContent", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class GetIshFolderContent : FolderCmdlet
@@ -111,6 +129,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             get { return _languagesFilter; }
             set { _languagesFilter = value; }
         }
+
+        /// <summary>
+        /// <para type="description">The metadata filter with the filter fields to limit the amount of objects returned</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
+        [ValidateNotNull]
+        public IshField[] MetadataFilter { get; set; }
 
 
 
@@ -203,7 +231,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 
                     if (ishObjects.Ids.Length > 0)
                     {
-                        WriteDebug("Retrieving Ids.Length["+ishObjects.Ids.Length+"]");
+                        WriteDebug("Retrieving LogicalIds.Length["+ishObjects.Ids.Length+"]");
                         // First handle all documents/illustrations
                         var documentLogicalIds = ishObjects.Objects
                                     .Where(ishObject => ishObject.IshType != Enumerations.ISHType.ISHPublication)
@@ -216,12 +244,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
                             xmlIshObjects = IshSession.DocumentObj25.RetrieveVersionMetadata(documentLogicalIds.ToArray(), VersionFilter, "");
                             var documentIshObjects = new IshObjects(xmlIshObjects);
-                            WriteDebug($"Filtering DocumentObj using MetadataFilter");
+                            IshFields metadataFilterFields = new IshFields(MetadataFilter);
+                            WriteDebug($"Filtering DocumentObj using MetadataFilter.length[{metadataFilterFields.ToXml().Length}]");
                             if (documentIshObjects.Objects.Length > 0)
                             {
-                                var metadataFilterFields = new IshFields();
                                 if (LanguagesFilter != null && LanguagesFilter.Length > 0)
                                 {
+                                    WriteVerbose($"Filtering PublicationOutput using MetadataFilter.length[{metadataFilterFields.ToXml().Length}] and LanguagesFilter.Length[{LanguagesFilter.Length}]");
                                     if (LanguagesFilter[0].StartsWith("VLANGUAGE"))
                                     {
                                         metadataFilterFields.AddField(new IshMetadataFilterField("DOC-LANGUAGE", Enumerations.Level.Lng,
@@ -231,10 +260,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     }
                                     else
                                     { 
-                                    metadataFilterFields.AddField(new IshMetadataFilterField("DOC-LANGUAGE", Enumerations.Level.Lng,
-                                        Enumerations.FilterOperator.In,
-                                        String.Join(IshSession.Separator, LanguagesFilter),
-                                        Enumerations.ValueType.Value));
+                                        metadataFilterFields.AddField(new IshMetadataFilterField("DOC-LANGUAGE", Enumerations.Level.Lng,
+                                            Enumerations.FilterOperator.In,
+                                            String.Join(IshSession.Separator, LanguagesFilter),
+                                            Enumerations.ValueType.Value));
                                     }
                                 }
                                 var versionRefs = documentIshObjects.Objects
@@ -262,23 +291,27 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
                             xmlIshObjects = IshSession.PublicationOutput25.RetrieveVersionMetadata(publicationLogicalIds.ToArray(), VersionFilter, "");
                             var publicationIshObjects = new IshObjects(xmlIshObjects);
-                            WriteDebug($"Filtering PublicationOutput using MetadataFilter");
+                            IshFields metadataFilterFields = new IshFields(MetadataFilter);
+                            WriteDebug($"Filtering PublicationOutput using MetadataFilter.length[{metadataFilterFields.ToXml().Length}]");
                             if (publicationIshObjects.Objects.Length > 0)
                             {
-                                var metadataFilterFields = new IshFields();
-                                if (LanguagesFilter[0].StartsWith("VLANGUAGE"))
+                                if (LanguagesFilter != null && LanguagesFilter.Length > 0)
                                 {
-                                    metadataFilterFields.AddField(new IshMetadataFilterField("DOC-LANGUAGE", Enumerations.Level.Lng,
-                                        Enumerations.FilterOperator.In,
-                                        String.Join(IshSession.Separator, LanguagesFilter),
-                                        Enumerations.ValueType.Element));
-                                }
-                                else
-                                {
-                                    metadataFilterFields.AddField(new IshMetadataFilterField("DOC-LANGUAGE", Enumerations.Level.Lng,
-                                        Enumerations.FilterOperator.In,
-                                        String.Join(IshSession.Separator, LanguagesFilter),
-                                        Enumerations.ValueType.Value));
+                                    WriteVerbose($"Filtering PublicationOutput using MetadataFilter.length[{metadataFilterFields.ToXml().Length}] and LanguagesFilter.Length[{LanguagesFilter.Length}]");
+                                    if (LanguagesFilter[0].StartsWith("VLANGUAGE"))
+                                    {
+                                        metadataFilterFields.AddField(new IshMetadataFilterField("DOC-LANGUAGE", Enumerations.Level.Lng,
+                                            Enumerations.FilterOperator.In,
+                                            String.Join(IshSession.Separator, LanguagesFilter),
+                                            Enumerations.ValueType.Element));
+                                    }
+                                    else
+                                    {
+                                        metadataFilterFields.AddField(new IshMetadataFilterField("DOC-LANGUAGE", Enumerations.Level.Lng,
+                                            Enumerations.FilterOperator.In,
+                                            String.Join(IshSession.Separator, LanguagesFilter),
+                                            Enumerations.ValueType.Value));
+                                    }
                                 }
                                 var versionRefs = publicationIshObjects.Objects
                                     .Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Version]))

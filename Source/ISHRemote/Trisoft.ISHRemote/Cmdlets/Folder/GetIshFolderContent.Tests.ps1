@@ -23,8 +23,8 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 	for($current=1;$current -le $ishTopicCount;$current++)
 	{
 		$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $current" |
-						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value "VUSERADMIN" |
-						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value "VSTATUSDRAFT"
+						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 		Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 	}
 
@@ -158,18 +158,41 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		}
 	}
 
-	Context “Get-IshFolderContent IshFoldersGroup using VersionFilter and LanguagesFilter" {
+	Context “Get-IshFolderContent IshFoldersGroup mixing MetadataFilter and VersionFilter/LanguagesFilter" {
 		$ishDocumentObjsVersionOne = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -VersionFilter 1 -LanguagesFilter ($ishLng,'VLANGUAGEES')
 		$ishDocumentObjsVersionLatest = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -VersionFilter LATEST -LanguagesFilter ($ishLng,'VLANGUAGEES')
 		$ishDocumentObjsAllLanguages = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic 
 		$ishDocumentObjsExplicitLanguage = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng
+		$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Level Lng -Name FSTATUS -ValueType Element -FilterOperator Equal -Value $ishStatusDraft
+		$ishDocumentObjsExplicitLanguageAndStatus = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng -MetadataFilter $metadataFilter
+		$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Level Lng -Name FSTATUS -ValueType Element -FilterOperator NotEqual -Value $ishStatusDraft
+		$ishDocumentObjsExplicitLanguageAndWrongStatus = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng -MetadataFilter $metadataFilter
+		$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Level Lng -Name DOC-LANGUAGE -ValueType Element -FilterOperator In -Value $ishLng
+		$ishDocumentObjsExplicitLanguageAndLanguage = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng -MetadataFilter $metadataFilter
+		$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Level Lng -Name DOC-LANGUAGE -ValueType Element -FilterOperator NotEqual -Value $ishLng
+		$ishDocumentObjsExplicitLanguageAndWrongLanguage = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng -MetadataFilter $metadataFilter
 		It "Parameter VersionFilter" {
+			$ishDocumentObjsVersionOne.Count | Should Be $ishTopicCount
+			$ishDocumentObjsVersionLatest.Count | Should Be $ishTopicCount
 			$ishDocumentObjsVersionOne.Count -eq $ishDocumentObjsVersionLatest.Count | Should Be $true
 		}
 		It "Parameter LanguagesFilter" {
+			$ishDocumentObjsAllLanguages.Count | Should Be $ishTopicCount
+			$ishDocumentObjsExplicitLanguage.Count | Should Be $ishTopicCount
 			$ishDocumentObjsAllLanguages.Count -eq $ishDocumentObjsExplicitLanguage.Count | Should Be $true
 		}
-
+		It "Parameter LanguagesFilter and matching status MetadataFilter" {
+			$ishDocumentObjsExplicitLanguageAndStatus.Count -eq $ishDocumentObjsExplicitLanguage.Count | Should Be $true
+		}
+		It "Parameter LanguagesFilter and non-matching status MetadataFilter" {
+			$ishDocumentObjsExplicitLanguageAndWrong.Count | Should Be 0
+		}
+		It "Parameter LanguagesFilter and matching language MetadataFilter" {
+			$ishDocumentObjsExplicitLanguageAndLanguage.Count | Should Be $ishTopicCount
+		}
+		It "Parameter LanguagesFilter and non-matching language MetadataFilter" {
+			$ishDocumentObjsExplicitLanguageAndWrongLanguage.Count | Should Be 0
+		}
 	}
 }
 
