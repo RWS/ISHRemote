@@ -170,7 +170,7 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Level Lng -Name DOC-LANGUAGE -ValueType Element -FilterOperator In -Value $ishLng
 		$ishDocumentObjsExplicitLanguageAndLanguage = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng -MetadataFilter $metadataFilter
 		$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Level Lng -Name DOC-LANGUAGE -ValueType Element -FilterOperator NotEqual -Value $ishLng
-		$ishDocumentObjsExplicitLanguageAndWrongLanguage = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng -MetadataFilter $metadataFilter
+		$ishDocumentObjsLanguageFilterOverridesMetadatafilter = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng -MetadataFilter $metadataFilter
 		It "Parameter VersionFilter" {
 			$ishDocumentObjsVersionOne.Count | Should Be $ishTopicCount
 			$ishDocumentObjsVersionLatest.Count | Should Be $ishTopicCount
@@ -190,9 +190,55 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		It "Parameter LanguagesFilter and matching language MetadataFilter" {
 			$ishDocumentObjsExplicitLanguageAndLanguage.Count | Should Be $ishTopicCount
 		}
-		It "Parameter LanguagesFilter and non-matching language MetadataFilter" {
-			$ishDocumentObjsExplicitLanguageAndWrongLanguage.Count | Should Be 0
+		It "Parameter LanguagesFilter overrides MetadataFilter (non-matching language filter)" {
+			$ishDocumentObjsLanguageFilterOverridesMetadatafilter.Count | Should Be 3
 		}
+	}
+	Context "Get-IshFolderContent use LanguagesFilter" {
+		It "LanguagesFilter on 'en' language" {
+			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter "en"
+			$ishObjects.Count | Should Be $ishTopicCount
+		}
+		It "LanguagesFilter on 'de, en' languages" {
+			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter @("de", "en")
+			$ishObjects.Count | Should Be $ishTopicCount
+		}
+		It "LanguagesFilter on 'aa' language (filtering out results)" {
+			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter @("aa")
+			$ishObjects.Count | Should Be 0
+		}
+		It "LanguagesFilter overrides MetadataFilter" {
+			$metadataFilter = Set-IshMetadataFilterField -Name "DOC-LANGUAGE" -Level Lng -Value "aa" -ValueType Value
+			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter -LanguagesFilter @("de", "en")
+			$ishObjects.Count | Should Be $ishTopicCount
+		}
+	}
+	
+	Context "Get-IshFolderContent use MetadataFilter" {
+		It "Metadata filter on FSTATUS" {
+			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value "Draft" -ValueType Value
+			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
+			$ishObjects.Count | Should Be $ishTopicCount
+		}
+		
+		It "Metadata filter on FSTATUS (filtering out results)" {
+			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value "In Translation" -ValueType Value
+			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
+			$ishObjects.Count | Should Be 0
+		}
+		
+		It "Metadata filter on FSTATUS,DOC-LANGUAGE" {
+			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value "Draft" -ValueType Value |
+							  Set-IshMetadataFilterField -Name "DOC-LANGUAGE" -Level Lng -Value "en" -ValueType Value
+			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
+			$ishObjects.Count | Should Be $ishTopicCount
+		}
+		It "Metadata filter on (FSTATUS, DOC-LANGUAGE) with LanguagesFilter override" {
+			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value "Draft" -ValueType Value |
+							  Set-IshMetadataFilterField -Name "DOC-LANGUAGE" -Level Lng -Value "en" -ValueType Value
+			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter -LanguagesFilter @("de", "aa")
+			$ishObjects.Count | Should Be 0
+		}		
 	}
 }
 
