@@ -58,7 +58,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// $requestedMetadata = Set-IshMetadataFilterField -Name "FNAME" -Level "None"
     /// $folderId = 7598 # provide a real folder identifier
     /// $ishFolder = Get-IshFolder -FolderId $folderId -RequestedMetaData $requestedMetadata
-    /// $retrievedFolderName = Get-IshMetadataField -IshField $ishFolder.IshField -Name "FNAME" -Level None -ValueType Value
+    /// $retrievedFolderName = $ishFolder.name
     /// </code>
     /// <para>Get folder name using Id with explicit requested metadata</para>
     /// </example>
@@ -358,14 +358,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             string folderName = ishFolder.IshFields.GetFieldValue("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
 
             // only return IshFolder objects to the pipeline if the filter is either not set, or the current filter passes the filter criteria
-            if ((FolderTypeFilter == null) || ((FolderTypeFilter != null) && FolderTypeFilter.Contains<Enumerations.IshFolderType>(ishFolder.IshFolderType)))
+            if (FolderTypeFilter != null && FolderTypeFilter.Length > 0)
             {
-                WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
-                WriteObject(IshSession, ISHType, ishFolder, true);
+                if (FolderTypeFilter.Contains<Enumerations.IshFolderType>(ishFolder.IshFolderType))
+                {
+                    WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
+                    WriteObject(IshSession, ISHType, ishFolder, true);
+                }
+                else
+                {
+                    WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator + " skipped");
+                }
             }
             else
             {
-                WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator + " skipped");
+                WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
+                WriteObject(IshSession, ISHType, ishFolder, true);
             }
 
             if (currentDepth < (maxDepth - 1))
