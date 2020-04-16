@@ -727,6 +727,7 @@
     <None Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\xsd\xnalDomain.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Samples\Sample.Automate.LegacyCorrection.ps1" />
     <None Include="Scripts\Private\Get-IshAuxSessionState.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
