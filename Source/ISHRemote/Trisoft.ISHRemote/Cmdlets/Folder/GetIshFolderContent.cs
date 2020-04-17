@@ -308,45 +308,54 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             WriteDebug($"Filtering PublicationOutput using VersionFilter[{VersionFilter}]");
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHPublication };
                             IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
-                            xmlIshObjects = IshSession.PublicationOutput25.RetrieveVersionMetadata(publicationLogicalIds.ToArray(), VersionFilter, "");
-                            var publicationIshObjects = new IshObjects(xmlIshObjects);
-                            IshFields metadataFilterFields = new IshFields(MetadataFilter);
-                            WriteDebug($"Filtering PublicationOutput using MetadataFilter.length[{metadataFilterFields.ToXml().Length}]");
-                            if (publicationIshObjects.Objects.Length > 0)
+
+                            // Devides the list of LogicalIds in different lists that all have maximally MetadataBatchSize elements
+                            List<List<string>> devidedPublicationLogicalIdsList = DevideListInBatches<string>(publicationLogicalIds, IshSession.MetadataBatchSize);
+                            int currentLogicalIdCount = 0;
+                            foreach (List<string> logicalIdBatch in devidedPublicationLogicalIdsList)
                             {
-                                if (LanguagesFilter != null && LanguagesFilter.Length > 0)
+                                xmlIshObjects = IshSession.PublicationOutput25.RetrieveVersionMetadata(logicalIdBatch.ToArray(), VersionFilter, "");
+                                var publicationIshObjects = new IshObjects(xmlIshObjects);
+                                IshFields metadataFilterFields = new IshFields(MetadataFilter);
+                                
+                                currentLogicalIdCount += logicalIdBatch.Count;
+                                WriteDebug($"Retrieving PublicationOutput.length[{logicalIdBatch.Count}] MetadataFilter.length[{metadataFilterFields.ToXml().Length}] {currentLogicalIdCount}/{publicationLogicalIds.Count}");
+                                if (publicationIshObjects.Objects.Length > 0)
                                 {
-                                    WriteVerbose($"Filtering PublicationOutput using MetadataFilter.length[{metadataFilterFields.ToXml().Length}] and LanguagesFilter.Length[{LanguagesFilter.Length}]");
-                                    if (LanguagesFilter[0].StartsWith("VLANGUAGE"))
+                                    if (LanguagesFilter != null && LanguagesFilter.Length > 0)
                                     {
-                                        metadataFilterFields.AddOrUpdateField(new IshMetadataFilterField(FieldElements.DocumentLanguage,
-                                            Enumerations.Level.Lng,
-                                            Enumerations.FilterOperator.In,
-                                            String.Join(IshSession.Separator, LanguagesFilter),
-                                            Enumerations.ValueType.Element),
-                                            Enumerations.ActionMode.Update);
-                                    }
-                                    else
-                                    {
-                                        metadataFilterFields.AddOrUpdateField(new IshMetadataFilterField(FieldElements.DocumentLanguage,
-                                            Enumerations.Level.Lng,
-                                            Enumerations.FilterOperator.In,
-                                            String.Join(IshSession.Separator, LanguagesFilter),
-                                            Enumerations.ValueType.Value),
-                                            Enumerations.ActionMode.Update);
+                                        WriteVerbose($"Filtering PublicationOutput using MetadataFilter.length[{metadataFilterFields.ToXml().Length}] and LanguagesFilter.Length[{LanguagesFilter.Length}]");
+                                        if (LanguagesFilter[0].StartsWith("VLANGUAGE"))
+                                        {
+                                            metadataFilterFields.AddOrUpdateField(new IshMetadataFilterField(FieldElements.DocumentLanguage,
+                                                Enumerations.Level.Lng,
+                                                Enumerations.FilterOperator.In,
+                                                String.Join(IshSession.Separator, LanguagesFilter),
+                                                Enumerations.ValueType.Element),
+                                                Enumerations.ActionMode.Update);
+                                        }
+                                        else
+                                        {
+                                            metadataFilterFields.AddOrUpdateField(new IshMetadataFilterField(FieldElements.DocumentLanguage,
+                                                Enumerations.Level.Lng,
+                                                Enumerations.FilterOperator.In,
+                                                String.Join(IshSession.Separator, LanguagesFilter),
+                                                Enumerations.ValueType.Value),
+                                                Enumerations.ActionMode.Update);
+
+                                        }
 
                                     }
-
+                                    var versionRefs = publicationIshObjects.Objects
+                                        .Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Version]))
+                                        .ToList();
+                                    xmlIshObjects =
+                                        IshSession.PublicationOutput25.RetrieveMetadataByIshVersionRefs(versionRefs.ToArray(),
+                                            PublicationOutput25ServiceReference.StatusFilter.ISHNoStatusFilter, metadataFilterFields.ToXml(),
+                                            requestedMetadata.ToXml());
+                                    publicationIshObjects = new IshObjects(ISHType, xmlIshObjects);
+                                    returnIshObjects.AddRange(publicationIshObjects.Objects);
                                 }
-                                var versionRefs = publicationIshObjects.Objects
-                                    .Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Version]))
-                                    .ToList();
-                                xmlIshObjects = 
-                                    IshSession.PublicationOutput25.RetrieveMetadataByIshVersionRefs(versionRefs.ToArray(),
-                                        PublicationOutput25ServiceReference.StatusFilter.ISHNoStatusFilter, metadataFilterFields.ToXml(),
-                                        requestedMetadata.ToXml());
-                                publicationIshObjects = new IshObjects(ISHType, xmlIshObjects);
-                                returnIshObjects.AddRange(publicationIshObjects.Objects);
                             }
                         }
                     }
