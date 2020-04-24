@@ -38,7 +38,8 @@ Note that we rely on `Windows PowerShell` (FullCLR), and not `PowerShell Core` (
 ## Install
 Open a PowerShell, then you can find and install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator. The `-Force` will make you bypass some security/trust questions.
 
-		Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
+		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
+        Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
 
 ![ISHRemote-0.7--InstallModuleFromPSGallery 1024x512](./Doc/Images/ISHRemote-0.7--InstallModuleFromPSGallery.gif)
 
@@ -46,6 +47,7 @@ Open a PowerShell, then you can find and install the ISHRemote module. CurrentUs
 
 Open a PowerShell and run.
 
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
         Update-Module ISHRemote
 
  
