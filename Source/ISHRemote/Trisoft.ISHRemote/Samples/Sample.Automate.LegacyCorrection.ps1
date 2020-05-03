@@ -13,7 +13,10 @@
 	-ISHRemote 0.11.0.1 minimal version is required to run this script.
 	
 	-You can re-run the script and avoid processing of the objects that were already processed. For this task it is important 
-		to fill in values in the "User defined variables" section, depending on Tridion Docs server's authentication type.
+		to fill in values in the "User defined variables" section. This example of saving time on re-run is designed to work for InfoshareSTS authentication,
+		for ADFS systems you will need to: 
+		1) Either temporarily change authentication type using ISHDeploy
+		2) Or create a new user and temporarily reassing one of the existing external ids.
 	
 .PARAMETER WsBaseUrl
 	Tridion Docs web services url
@@ -86,7 +89,7 @@ param(
 	}
 }
 
-Function Log-IshDocumentObj{
+Function Log-IshCustomDocumentObj{
 <#
 .DESCRIPTION
 	Log information about the provided ishDocumentObj and action taken on it to the file in the .csv format.
@@ -113,7 +116,6 @@ param(
 		Write-Host "Exception on appending to the log file $logFileFullPath"
         Write-Host $_.Exception.Message
 	}
-
 }
 
 Function Convert-ISHCustomDocumentObj{
@@ -145,17 +147,17 @@ param(
     	{
 			$ishDocumentObjUpdated = $ishDocumentObj | Set-IshDocumentObj -IshSession $ishSession -Confirm:$false
 		}
-		$ishDocumentObjUpdated | Log-IshDocumentObj -actionName $MyInvocation.MyCommand `
-													-logFileFullPath $logFileFullPath												
+		$ishDocumentObjUpdated | Log-IshCustomDocumentObj -actionName $MyInvocation.MyCommand `
+														  -logFileFullPath $logFileFullPath												
 	}
 	catch{
 		Write-Host "Exception"
 	    Write-Host "========="
 	    Write-Host $_.Exception.Message
 	    Write-Host "========="
-		$ishDocumentObj | Log-IshDocumentObj -actionName $MyInvocation.MyCommand `
-											 -logFileFullPath $logFileFullPath `
-											 -exceptionMessage $_.Exception.Message
+		$ishDocumentObj | Log-IshCustomDocumentObj -actionName $MyInvocation.MyCommand `
+												 -logFileFullPath $logFileFullPath `
+												 -exceptionMessage $_.Exception.Message
 	}
 }
 
@@ -168,18 +170,10 @@ $ishSession = New-IshSession -wsBaseUrl $WsBaseUrl -IshUserName $IshUserName -Is
 $folderTypeFilter = @("ISHModule", "ISHMasterDoc", "ISHLibrary")
 $documentObjectStatusFilter = "To be translated"
 
-#[Re-running script]: If using InfoshareSTS authentication fill in dedicated user details
+# For InfoshareSTS authentication create a new internal dedicated user
 $dedicatedIshUserName = "SDLDocsConversionUser"
 $dedicatedIshUserPassword = "SDLDocsConversionUser"
 $dedicatedIshUserRoles = "Reviewer, Author, Translator"
-
-#[Re-running script]: If using ActiveDirectory authentication fill in modified-on filter
-# objects with LastModifiedOn < (Now - $hoursFilter) will be modified
-[int]$hoursFilter = 0
-# define server datetime culture
-$LocaleServer = New-Object System.Globalization.CultureInfo("nl-BE")
-# define datetime
-$dtModifiedOnLessThan = (Get-Date).addHours($hoursFilter).ToString("dd/MM/yyyy HH:mm:ss", $LocaleServer)
 #endregion
 
 #log file location and timestamp
@@ -190,6 +184,7 @@ $logFile = New-Item -Path $logFileFullPath -ItemType File -Force
 
 # Get all folders
 $ishFolders = Get-IshFolder -IshSession $ishSession -BaseFolder Data -Recurse -FolderTypeFilter $folderTypeFilter
+
 if($ishFolders.Count -eq 0)
 {
 	Write-Host "No folders matching filter were found."
@@ -204,29 +199,20 @@ $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name "FSTA
 				  Set-IshMetadataFilterField -IshSession $ishSession -Name "FSOURCELANGUAGE" -Level Lng -ValueType Value -FilterOperator NotEmpty
 
 #region Additional filtering to save time when re-running the script
-#Decide on the additional filtering: LastModifiedOn or LastModifiedBy
-if($IshPassword -eq "")
-{ 
-	# typically means Active Directory authentication, ISHRemote can't login as an internal user
-	# additional filtering on LastModifiedOn
-	$metadataFilter = $metadataFilter | Set-IshMetadataFilterField -IshSession $ishSession -Name "FISHLASTMODIFIEDON" -Level Lng -Value $dtModifiedOnLessThan -FilterOperator LessThan -ValueType Value
-
-}else{
-	# typically means InfoshareSTS authentication, ISHRemote can create user and log in
-	# Create dedicated user
-	$dedicatedIshUser = CreateOrUpdateInternalUser -ishSession $ishSession -userName $dedicatedIshUserName -userPassword $dedicatedIshUserPassword -userRoles $dedicatedIshUserRoles
-	if($dedicatedIshUser -eq $null)
-	{
-		Write-Host "Error on Create/Update of the dedicated SDL Tridion Docs user" 
-		Exit
-	}
-
-	# Create session for the dedicated user
-	$ishSession = New-IshSession -wsBaseUrl $WsBaseUrl -IshUserName $dedicatedIshUserName -IshPassword $dedicatedIshUserPassword -IgnoreSslPolicyErrors
-
-	# additional filtering on LastModifiedBy
-	$metadataFilter = $metadataFilter | Set-IshMetadataFilterField -IshSession $ishSession -Name "FISHLASTMODIFIEDBY" -Level Lng -Value $dedicatedIshUserName -ValueType Value -FilterOperator NotEqual
+# typically means InfoshareSTS authentication, ISHRemote can create user and log in
+# Create dedicated user
+$dedicatedIshUser = CreateOrUpdateInternalUser -ishSession $ishSession -userName $dedicatedIshUserName -userPassword $dedicatedIshUserPassword -userRoles $dedicatedIshUserRoles
+if($dedicatedIshUser -eq $null)
+{
+	Write-Host "Error on Create/Update of the dedicated SDL Tridion Docs user" 
+	Exit
 }
+
+# Create session for the dedicated user
+$ishSession = New-IshSession -wsBaseUrl $WsBaseUrl -IshUserName $dedicatedIshUserName -IshPassword $dedicatedIshUserPassword -IgnoreSslPolicyErrors
+
+# additional filtering on LastModifiedBy
+$metadataFilter = $metadataFilter | Set-IshMetadataFilterField -IshSession $ishSession -Name "FISHLASTMODIFIEDBY" -Level Lng -Value $dedicatedIshUserName -ValueType Value -FilterOperator NotEqual
 #endregion
 
 # Limit the number of objects retrieved per one web service call 
@@ -254,7 +240,6 @@ foreach($ishFolder in $ishFolders)
 		$ishObject | Convert-ISHCustomDocumentObj -ishSession $ishSession -logFileFullPath $logFileFullPath
 		#$ishObject | Convert-ISHCustomDocumentObj -ishSession $ishSession -logFileFullPath $logFileFullPath -WhatIf
 		#$ishObject | Convert-ISHCustomDocumentObj -ishSession $ishSession -logFileFullPath $logFileFullPath -Confirm
-
 	}
 }
 
