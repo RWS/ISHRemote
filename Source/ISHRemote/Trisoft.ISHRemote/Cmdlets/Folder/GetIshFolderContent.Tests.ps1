@@ -22,12 +22,13 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 	$ishTopicCount = 3
 	for($current=1;$current -le $ishTopicCount;$current++)
 	{
+		# Create topic
 		$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $current" |
 						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 		$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
-
-		Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -LogicalId $ishObject.IshRef -Version "2" -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+		# Create extra version
+		Add-IshDocumentObj -IshSession $ishSession -LogicalId $ishObject.IshRef -Version "2" -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 	}
 
 	Context “Get-IshFolderContent ParameterGroup" {
@@ -134,7 +135,7 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 			$ishObjects[0].fstatus.Length -ge 1 | Should Be $true 
 			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
         }
-        It "version_version_value" { 
+        It "ishObjects[0].version_version_value" { 
             # First version
             ($ishobjects | Where-Object version_version_value -eq 1 | Select-Object).Length | Should BeExactly $ishTopicCount 
             # Second version
