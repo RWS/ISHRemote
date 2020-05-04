@@ -119,7 +119,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
-        [ValidateNotNullOrEmpty]
+        [ValidateNotNull]
         public string VersionFilter
         {
             get { return _versionFilter; }
@@ -155,7 +155,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <summary>
         /// Private field to store and provide defaults for non-mandatory parameters
         /// </summary>
-        private string _versionFilter = "";
+        private string _versionFilter = "latest";
         private string[] _languagesFilter = { };
         #endregion
 
