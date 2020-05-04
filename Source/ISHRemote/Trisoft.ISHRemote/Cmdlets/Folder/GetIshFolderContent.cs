@@ -30,11 +30,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// <para type="synopsis">The Get-IshFolderContent cmdlet returns all document objects or publication outputs stored inside a given folder.
     /// You can provide filters to reduce the amount of objects returned, but if you don't provide any:
     /// * The cmdlet will return an object for all the latest versions in all language and resolution for a document object folder
-    /// * The cmdlet will return an object for all the latest versions for all output formats and all language combinations for a publication folder</para>
+    /// * The cmdlet will return an object for all the latest versions for all output formats and all language combinations for a publication folder
+    /// Note: The default value of the VersionFilter is "latest". In order to get all versions, you need to pass an empty string in the VersionFilter.</para>
     /// <para type="description">The Get-IshFolderContent cmdlet returns all document objects or publication outputs stored inside a given folder.
     /// You can provide filters to reduce the amount of objects returned, but if you don't provide any:
     /// * The cmdlet will return an object for all the latest versions in all language and resolution for a document object folder
-    /// * The cmdlet will return an object for all the latest versions for all output formats and all language combinations for a publication folder</para>
+    /// * The cmdlet will return an object for all the latest versions for all output formats and all language combinations for a publication folder.
+    /// Note: The default value of the VersionFilter is "latest". In order to get all versions, you need to pass an empty string in the VersionFilter.</para>
     /// </summary>
     /// <example>
     /// <code>
@@ -66,13 +68,21 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $metadataFilter = Set-IshMetadataFilterField -Level Lng -Name FSOURCELANGUAGE -FilterOperator Empty
+    /// Get-IshFolder -FolderPath "\General\Mobile Phones Demo" -Recurse | 
+    /// Get-IshFolderContent -VersionFilter "" -MetadataFilter $metadataFilter
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. The metadata filter will filter out source languages and the empty VersionFilter will return all versions of any object. The recursive folder allows you to control which area you do a check/conversion in, and give you progress as well.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// $ishSession.MetadataBatchSize = 100
     /// $DebugPreference = "Continue"
     /// Get-IshFolderContent -IshSession $ishSession -FolderPath "General\MyPublication\FolderWithManyTopics"
     /// </code>
-    /// <para>Retrieve content objects in smaller batches to avoid "heavy" WebService calls to the server. The progress could be seen in the debug messages</para>
+    /// <para>Retrieve the latest version of content objects in smaller batches to avoid "heavy" WebService calls to the server. The progress could be seen in the debug messages</para>
     /// </example>
-
     [Cmdlet(VerbsCommon.Get, "IshFolderContent", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class GetIshFolderContent : FolderCmdlet

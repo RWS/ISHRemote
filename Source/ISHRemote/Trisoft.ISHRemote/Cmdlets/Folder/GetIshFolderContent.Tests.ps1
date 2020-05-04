@@ -25,7 +25,9 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $current" |
 						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-		Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+		$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+
+		Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -LogicalId $ishObject.IshRef -Version "2" -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 	}
 
 	Context “Get-IshFolderContent ParameterGroup" {
@@ -34,10 +36,64 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 		}
 	}
 
-	Context "Get-IshFolderContent returns IshObject[] object" {
+	Context "Get-IshFolderContent returns latest IshObject[] object" {
 		$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic
 		It "GetType().Name" {
 			$ishObjects.GetType().Name | Should BeExactly "Object[]"
+		}
+		It "ishObjects.Count" {
+			$ishObjects.Length | Should BeExactly $ishTopicCount  
+		}
+		It "[0]GetType().BaseType.Name" {
+			# Used to be IshObject, but more specific ISHType like IshDocumentObj or IshPublicationOutput is put on the pipeline
+			$ishObjects[0].GetType().Name | Should BeExactly "IshDocumentObj"  
+		}
+		It "ishObjects[0].IshData" {
+			{ $ishObjects[0].IshData } | Should Not Throw
+		}
+		It "ishObjects[0].IshField" {
+			$ishObjects[0].IshField | Should Not BeNullOrEmpty
+		}
+		It "ishObjects[0].IshRef" {
+			$ishObjects[0].IshRef | Should Not BeNullOrEmpty
+		}
+		It "ishObjects[0].IshType" {
+			$ishObjects[0].IshType | Should Not BeNullOrEmpty
+		}
+		# Double check following 3 ReferenceType enum usage 
+		It "ishObjects[0].ObjectRef" {
+			$ishObjects[0].ObjectRef | Should Not BeNullOrEmpty
+		}
+		It "ishObjects[0].VersionRef" {
+			$ishObjects[0].VersionRef | Should Not BeNullOrEmpty
+		}
+		It "ishObjects[0].LngRef" {
+			$ishObjects[0].LngRef | Should Not BeNullOrEmpty
+		}
+		It "ishObjects[0] ConvertTo-Json" {
+			(ConvertTo-Json $ishObjects[0]).Length -gt 2 | Should Be $true
+		}
+		It "Option IshSession.DefaultRequestedMetadata" {
+			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			#logical
+			$ishObjects[0].ftitle_logical_value.Length -ge 1 | Should Be $true 
+			#version
+			$ishObjects[0].version_version_value.Length -ge 1 | Should Be $true 
+			$ishObjects[0].version_version_value -ge 2 | Should Be $true 
+			#language
+			$ishObjects[0].fstatus.Length -ge 1 | Should Be $true 
+			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
+		}
+	}
+
+	Context "Get-IshFolderContent with empty VersionFilter returns IshObject[] object" {
+		$ishObjects = Get-IshFolderContent -IShSession $ishSession -VersionFilter "" -IshFolder $ishFolderTopic
+		It "GetType().Name" {
+			$ishObjects.GetType().Name | Should BeExactly "Object[]"
+		}
+		It "ishObjects.Count" {
+            $totalLngObjects = $ishTopicCount*2
+			$ishObjects.Length | Should BeExactly $totalLngObjects
 		}
 		It "[0]GetType().BaseType.Name" {
 			# Used to be IshObject, but more specific ISHType like IshDocumentObj or IshPublicationOutput is put on the pipeline
@@ -77,6 +133,12 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 			#language
 			$ishObjects[0].fstatus.Length -ge 1 | Should Be $true 
 			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
+        }
+        It "version_version_value" { 
+            # First version
+            ($ishobjects | Where-Object version_version_value -eq 1 | Select-Object).Length | Should BeExactly $ishTopicCount 
+            # Second version
+            ($ishobjects | Where-Object version_version_value -eq 2 | Select-Object).Length | Should BeExactly $ishTopicCount 
 		}
 	}
 
