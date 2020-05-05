@@ -41,6 +41,11 @@ $ishPassword = 'admin'
 Write-Verbose "Initializing variables for System Setup"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed
 $ishLng = 'VLANGUAGEEN'
+$ishLngLabel = 'en'
+$ishLngTarget1 = 'VLANGUAGEES'
+$ishLngTarget1Label = 'es'
+$ishLngTarget2 = 'VLANGUAGEDE'
+$ishLngTarget2Label = 'de'
 $ishResolution = 'VRESLOW'
 $ishStatusDraft = 'VSTATUSDRAFT'
 $ishStatusReleased = 'VSTATUSRELEASED'  # Direct status transition from $ishStatusDraft (D) to $ishStatusReleased (R) is required by the executing user
