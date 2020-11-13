@@ -31,9 +31,16 @@ namespace Trisoft.ISHRemote.Cmdlets.ListOfValues
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
-    /// $lovValues = Get-IshLovValue -IshSession $ishSession -LovId 'DILLUSTRATIONTYPE'
+    /// $lovValues = Get-IshLovValue -IshSession $ishSession -LovId DILLUSTRATIONTYPE
     /// </code>
     /// <para>Retrieve all values from List of Values</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/"  -PSCredential username
+    /// $lovValues = Get-IshLovValue -LovId DILLUSTRATIONTYPE -LovValueId ("VRESHIGH","VRESLOW")
+    /// </code>
+    /// <para>Retrieve the full LovValues including description and active flag</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshLovValue", SupportsShouldProcess = false)]
     [OutputType(typeof(IshLovValue))]
@@ -50,6 +57,12 @@ namespace Trisoft.ISHRemote.Cmdlets.ListOfValues
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
         public string[] LovId { get; set; }
+
+        /// <summary>
+        /// <para type="description">The element name of the value in the List of Values for which to retrieve complete initialized values.</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false), ValidateNotNullOrEmpty]
+        public string[] LovValueId { get; set; }
 
         /// <summary>
         /// <para type="description">The activity filter to limit the amount of objects returned. Default is no filtering.</para>
@@ -103,8 +116,29 @@ namespace Trisoft.ISHRemote.Cmdlets.ListOfValues
                 WriteDebug($"LovId[{LovId}]");
                 string xmlIshLovValues = IshSession.ListOfValues25.RetrieveValues(LovId, activityFilter);
                 IshLovValues retrievedLovValues = new IshLovValues(xmlIshLovValues);
-                returnedLovValues.AddRange(retrievedLovValues.LovValues);
-                
+
+                // 2b. Filter to provided LovValueIds, if any, otherwise return all
+                if (LovValueId != null)
+                {
+                    // brute force, I know, but accurate
+                    foreach (string lovId in LovId)
+                    {
+                        foreach (string lovValueId in LovValueId)
+                        {
+                            IshLovValue foundIshLovValue;
+                            if (retrievedLovValues.TryGetIshLovValue(lovId, lovValueId, out foundIshLovValue))
+                            {
+                                returnedLovValues.Add(foundIshLovValue);
+                            }
+                        }
+                    }
+                    
+                }
+                else
+                { 
+                    returnedLovValues.AddRange(retrievedLovValues.LovValues);
+                }
+
                 // 3a. Write it
                 WriteVerbose("returned value count[" + returnedLovValues.Count + "]");
                 WriteObject(returnedLovValues, true);

@@ -32,9 +32,10 @@ $ditaObfuscatedBookMapWithNavtitleFileContent = @"
 
 try {
 
-Describe “Test-IshValidXml" -Tags "Read" {
+	$tempFolder = [System.IO.Path]::GetTempPath()
+Describe "Test-IshValidXml" -Tags "Read" {
 	Write-Host "Initializing Test Data and Variables"
-	$rootFolder = Join-Path -Path $env:TEMP -ChildPath $cmdletName 
+	$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
 	New-Item -ItemType Directory -Path $rootFolder
 	$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
 	New-Item -ItemType Directory -Path $inputFolder
@@ -96,5 +97,5 @@ Describe “Test-IshValidXml" -Tags "Read" {
 
 } finally {
 	Write-Host "Cleaning Test Data and Variables"
-	try { Remove-Item (Join-Path $env:TEMP $cmdletName) -Recurse -Force } catch { }
+	try { Remove-Item (Join-Path $tempFolder $cmdletName) -Recurse -Force } catch { }
 }

@@ -109,5 +109,18 @@ namespace Trisoft.ISHRemote.Objects.Public
             get { return _active; }
         }
 
+        public string ActiveAsString
+        {
+            get { switch(_active)
+                  { 
+                    case true:
+                        return "Yes";
+                    case false:
+                    default:
+                        return "No";
+                  }
+            }
+        }
+
     }
 }

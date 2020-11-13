@@ -720,6 +720,121 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <!-- Trisoft.ISHRemote.Objects.Public.IshAnnotation -->
+    <View>
+      <Name>IshAnnotation</Name>
+      <ViewSelectedBy>
+        <TypeName>Trisoft.ISHRemote.Objects.Public.IshAnnotation</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>ISHType</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>PubId</Label>
+            <Width>18</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>PubVer</Label>
+            <Width>7</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>PubLng</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ObjId</Label>
+            <Width>18</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ObjVer</Label>
+            <Width>7</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ObjLng</Label>
+            <Width>6</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>User</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Category</Label>
+            <Width>9</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Category</Label>
+            <Width>9</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Status</Label>
+            <Width>9</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>AnnotationText</Label>
+            <Width>60</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ReplyUser</Label>
+            <Width>10</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>ReplyText</Label>
+            <Width>41</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>IshType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpublogicalid_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpubversion_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishpublanguage_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishcontentobjlogicalid_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishcontentobjversion_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishcontentobjlanguage_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishannotationcreator_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishannotationcategory_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishannotationtype_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishannotationstatus_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishannotationtext_annotation_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishannotationcreator_reply_value</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>fishannotationtext_reply_value</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
     <!-- Trisoft.ISHRemote.Objects.Public.IshField -->
     <View>
       <Name>IshField</Name>
@@ -1278,20 +1393,20 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>lovid</Label>
+            <Label>LovId</Label>
             <Width>17</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>ishref</Label>
+            <Label>IshRef</Label>
             <Width>29</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>active</Label>
-            <Width>5</Width>
+            <Label>Label</Label>
+            <Width>29</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>label</Label>
-            <Width>29</Width>
+            <Label>Active</Label>
+            <Width>6</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -1304,10 +1419,10 @@
                 <PropertyName>IshRef</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Active</PropertyName>
+                <PropertyName>Label</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Label</PropertyName>
+                <PropertyName>ActiveAsString</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

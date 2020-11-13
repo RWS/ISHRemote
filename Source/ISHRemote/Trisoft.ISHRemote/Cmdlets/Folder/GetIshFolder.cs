@@ -40,23 +40,34 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// </summary>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential Admin
     /// Get-IshFolder -FolderPath "\General\__ISHRemote\Add-IshPublicationOutput\Pub"
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Returns the IshFolder object.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
-    /// $requestedMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Name "FNAME" -Level "None"
-    /// $folderId = 7598 # provide a real folder identifier
-    /// [Trisoft.ISHRemote.Objects.IshFolders]$ishFoldersRetrieve = Get-IshFolder -IshSession $ishSession `
-    /// -FolderIds @($folderId) `
-    /// -RequestedMetaData $requestedMetadata
-    /// [Trisoft.ISHRemote.Objects.IshFields]$ishFields = $ishFoldersRetrieve.Folders[0].IshFields
-    /// $retrievedFolderName = $ishFields.GetFieldValue("FNAME", "None", "Value")
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential Admin
+    /// (Get-IshFolder -BaseFolder Data).name
     /// </code>
-    /// <para>Get folder name using Id</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Returns the name of the root data folder, typically called 'General'.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $requestedMetadata = Set-IshMetadataFilterField -Name "FNAME" -Level "None"
+    /// $folderId = 7598 # provide a real folder identifier
+    /// $ishFolder = Get-IshFolder -FolderId $folderId -RequestedMetaData $requestedMetadata
+    /// $retrievedFolderName = $ishFolder.name
+    /// </code>
+    /// <para>Get folder name using Id with explicit requested metadata</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $ishFolders = Get-IshFolder -FolderPath "General\Myfolder" -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary") -Recurse
+    /// </code>
+    /// <para>Get folders recursively with filtering on folder type</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshFolder", SupportsShouldProcess = false)]
     [OutputType(typeof(IshFolder))]
@@ -81,7 +92,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <summary>
         /// <para type="description">Unique folder identifier</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup"), ValidateNotNullOrEmpty]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup"), ValidateNotNullOrEmpty, ValidateRange(1, long.MaxValue)]
         public long FolderId { get; set; }
 
         /// <summary>
@@ -89,7 +100,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup"), ValidateNotNullOrEmpty]
         public Enumerations.BaseFolder BaseFolder { get; set; }
-
 
         /// <summary>
         /// <para type="description">Folders for which to retrieve the metadata. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
@@ -130,6 +140,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             set { _maxDepth = value; }
         }
 
+        /// <summary>
+        /// <para type="description">Recursive retrieval will loop all folder, this filter will only return folder matching the filter to the pipeline</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup")]
+        [ValidateNotNullOrEmpty]
+        public Enumerations.IshFolderType[] FolderTypeFilter { get; set; }
+
         #region Private fields 
         /// <summary>
         /// Initially holds incoming IshObject entries from the pipeline to correct the incorrect array-objects from Trisoft.Automation
@@ -166,16 +186,17 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         {
             try
             {
-                if (IshFolder != null)
+                switch (ParameterSetName)
                 {
-                    foreach(IshFolder ishFolder in IshFolder)
-                    {
-                        _retrievedIshFolders.Add(ishFolder);
-                    }
-                }
-                else if (FolderId > 0)
-                {
-                    _retrievedFolderIds.Add(FolderId);
+                    case "IshFolderGroup":
+                        foreach (IshFolder ishFolder in IshFolder)
+                        {
+                            _retrievedIshFolders.Add(ishFolder);
+                        }
+                        break;
+                    case "FolderIdGroup":
+                        _retrievedFolderIds.Add(FolderId);
+                        break;
                 }
             }
             catch (TrisoftAutomationException trisoftAutomationException)
@@ -207,7 +228,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 WriteDebug("Retrieving");
                 _requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
-                if (_retrievedIshFolders.Count > 0)
+                if (ParameterSetName == "IshFolderGroup" && _retrievedIshFolders.Count > 0)
                 {
                     var folderCardIds = _retrievedIshFolders.Select(ishFolder => Convert.ToInt64(ishFolder.IshFolderRef)).ToList();
                     WriteDebug($"Retrieving CardIds.length[{folderCardIds.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] 0/{folderCardIds.Count}");
@@ -224,7 +245,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         WriteDebug($"Retrieving CardIds.length[{ folderCardIdBatch.Count}] RequestedMetadata.length[{ _requestedMetadata.ToXml().Length}] {currentFolderCardIdCount}/{folderCardIds.Count}");
                     }
                 }
-                else if (_retrievedFolderIds.Count > 0)
+                else if (ParameterSetName == "FolderIdGroup" && _retrievedFolderIds.Count > 0)
                 {
                     WriteDebug($"Retrieving CardIds.length[{ _retrievedFolderIds.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] 0/{_retrievedFolderIds.Count}");
                     // Devides the list of folder card ids in different lists that all have maximally MetadataBatchSize elements
@@ -240,7 +261,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         WriteDebug($"Retrieving CardIds.length[{folderCardIdBatch.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] {currentFolderCardIdCount}/{_retrievedFolderIds.Count}");
                     }
                 }
-                else if (FolderPath != null)
+                else if (ParameterSetName == "FolderPathGroup")
                 {
                     // Retrieve using provided parameter FolderPath
                     // Parse FolderPath input parameter: get basefolderName(1st element of an array)
@@ -261,7 +282,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolder, "ishfolder");
                     returnIshFolders.AddRange(retrievedFolders.Folders);
                 }
-                else
+                else if (ParameterSetName == "BaseFolderGroup")
                 {
                     // Retrieve using BaseFolder string (enumeration)
                     var baseFolder = EnumConverter.ToBaseFolder<Folder25ServiceReference.BaseFolder>(BaseFolder);
@@ -278,8 +299,32 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 // 3b. Write it
                 if (!Recurse)
                 {
-                    WriteDebug($"returned object count[{returnIshFolders.Count}]");
-                    WriteObject(IshSession, ISHType, returnIshFolders.ConvertAll(x => (IshBaseObject)x), true);
+                    if (FolderTypeFilter == null)
+                    {
+                        WriteDebug($"returned object count[{returnIshFolders.Count}]");
+                        WriteObject(IshSession, ISHType, returnIshFolders.ConvertAll(x => (IshBaseObject)x), true);
+                    }
+                    else
+                    {
+                        List<IshFolder> filteredIshFolders = new List<IshFolder>();
+                        foreach (var returnIshFolder in returnIshFolders)
+                        {
+                            if (FolderTypeFilter.Contains(returnIshFolder.IshFolderType))
+                            {
+                                filteredIshFolders.Add(returnIshFolder);
+                            }
+                            else
+                            {
+                                string folderName = returnIshFolder.IshFields.GetFieldValue("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
+                                string folderpath = returnIshFolder.IshFields.GetFieldValue("FISHFOLDERPATH", Enumerations.Level.None, Enumerations.ValueType.Value);
+                                WriteVerbose(folderpath.Replace(IshSession.Separator, IshSession.FolderPathSeparator) + IshSession.FolderPathSeparator + folderName + " skipped");
+                            }
+                        }
+
+                        WriteDebug($"returned object count after filtering[{filteredIshFolders.Count}]");
+                        WriteObject(IshSession, ISHType, filteredIshFolders.ConvertAll(x => (IshBaseObject)x), true);
+                    }
+
                 }
                 else
                 {
@@ -311,8 +356,25 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         {
             // put them on the pipeline depth-first-traversel
             string folderName = ishFolder.IshFields.GetFieldValue("FNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
-            WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
-            WriteObject(IshSession, ISHType, ishFolder, true);
+
+            // only return IshFolder objects to the pipeline if the filter is either not set, or the current filter passes the filter criteria
+            if (FolderTypeFilter != null && FolderTypeFilter.Length > 0)
+            {
+                if (FolderTypeFilter.Contains<Enumerations.IshFolderType>(ishFolder.IshFolderType))
+                {
+                    WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
+                    WriteObject(IshSession, ISHType, ishFolder, true);
+                }
+                else
+                {
+                    WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator + " skipped");
+                }
+            }
+            else
+            {
+                WriteVerbose(new string('>', currentDepth) + IshSession.FolderPathSeparator + folderName + IshSession.FolderPathSeparator);
+                WriteObject(IshSession, ISHType, ishFolder, true);
+            }
 
             if (currentDepth < (maxDepth - 1))
             {

@@ -879,5 +879,100 @@ namespace Trisoft.ISHRemote.Objects
         public const string TranslationJobLeases = "FISHTRANSJOBLEASES";
 
         #endregion
+
+        #region Annotation Fields
+
+        /// <summary>
+        /// The element of the Field FISHANNOTATIONCREATOR.
+        /// The creator of annotation or reply on the annotation.
+        /// </summary>
+        public const string AnnotationCreator = "FISHANNOTATIONCREATOR";
+        /// <summary>
+        /// The element of the Field FISHANNOTATIONREPLIES.
+        /// The replies of annotation.
+        /// </summary>
+        public const string AnnotationReplies = "FISHANNOTATIONREPLIES";
+        /// <summary>
+        /// The element of the Field FISHREVISIONID.
+        /// The revision of the content object for which the annotation applies.
+        /// </summary>
+        public const string AnnotationRevisionId = "FISHREVISIONID";
+        /// <summary>
+        /// The element of the Field FISHCONTENTOBJLOGICALID.
+        /// The ContentObject LogicalId.
+        /// </summary>
+        public const string AnnotationContentObjectLogicalId = "FISHCONTENTOBJLOGICALID";
+        /// <summary>
+        /// The element of the Field FISHCONTENTOBJVERSION.
+        /// The ContentObject version number.
+        /// </summary>
+        public const string AnnotationContentObjectVersion = "FISHCONTENTOBJVERSION";
+        /// <summary>
+        /// The element of the Field FISHCONTENTOBJLANGUAGE.
+        /// The ContentObject language.
+        /// </summary>
+        public const string AnnotationContentObjectLanguage = "FISHCONTENTOBJLANGUAGE";
+        /// <summary>
+        /// The element of the Field FISHPUBLOGICALID.
+        /// The publication LogicalId indicates the publication for which the annotation applies.
+        /// </summary>
+        public const string AnnotationPublicationLogicalId = "FISHPUBLOGICALID";
+        /// <summary>
+        /// The element of the Field FISHPUBVERSION.
+        /// The publication version number indicates the version of the publication for which the annotation applies.
+        /// </summary>
+        public const string AnnotationPublicationVersion = "FISHPUBVERSION";
+        /// <summary>
+        /// The element of the Field FISHPUBLANGUAGE.
+        /// The publication language indicates the (working) language of the publication for which the annotation applies.
+        /// </summary>
+        public const string AnnotationPublicationLanguage = "FISHPUBLANGUAGE";
+        /// <summary>
+        /// The element of the Field FISHANNOTATIONTYPE.
+        /// The type of annotation.
+        /// </summary>
+        public const string AnnotationType = "FISHANNOTATIONTYPE";
+        /// <summary>
+        /// The element of the Field FISHANNOTATIONTEXT.
+        /// The text of annotation.
+        /// </summary>
+        public const string AnnotationText = "FISHANNOTATIONTEXT";
+        /// <summary>
+        /// The element of the Field FISHANNOTATIONSTATUS.
+        /// The status of annotation.
+        /// </summary>
+        public const string AnnotationStatus = "FISHANNOTATIONSTATUS";
+        /// <summary>
+        /// The element of the Field FISHSELECTEDORIGINALTEXT.
+        /// The original text on which the annotation was made.
+        /// </summary>
+        public const string AnnotationSelectedOriginalText = "FISHSELECTEDORIGINALTEXT";
+        /// <summary>
+        /// The element of the Field FISHANNOTATIONCATEGORY.
+        /// The category of annotation (e.g. Comment, Suggestion).
+        /// </summary>
+        public const string AnnotationCategory = "FISHANNOTATIONCATEGORY";
+        /// <summary>
+        /// The element of the Field FISHANNOTATIONADDRESS.
+        /// The address of annotation.
+        /// </summary>
+        public const string AnnotationAddress = "FISHANNOTATIONADDRESS";
+        /// <summary>
+        /// The element of the Field FISHANNOTRESOLVEDBY.
+        /// The user which marked the annotation as resolved.
+        /// </summary>
+        public const string AnnotationResolvedBy = "FISHANNOTRESOLVEDBY";
+        /// <summary>
+        /// The element of the Field FISHANNOTRESOLVEDON.
+        /// The date when the annotation was marked as resolved.
+        /// </summary>
+        public const string AnnotationResolvedOn = "FISHANNOTRESOLVEDON";
+        /// <summary>
+        /// The annotation last timestamp.
+        /// The timestamp used on annotations to indicate when the annotation or one of the replies was last changed.
+        /// </summary>
+        public const string AnnotationSnapshotId = "FISHANNOTSNAPSHOTID";
+
+        #endregion
     }
 }

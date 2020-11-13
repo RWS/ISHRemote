@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Major>0</Major>
-    <Minor>9</Minor>
+    <Minor>11</Minor>
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
     <!-- <AdvBuild>$([System.DateTime]::UtcNow.ToString("HHmmss"))</AdvBuild> -->
     <Revision>1</Revision>

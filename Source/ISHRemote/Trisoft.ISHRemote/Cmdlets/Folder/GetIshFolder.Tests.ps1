@@ -25,7 +25,6 @@ Describe “Get-IshFolder" -Tags "Read" {
 	$ishFolder = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolder.IshFolderRef)       -FolderType ISHModule -FolderName "To" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
 	$ishFolder = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolder.IshFolderRef)       -FolderType ISHModule -FolderName "Us!" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
 
-
 	Context “Get-IshFolder ParameterGroup" {
 		It "Parameter IshSession invalid" {
 			{ Get-IshFolder -IShSession "INVALIDISHSESSION" } | Should Throw
@@ -89,9 +88,13 @@ Describe “Get-IshFolder" -Tags "Read" {
 		It "Parameter FolderId invalid" {
 			{ Get-IshFolder -IShSession $ishSession -FolderId "INVALIDFOLDERID" } | Should Throw
 		}
+		It "Parameter FolderId zero" {
+			{ Get-IshFolder -IShSession $ishSession -FolderId 0 } | Should Throw
+		}
 		It "Parameter FolderId from Data" {
 			(Get-IshFolder -IshSession $ishSession -FolderId $ishFolderDataFolderRef).IshFolderRef -ge 0 | Should Be $true
 		}
+	
 		<# FolderId is defined as long, not long[], so don't even know if PowerShell automatically converts
 		It "Parameter FolderId from Data.System" {
 			(Get-IshFolder -IshSession $ishSession -FolderId [long[]]@($ishFolderDataFolderRef,$ishFolderSystemFolderRef)).Count -eq 2 | Should Be $true
@@ -172,6 +175,12 @@ Describe “Get-IshFolder" -Tags "Read" {
 		It "Get-IshFolder ishFolderCmdlet Traversal 'aLL'" {
 			Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -IshField((Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -Recurse)[7].IshField) | Should MatchExactly "aLL yOUR bASE bELONG tO uS!"
 		}
+		It "Get-IshFolder ishFolderCmdlet Traversal 'All' with FolderTypeFilter" {
+			Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -IshField((Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule", "ISHNone") -Recurse)[1].IshField) | Should MatchExactly "All"
+		}
+		It "Get-IshFolder ishFolderCmdlet Traversal 'aLL' with FolderTypeFilter" {
+			Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -IshField((Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule", "ISHNone") -Recurse)[7].IshField) | Should MatchExactly "aLL yOUR bASE bELONG tO uS!"
+		}
 	}
 
 	Context "Get-IshFolder System Recurse Pipeline" {
@@ -181,6 +190,59 @@ Describe “Get-IshFolder" -Tags "Read" {
 			$ishObjects.Count -ge 1 | Should Be $true
 		}
 	}
+
+    Context "Get-IshFolder with requesting FolderTypeFilter and Recursion" {
+        It "Get-IshFolder with incorrect FolderTypeFilter" {
+           {Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter "ISHWrongType" -Recurse} | Should Throw
+        }
+		It "Get-IshFolder with incorrect value in array FolderTypeFilter" {
+            {Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule", "ISHWrongType") -Recurse} | Should Throw
+        }
+		It "Get-IshFolder with empty FolderTypeFilter" {
+            {Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter "" -Recurse} | Should Throw
+        }
+        It "Get-IshFolder with filtering on all Xml content folders" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary", "ISHTemplate") -Recurse).Count | Should Be 7
+        }
+        It "Get-IshFolder with filtering on all Xml content folders with Depth=2" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary", "ISHTemplate") -Recurse -Depth 2).Count | Should Be 2
+        }
+        It "Get-IshFolder with filtering on all folders with Depth=2" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary", "ISHTemplate", "ISHNone", "ISHIllustration") -Recurse -Depth 2).Count | Should Be 3
+        }
+		It "Get-IshFolder without filtering on FolderType" {
+			(Get-IshFolder -IShSession $ishSession -IshFolder $ishFolderCmdlet -Recurse).Count | Should Be 8
+        }
+		It "Get-IshFolder with filtering on only ISHModule folders" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule") -Recurse).Count | Should Be 7
+        }
+        It "Get-IshFolder with filtering on only ISHNone folders" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHNone") -Recurse).Count | Should Be 1
+        }
+        It "Get-IshFolder with filtering out all folders" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHIllustration") -Recurse).Count | Should Be 0
+		}
+    }
+    Context "Get-IshFolder with requesting FolderTypeFilter and with no Recursion" {
+        It "Get-IshFolder with incorrect FolderTypeFilter" {
+           {Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter "ISHWrongType" } | Should Throw
+        }
+		It "Get-IshFolder with incorrect value in array FolderTypeFilter" {
+            {Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule", "ISHWrongType") } | Should Throw
+        }
+		It "Get-IshFolder with empty FolderTypeFilter" {
+            {Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter "" } | Should Throw
+        }
+        It "Get-IshFolder with filtering on only ISHNone folders" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHNone")).Count | Should Be 1
+        }
+        It "Get-IshFolder with filtering out all folders" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHIllustration")).Count | Should Be 0
+		}
+        It "Get-IshFolder with filtering out all folders(Filter array)" {
+			(Get-IshFolder -IshSession $ishSession -IshFolder $ishFolderCmdlet -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary", "ISHTemplate")).Count | Should Be 0
+        }
+    }
 }
 
 

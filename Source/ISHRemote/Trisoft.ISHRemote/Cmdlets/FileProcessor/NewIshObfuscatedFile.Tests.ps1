@@ -31,10 +31,11 @@ $ditaObfuscatedBookMapWithNavtitleFileContent = @"
 "@ # empty line space is required for comparison
 
 try {
-
-Describe “New-IshObfuscatedFile" -Tags "Read" {
-	Write-Host "Initializing Test Data and Variables"
-	$rootFolder = Join-Path -Path $env:TEMP -ChildPath $cmdletName 
+	
+	$tempFolder = [System.IO.Path]::GetTempPath()
+Describe "New-IshObfuscatedFile" -Tags "Read" {
+	Write-Host "Initializing Test Data and Variables"		
+	$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
 	New-Item -ItemType Directory -Path $rootFolder
 	$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
 	New-Item -ItemType Directory -Path $inputFolder
@@ -111,5 +112,5 @@ Describe “New-IshObfuscatedFile" -Tags "Read" {
 
 } finally {
 	Write-Host "Cleaning Test Data and Variables"
-	try { Remove-Item (Join-Path $env:TEMP $cmdletName) -Recurse -Force } catch { }
+	try { Remove-Item (Join-Path $tempFolder $cmdletName) -Recurse -Force } catch { }
 }

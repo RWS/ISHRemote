@@ -38,7 +38,8 @@ Note that we rely on `Windows PowerShell` (FullCLR), and not `PowerShell Core` (
 ## Install
 Open a PowerShell, then you can find and install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator. The `-Force` will make you bypass some security/trust questions.
 
-		Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
+		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
+        Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
 
 ![ISHRemote-0.7--InstallModuleFromPSGallery 1024x512](./Doc/Images/ISHRemote-0.7--InstallModuleFromPSGallery.gif)
 
@@ -46,6 +47,7 @@ Open a PowerShell, then you can find and install the ISHRemote module. CurrentUs
 
 Open a PowerShell and run.
 
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
         Update-Module ISHRemote
 
  
@@ -185,6 +187,8 @@ Setting up your Visual Studio Code is explained on the internet, see [Scripting 
 - [Visual Studio Code editing features for PowerShell development – Part 2](https://blogs.technet.microsoft.com/heyscriptingguy/2017/01/12/visual-studio-code-editing-features-for-powershell-development-part-2/)
 - [Debugging PowerShell script in Visual Studio Code – Part 1](https://blogs.technet.microsoft.com/heyscriptingguy/2017/02/06/debugging-powershell-script-in-visual-studio-code-part-1/)
 - [Debugging PowerShell script in Visual Studio Code – Part 2](https://blogs.technet.microsoft.com/heyscriptingguy/2017/02/13/debugging-powershell-script-in-visual-studio-code-part-2/)
+- [Tyler Leonhardt - Visual Studio Code: deep dive into debugging your PowerShell scripts](https://www.youtube.com/watch?v=cSbIXmlkr8o)
+- [Writing Compiled PowerShell Cmdlets by Thomas Rayner](https://www.youtube.com/watch?v=O0lk92W799)
 
 ## Static Code Analysis (experiment)
 

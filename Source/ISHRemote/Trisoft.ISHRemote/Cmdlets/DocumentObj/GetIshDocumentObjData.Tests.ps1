@@ -2,8 +2,9 @@
 . (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
 $cmdletName = "Get-IshDocumentObjData"
 try {
-
-Describe “Get-IshDocumentObjData" -Tags "Read" {
+	
+	$tempFolder = [System.IO.Path]::GetTempPath()
+Describe "Get-IshDocumentObjData" -Tags "Read" {
 	Write-Host "Initializing Test Data and Variables"
 	$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FNAME" |
 	                     Set-IshRequestedMetadataField -IshSession $ishSession -Name "FDOCUMENTTYPE" |
@@ -30,7 +31,7 @@ Describe “Get-IshDocumentObjData" -Tags "Read" {
 		It "Parameter IshSession/IshObject invalid" {
 			{ Get-IshDocumentObjData -IShSession "INVALIDISHSESSION" -IshObject "INVALIDISHOBJECT" } | Should Throw
 		}
-		$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $env:TEMP $cmdletName)
+		$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $tempFolder $cmdletName)
 		It "GetType().Name" {
 			$fileInfo.GetType().Name | Should BeExactly "FileInfo"
 		}
@@ -40,14 +41,14 @@ Describe “Get-IshDocumentObjData" -Tags "Read" {
 		It "Parameter IshFeature matching features (so everything equals source file)" {
 			$ishFeatures = Set-IshFeature -Name "ISHRemoteStringCond" -Value "StringOne" |
 			               Set-IshFeature -Name "ISHRemoteVersionCond" -Value "12.0.1"
-			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $env:TEMP $cmdletName) -IshFeature $ishFeatures
+			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $tempFolder $cmdletName) -IshFeature $ishFeatures
 			$fileContent = Get-Content $fileInfo
 			Write-Debug ("fileContent.Length[" + $fileContent.Length + "] fileContent.GetType()[" + $fileContent.GetType() + "] fileContent[" +$fileContent+"]")
 			($fileContent -like "*ISHRemoteStringCond*") | Should Be $true
 		}
 		It "Parameter IshFeature not matching features (so everything filtered away)" {
 			$ishFeatures = Set-IshFeature -Name "INVALIDFEATURE" -Value "INVALIDVALUE"
-			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $env:TEMP $cmdletName) -IshFeature $ishFeatures
+			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $tempFolder $cmdletName) -IshFeature $ishFeatures
 			$fileContent = Get-Content $fileInfo
 			Write-Debug ("fileContent.Length[" + $fileContent.Length + "] fileContent.GetType()[" + $fileContent.GetType() + "] fileContent[" +$fileContent+"]")
 			$fileContent -notlike "*ISHRemoteStringCond*" | Should Be $true
@@ -84,5 +85,5 @@ Describe “Get-IshDocumentObjData" -Tags "Read" {
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
 	try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse | Get-IshFolderContent -IshSession $ishSession | Remove-IshDocumentObj -IshSession $ishSession -Force } catch { }
 	try { Remove-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse } catch { }
-	try { Remove-Item (Join-Path $env:TEMP $cmdletName) -Recurse -Force } catch { }
+	try { Remove-Item (Join-Path $tempFolder $cmdletName) -Recurse -Force } catch { }
 }

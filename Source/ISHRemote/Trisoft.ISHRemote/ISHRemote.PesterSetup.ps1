@@ -23,6 +23,14 @@ $ditaMapFileContent = @"
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map><title>Enter the title of your map here.<?ish-replace-title?></title></map>
 "@
+$ditaMapWithTopicrefFileContent = @"
+<?xml version="1.0" ?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map><title>Enter the title of your map here.<?ish-replace-title?></title>
+<topicref href="<GUID-PLACEHOLDER>"><topicmeta></topicmeta></topicref>
+</map>
+"@
+
 Write-Verbose "Initializing variables for UserName/Password based tests, so ISHSTS-like..."
 $baseUrl = 'https://ish.example.com'
 $webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
@@ -33,6 +41,11 @@ $ishPassword = 'admin'
 Write-Verbose "Initializing variables for System Setup"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed
 $ishLng = 'VLANGUAGEEN'
+$ishLngLabel = 'en'
+$ishLngTarget1 = 'VLANGUAGEES'
+$ishLngTarget1Label = 'es'
+$ishLngTarget2 = 'VLANGUAGEDE'
+$ishLngTarget2Label = 'de'
 $ishResolution = 'VRESLOW'
 $ishStatusDraft = 'VSTATUSDRAFT'
 $ishStatusReleased = 'VSTATUSRELEASED'  # Direct status transition from $ishStatusDraft (D) to $ishStatusReleased (R) is required by the executing user
@@ -40,6 +53,7 @@ $ishUserAuthor = 'VUSERADMIN'
 $ishLngCombination = 'en'  # LanguageCombination like 'en+fr+nl' can only be expressed with labels
 $ishOutputFormatDitaXml = 'GUID-079A324-FE52-45C4-82CD-A1A9663C2777'  # 'DITA XML' element name
 $ishLovId = "DLANGUAGE"  # ListOfValues where the Lov tests will work on
+$ishLovId2 = "DRESOLUTION"  # ListOfValues where the Lov tests will work on
 
 #region Placeholder to inject your variable overrides. 
 Write-Host    "Initializing Global Test Data and Variables for debug"

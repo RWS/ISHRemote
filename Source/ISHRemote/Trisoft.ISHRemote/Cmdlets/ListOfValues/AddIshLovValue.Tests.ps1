@@ -6,7 +6,7 @@ try {
 Describe “Add-IshLovValue" -Tags "Create" {
 	Write-Host "Initializing Test Data and Variables"
 
-	Context “Add-IshFolder ParameterGroup" {
+	Context “Add-IshLovValue ParameterGroup" {
 		It "Parameter IshSession invalid" {
 			{ Add-IshLovValue -IShSession "INVALIDISHSESSION" -LovId $ishLovId -Label "ISHRemote $ishLovId Entry" -Description "ISHRemote $ishLovId Entry Description" -IshLovValue "ISHREMOTE$ishLovId" } | Should Throw
 		}
