@@ -183,8 +183,17 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 if (_ishTypeFieldSetup == null)
                 {
+                    
                     if (_serverVersion.MajorVersion >= 13)
                     {
+                        // pass IshExtensionConfig object to IshTypeFieldSetup constructor
+                        _logger.WriteDebug($"Loading Settings25.GetMetadata for field[" + FieldElements.ExtensionConfiguration + "]...");
+                        IshFields metadata = new IshFields();
+                        metadata.AddField(new IshRequestedMetadataField(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value));  // do not pass over IshTypeFieldSetup.ToIshRequestedMetadataFields, as we are initializing that object
+                        string xmlIshObjects = Settings25.GetMetadata(metadata.ToXml());
+                        var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
+                        string value = ishFields.GetFieldValue(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value);
+
                         _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
                         _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null));
                         _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;

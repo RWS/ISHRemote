@@ -4,7 +4,7 @@
     <Minor>12</Minor>
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
     <!-- <AdvBuild>$([System.DateTime]::UtcNow.ToString("HHmmss"))</AdvBuild> -->
-    <Revision>0</Revision>
+    <Revision>1</Revision>
 	<ModuleVersion>$(Major).$(Minor).0.$(Revision)</ModuleVersion>
     <ModuleBuildVersion>$(Major).$(Minor).$(Build).$(Revision)</ModuleBuildVersion>
     <FullModuleBuildVersion>$(Major).$(Minor).$(Revision)</FullModuleBuildVersion>

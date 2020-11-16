@@ -223,10 +223,7 @@ $ishSession.DefaultRequestedMetadata = "Descriptive"
 # Loop over folders
 foreach($ishFolder in $ishFolders)
 {
-	$ishObjects = Get-IshFolderContent -IshSession $ishSession `
-									   -IshFolder $ishFolder`
-                                       -VersionFilter "" `
-									   -MetadataFilter $metadataFilter
+	$ishObjects = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolder -VersionFilter "" -MetadataFilter $metadataFilter
 	
 	$folderPath = ($ishFolder.fishfolderpath).Replace($ishSession.Separator, $ishSession.FolderPathSeparator) + $ishSession.FolderPathSeparator + $ishFolder.fname
 	if($ishObjects.Count -eq 0)
