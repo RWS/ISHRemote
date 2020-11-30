@@ -37,7 +37,7 @@
                                       <Metadata xmlns="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                         <wsx:MetadataSection xmlns="">
                                           <wsx:MetadataReference>
-                                            <Address xmlns="http://www.w3.org/2005/08/addressing">https://ish.example.com/ISHSTS/issue/wstrust/mex</Address>
+                                            <Address xmlns="http://www.w3.org/2005/08/addressing">https://medevddemeyer10.global.sdl.corp/ISHSTSSDLDOC/issue/wstrust/mex</Address>
                                           </wsx:MetadataReference>
                                         </wsx:MetadataSection>
                                       </Metadata>
@@ -1674,7 +1674,7 @@
                               <Metadata xmlns="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                 <wsx:MetadataSection xmlns="">
                                   <wsx:MetadataReference>
-                                    <Address xmlns="http://www.w3.org/2005/08/addressing">https://ish.example.com/ISHSTS/issue/wstrust/mex</Address>
+                                    <Address xmlns="http://www.w3.org/2005/08/addressing">https://medevddemeyer10.global.sdl.corp/ISHSTSSDLDOC/issue/wstrust/mex</Address>
                                   </wsx:MetadataReference>
                                 </wsx:MetadataSection>
                               </Metadata>
@@ -1726,7 +1726,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsdl:import namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" location="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc?wsdl=wsdl0" />
+  <wsdl:import namespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" location="https://medevddemeyer10.global.sdl.corp/ISHWSSDLDOC/Wcf/API25/Baseline.svc?wsdl=wsdl0" />
   <wsdl:types />
   <wsdl:binding name="CustomBinding_Baseline" type="i0:Baseline">
     <wsp:PolicyReference URI="#CustomBinding_Baseline_policy" />
@@ -2440,15 +2440,15 @@
   </wsdl:binding>
   <wsdl:service name="BaseLine">
     <wsdl:port name="CustomBinding_Baseline" binding="tns:CustomBinding_Baseline">
-      <soap12:address location="http://ish.example.com/ISHWS/Wcf/API25/Baseline.svc" />
+      <soap12:address location="http://medevddemeyer10.global.sdl.corp/ISHWSSDLDOC/Wcf/API25/Baseline.svc" />
       <wsa10:EndpointReference>
-        <wsa10:Address>http://ish.example.com/ISHWS/Wcf/API25/Baseline.svc</wsa10:Address>
+        <wsa10:Address>http://medevddemeyer10.global.sdl.corp/ISHWSSDLDOC/Wcf/API25/Baseline.svc</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
     <wsdl:port name="CustomBinding_Baseline1" binding="tns:CustomBinding_Baseline1">
-      <soap12:address location="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc" />
+      <soap12:address location="https://medevddemeyer10.global.sdl.corp/ISHWSSDLDOC/Wcf/API25/Baseline.svc" />
       <wsa10:EndpointReference>
-        <wsa10:Address>https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc</wsa10:Address>
+        <wsa10:Address>https://medevddemeyer10.global.sdl.corp/ISHWSSDLDOC/Wcf/API25/Baseline.svc</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

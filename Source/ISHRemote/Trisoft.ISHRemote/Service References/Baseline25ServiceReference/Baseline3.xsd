@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" elementFormDefault="qualified" targetNamespace="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="https://ish.example.com/ISHWS/Wcf/API25/Baseline.svc?xsd=xsd4" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" />
+  <xs:import schemaLocation="https://medevddemeyer10.global.sdl.corp/ISHWSSDLDOC/Wcf/API25/Baseline.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="https://medevddemeyer10.global.sdl.corp/ISHWSSDLDOC/Wcf/API25/Baseline.svc?xsd=xsd4" namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Enumerations/API25/" />
   <xs:element name="RetrieveMetadata">
     <xs:complexType>
       <xs:sequence>

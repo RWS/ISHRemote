@@ -1,0 +1,939 @@
+﻿
+
+
+
+<!DOCTYPE html>
+<html lang="en-us" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+<head>
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta content="text/html; charset=utf-16" http-equiv="Content-Type" />
+    <title _locid="PortabilityAnalysis0">.NET Portability Report</title>
+    
+<style>
+    /* Body style, for the entire document */
+    body {
+        background: #F3F3F4;
+        color: #1E1E1F;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Header1 style, used for the main title */
+    h1 {
+        padding: 10px 0px 10px 10px;
+        font-size: 21pt;
+        background-color: #E2E2E2;
+        border-bottom: 1px #C1C1C2 solid;
+        color: #201F20;
+        margin: 0;
+        font-weight: normal;
+    }
+
+    /* Header2 style, used for "Overview" and other sections */
+    h2 {
+        font-size: 18pt;
+        font-weight: normal;
+        padding: 15px 0 5px 0;
+        margin: 0;
+    }
+
+    /* Header3 style, used for sub-sections, such as project name */
+    h3 {
+        font-weight: normal;
+        font-size: 15pt;
+        margin: 0;
+        padding: 15px 0 5px 0;
+        background-color: transparent;
+    }
+
+    h4 {
+        font-weight: normal;
+        font-size: 13pt;
+        margin: 0;
+        padding: 0 0 0 0;
+        background-color: transparent;
+    }
+
+    /* Paragraph text (for longer informational messages) */
+    p {
+        font-size: 10pt;
+    }
+
+    /* Make sure abbreviations are decorated on all browsers */
+    abbr {
+        text-decoration: none;
+        border-bottom: 1px dotted;
+    }
+
+    /* Table styles */
+    table {
+        border-spacing: 0 0;
+        border-collapse: collapse;
+        font-size: 10pt;
+    }
+
+    tbody {
+        border-bottom: 5px solid #E7E7E8;
+    }
+
+    th {
+        background: #E7E7E8;
+        border: 1px solid #E7E7E8;
+        text-decoration: none;
+        font-weight: normal;
+        vertical-align: bottom;
+        padding: 3px 6px 3px 6px;
+    }
+
+    td {
+        vertical-align: top;
+        padding: 3px 6px 5px 5px;
+        margin: 0px;
+        border: 1px solid #E7E7E8;
+        background: #F7F7F8;
+    }
+
+    .CompatIssuesHeader {
+        display: inline-block;
+        margin-right: 6px;
+    }
+
+    .breakDetails {
+        min-width: 300px;
+    }
+
+    .BreakingChangeTable {
+        margin-left: 30px;
+    }
+
+    .NoBreakingChanges {
+        -moz-box-shadow: inset 0px 0px 0px 2px green;
+        -webkit-box-shadow: inset 0px 0px 0px 2px green;
+        box-shadow: inset 0px 0px 0px 2px green;
+        font-weight: bold;
+    }
+
+    .FewBreakingChanges {
+        -moz-box-shadow: inset 0px 0px 0px 2px orange;
+        -webkit-box-shadow: inset 0px 0px 0px 2px orange;
+        box-shadow: inset 0px 0px 0px 2px orange;
+        font-weight: bold;
+    }
+
+    .ManyBreakingChanges {
+        -moz-box-shadow: inset 0px 0px 0px 2px #dd0000;
+        -webkit-box-shadow: inset 0px 0px 0px 2px #dd0000;
+        box-shadow: inset 0px 0px 0px 2px #dd0000;
+        font-weight: bold;
+    }
+
+    .CompatMessage {
+        font-style: italic;
+        font-size: 10pt;
+    }
+
+    .GoodMessage {
+        color: darkgreen;
+    }
+
+    .ToggleButton {
+        font-size: 16px;
+        font-family: monospace;
+        padding: 0px 3px;
+        color: #ffffff;
+        border-radius: 4px;
+        border: 1px solid #657298;
+        background-color: #657298;
+        display: inline-block;
+    }
+
+    .ToggleButton:hover {
+        background-color: #7892c2;
+    }
+
+    .ToggledOff {
+        display: none;
+    }
+
+    .MemberNames ul {
+        list-style-type: none;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .MemberNames li {
+        padding-bottom: 4px;
+    }
+
+    /* Center text, used in the over views cells that contain message level counts */
+    .textCentered {
+        text-align: center;
+    }
+
+    /* invisible text for use in screen reader labels */
+    span.invisibleText {
+        height: 1px;
+        width: 1px;
+        position: absolute;
+        overflow: hidden;
+        top: -10px;
+    }
+
+    /*
+        Applied to the svg containing each support icon, so that element matches the icon's dimensions.
+        Breaks IE/Edge rendering when applied to the image elements as well.
+     */
+    .support-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Padding around the content after the h1 */
+    #content {
+        padding: 0px 12px 12px 12px;
+    }
+
+    .tocItem {
+        font-size: 14pt;
+    }
+
+    .compat-subheader {
+        font-weight: 700;
+        font-style: italic;
+    }
+</style>
+</head>
+<body>
+    <h1 _locid="PortabilityReport">.NET Portability Report</h1>
+    <div id="content">
+        <div id="submissionHeader" style="font-size:8pt;">
+            <p>
+                <i>
+                    Submission Id&nbsp;
+                    f25b1dda-c073-4177-9e37-e47c4515bae3
+                    <br />
+                    API Catalog last updated on&nbsp;
+                    Thursday, September 10, 2020
+
+                </i>
+            </p>
+
+            <div id="toc">
+                <h2>Contents</h2>
+                <ul>
+                        <li>
+                            <span class="tocItem"><a href="#Portability Summary">Portability Summary</a></span>
+                        </li>
+                </ul>
+            </div>
+        </div>
+
+
+            <div id="portabilityReport">
+                
+
+
+
+<svg visibility="hidden" width="0" height="0">
+    <image id="icon-supported" width="18px" height="18px" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABPElEQVR4Xp1Tv0vDUBi8FqeA4NpBcBLcWnQSApncOnTo4FSnjP0DsnXpH5CxiwbHDg4Zuj4oOEXiJgiC4FDcCkLWmIMc1Pfw+eMgQ77v3Xf3Pe51YKGqqisAEwCR1TIAsiAIblSo6xrdHeJR85Xle3mdmCQKb0PsfqyxxzM8K15HZADl/H5+sHpZwYfxyRjTs+kWwKBx8yoHd2mRiuzF8mkJniWH/13u3Fjrs/EdhsdDFHGB/DLXEJBDLh1MWPAhPo1BLB4WX5yQywHR+m3tVe/t97D52CB/ziG0nIgD/qDuYg8WuCcVZ2YGwlJ3YDugkpR/VNcAEx6GEKhERSr71FuO4YCM4XBdwKvecjIlkSnsO0Hyp/GxSeJAdzBKzpOtnPwyyiPdAZhpZptT04tU+zk7s8czeges//s5C5+CwqrR4/gw+AAAAABJRU5ErkJggg=="></image>
+    <image id="icon-unsupported" width="18px" height="18px" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABQElEQVR4XqWTvUoEQRCE6wYPZUA80AfwAQz23uCMjA7MDRQEIzPBVEyNTQUFIw00vcQTTMzuAh/AxEQQT8HF/3G/oGGnEUGuoNnd6qoZuqltyKEsyzVJq5I6rnUp6SjGeGhESikzzlc1eL7opfuVbrqbU1Zw9NCgtQMaZpY0eNnaaL2fHusvTK5vKu7sjSS1Y4y3QUA6K3e3Mau5UFDyMP7tYF9o8cAHZv68vipoIJg971PZIZ5HiwdvYGGvFVFHmGmZ2MxwmQYPXubPl9Up0tfoMQGetXd6mRbvhBw+boZ6WF7Mbv1+GsHRk0fQmPAH1GfmZirbCfDJ61tw3Px8/8pZsPAG4jlVhcPgZ7adwNWBB68lkRQWFiTgFlbnLY3DGGM7izIJIyT/jjIvEJw6fdJTc6krDzh6aMwMP9bvDH4ADSsa9uSWVJkAAAAASUVORK5CYII="></image>
+</svg>
+
+<table id="Portability Summary">
+    <caption>Portability Summary</caption>
+    <tbody>
+        <tr>
+            <th>Assembly</th>
+                <th>.NET &#x2B; Platform Extensions,Version=v5.0</th>
+                <th>.NET Core &#x2B; Platform Extensions,Version=v3.1</th>
+                <th>.NET Core,Version=v3.1</th>
+                <th>.NET Standard &#x2B; Platform Extensions,Version=v2.0</th>
+                <th>.NET,Version=v5.0</th>
+        </tr>
+
+            <tr>
+                <td>
+                    <strong>
+                        <a href="#ISHRemote, Version=0.12.0.1, Culture=neutral, PublicKeyToken=null">
+                            <span class="assembly-name">ISHRemote, Version=0.12.0.1, Culture=neutral, PublicKeyToken=null</span>
+                                <span class="assembly-tfm">(.NETFramework,Version=v4.5)</span>
+                        </a>
+                    </strong>
+                </td>
+                    <td class="text-center">95.39 %</td>
+                    <td class="text-center">95.39 %</td>
+                    <td class="text-center">88.00 %</td>
+                    <td class="text-center">93.94 %</td>
+                    <td class="text-center">88.00 %</td>
+            </tr>
+    </tbody>
+</table>
+<div id="order">
+    <h3>Recommend Order</h3>
+    <p>Migration is much easier by following a bottom up approach. Projects with less dependencies should be migrated to .NET Standard or .NET Core first, followed by the ones that may depend on that. For this submission, the following is the recommended order:</p>
+    <ol>
+    </ol>
+</div>
+<div id="details">
+    <h3>Hide rows:</h3>
+    <input type="checkbox" id="row_visibility_checkbox" onchange="ToggleRowVisibility(this)">
+    <label for="row_visibility_checkbox">Hide rows that don&#x27;t have problems</label>
+        <h3>Hide columns:</h3>
+        <form>
+                <input type="checkbox" id="checkbox1" onchange='onToggleColumnVisibility(this)'>
+                <label for="checkbox1">.NET &#x2B; Platform Extensions,Version=v5.0</label>
+                <input type="checkbox" id="checkbox2" onchange='onToggleColumnVisibility(this)'>
+                <label for="checkbox2">.NET Core &#x2B; Platform Extensions,Version=v3.1</label>
+                <input type="checkbox" id="checkbox3" onchange='onToggleColumnVisibility(this)'>
+                <label for="checkbox3">.NET Core,Version=v3.1</label>
+                <input type="checkbox" id="checkbox4" onchange='onToggleColumnVisibility(this)'>
+                <label for="checkbox4">.NET Standard &#x2B; Platform Extensions,Version=v2.0</label>
+                <input type="checkbox" id="checkbox5" onchange='onToggleColumnVisibility(this)'>
+                <label for="checkbox5">.NET,Version=v5.0</label>
+                <input type="checkbox" id="checkbox6" onchange='onToggleColumnVisibility(this)'>
+                <label for="checkbox6">Recommended changes</label>
+        </form>
+
+        <h3 id="ISHRemote, Version=0.12.0.1, Culture=neutral, PublicKeyToken=null" tabindex="0">
+            <span class="assembly-name">ISHRemote, Version=0.12.0.1, Culture=neutral, PublicKeyToken=null</span>
+                <span class="assembly-tfm">(.NETFramework,Version=v4.5)</span>
+        </h3>
+        <table class="table_portability_details">
+            <caption>Portability Details</caption>
+            <thead>
+                <tr>
+                        <th>Target type</th>
+                        <th>.NET &#x2B; Platform Extensions,Version=v5.0</th>
+                        <th>.NET Core &#x2B; Platform Extensions,Version=v3.1</th>
+                        <th>.NET Core,Version=v3.1</th>
+                        <th>.NET Standard &#x2B; Platform Extensions,Version=v2.0</th>
+                        <th>.NET,Version=v5.0</th>
+                        <th>Recommended changes</th>
+                </tr>
+            </thead>
+                <tbody>
+                    <tr>
+                        <td>System.IdentityModel.Protocols.WSTrust.EndpointReference</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor(System.String)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_Uri</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.IdentityModel.Protocols.WSTrust.RequestSecurityToken</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.IdentityModel.Protocols.WSTrust.RequestSecurityTokenResponse</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.IdentityModel.Protocols.WSTrust.WSTrustMessage</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_AppliesTo</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_AppliesTo(System.IdentityModel.Protocols.WSTrust.EndpointReference)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_KeyType(System.String)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_RequestType(System.String)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.IdentityModel.Tokens.GenericXmlSecurityToken</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.IdentityModel.Tokens.SecurityToken</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_ValidTo</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.Runtime.Remoting.ObjRef</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.ChannelFactory</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_Credentials</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_Endpoint</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.ChannelFactory`1</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Channels.AddressHeader</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Channels.Binding</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_ReceiveTimeout(System.TimeSpan)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_SendTimeout(System.TimeSpan)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Channels.BindingElementCollection</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">Find``1</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Channels.CommunicationObject</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">Abort</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Channels.CustomBinding</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_Elements</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Channels.IChannel</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Channels.TextMessageEncodingBindingElement</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_ReaderQuotas</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Channels.TransportBindingElement</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_MaxBufferPoolSize(System.Int64)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_MaxReceivedMessageSize(System.Int64)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.ClientBase`1</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.ClientCredentials</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_UserName</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_SupportInteractive(System.Boolean)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.MetadataExchangeBindings</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">CreateMexHttpBinding</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">CreateMexHttpsBinding</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.MetadataExchangeClient</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor(System.ServiceModel.Channels.Binding)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">GetMetadata(System.Uri,System.ServiceModel.Description.MetadataExchangeClientMode)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_MaximumResolvedReferences(System.Int32)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.MetadataExchangeClientMode</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.MetadataImporter</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">ImportAllEndpoints</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.MetadataSet</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.ServiceEndpoint</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_Address</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_Binding</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.ServiceEndpointCollection</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Description.WsdlImporter</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor(System.ServiceModel.Description.MetadataSet)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.EndpointAddress</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor(System.String)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor(System.Uri,System.ServiceModel.Channels.AddressHeader[])</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_Uri</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.FaultContractAttribute</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor(System.Type)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.IClientChannel</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.ICommunicationObject</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.IContextChannel</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.IExtensibleObject`1</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.MessageBodyMemberAttribute</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.MessageContractAttribute</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.MessageParameterAttribute</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.OperationContractAttribute</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Security.IWSTrustChannelContract</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Security.Tokens.IssuedSecurityTokenParameters</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_IssuerAddress</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_IssuerMetadataAddress</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_IssuerAddress(System.ServiceModel.EndpointAddress)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_IssuerBinding(System.ServiceModel.Channels.Binding)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Security.TrustVersion</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_WSTrust13</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Security.UserNamePasswordClientCredential</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_Password(System.String)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_UserName(System.String)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Security.WSTrustChannel</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">Abort</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">Issue(System.IdentityModel.Protocols.WSTrust.RequestSecurityToken,System.IdentityModel.Protocols.WSTrust.RequestSecurityTokenResponse@)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.Security.WSTrustChannelFactory</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor(System.ServiceModel.Channels.Binding,System.ServiceModel.EndpointAddress)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_TrustVersion(System.ServiceModel.Security.TrustVersion)</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.ServiceContractAttribute</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">#ctor</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.WS2007HttpBinding</td>
+<td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.WSHttpBinding</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>System.ServiceModel.WSHttpBindingBase</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">get_ReaderQuotas</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_MaxBufferPoolSize(System.Int64)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:2em">set_MaxReceivedMessageSize(System.Int64)</td>
+<td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Supported"><svg class="support-icon"><use href=#icon-supported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td><td class="textCentered" title="Not supported"><svg class="support-icon"><use href=#icon-unsupported></use></svg></td>                        <td></td>
+                    </tr>
+                </tbody>
+        </table>
+        <p>
+            <a href="#Portability Summary">Back to Summary</a>
+        </p>
+</div>
+
+
+            </div>
+    </div>
+
+    
+
+<script>
+    function ToggleDivVisibility(caller) {
+        // extract the generated id (the guid following hide-/show-)
+        var targetId = this.id.substr(5);
+
+        // hide/show the div with that id
+        var targetDiv = document.getElementById(targetId);
+        var currentClass = targetDiv.getAttribute('class');
+        if (this.id.slice(0, 4) === 'show') { // String.prototype.startsWith unavailable in IE
+            // remove the ToggledOff class
+            var newClass = currentClass.replace(/\bToggledOff\b/, '').trim();
+            var buttonToFocus = document.getElementById('hide-' + targetId);
+        }
+        else {
+            // add the ToggledOff class
+            var newClass = currentClass === null
+                ? 'ToggledOff'
+                : currentClass.concat(' ToggledOff').trim();
+            var buttonToFocus = document.getElementById('show-' + targetId);
+        }
+        targetDiv.setAttribute('class', newClass);
+
+        // hide the clicked button
+        this.style.display = 'none';
+
+        // show, focus the other button
+        // (screen readers will read the newly-focused element)
+        buttonToFocus.style.display = 'inline-block';
+        buttonToFocus.focus();
+    }
+
+    // Hook up toggle buttons' click events
+    var toggleButtons = document.getElementsByClassName('ToggleButton');
+    for (var i = 0; i < toggleButtons.length; i++) {
+        toggleButtons[i].addEventListener('click', ToggleDivVisibility);
+    }
+
+    // Turn off any elements that should begin collapsed. Note that this is done with the extra
+    // BeginToggledOff class instead of applying ToggledOff directly to these elements because they should be
+    // visible if javascript is unavailable for some reason.
+    var beginCollapsed = document.getElementsByClassName('BeginToggledOff');
+    for (var i = 0; i < beginCollapsed.length; i++) {
+        var currentClass = beginCollapsed[i].getAttribute('class');
+        beginCollapsed[i].setAttribute('class', currentClass.concat(' ToggledOff').trim());
+    }
+
+    // Toggle the visibility of a column in the portability report detail
+    // table (id='table_portability_details')
+    function ToggleColumnVisibility(columnNumber, visible) {
+        var style = visible ? '' : 'none';
+
+        var tables = document.getElementsByClassName('table_portability_details');
+        for (var table = 0; table < tables.length; table++) {
+            var rows = tables[table].getElementsByTagName('tr');
+
+            var headers = rows[0].getElementsByTagName('th');
+            headers[columnNumber].style.display = style;
+
+            for (var row = 1; row < rows.length; row++) {
+                var cells = rows[row].getElementsByTagName('td')
+                cells[columnNumber].style.display = style;
+            }
+        }
+    }
+
+    // Event handler for checkboxes to hide columns in the portability report detail table.
+    function onToggleColumnVisibility(element) {
+        var columnId = parseInt(element.id.substr(-1));
+        var visible = !element.checked;
+        ToggleColumnVisibility(columnId, visible);
+        // Refresh the rows because showing columns could make error cells visible.
+        ToggleRowVisibility(document.getElementById('row_visibility_checkbox'));
+    }
+
+    function ToggleRowVisibility(element){
+        var style = element.checked ? 'none' : '';
+
+        var tables = document.getElementsByClassName('table_portability_details');
+        for (var table = 0; table < tables.length; table++) {
+            var rows = tables[table].getElementsByTagName('tr');
+            if (style === '') { // show all rows
+                for (var row = 0; row < rows.length; row++)
+                    if (rows[row].style.display === 'none') rows[row].style.display = style; // show previously hidden rows
+            } else {
+                var row = 1;
+                while (row < rows.length) { // work on one Target type at a time.
+                    var typeRow = rows[row];
+                    var typeOrChildVisible = false;
+                    var j = row;
+                    var cells = rows[j].getElementsByTagName('td');
+                    while (cells[0].innerHTML !== '&nbsp;') { // Types are separated by blank rows.
+                        var allCellsSuccess = true;
+                        // No need to check the first column (Target type) and the last column (Recommended changes)
+                        for (var cel = 1; cel < cells.length - 1; cel++) {
+                            var cell = cells[cel];
+                            // Keep rows that have visible errors
+                            if (cell.classList.contains('IconErrorEncoded') && cell.style.display !== 'none') {
+                                allCellsSuccess = false;
+                                typeOrChildVisible = true;
+                                break;
+                            }
+                        }
+                        // Hide all success row
+                        if (allCellsSuccess) rows[j].style.display = style;
+                        else rows[j].style.display = '';
+                        j += 1;
+                        cells = rows[j].getElementsByTagName('td');
+                    }
+                    if (typeOrChildVisible) {
+                        typeRow.style.display = ''; // make sure they are visible
+                        rows[j].style.display = '';
+                    } else {
+                        typeRow.style.display = style; // hide the type row
+                        rows[j].style.display = style;  // hide the blank separator row
+                    }
+                    row = j + 1;
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>

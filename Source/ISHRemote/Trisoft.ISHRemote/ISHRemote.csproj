@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Trisoft.ISHRemote</RootNamespace>
     <AssemblyName>ISHRemote</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <SccProjectName>
@@ -142,6 +142,7 @@
     <Compile Include="Cmdlets\OutputFormat\GetIshOutputFormat.cs" />
     <Compile Include="Cmdlets\OutputFormat\SetIshOutputFormat.cs" />
     <Compile Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.cs" />
+    <None Include="app.config" />
     <None Include="Cmdlets\Annotation\AddIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\Annotation\FindIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\Annotation\GetIshAnnotation.Tests.ps1" />
@@ -774,6 +775,32 @@
     <None Include="Service References\BackgroundTask25ServiceReference\Trisoft.ISHRemote.BackgroundTask25ServiceReference.CreateBackgroundTaskWithStartAfterResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline.wsdl" />
+    <None Include="Service References\Baseline25ServiceReference\Baseline.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\BaseLine1.wsdl" />
+    <None Include="Service References\Baseline25ServiceReference\Baseline1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Baseline4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.CanBeFrozenResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.FreezeResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.GetBaselineResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.wsdl" />
     <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.xsd">
       <SubType>Designer</SubType>
@@ -878,32 +905,6 @@
     </None>
     <None Include="Service References\Application25ServiceReference\Application2.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\BaseLine.wsdl" />
-    <None Include="Service References\Baseline25ServiceReference\Baseline.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\Baseline1.wsdl" />
-    <None Include="Service References\Baseline25ServiceReference\Baseline1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\Baseline2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\Baseline3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\Baseline4.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.CanBeFrozenResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.FreezeResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.GetBaselineResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.wsdl" />
     <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.xsd">
@@ -1190,6 +1191,13 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\Baseline25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\Baseline25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\Baseline25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\Baseline25ServiceReference\Baseline.disco" />
     <None Include="Service References\Annotation25ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -1302,13 +1310,6 @@
     <None Include="Service References\Application25ServiceReference\configuration91.svcinfo" />
     <None Include="Service References\Application25ServiceReference\configuration.svcinfo" />
     <None Include="Service References\Application25ServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\Baseline25ServiceReference\Baseline.disco" />
-    <None Include="Service References\Baseline25ServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\Baseline25ServiceReference\configuration.svcinfo" />
-    <None Include="Service References\Baseline25ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
