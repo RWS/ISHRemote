@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ============================================================= -->
+<!--                    HEADER                                     -->
+<!-- ============================================================= -->
+<!--  MODULE:    DITA Glossary Entry XSD Module                    -->
+<!--  VERSION:   1.2                                               -->
+<!--  DATE:      July 2007                                         -->
+<!--                                                               -->
+<!-- ============================================================= -->
+
+
+<!-- ============================================================= -->
+<!-- SYSTEM:     Darwin Information Typing Architecture (DITA)     -->
+<!--                                                               -->
+<!-- PURPOSE:    Define elements and specialization atttributes    -->
+<!--             for Glossary Entry topics                         -->
+<!-- ORIGINAL CREATION DATE:                                       -->
+<!--             July 2007                                         -->
+<!--                                                               -->
+<!--             (C) Copyright OASIS-Open.org 2007, 2009           -->
+<!--             All Rights Reserved.                              -->
+<!-- ============================================================= -->
+
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/">
+
+	<xs:redefine schemaLocation="../../../technicalContent/xsd/glossentryMod.xsd">
+	
+		<xs:attributeGroup name="glossSymbol.attributes">
+			<xs:attribute name="href" type="xs:string" use="required"/>
+			<xs:attribute name="keyref" type="xs:string"/>
+			<xs:attribute name="longdescref" type="xs:string"/>
+			<xs:attribute name="height" type="xs:NMTOKEN"/>
+			<xs:attribute name="width" type="xs:NMTOKEN"/>
+			<xs:attribute name="align" type="xs:string"/>
+			<xs:attribute name="scale" type="xs:NMTOKEN"/>
+			<xs:attribute name="scalefit" type="yesno-att.class"/>
+			<xs:attribute name="placement" type="image-placement-att.class" default="inline"/>
+			<xs:attribute name="outputclass" type="xs:string"/>
+			<xs:attributeGroup ref="univ-atts"/>
+			<xs:attributeGroup ref="global-atts"/>
+			<xs:attributeGroup ref="ish-variables-atts"/>
+		</xs:attributeGroup>
+	
+	</xs:redefine> 
+   
+ </xs:schema>
+ 

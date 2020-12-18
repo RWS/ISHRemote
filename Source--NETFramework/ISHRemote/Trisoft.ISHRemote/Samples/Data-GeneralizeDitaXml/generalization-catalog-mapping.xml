@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<generalizationcataloglookup>
+
+	<!-- This mapping file is used to find the generalized DTD based on the public id, system id or root element of the specialized DTD	     
+        /// Only one matching line is used at the end. The preferred match is found as follows:
+        /// First try to find a match entry where the dtdpublicid + dtdsystemid + rootelement all match -> if we find matches, the first one is returned
+        /// Second try to find a match entry where the dtdpublicid + rootelement both match -> if we find matches, the first one is returned
+        /// Third try to find a match entry where the dtdsystemid + rootelement both match -> if we find matches, the first one is returned
+        /// Last try to find a match entry where the rootelement matches -> if we find matches, the first one is returned
+	-->
+
+	
+    <!-- Example: Generalize every specialized map to map and every specialized topic to topic. -->
+	<!-- These rules will try to match the dtdpublicid with the PUBLIC ID in the xml -->	
+	<match dtdpublicid="-//OASIS//DTD DITA Learning Map//EN" generalizedrootelement="map" generalizeddtdpublicid="-//OASIS//DTD DITA Map//EN" generalizeddtdsystemid="dita-oasis/1.2/technicalContent/dtd/map.dtd" />    
+    <match dtdpublicid="-//OASIS//DTD DITA Learning Summary//EN" generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match dtdpublicid="-//OASIS//DTD DITA Learning Content//EN" generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match dtdpublicid="-//OASIS//DTD DITA Learning Assessment//EN" generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+	<match dtdpublicid="-//OASIS//DTD DITA Learning Assessment//EN" generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+
+	
+    <!-- Provide all DTD mappings (also the ones for topic and map here), just in case the specialized DTD uses the same root element as in the "general" DTD or the folder contains some xmls which were not specialized -->
+    <!-- These rules will try to match the rootelement with the root element in the xml  -->
+    <match rootelement="concept" generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />    
+    <match rootelement="generalTask"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="glossary"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="glossentry"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="glossgroup"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="learningAssessment"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="learningContent"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="learningOverview"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="learningPlan"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="learningSummary"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="machineryTask"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="reference"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="task"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    <match rootelement="topic"  generalizedrootelement="topic" generalizeddtdpublicid="-//OASIS//DTD DITA Topic//EN" generalizeddtdsystemid="dita-oasis/1.2/topic.dtd" />
+    
+    <match rootelement="map" generalizedrootelement="map" generalizeddtdpublicid="-//OASIS//DTD DITA Map//EN" generalizeddtdsystemid="dita-oasis/1.2/technicalContent/dtd/map.dtd" />    
+    <match rootelement="bookmap" generalizedrootelement="map" generalizeddtdpublicid="-//OASIS//DTD DITA Map//EN" generalizeddtdsystemid="dita-oasis/1.2/technicalContent/dtd/map.dtd" />    
+    <match rootelement="learningMap" generalizedrootelement="map" generalizeddtdpublicid="-//OASIS//DTD DITA Map//EN" generalizeddtdsystemid="dita-oasis/1.2/technicalContent/dtd/map.dtd" />    
+    <match rootelement="learningBookmap" generalizedrootelement="map" generalizeddtdpublicid="-//OASIS//DTD DITA Map//EN" generalizeddtdsystemid="dita-oasis/1.2/technicalContent/dtd/map.dtd" />    
+	<match rootelement="subjectScheme" generalizedrootelement="map" generalizeddtdpublicid="-//OASIS//DTD DITA Map//EN" generalizeddtdsystemid="dita-oasis/1.2/technicalContent/dtd/map.dtd" />    
+
+</generalizationcataloglookup>

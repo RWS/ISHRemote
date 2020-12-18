@@ -1,0 +1,2 @@
+﻿Used by Pester Tests
+* New-IshDitaGeneralizedXml

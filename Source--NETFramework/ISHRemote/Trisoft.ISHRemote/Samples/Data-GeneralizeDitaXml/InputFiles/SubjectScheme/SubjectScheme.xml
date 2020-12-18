@@ -1,0 +1,22 @@
+<!DOCTYPE subjectScheme PUBLIC "-//OASIS//DTD DITA Subject Scheme Map//EN" "../../dtd/subjectScheme.dtd"[]>
+<subjectScheme>
+  <!-- Pull in a scheme that defines audience user values -->
+  <subjectdef keys="users">
+    <subjectdef keys="therapist"/>
+    <subjectdef keys="oncologist"/>
+    <subjectdef keys="physicist"/>
+    <subjectdef keys="radiologist"/>
+    <subjectdef keys="surgeon">
+      <subjectdef keys="neuro-surgeon">
+        <subjectdef keys="plastic-surgeon"/>
+      </subjectdef>
+    </subjectdef>
+  </subjectdef>
+  <!-- Define an enumeration of the audience attribute, equal to
+       each value in the users subject. This makes the following values
+       valid for the audience attribute: therapist, oncologist, physicist, radiologist -->
+  <enumerationdef>
+    <attributedef name="audience"/>
+    <subjectdef keyref="users"/>
+  </enumerationdef>
+</subjectScheme>
