@@ -39,6 +39,12 @@ namespace Trisoft.ISHRemote.Objects.Public
     ///         <ishtype ishref = "ISHUserGroup" />
     ///     </ishreference>
     /// </ishfielddefinition>
+    /// <ishfielddefinition name="FTESTCONTINENTS" level="logical" type="ishmetadatabinding" ismandatory="false" ismultivalue="true"
+    /// allowonread="true" allowoncreate="true" allowonupdate="true" allowonsearch="true" allowonsmarttagging="false" issystem="false" isbasic="true" isdescriptive="false">
+    /// <label>Continents Test Field</label>
+    /// <description>Used to test a string field with metadata binding configured.</description>
+    /// <ishmetadatabinding sourceref = "CitiesConnector" />
+    /// </ishfielddefinition>
     /// ...
     /// </ishtypedefinition>
     /// </example>
@@ -55,6 +61,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         public bool AllowOnCreate { get; internal set; }
         public bool AllowOnUpdate { get; internal set; }
         public bool AllowOnSearch { get; internal set; }
+        public bool AllowOnSmartTagging { get; internal set; }
         public bool IsSystem { get; internal set; }
         public bool IsBasic { get; internal set; }
         public bool IsDescriptive { get; internal set; }
@@ -62,7 +69,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         public string Description { get; internal set; }
         public List<Enumerations.ISHType> ReferenceType { get; internal set; }
         public string ReferenceLov { get; internal set; }
-
+        public string ReferenceMetadataBinding { get; internal set; }
 
         /// <summary>
         /// PS1XML Shorthand notation of DataType-ReferenceType-ReferenceLov properties
@@ -160,6 +167,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = Boolean.Parse(xmlDef.Attributes["allowoncreate"].Value);
             AllowOnUpdate = Boolean.Parse(xmlDef.Attributes["allowonupdate"].Value);
             AllowOnSearch = Boolean.Parse(xmlDef.Attributes["allowonsearch"].Value);
+            AllowOnSmartTagging = Boolean.Parse(xmlDef.Attributes["allowonsmarttagging"].Value);
             IsSystem = Boolean.Parse(xmlDef.Attributes["issystem"].Value);
             IsBasic = Boolean.Parse(xmlDef.Attributes["isbasic"].Value);
             IsDescriptive = Boolean.Parse(xmlDef.Attributes["isdescriptive"].Value);
@@ -167,6 +175,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             Description = xmlDef.SelectSingleNode("description").InnerText;
             ReferenceLov = "";
             ReferenceType = new List<Enumerations.ISHType>();
+            ReferenceMetadataBinding = "";
 
             string type = xmlDef.Attributes["type"].Value;
             switch (type)
@@ -203,6 +212,18 @@ namespace Trisoft.ISHRemote.Objects.Public
                 case "string":
                     DataType = Enumerations.DataType.String;
                     break;
+                case "ishmetadatabinding":
+                    DataType = Enumerations.DataType.ISHMetadataBinding;
+                    if (xmlDef.SelectSingleNode("ishmetadatabinding") != null)
+                    {
+                        ReferenceMetadataBinding = xmlDef.SelectSingleNode("ishmetadatabinding").Attributes["sourceref"].Value;
+                    }
+                    else
+                    {
+                        ReferenceMetadataBinding = "MISSINGMETADATABINDINGSOURCEREF";
+                    }
+                    break;
+
                 default:
                     // something went wrong
                     DataType = Enumerations.DataType.ISHLov;
@@ -232,6 +253,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = false;
             AllowOnUpdate = false;
             AllowOnSearch = false;
+            AllowOnSmartTagging = false;
             IsSystem = false;
             IsBasic = false;
             IsDescriptive = false;
@@ -239,6 +261,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             Description = "";
             ReferenceLov = "";
             ReferenceType = new List<Enumerations.ISHType>();
+            ReferenceMetadataBinding = "";
         }
 
         /// <summary>
@@ -253,16 +276,18 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <param name="allowOnCreate">Boolean attribute indicating whether the field can be set via metadata by an API CREATE method.  Note: Some fields(e.g.USERNAME) must be passed as a parameter to the CREATE method.So, although these fields are mandatory, they will have allowoncreate false! </param>
         /// <param name="allowOnUpdate">Boolean attribute indicating whether the field can be set via metadata by an API UPDATE method (e.g. SetMetadata, Update,...). </param>
         /// <param name="allowOnSearch">Boolean attribute indicating whether the field is part of the full text index and can be used as part of the search query. </param>
+        /// <param name="allowOnSmartTagging">Boolean attribute indicating whether the field supports Smart Tagging. </param>
         /// <param name="isSystem">Boolean attribute indicating whether this field is part of the internal Content Manager business logic. </param>
         /// <param name="isBasic">Boolean attribute indicating whether this field is a basic field (e.g. FSTATUS) or a more advanced field (e.g. FISHSTATUSTYPE). </param>
         /// <param name="isDescriptive">Boolean attribute indicating whether this field is one of the fields that define an object. Note: These fields are also used by the internal Content Manager business code, therefore they don't require an extra call to the database when requested. </param>
         /// <param name="name">Name of the card field or the table column.</param>
         /// <param name="dataType">The field data type, indicating reference field or simple type</param>
         /// <param name="referenceLov">Lists the referenced list of values name (e.g. USERNAME or DBACKGROUNDTASKSTATUS)</param>
+        /// <param name="referenceMetadataBinding">Lists the sourceref for the MetadataBinding (e.g. CitiesConnector)</param>
         /// <param name="description">Free text description, anything which can help an implementor</param>
         internal IshTypeFieldDefinition(ILogger logger, Enumerations.ISHType ishType, Enumerations.Level level,
-            bool isMandatory, bool isMultiValue, bool allowOnRead, bool allowOnCreate, bool allowOnUpdate, bool allowOnSearch, bool isSystem, bool isBasic, bool isDescriptive,
-            string name, Enumerations.DataType dataType, string referenceLov, string description)
+            bool isMandatory, bool isMultiValue, bool allowOnRead, bool allowOnCreate, bool allowOnUpdate, bool allowOnSearch, bool allowOnSmartTagging, bool isSystem, bool isBasic, bool isDescriptive,
+            string name, Enumerations.DataType dataType, string referenceLov, string referenceMetadataBinding, string description)
         {
             _logger = logger;
             ISHType = ishType;
@@ -275,6 +300,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = allowOnCreate;
             AllowOnUpdate = allowOnUpdate;
             AllowOnSearch = allowOnSearch;
+            AllowOnSmartTagging = allowOnSmartTagging;
             IsSystem = isSystem;
             IsBasic = isBasic;
             IsDescriptive = isDescriptive;
@@ -282,6 +308,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             Description = description;
             ReferenceLov = referenceLov;
             ReferenceType = new List<Enumerations.ISHType>();
+            ReferenceMetadataBinding = referenceMetadataBinding;
         }
 
         /// <summary>
@@ -300,6 +327,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = ishTypeFieldDefinition.AllowOnCreate;
             AllowOnUpdate = ishTypeFieldDefinition.AllowOnUpdate;
             AllowOnSearch = ishTypeFieldDefinition.AllowOnSearch;
+            AllowOnSmartTagging = ishTypeFieldDefinition.AllowOnSmartTagging;
             IsSystem = ishTypeFieldDefinition.IsSystem;
             IsBasic = ishTypeFieldDefinition.IsBasic;
             IsDescriptive = ishTypeFieldDefinition.IsDescriptive;
@@ -307,6 +335,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             Description = ishTypeFieldDefinition.Description;
             ReferenceLov = ishTypeFieldDefinition.ReferenceLov;
             ReferenceType = ishTypeFieldDefinition.ReferenceType;
+            ReferenceMetadataBinding = ishTypeFieldDefinition.ReferenceMetadataBinding;
         }
 
         /// <summary>
