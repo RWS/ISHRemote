@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Protocols.WSTrust;
+using Microsoft.IdentityModel.Protocols.WsTrust;
 using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Net.Http;
