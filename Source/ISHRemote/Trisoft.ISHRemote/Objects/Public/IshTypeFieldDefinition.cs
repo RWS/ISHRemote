@@ -72,21 +72,23 @@ namespace Trisoft.ISHRemote.Objects.Public
         public string ReferenceMetadataBinding { get; internal set; }
 
         /// <summary>
-        /// PS1XML Shorthand notation of DataType-ReferenceType-ReferenceLov properties
+        /// PS1XML Shorthand notation of DataType-(ReferenceMetadataBinding/ReferenceLov/ReferenceType) properties
         /// </summary>
-        public string Type
+        public string TypeSource
         {
             get
             {
                 switch (DataType)
                 {
+                    case Enumerations.DataType.ISHMetadataBinding:
+                        return ReferenceMetadataBinding;
                     case Enumerations.DataType.ISHLov:
                         return ReferenceLov;
                     case Enumerations.DataType.ISHType:
                         // return sorted to avoid string compare issues when database seq differed
                         return string.Join(",",ReferenceType.OrderBy(q => q).ToList());
                     default:
-                        return DataType.ToString();
+                        return String.Empty;
                 }
             }
         }
@@ -98,28 +100,29 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                StringBuilder crus = new StringBuilder();
-                crus.Append(IsMandatory ? 'M' : '-');
-                crus.Append(IsMultiValue ? 'n' : '1');
-                crus.Append(AllowOnUpdate ? 'U' : '-');
-                crus.Append(AllowOnSearch ? 'S' : '-');
-                return crus.ToString();
+                StringBuilder mm = new StringBuilder();
+                mm.Append(IsMandatory ? 'M' : '-');
+                mm.Append(IsMultiValue ? 'n' : '1');
+                mm.Append(AllowOnUpdate ? 'U' : '-');
+                mm.Append(AllowOnSearch ? 'S' : '-');
+                return mm.ToString();
             }
         }
 
         /// <summary>
-        /// PS1XML Shorthand notation of Create-Read-Update-Search properties
+        /// PS1XML Shorthand notation of Create-Read-Update-Search-AllowOnSmartTagging properties
         /// </summary>
-        public string CRUS
+        public string CRUST
         {
             get
             {
-                StringBuilder crus = new StringBuilder();
-                crus.Append(AllowOnCreate ? 'C' : '-');
-                crus.Append(AllowOnRead ? 'R' : '-');
-                crus.Append(AllowOnUpdate ? 'U' : '-');
-                crus.Append(AllowOnSearch ? 'S' : '-');
-                return crus.ToString();
+                StringBuilder crust = new StringBuilder();
+                crust.Append(AllowOnCreate ? 'C' : '-');
+                crust.Append(AllowOnRead ? 'R' : '-');
+                crust.Append(AllowOnUpdate ? 'U' : '-');
+                crust.Append(AllowOnSearch ? 'S' : '-');
+                crust.Append(AllowOnSmartTagging ? 'T' : '-');
+                return crust.ToString();
             }
         }
 
@@ -167,7 +170,14 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = Boolean.Parse(xmlDef.Attributes["allowoncreate"].Value);
             AllowOnUpdate = Boolean.Parse(xmlDef.Attributes["allowonupdate"].Value);
             AllowOnSearch = Boolean.Parse(xmlDef.Attributes["allowonsearch"].Value);
-            AllowOnSmartTagging = Boolean.Parse(xmlDef.Attributes["allowonsmarttagging"].Value);
+            if (xmlDef.Attributes["allowonsmarttagging"] != null)
+            {
+                AllowOnSmartTagging = Boolean.Parse(xmlDef.Attributes["allowonsmarttagging"].Value);
+            }
+            else
+            {
+                AllowOnSmartTagging = false;
+            }
             IsSystem = Boolean.Parse(xmlDef.Attributes["issystem"].Value);
             IsBasic = Boolean.Parse(xmlDef.Attributes["isbasic"].Value);
             IsDescriptive = Boolean.Parse(xmlDef.Attributes["isdescriptive"].Value);
@@ -349,20 +359,20 @@ namespace Trisoft.ISHRemote.Objects.Public
                 return string.Compare(Key, b.Key);
             }
             // Keys match, now check the properties that matter
-            if (!Type.Equals(b.Type, StringComparison.InvariantCulture))
+            if (!TypeSource.Equals(b.TypeSource, StringComparison.InvariantCulture))
             {
-                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.Type[{Type}] b.Type[{b.Type}]");
-                return string.Compare(Type, b.Type);
+                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.DataSource[{TypeSource}] b.DataSource[{b.TypeSource}]");
+                return string.Compare(TypeSource, b.TypeSource);
             }
             if (!MM.Equals(b.MM, StringComparison.InvariantCulture))
             {
                 _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.MM[{MM}] b.MM[{b.MM}]");
                 return string.Compare(MM, b.MM, StringComparison.InvariantCulture);
             }
-            if (!CRUS.Equals(b.CRUS, StringComparison.InvariantCulture))
+            if (!CRUST.Equals(b.CRUST, StringComparison.InvariantCulture))
             {
-                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.CRUS[{CRUS}] b.CRUS[{b.CRUS}]");
-                return string.Compare(CRUS, b.CRUS, StringComparison.InvariantCulture);
+                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.CRUST[{CRUST}] b.CRUST[{b.CRUST}]");
+                return string.Compare(CRUST, b.CRUST, StringComparison.InvariantCulture);
             }
             if (!SDB.Equals(b.SDB, StringComparison.InvariantCulture))
             {

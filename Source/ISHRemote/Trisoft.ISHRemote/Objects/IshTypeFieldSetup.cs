@@ -49,8 +49,7 @@ namespace Trisoft.ISHRemote.Objects
             _logger = logger;
             _ishTypeFieldDefinitions = new SortedDictionary<string, IshTypeFieldDefinition>();
             XmlDocument xmlDocument = new XmlDocument();
-            //xmlDocument.LoadXml(xmlIshFieldSetup);
-            xmlDocument.Load("d:\\resultNew.xml");
+            xmlDocument.LoadXml(xmlIshFieldSetup);
             foreach (XmlNode xmlIshTypeDefinition in xmlDocument.SelectNodes("ishfieldsetup/ishtypedefinition"))
             {
                 string name = xmlIshTypeDefinition.Attributes.GetNamedItem("name").Value;
@@ -484,6 +483,16 @@ namespace Trisoft.ISHRemote.Objects
                                 }
                             }
                             else
+                            if (_ishTypeFieldDefinitions[key].DataType == Enumerations.DataType.ISHMetadataBinding && ishField.ValueType == Enumerations.ValueType.Value)
+                            {
+                                switch (_strictMetadataPreference)
+                                {
+                                    case Enumerations.StrictMetadataPreference.Continue:
+                                        _logger.WriteVerbose($"ToIshMetadataFields Metadata bound field with ValueType [{Enumerations.ValueType.Value}] removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
+                                        break;
+                                }
+                            }
+                            else
                             {
                                 switch (_strictMetadataPreference)
                                 {
@@ -506,6 +515,15 @@ namespace Trisoft.ISHRemote.Objects
                                 {
                                     case Enumerations.StrictMetadataPreference.Continue:
                                         _logger.WriteVerbose($"ToIshMetadataFields AllowOnUpdate removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
+                                        break;
+                                }
+                            } else 
+                            if (_ishTypeFieldDefinitions[key].DataType == Enumerations.DataType.ISHMetadataBinding && ishField.ValueType == Enumerations.ValueType.Value)
+                            {
+                                switch (_strictMetadataPreference)
+                                {
+                                    case Enumerations.StrictMetadataPreference.Continue:
+                                        _logger.WriteVerbose($"ToIshMetadataFields Metadata bound field with ValueType [{Enumerations.ValueType.Value}] removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
                                         break;
                                 }
                             }

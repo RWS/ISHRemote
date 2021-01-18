@@ -428,7 +428,7 @@ namespace Trisoft.ISHRemote.Objects
             /// </summary>
             DateTime,
             /// <summary>
-            /// ???????
+            /// The field data type used to describe metadata bound fields
             /// </summary>
             ISHMetadataBinding
         }
