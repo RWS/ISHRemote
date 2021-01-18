@@ -1454,6 +1454,10 @@
             <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
+            <Label>DataSource</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
             <Label>SDB</Label>
             <Width>4</Width>
           </TableColumnHeader>
@@ -1462,8 +1466,8 @@
             <Width>2</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>CRUS</Label>
-            <Width>4</Width>
+            <Label>CRUST</Label>
+            <Width>5</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Description</Label>
@@ -1486,13 +1490,16 @@
                 <PropertyName>DataType</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
+                <PropertyName>TypeSource</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
                 <PropertyName>SDB</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>MM</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>CRUS</PropertyName>
+                <PropertyName>CRUST</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Description</PropertyName>
@@ -1527,8 +1534,12 @@
             <Width>25</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Type</Label>
+            <Label>DataType</Label>
             <Width>20</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>DataSource</Label>
+            <Width>16</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>SDB</Label>
@@ -1539,8 +1550,8 @@
             <Width>2</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>CRUS</Label>
-            <Width>4</Width>
+            <Label>CRUST</Label>
+            <Width>5</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Description</Label>
@@ -1563,7 +1574,10 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Type</PropertyName>
+                <PropertyName>DataType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TypeSource</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>SDB</PropertyName>
@@ -1572,7 +1586,7 @@
                 <PropertyName>MM</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>CRUS</PropertyName>
+                <PropertyName>CRUST</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Description</PropertyName>
