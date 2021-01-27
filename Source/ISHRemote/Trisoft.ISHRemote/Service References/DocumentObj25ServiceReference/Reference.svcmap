@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="c8443b9d-09c3-41d8-b7c4-c55fda6d4daa" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="9dc251b3-a78d-4521-86e3-05cea4b0e3da" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,14 +22,14 @@
     <MetadataSource Address="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="DocumentObj4.xsd" MetadataType="Schema" ID="8296745f-1c1b-483d-af4c-06290c3c2cc0" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd4" />
-    <MetadataFile FileName="DocumentObj1.wsdl" MetadataType="Wsdl" ID="b772baee-d080-43c0-ac82-54eb3609ac4a" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?wsdl=wsdl0" />
-    <MetadataFile FileName="DocumentObj3.xsd" MetadataType="Schema" ID="21877eeb-c361-4907-90a7-ee632b32831b" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd0" />
-    <MetadataFile FileName="DocumentObj.xsd" MetadataType="Schema" ID="7060442d-eafe-467c-95de-320fbe9b839a" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd3" />
-    <MetadataFile FileName="DocumentObj1.xsd" MetadataType="Schema" ID="258e2d0b-feed-4f2d-a9ef-2877e18ba90a" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd2" />
-    <MetadataFile FileName="DocumentObj2.xsd" MetadataType="Schema" ID="5e76287a-e2b1-4bcf-bdc5-d3424d757557" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd1" />
-    <MetadataFile FileName="DocumentObj.disco" MetadataType="Disco" ID="490f57a9-b180-4973-80ff-844631ffb94c" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?disco" />
-    <MetadataFile FileName="DocumentObj.wsdl" MetadataType="Wsdl" ID="bb8c880e-081d-47a5-9582-7ed2f458d9e0" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?wsdl" />
+    <MetadataFile FileName="DocumentObj.xsd" MetadataType="Schema" ID="83fcd074-e572-47e6-8c0c-b526c4f16c44" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd4" />
+    <MetadataFile FileName="DocumentObj.wsdl" MetadataType="Wsdl" ID="c2ca5249-85cd-4385-97ff-56e5d657e842" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?wsdl" />
+    <MetadataFile FileName="DocumentObj1.xsd" MetadataType="Schema" ID="c6b79a6b-0bc6-4090-b018-bcc4ad2a022a" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd0" />
+    <MetadataFile FileName="DocumentObj2.xsd" MetadataType="Schema" ID="256dad9e-caca-48db-9e09-828af75a9027" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd3" />
+    <MetadataFile FileName="DocumentObj3.xsd" MetadataType="Schema" ID="d19674d3-7864-4444-8c05-401d193e2f7a" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd2" />
+    <MetadataFile FileName="DocumentObj1.wsdl" MetadataType="Wsdl" ID="2548a33b-b4f8-43cc-808d-46d2d23febea" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="DocumentObj4.xsd" MetadataType="Schema" ID="823866f8-6865-4f14-9718-7f8a1f86f3e1" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?xsd=xsd1" />
+    <MetadataFile FileName="DocumentObj.disco" MetadataType="Disco" ID="7cdab387-5367-485b-8766-f7d8508b1a1b" SourceId="1" SourceUrl="https://ish.example.com/ISHWS/Wcf/API25/DocumentObj.svc?disco" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

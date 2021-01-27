@@ -393,6 +393,20 @@ namespace Trisoft.ISHRemote.DocumentObj25ServiceReference {
         System.Threading.Tasks.Task<string> RetrieveMetadataByIshLngRefsAsync(long[] lngRefs, string xmlRequestedMetadata);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMet" +
+            "adataByIshLngRefs2", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMet" +
+            "adataByIshLngRefs2Response")]
+        [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.DocumentObj25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMet" +
+            "adataByIshLngRefs2InfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="xmlObjectList")]
+        string RetrieveMetadataByIshLngRefs2(long[] lngRefs, Trisoft.ISHRemote.DocumentObj25ServiceReference.StatusFilter statusFilter, string xmlMetadataFilter, string xmlRequestedMetadata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMet" +
+            "adataByIshLngRefs2", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMet" +
+            "adataByIshLngRefs2Response")]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="xmlObjectList")]
+        System.Threading.Tasks.Task<string> RetrieveMetadataByIshLngRefs2Async(long[] lngRefs, Trisoft.ISHRemote.DocumentObj25ServiceReference.StatusFilter statusFilter, string xmlMetadataFilter, string xmlRequestedMetadata);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMet" +
             "adataByIshVersionRefs", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMet" +
             "adataByIshVersionRefsResponse")]
         [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.DocumentObj25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMet" +
@@ -718,6 +732,34 @@ namespace Trisoft.ISHRemote.DocumentObj25ServiceReference {
                     string compareVersionXmlProductDefinition, 
                     string eventType, 
                     string xmlParameters);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaiseEventB" +
+            "yIshLngRefs", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaiseEventB" +
+            "yIshLngRefsResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.DocumentObj25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaiseEventB" +
+            "yIshLngRefsInfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="returnValue")]
+        long RaiseEventByIshLngRefs(long[] lngRefs, string eventType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaiseEventB" +
+            "yIshLngRefs", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaiseEventB" +
+            "yIshLngRefsResponse")]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="returnValue")]
+        System.Threading.Tasks.Task<long> RaiseEventByIshLngRefsAsync(long[] lngRefs, string eventType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByI" +
+            "shLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByI" +
+            "shLngRefResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.DocumentObj25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByI" +
+            "shLngRefInfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="outXmlFieldTags")]
+        string SmartTagByIshLngRef(long lngRef, string xmlFieldTags);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByI" +
+            "shLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByI" +
+            "shLngRefResponse")]
+        [return: System.ServiceModel.MessageParameterAttribute(Name="outXmlFieldTags")]
+        System.Threading.Tasks.Task<string> SmartTagByIshLngRefAsync(long lngRef, string xmlFieldTags);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1465,6 +1507,14 @@ namespace Trisoft.ISHRemote.DocumentObj25ServiceReference {
             return base.Channel.RetrieveMetadataByIshLngRefsAsync(lngRefs, xmlRequestedMetadata);
         }
         
+        public string RetrieveMetadataByIshLngRefs2(long[] lngRefs, Trisoft.ISHRemote.DocumentObj25ServiceReference.StatusFilter statusFilter, string xmlMetadataFilter, string xmlRequestedMetadata) {
+            return base.Channel.RetrieveMetadataByIshLngRefs2(lngRefs, statusFilter, xmlMetadataFilter, xmlRequestedMetadata);
+        }
+        
+        public System.Threading.Tasks.Task<string> RetrieveMetadataByIshLngRefs2Async(long[] lngRefs, Trisoft.ISHRemote.DocumentObj25ServiceReference.StatusFilter statusFilter, string xmlMetadataFilter, string xmlRequestedMetadata) {
+            return base.Channel.RetrieveMetadataByIshLngRefs2Async(lngRefs, statusFilter, xmlMetadataFilter, xmlRequestedMetadata);
+        }
+        
         public string RetrieveMetadataByIshVersionRefs(long[] versionRefs, Trisoft.ISHRemote.DocumentObj25ServiceReference.StatusFilter statusFilter, string xmlMetadataFilter, string xmlRequestedMetadata) {
             return base.Channel.RetrieveMetadataByIshVersionRefs(versionRefs, statusFilter, xmlMetadataFilter, xmlRequestedMetadata);
         }
@@ -1707,6 +1757,22 @@ namespace Trisoft.ISHRemote.DocumentObj25ServiceReference {
                     string eventType, 
                     string xmlParameters) {
             return base.Channel.RaisePublishEventAsync(logicalId, version, outputFormat, languages, resources, baselineId, baselineAutoCompleteMode, workingLanguage, workingResolution, fallbackLanguages, resourceFallbackLanguages, illustrationFallbackLanguages, xmlProductDefinition, compareVersion, compareVersionStartDocument, compareVersionResources, compareVersionBaselineId, compareVersionXmlProductDefinition, eventType, xmlParameters);
+        }
+        
+        public long RaiseEventByIshLngRefs(long[] lngRefs, string eventType) {
+            return base.Channel.RaiseEventByIshLngRefs(lngRefs, eventType);
+        }
+        
+        public System.Threading.Tasks.Task<long> RaiseEventByIshLngRefsAsync(long[] lngRefs, string eventType) {
+            return base.Channel.RaiseEventByIshLngRefsAsync(lngRefs, eventType);
+        }
+        
+        public string SmartTagByIshLngRef(long lngRef, string xmlFieldTags) {
+            return base.Channel.SmartTagByIshLngRef(lngRef, xmlFieldTags);
+        }
+        
+        public System.Threading.Tasks.Task<string> SmartTagByIshLngRefAsync(long lngRef, string xmlFieldTags) {
+            return base.Channel.SmartTagByIshLngRefAsync(lngRef, xmlFieldTags);
         }
     }
 }
