@@ -753,13 +753,13 @@ namespace Trisoft.ISHRemote.DocumentObj25ServiceReference {
         [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.DocumentObj25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByI" +
             "shLngRefInfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
         [return: System.ServiceModel.MessageParameterAttribute(Name="outXmlFieldTags")]
-        string SmartTagByIshLngRef(long lngRef, string xmlFieldTags);
+        string SmartTagByIshLngRef(long lngRef, string xmlFieldTags, string uiLanguage);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByI" +
             "shLngRef", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByI" +
             "shLngRefResponse")]
         [return: System.ServiceModel.MessageParameterAttribute(Name="outXmlFieldTags")]
-        System.Threading.Tasks.Task<string> SmartTagByIshLngRefAsync(long lngRef, string xmlFieldTags);
+        System.Threading.Tasks.Task<string> SmartTagByIshLngRefAsync(long lngRef, string xmlFieldTags, string uiLanguage);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1767,12 +1767,12 @@ namespace Trisoft.ISHRemote.DocumentObj25ServiceReference {
             return base.Channel.RaiseEventByIshLngRefsAsync(lngRefs, eventType);
         }
         
-        public string SmartTagByIshLngRef(long lngRef, string xmlFieldTags) {
-            return base.Channel.SmartTagByIshLngRef(lngRef, xmlFieldTags);
+        public string SmartTagByIshLngRef(long lngRef, string xmlFieldTags, string uiLanguage) {
+            return base.Channel.SmartTagByIshLngRef(lngRef, xmlFieldTags, uiLanguage);
         }
         
-        public System.Threading.Tasks.Task<string> SmartTagByIshLngRefAsync(long lngRef, string xmlFieldTags) {
-            return base.Channel.SmartTagByIshLngRefAsync(lngRef, xmlFieldTags);
+        public System.Threading.Tasks.Task<string> SmartTagByIshLngRefAsync(long lngRef, string xmlFieldTags, string uiLanguage) {
+            return base.Channel.SmartTagByIshLngRefAsync(lngRef, xmlFieldTags, uiLanguage);
         }
     }
 }

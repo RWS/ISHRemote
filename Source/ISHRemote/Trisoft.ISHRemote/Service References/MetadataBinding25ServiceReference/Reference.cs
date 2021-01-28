@@ -158,13 +158,13 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference {
         [System.ServiceModel.FaultContractAttribute(typeof(Trisoft.ISHRemote.MetadataBinding25ServiceReference.InfoShareFault), Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/SmartTa" +
             "gInfoShareFault", Name="InfoShareFault", Namespace="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/")]
         [return: System.ServiceModel.MessageParameterAttribute(Name="outXmlFieldTags")]
-        string SmartTag(string xmlFieldTags, string language, string edt, byte[] data);
+        string SmartTag(string xmlFieldTags, string language, string dataLanguage, string edt, byte[] data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/SmartTa" +
             "g", ReplyAction="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/MetadataBinding/SmartTa" +
             "gResponse")]
         [return: System.ServiceModel.MessageParameterAttribute(Name="outXmlFieldTags")]
-        System.Threading.Tasks.Task<string> SmartTagAsync(string xmlFieldTags, string language, string edt, byte[] data);
+        System.Threading.Tasks.Task<string> SmartTagAsync(string xmlFieldTags, string language, string dataLanguage, string edt, byte[] data);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -218,12 +218,12 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference {
             return base.Channel.RetrieveTagStructureAsync(fieldName, fieldLevel, xmlFieldsFilter, language);
         }
         
-        public string SmartTag(string xmlFieldTags, string language, string edt, byte[] data) {
-            return base.Channel.SmartTag(xmlFieldTags, language, edt, data);
+        public string SmartTag(string xmlFieldTags, string language, string dataLanguage, string edt, byte[] data) {
+            return base.Channel.SmartTag(xmlFieldTags, language, dataLanguage, edt, data);
         }
         
-        public System.Threading.Tasks.Task<string> SmartTagAsync(string xmlFieldTags, string language, string edt, byte[] data) {
-            return base.Channel.SmartTagAsync(xmlFieldTags, language, edt, data);
+        public System.Threading.Tasks.Task<string> SmartTagAsync(string xmlFieldTags, string language, string dataLanguage, string edt, byte[] data) {
+            return base.Channel.SmartTagAsync(xmlFieldTags, language, dataLanguage, edt, data);
         }
     }
 }
