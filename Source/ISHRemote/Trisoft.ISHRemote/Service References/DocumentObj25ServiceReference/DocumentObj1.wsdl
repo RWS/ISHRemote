@@ -171,6 +171,15 @@
   <wsdl:message name="DocumentObj_RetrieveMetadataByIshLngRefs_InfoShareFault_FaultMessage">
     <wsdl:part xmlns:q18="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q18:InfoShareFault" />
   </wsdl:message>
+  <wsdl:message name="DocumentObj_RetrieveMetadataByIshLngRefs2_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadataByIshLngRefs2" />
+  </wsdl:message>
+  <wsdl:message name="DocumentObj_RetrieveMetadataByIshLngRefs2_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveMetadataByIshLngRefs2Response" />
+  </wsdl:message>
+  <wsdl:message name="DocumentObj_RetrieveMetadataByIshLngRefs2_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q19="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q19:InfoShareFault" />
+  </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveMetadataByIshVersionRefs_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveMetadataByIshVersionRefs" />
   </wsdl:message>
@@ -178,7 +187,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveMetadataByIshVersionRefsResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveMetadataByIshVersionRefs_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q19="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q19:InfoShareFault" />
+    <wsdl:part xmlns:q20="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q20:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveVersionMetadata_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveVersionMetadata" />
@@ -187,7 +196,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveVersionMetadataResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveVersionMetadata_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q20="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q20:InfoShareFault" />
+    <wsdl:part xmlns:q21="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q21:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetDataObjectInfoByIshLngRef_InputMessage">
     <wsdl:part name="parameters" element="tns:GetDataObjectInfoByIshLngRef" />
@@ -196,7 +205,7 @@
     <wsdl:part name="parameters" element="tns:GetDataObjectInfoByIshLngRefResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetDataObjectInfoByIshLngRef_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q21="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q21:InfoShareFault" />
+    <wsdl:part xmlns:q22="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q22:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveDataObjectInfoByIshLngRefs_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveDataObjectInfoByIshLngRefs" />
@@ -205,7 +214,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveDataObjectInfoByIshLngRefsResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveDataObjectInfoByIshLngRefs_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q22="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q22:InfoShareFault" />
+    <wsdl:part xmlns:q23="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q23:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetObject_InputMessage">
     <wsdl:part name="parameters" element="tns:GetObject" />
@@ -214,7 +223,7 @@
     <wsdl:part name="parameters" element="tns:GetObjectResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetObject_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q23="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q23:InfoShareFault" />
+    <wsdl:part xmlns:q24="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q24:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveObjects_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveObjects" />
@@ -223,7 +232,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveObjectsResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveObjects_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q24="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q24:InfoShareFault" />
+    <wsdl:part xmlns:q25="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q25:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveObjectsByIshLngRefs_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveObjectsByIshLngRefs" />
@@ -232,7 +241,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveObjectsByIshLngRefsResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveObjectsByIshLngRefs_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q25="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q25:InfoShareFault" />
+    <wsdl:part xmlns:q26="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q26:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveObjectsByRevisionIds_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveObjectsByRevisionIds" />
@@ -241,7 +250,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveObjectsByRevisionIdsResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveObjectsByRevisionIds_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q26="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q26:InfoShareFault" />
+    <wsdl:part xmlns:q27="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q27:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveRevisionInfoByIshLngRefs_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveRevisionInfoByIshLngRefs" />
@@ -250,7 +259,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveRevisionInfoByIshLngRefsResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveRevisionInfoByIshLngRefs_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q27="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q27:InfoShareFault" />
+    <wsdl:part xmlns:q28="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q28:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_FolderLocations_InputMessage">
     <wsdl:part name="parameters" element="tns:FolderLocations" />
@@ -259,7 +268,7 @@
     <wsdl:part name="parameters" element="tns:FolderLocationsResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_FolderLocations_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q28="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q28:InfoShareFault" />
+    <wsdl:part xmlns:q29="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q29:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_Find_InputMessage">
     <wsdl:part name="parameters" element="tns:Find" />
@@ -268,7 +277,7 @@
     <wsdl:part name="parameters" element="tns:FindResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_Find_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q29="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q29:InfoShareFault" />
+    <wsdl:part xmlns:q30="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q30:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveMetadata_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveMetadata" />
@@ -277,7 +286,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveMetadataResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveMetadata_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q30="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q30:InfoShareFault" />
+    <wsdl:part xmlns:q31="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q31:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveLanguageMetadata_InputMessage">
     <wsdl:part name="parameters" element="tns:RetrieveLanguageMetadata" />
@@ -286,7 +295,7 @@
     <wsdl:part name="parameters" element="tns:RetrieveLanguageMetadataResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RetrieveLanguageMetadata_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q31="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q31:InfoShareFault" />
+    <wsdl:part xmlns:q32="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q32:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_FolderLocation_InputMessage">
     <wsdl:part name="parameters" element="tns:FolderLocation" />
@@ -295,7 +304,7 @@
     <wsdl:part name="parameters" element="tns:FolderLocationResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_FolderLocation_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q32="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q32:InfoShareFault" />
+    <wsdl:part xmlns:q33="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q33:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_ContainingLogicalId_InputMessage">
     <wsdl:part name="parameters" element="tns:ContainingLogicalId" />
@@ -304,7 +313,7 @@
     <wsdl:part name="parameters" element="tns:ContainingLogicalIdResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_ContainingLogicalId_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q33="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q33:InfoShareFault" />
+    <wsdl:part xmlns:q34="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q34:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_ContainingCondition_InputMessage">
     <wsdl:part name="parameters" element="tns:ContainingCondition" />
@@ -313,7 +322,7 @@
     <wsdl:part name="parameters" element="tns:ContainingConditionResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_ContainingCondition_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q34="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q34:InfoShareFault" />
+    <wsdl:part xmlns:q35="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q35:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_ContainingVariable_InputMessage">
     <wsdl:part name="parameters" element="tns:ContainingVariable" />
@@ -322,7 +331,7 @@
     <wsdl:part name="parameters" element="tns:ContainingVariableResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_ContainingVariable_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q35="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q35:InfoShareFault" />
+    <wsdl:part xmlns:q36="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q36:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetChildren_InputMessage">
     <wsdl:part name="parameters" element="tns:GetChildren" />
@@ -331,7 +340,7 @@
     <wsdl:part name="parameters" element="tns:GetChildrenResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetChildren_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q36="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q36:InfoShareFault" />
+    <wsdl:part xmlns:q37="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q37:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetPossibleTargetStatuses_InputMessage">
     <wsdl:part name="parameters" element="tns:GetPossibleTargetStatuses" />
@@ -340,7 +349,7 @@
     <wsdl:part name="parameters" element="tns:GetPossibleTargetStatusesResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetPossibleTargetStatuses_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q37="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q37:InfoShareFault" />
+    <wsdl:part xmlns:q38="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q38:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetPossibleTargetStatusesByIshLngRef_InputMessage">
     <wsdl:part name="parameters" element="tns:GetPossibleTargetStatusesByIshLngRef" />
@@ -349,7 +358,7 @@
     <wsdl:part name="parameters" element="tns:GetPossibleTargetStatusesByIshLngRefResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_GetPossibleTargetStatusesByIshLngRef_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q38="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q38:InfoShareFault" />
+    <wsdl:part xmlns:q39="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q39:InfoShareFault" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RaisePublishEvent_InputMessage">
     <wsdl:part name="parameters" element="tns:RaisePublishEvent" />
@@ -358,7 +367,25 @@
     <wsdl:part name="parameters" element="tns:RaisePublishEventResponse" />
   </wsdl:message>
   <wsdl:message name="DocumentObj_RaisePublishEvent_InfoShareFault_FaultMessage">
-    <wsdl:part xmlns:q39="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q39:InfoShareFault" />
+    <wsdl:part xmlns:q40="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q40:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="DocumentObj_RaiseEventByIshLngRefs_InputMessage">
+    <wsdl:part name="parameters" element="tns:RaiseEventByIshLngRefs" />
+  </wsdl:message>
+  <wsdl:message name="DocumentObj_RaiseEventByIshLngRefs_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RaiseEventByIshLngRefsResponse" />
+  </wsdl:message>
+  <wsdl:message name="DocumentObj_RaiseEventByIshLngRefs_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q41="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q41:InfoShareFault" />
+  </wsdl:message>
+  <wsdl:message name="DocumentObj_SmartTagByIshLngRef_InputMessage">
+    <wsdl:part name="parameters" element="tns:SmartTagByIshLngRef" />
+  </wsdl:message>
+  <wsdl:message name="DocumentObj_SmartTagByIshLngRef_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SmartTagByIshLngRefResponse" />
+  </wsdl:message>
+  <wsdl:message name="DocumentObj_SmartTagByIshLngRef_InfoShareFault_FaultMessage">
+    <wsdl:part xmlns:q42="http://sdl.com/trisoft/2012/06/WebServices/Contracts/Faults/API25/" name="detail" element="q42:InfoShareFault" />
   </wsdl:message>
   <wsdl:portType name="DocumentObj">
     <wsdl:operation name="Create">
@@ -450,6 +477,11 @@
       <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMetadataByIshLngRefs" message="tns:DocumentObj_RetrieveMetadataByIshLngRefs_InputMessage" />
       <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMetadataByIshLngRefsResponse" message="tns:DocumentObj_RetrieveMetadataByIshLngRefs_OutputMessage" />
       <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMetadataByIshLngRefsInfoShareFault" name="InfoShareFault" message="tns:DocumentObj_RetrieveMetadataByIshLngRefs_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveMetadataByIshLngRefs2">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMetadataByIshLngRefs2" message="tns:DocumentObj_RetrieveMetadataByIshLngRefs2_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMetadataByIshLngRefs2Response" message="tns:DocumentObj_RetrieveMetadataByIshLngRefs2_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMetadataByIshLngRefs2InfoShareFault" name="InfoShareFault" message="tns:DocumentObj_RetrieveMetadataByIshLngRefs2_InfoShareFault_FaultMessage" />
     </wsdl:operation>
     <wsdl:operation name="RetrieveMetadataByIshVersionRefs">
       <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RetrieveMetadataByIshVersionRefs" message="tns:DocumentObj_RetrieveMetadataByIshVersionRefs_InputMessage" />
@@ -555,6 +587,16 @@
       <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaisePublishEvent" message="tns:DocumentObj_RaisePublishEvent_InputMessage" />
       <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaisePublishEventResponse" message="tns:DocumentObj_RaisePublishEvent_OutputMessage" />
       <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaisePublishEventInfoShareFault" name="InfoShareFault" message="tns:DocumentObj_RaisePublishEvent_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RaiseEventByIshLngRefs">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaiseEventByIshLngRefs" message="tns:DocumentObj_RaiseEventByIshLngRefs_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaiseEventByIshLngRefsResponse" message="tns:DocumentObj_RaiseEventByIshLngRefs_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/RaiseEventByIshLngRefsInfoShareFault" name="InfoShareFault" message="tns:DocumentObj_RaiseEventByIshLngRefs_InfoShareFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SmartTagByIshLngRef">
+      <wsdl:input wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByIshLngRef" message="tns:DocumentObj_SmartTagByIshLngRef_InputMessage" />
+      <wsdl:output wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByIshLngRefResponse" message="tns:DocumentObj_SmartTagByIshLngRef_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://sdl.com/trisoft/2012/06/WebServices/Services/API25/DocumentObj/SmartTagByIshLngRefInfoShareFault" name="InfoShareFault" message="tns:DocumentObj_SmartTagByIshLngRef_InfoShareFault_FaultMessage" />
     </wsdl:operation>
   </wsdl:portType>
 </wsdl:definitions>
