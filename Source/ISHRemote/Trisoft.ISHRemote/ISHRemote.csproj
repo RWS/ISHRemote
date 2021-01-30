@@ -775,6 +775,64 @@
     <None Include="Service References\BackgroundTask25ServiceReference\Trisoft.ISHRemote.BackgroundTask25ServiceReference.CreateBackgroundTaskWithStartAfterResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.wsdl" />
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj1.wsdl" />
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.BaseFolder.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.CheckOutResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.CreateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.FolderLocationResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetObjectResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetPossibleTargetStatusesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.SetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.TryGetMetadataResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.UpdateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.wsdl" />
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding1.wsdl" />
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding2.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.wsdl" />
     <None Include="Service References\PublicationOutput25ServiceReference\PublicationOutput.xsd">
       <SubType>Designer</SubType>
@@ -906,53 +964,6 @@
     <None Include="Service References\Baseline25ServiceReference\Trisoft.ISHRemote.Baseline25ServiceReference.GetBaselineResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.wsdl" />
-    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj1.wsdl" />
-    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj4.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.BaseFolder.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.CheckOutResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.CreateResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.FolderLocationResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetMetadataResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetObjectResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.GetPossibleTargetStatusesResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.SetMetadataResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.TryGetMetadataResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\DocumentObj25ServiceReference\Trisoft.ISHRemote.DocumentObj25ServiceReference.UpdateResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\EDT25ServiceReference\EDT.wsdl" />
     <None Include="Service References\EDT25ServiceReference\EDT.xsd">
       <SubType>Designer</SubType>
@@ -1035,17 +1046,6 @@
     </None>
     <None Include="Service References\ListOfValues25ServiceReference\Trisoft.ISHRemote.ListOfValues25ServiceReference.CreateValue2Response.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.wsdl" />
-    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding1.wsdl" />
-    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding2.xsd">
-      <SubType>Designer</SubType>
     </None>
     <None Include="Service References\OutputFormat25ServiceReference\OutputFormat.wsdl" />
     <None Include="Service References\OutputFormat25ServiceReference\OutputFormat.xsd">
@@ -1191,6 +1191,20 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\DocumentObj25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\DocumentObj25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\DocumentObj25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.disco" />
+    <None Include="Service References\MetadataBinding25ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\MetadataBinding25ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\MetadataBinding25ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.disco" />
     <None Include="Service References\Annotation25ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -1292,13 +1306,6 @@
     <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\technicalContent\dtd\uiDomain.mod" />
     <Content Include="Samples\Data-GeneralizeDitaXml\SpecializedDTDs\dita-oasis\1.2\xnal\dtd\xnalDomain.mod" />
     <Content Include="Samples\Publish-PublicationOutputs\publishconfig.sample.xml" />
-    <None Include="Service References\DocumentObj25ServiceReference\DocumentObj.disco" />
-    <None Include="Service References\DocumentObj25ServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\DocumentObj25ServiceReference\configuration.svcinfo" />
-    <None Include="Service References\DocumentObj25ServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
     <None Include="Service References\Application25ServiceReference\Application.disco" />
     <None Include="Service References\Application25ServiceReference\configuration91.svcinfo" />
     <None Include="Service References\Application25ServiceReference\configuration.svcinfo" />
@@ -1338,13 +1345,6 @@
     <None Include="Service References\ListOfValues25ServiceReference\configuration91.svcinfo" />
     <None Include="Service References\ListOfValues25ServiceReference\configuration.svcinfo" />
     <None Include="Service References\ListOfValues25ServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\MetadataBinding25ServiceReference\MetadataBinding.disco" />
-    <None Include="Service References\MetadataBinding25ServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\MetadataBinding25ServiceReference\configuration.svcinfo" />
-    <None Include="Service References\MetadataBinding25ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

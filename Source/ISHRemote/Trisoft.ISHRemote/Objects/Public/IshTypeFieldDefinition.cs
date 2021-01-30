@@ -39,6 +39,12 @@ namespace Trisoft.ISHRemote.Objects.Public
     ///         <ishtype ishref = "ISHUserGroup" />
     ///     </ishreference>
     /// </ishfielddefinition>
+    /// <ishfielddefinition name="FTESTCONTINENTS" level="logical" type="ishmetadatabinding" ismandatory="false" ismultivalue="true"
+    /// allowonread="true" allowoncreate="true" allowonupdate="true" allowonsearch="true" allowonsmarttagging="false" issystem="false" isbasic="true" isdescriptive="false">
+    /// <label>Continents Test Field</label>
+    /// <description>Used to test a string field with metadata binding configured.</description>
+    /// <ishmetadatabinding sourceref = "CitiesConnector" />
+    /// </ishfielddefinition>
     /// ...
     /// </ishtypedefinition>
     /// </example>
@@ -55,6 +61,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         public bool AllowOnCreate { get; internal set; }
         public bool AllowOnUpdate { get; internal set; }
         public bool AllowOnSearch { get; internal set; }
+        public bool AllowOnSmartTagging { get; internal set; }
         public bool IsSystem { get; internal set; }
         public bool IsBasic { get; internal set; }
         public bool IsDescriptive { get; internal set; }
@@ -62,24 +69,26 @@ namespace Trisoft.ISHRemote.Objects.Public
         public string Description { get; internal set; }
         public List<Enumerations.ISHType> ReferenceType { get; internal set; }
         public string ReferenceLov { get; internal set; }
-
+        public string ReferenceMetadataBinding { get; internal set; }
 
         /// <summary>
-        /// PS1XML Shorthand notation of DataType-ReferenceType-ReferenceLov properties
+        /// PS1XML Shorthand notation of DataType-(ReferenceMetadataBinding/ReferenceLov/ReferenceType) properties
         /// </summary>
-        public string Type
+        public string DataSource
         {
             get
             {
                 switch (DataType)
                 {
+                    case Enumerations.DataType.ISHMetadataBinding:
+                        return ReferenceMetadataBinding;
                     case Enumerations.DataType.ISHLov:
                         return ReferenceLov;
                     case Enumerations.DataType.ISHType:
                         // return sorted to avoid string compare issues when database seq differed
                         return string.Join(",",ReferenceType.OrderBy(q => q).ToList());
                     default:
-                        return DataType.ToString();
+                        return String.Empty;
                 }
             }
         }
@@ -91,28 +100,29 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                StringBuilder crus = new StringBuilder();
-                crus.Append(IsMandatory ? 'M' : '-');
-                crus.Append(IsMultiValue ? 'n' : '1');
-                crus.Append(AllowOnUpdate ? 'U' : '-');
-                crus.Append(AllowOnSearch ? 'S' : '-');
-                return crus.ToString();
+                StringBuilder mm = new StringBuilder();
+                mm.Append(IsMandatory ? 'M' : '-');
+                mm.Append(IsMultiValue ? 'n' : '1');
+                mm.Append(AllowOnUpdate ? 'U' : '-');
+                mm.Append(AllowOnSearch ? 'S' : '-');
+                return mm.ToString();
             }
         }
 
         /// <summary>
-        /// PS1XML Shorthand notation of Create-Read-Update-Search properties
+        /// PS1XML Shorthand notation of Create-Read-Update-Search-AllowOnSmartTagging properties
         /// </summary>
-        public string CRUS
+        public string CRUST
         {
             get
             {
-                StringBuilder crus = new StringBuilder();
-                crus.Append(AllowOnCreate ? 'C' : '-');
-                crus.Append(AllowOnRead ? 'R' : '-');
-                crus.Append(AllowOnUpdate ? 'U' : '-');
-                crus.Append(AllowOnSearch ? 'S' : '-');
-                return crus.ToString();
+                StringBuilder crust = new StringBuilder();
+                crust.Append(AllowOnCreate ? 'C' : '-');
+                crust.Append(AllowOnRead ? 'R' : '-');
+                crust.Append(AllowOnUpdate ? 'U' : '-');
+                crust.Append(AllowOnSearch ? 'S' : '-');
+                crust.Append(AllowOnSmartTagging ? 'T' : '-');
+                return crust.ToString();
             }
         }
 
@@ -160,6 +170,14 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = Boolean.Parse(xmlDef.Attributes["allowoncreate"].Value);
             AllowOnUpdate = Boolean.Parse(xmlDef.Attributes["allowonupdate"].Value);
             AllowOnSearch = Boolean.Parse(xmlDef.Attributes["allowonsearch"].Value);
+            if (xmlDef.Attributes["allowonsmarttagging"] != null)
+            {
+                AllowOnSmartTagging = Boolean.Parse(xmlDef.Attributes["allowonsmarttagging"].Value);
+            }
+            else
+            {
+                AllowOnSmartTagging = false;
+            }
             IsSystem = Boolean.Parse(xmlDef.Attributes["issystem"].Value);
             IsBasic = Boolean.Parse(xmlDef.Attributes["isbasic"].Value);
             IsDescriptive = Boolean.Parse(xmlDef.Attributes["isdescriptive"].Value);
@@ -167,6 +185,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             Description = xmlDef.SelectSingleNode("description").InnerText;
             ReferenceLov = "";
             ReferenceType = new List<Enumerations.ISHType>();
+            ReferenceMetadataBinding = "";
 
             string type = xmlDef.Attributes["type"].Value;
             switch (type)
@@ -203,6 +222,18 @@ namespace Trisoft.ISHRemote.Objects.Public
                 case "string":
                     DataType = Enumerations.DataType.String;
                     break;
+                case "ishmetadatabinding":
+                    DataType = Enumerations.DataType.ISHMetadataBinding;
+                    if (xmlDef.SelectSingleNode("ishmetadatabinding") != null)
+                    {
+                        ReferenceMetadataBinding = xmlDef.SelectSingleNode("ishmetadatabinding").Attributes["sourceref"].Value;
+                    }
+                    else
+                    {
+                        ReferenceMetadataBinding = "MISSINGMETADATABINDINGSOURCEREF";
+                    }
+                    break;
+
                 default:
                     // something went wrong
                     DataType = Enumerations.DataType.ISHLov;
@@ -232,6 +263,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = false;
             AllowOnUpdate = false;
             AllowOnSearch = false;
+            AllowOnSmartTagging = false;
             IsSystem = false;
             IsBasic = false;
             IsDescriptive = false;
@@ -239,6 +271,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             Description = "";
             ReferenceLov = "";
             ReferenceType = new List<Enumerations.ISHType>();
+            ReferenceMetadataBinding = "";
         }
 
         /// <summary>
@@ -253,16 +286,18 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <param name="allowOnCreate">Boolean attribute indicating whether the field can be set via metadata by an API CREATE method.  Note: Some fields(e.g.USERNAME) must be passed as a parameter to the CREATE method.So, although these fields are mandatory, they will have allowoncreate false! </param>
         /// <param name="allowOnUpdate">Boolean attribute indicating whether the field can be set via metadata by an API UPDATE method (e.g. SetMetadata, Update,...). </param>
         /// <param name="allowOnSearch">Boolean attribute indicating whether the field is part of the full text index and can be used as part of the search query. </param>
+        /// <param name="allowOnSmartTagging">Boolean attribute indicating whether the field supports Smart Tagging. </param>
         /// <param name="isSystem">Boolean attribute indicating whether this field is part of the internal Content Manager business logic. </param>
         /// <param name="isBasic">Boolean attribute indicating whether this field is a basic field (e.g. FSTATUS) or a more advanced field (e.g. FISHSTATUSTYPE). </param>
         /// <param name="isDescriptive">Boolean attribute indicating whether this field is one of the fields that define an object. Note: These fields are also used by the internal Content Manager business code, therefore they don't require an extra call to the database when requested. </param>
         /// <param name="name">Name of the card field or the table column.</param>
         /// <param name="dataType">The field data type, indicating reference field or simple type</param>
         /// <param name="referenceLov">Lists the referenced list of values name (e.g. USERNAME or DBACKGROUNDTASKSTATUS)</param>
+        /// <param name="referenceMetadataBinding">Lists the sourceref for the MetadataBinding (e.g. CitiesConnector)</param>
         /// <param name="description">Free text description, anything which can help an implementor</param>
         internal IshTypeFieldDefinition(ILogger logger, Enumerations.ISHType ishType, Enumerations.Level level,
-            bool isMandatory, bool isMultiValue, bool allowOnRead, bool allowOnCreate, bool allowOnUpdate, bool allowOnSearch, bool isSystem, bool isBasic, bool isDescriptive,
-            string name, Enumerations.DataType dataType, string referenceLov, string description)
+            bool isMandatory, bool isMultiValue, bool allowOnRead, bool allowOnCreate, bool allowOnUpdate, bool allowOnSearch, bool allowOnSmartTagging, bool isSystem, bool isBasic, bool isDescriptive,
+            string name, Enumerations.DataType dataType, string referenceLov, string referenceMetadataBinding, string description)
         {
             _logger = logger;
             ISHType = ishType;
@@ -275,6 +310,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = allowOnCreate;
             AllowOnUpdate = allowOnUpdate;
             AllowOnSearch = allowOnSearch;
+            AllowOnSmartTagging = allowOnSmartTagging;
             IsSystem = isSystem;
             IsBasic = isBasic;
             IsDescriptive = isDescriptive;
@@ -282,6 +318,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             Description = description;
             ReferenceLov = referenceLov;
             ReferenceType = new List<Enumerations.ISHType>();
+            ReferenceMetadataBinding = referenceMetadataBinding;
         }
 
         /// <summary>
@@ -300,6 +337,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             AllowOnCreate = ishTypeFieldDefinition.AllowOnCreate;
             AllowOnUpdate = ishTypeFieldDefinition.AllowOnUpdate;
             AllowOnSearch = ishTypeFieldDefinition.AllowOnSearch;
+            AllowOnSmartTagging = ishTypeFieldDefinition.AllowOnSmartTagging;
             IsSystem = ishTypeFieldDefinition.IsSystem;
             IsBasic = ishTypeFieldDefinition.IsBasic;
             IsDescriptive = ishTypeFieldDefinition.IsDescriptive;
@@ -307,6 +345,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             Description = ishTypeFieldDefinition.Description;
             ReferenceLov = ishTypeFieldDefinition.ReferenceLov;
             ReferenceType = ishTypeFieldDefinition.ReferenceType;
+            ReferenceMetadataBinding = ishTypeFieldDefinition.ReferenceMetadataBinding;
         }
 
         /// <summary>
@@ -320,20 +359,20 @@ namespace Trisoft.ISHRemote.Objects.Public
                 return string.Compare(Key, b.Key);
             }
             // Keys match, now check the properties that matter
-            if (!Type.Equals(b.Type, StringComparison.InvariantCulture))
+            if (!DataSource.Equals(b.DataSource, StringComparison.InvariantCulture))
             {
-                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.Type[{Type}] b.Type[{b.Type}]");
-                return string.Compare(Type, b.Type);
+                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.DataSource[{DataSource}] b.DataSource[{b.DataSource}]");
+                return string.Compare(DataSource, b.DataSource);
             }
             if (!MM.Equals(b.MM, StringComparison.InvariantCulture))
             {
                 _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.MM[{MM}] b.MM[{b.MM}]");
                 return string.Compare(MM, b.MM, StringComparison.InvariantCulture);
             }
-            if (!CRUS.Equals(b.CRUS, StringComparison.InvariantCulture))
+            if (!CRUST.Equals(b.CRUST, StringComparison.InvariantCulture))
             {
-                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.CRUS[{CRUS}] b.CRUS[{b.CRUS}]");
-                return string.Compare(CRUS, b.CRUS, StringComparison.InvariantCulture);
+                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.CRUST[{CRUST}] b.CRUST[{b.CRUST}]");
+                return string.Compare(CRUST, b.CRUST, StringComparison.InvariantCulture);
             }
             if (!SDB.Equals(b.SDB, StringComparison.InvariantCulture))
             {

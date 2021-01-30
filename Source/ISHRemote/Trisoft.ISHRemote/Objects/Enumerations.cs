@@ -426,7 +426,11 @@ namespace Trisoft.ISHRemote.Objects
             /// <summary>
             /// The field data type is a simple controlled date time type
             /// </summary>
-            DateTime
+            DateTime,
+            /// <summary>
+            /// The field data type used to describe metadata bound fields
+            /// </summary>
+            ISHMetadataBinding
         }
 
         /// <summary>

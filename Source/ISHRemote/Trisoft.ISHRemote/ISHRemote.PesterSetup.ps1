@@ -9,7 +9,7 @@ Write-Host "Generating and Executing Import-Module Statement..."
 $project = (Split-Path -Parent $MyInvocation.MyCommand.Path).ToLower()
 $project = $project.Substring(0, $project.LastIndexOf("ishremote"))
 $project = ($project + "ishremote")
-Import-Module (Join-Path $project "\bin\debug\ishremote.psm1") -DisableNameChecking
+Import-Module (Join-Path $project "\bin\debug\ISHRemote") -DisableNameChecking
 Write-Host    "Initializing Global Test Data and Variables"
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
 Write-Verbose "Initializing OASIS DITA File Contents"

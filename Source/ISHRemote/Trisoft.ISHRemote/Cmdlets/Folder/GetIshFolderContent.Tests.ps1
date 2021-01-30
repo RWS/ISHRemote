@@ -279,25 +279,25 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 	
 	Context "Get-IshFolderContent use MetadataFilter" {
 		It "Metadata filter on FSTATUS" {
-			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value "Draft" -ValueType Value
+			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value $ishStatusDraft -ValueType Element
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
 			$ishObjects.Count | Should Be $ishTopicCount
 		}
 		
 		It "Metadata filter on FSTATUS (filtering out results)" {
-			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value "In Translation" -ValueType Value
+			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value $ishStatusReleased -ValueType Element
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
 			$ishObjects.Count | Should Be 0
 		}
 		
 		It "Metadata filter on FSTATUS,DOC-LANGUAGE" {
-			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value "Draft" -ValueType Value |
+			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value $ishStatusDraft -ValueType Element |
 							  Set-IshMetadataFilterField -Name "DOC-LANGUAGE" -Level Lng -Value "$ishLngLabel" -ValueType Value  # en
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
 			$ishObjects.Count | Should Be $ishTopicCount
 		}
 		It "Metadata filter on (FSTATUS, DOC-LANGUAGE) with LanguagesFilter override" {
-			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value "Draft" -ValueType Value |
+			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value $ishStatusDraft -ValueType Element |
 							  Set-IshMetadataFilterField -Name "DOC-LANGUAGE" -Level Lng -Value "$ishLngLabel" -ValueType Value  # en
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter -LanguagesFilter @("$ishLngTarget2Label", "$ishLngTarget1Label")  # de, es
 			$ishObjects.Count | Should Be 0

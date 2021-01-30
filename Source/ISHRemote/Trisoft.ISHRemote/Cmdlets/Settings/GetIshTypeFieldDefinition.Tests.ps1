@@ -64,8 +64,8 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should Be 23 # all columns are explicit api parameters and cannot be set over metadata
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsMultiValue -EQ $false).Count | Should Be 23 # all columns are single value
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsSystem -EQ $true).Count | Should Be 23 # all columns are system columns
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'STATUS').Type | Should Be 'DBACKGROUNDTASKSTATUS'
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').Type | Should Be 'USERNAME'
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'STATUS').DataSource | Should Be 'DBACKGROUNDTASKSTATUS'
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').DataSource | Should Be 'USERNAME'
 		}
 		It "Table ISHEvent" {
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should Be 11
@@ -74,7 +74,7 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should Be 23 # all columns are explicit api parameters and cannot be set over metadata
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsMultiValue -EQ $false).Count | Should Be 23 # all columns are single value
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsSystem -EQ $true).Count | Should Be 23 # all columns are system columns
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').Type | Should Be 'USERNAME'
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').DataSource | Should Be 'USERNAME'
 		}
 	}
 
@@ -83,6 +83,31 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 			{ Get-IshTypeFieldDefinition -IShSession "INVALIDISHSESSION" -TriDKXmlSetupFilePath "INVALIDFILEPATH" } | Should Throw
 		}
 	}
+
+    Context "Get-IshTypeFieldDefinition and Metadata bound fields" {
+        $typeDefinitions = Get-IshTypeFieldDefinition -IshSession $ishSession
+
+		It "Check AllowOnSmartTagging not null, empty and boolean"{
+            foreach($typeDefinition in $typeDefinitions)
+            {
+                $typeDefinition.CRUST.Length | Should Be 5
+				$typeDefinition.AllowOnSmartTagging | Should Not BeNullOrEmpty
+				$typeDefinition.AllowOnSmartTagging | Should BeOfType System.Boolean
+            }
+        }
+		It "Check Metadata bound field - if configured in Extension XML settings"{
+			$typeDefinitionsMetadataBinding = $typeDefinitions | Where-Object -Property DataType -EQ "ISHMetadataBinding"
+			if($typeDefinitionsMetadataBinding.Count -gt 0)
+			{
+				foreach($typeDefinitionMetadataBinding in $typeDefinitionsMetadataBinding)
+				{
+					$typeDefinitionMetadataBinding.DataSource | Should Not BeNullOrEmpty
+					$typeDefinitionMetadataBinding.ReferenceMetadataBinding | Should Not BeNullOrEmpty
+					($typeDefinitionMetadataBinding.DataSource -eq $typeDefinitionMetadataBinding.ReferenceMetadataBinding) | Should Be $true
+				}
+			}
+		}
+    }
 }
 
 
