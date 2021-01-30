@@ -206,7 +206,7 @@
     <Compile Include="Objects\IshBackgroundTasks.cs" />
     <Compile Include="Objects\IshBaselineItems.cs" />
     <Compile Include="Objects\IshBaseObject.cs" />
-    <Compile Include="Objects\IshExtensionConfig.cs" />
+    <Compile Include="Objects\IshSettingsExtensionConfig.cs" />
     <Compile Include="Objects\IshObjectFactory.cs" />
     <Compile Include="Objects\Public\IshBackgroundTask.cs" />
     <Compile Include="Objects\Public\IshBaseline.cs" />
