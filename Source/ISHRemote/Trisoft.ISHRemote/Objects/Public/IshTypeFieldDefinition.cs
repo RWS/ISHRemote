@@ -74,7 +74,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <summary>
         /// PS1XML Shorthand notation of DataType-(ReferenceMetadataBinding/ReferenceLov/ReferenceType) properties
         /// </summary>
-        public string TypeSource
+        public string DataSource
         {
             get
             {
@@ -359,10 +359,10 @@ namespace Trisoft.ISHRemote.Objects.Public
                 return string.Compare(Key, b.Key);
             }
             // Keys match, now check the properties that matter
-            if (!TypeSource.Equals(b.TypeSource, StringComparison.InvariantCulture))
+            if (!DataSource.Equals(b.DataSource, StringComparison.InvariantCulture))
             {
-                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.DataSource[{TypeSource}] b.DataSource[{b.TypeSource}]");
-                return string.Compare(TypeSource, b.TypeSource);
+                _logger.WriteVerbose($"IshTypeFieldDefinition.CompareTo a.Key[{Key}] a.DataSource[{DataSource}] b.DataSource[{b.DataSource}]");
+                return string.Compare(DataSource, b.DataSource);
             }
             if (!MM.Equals(b.MM, StringComparison.InvariantCulture))
             {

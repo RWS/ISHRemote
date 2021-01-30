@@ -482,13 +482,12 @@ namespace Trisoft.ISHRemote.Objects
                                         break;
                                 }
                             }
-                            else
-                            if (_ishTypeFieldDefinitions[key].DataType == Enumerations.DataType.ISHMetadataBinding && ishField.ValueType == Enumerations.ValueType.Value)
+                            else if (_ishTypeFieldDefinitions[key].DataType == Enumerations.DataType.ISHMetadataBinding && ishField.ValueType == Enumerations.ValueType.Value)
                             {
                                 switch (_strictMetadataPreference)
                                 {
                                     case Enumerations.StrictMetadataPreference.Continue:
-                                        _logger.WriteVerbose($"ToIshMetadataFields Metadata bound field with ValueType [{Enumerations.ValueType.Value}] removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
+                                        _logger.WriteVerbose($"ToIshMetadataFields ISHMetadataBinding field with valueType[{ishField.ValueType}] upon {Enumerations.ActionMode.Create} is not unique; removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                         break;
                                 }
                             }
@@ -523,7 +522,7 @@ namespace Trisoft.ISHRemote.Objects
                                 switch (_strictMetadataPreference)
                                 {
                                     case Enumerations.StrictMetadataPreference.Continue:
-                                        _logger.WriteVerbose($"ToIshMetadataFields Metadata bound field with ValueType [{Enumerations.ValueType.Value}] removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}]");
+                                        _logger.WriteVerbose($"ToIshMetadataFields ISHMetadataBinding field with valueType[{ishField.ValueType}] upon {Enumerations.ActionMode.Update} is not unique; removed ishType[{ishType}] level[{ishField.Level}] name[{ishField.Name}] valueType[{ishField.ValueType}]");
                                         break;
                                 }
                             }

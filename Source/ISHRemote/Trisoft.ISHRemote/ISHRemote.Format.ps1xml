@@ -1490,7 +1490,7 @@
                 <PropertyName>DataType</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>TypeSource</PropertyName>
+                <PropertyName>DataSource</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>SDB</PropertyName>
@@ -1577,7 +1577,7 @@
                 <PropertyName>DataType</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>TypeSource</PropertyName>
+                <PropertyName>DataSource</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>SDB</PropertyName>
