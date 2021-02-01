@@ -197,7 +197,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         _ishTypeFieldSetup.StrictMetadataPreference = Enumerations.StrictMetadataPreference.Off;    // Otherwise custom metadata fields are always removed as they are unknown for the default TriDKXmlSetup Resource
                     }
 
-                    if (_serverVersion.MajorVersion >= 13 || (_serverVersion.MajorVersion == 14 && _serverVersion.RevisionVersion < 4))
+                    if (_serverVersion.MajorVersion == 13 || (_serverVersion.MajorVersion == 14 && _serverVersion.RevisionVersion < 4))
                     {
                         // Loading/Merging Settings ISHMetadataBinding for 13/13.0.0 up till 14SP4/14.0.4 setup
                         // Note that IMetadataBinding was introduced in 2016/12.0.0 but there was no dynamic FieldSetup retrieval
