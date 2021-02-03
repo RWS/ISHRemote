@@ -88,12 +88,13 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
         $typeDefinitions = Get-IshTypeFieldDefinition -IshSession $ishSession
 
 		It "Check AllowOnSmartTagging not null, empty and boolean"{
-            foreach($typeDefinition in $typeDefinitions)
-            {
-                $typeDefinition.CRUST.Length | Should Be 5
-				$typeDefinition.AllowOnSmartTagging | Should Not BeNullOrEmpty
-				$typeDefinition.AllowOnSmartTagging | Should BeOfType System.Boolean
-            }
+			# Initially test was 14s long doing a 'foreach($typeDefinition in $typeDefinitions)', now testing the first array entry
+			if ($typeDefinitions.Length -gt 0)
+			{
+				$typeDefinitions[0].CRUST.Length | Should Be 5
+				$typeDefinitions[0].AllowOnSmartTagging | Should Not BeNullOrEmpty
+				$typeDefinitions[0].AllowOnSmartTagging | Should BeOfType System.Boolean
+			}
         }
 		It "Check Metadata bound field - if configured in Extension XML settings"{
 			$typeDefinitionsMetadataBinding = $typeDefinitions | Where-Object -Property DataType -EQ "ISHMetadataBinding"

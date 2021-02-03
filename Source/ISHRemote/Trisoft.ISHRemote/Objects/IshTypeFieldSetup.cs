@@ -547,9 +547,6 @@ namespace Trisoft.ISHRemote.Objects
                                 //    Specifying the label "Admin" is less accurate than the element name "VUSERADMIN"
                                 // Two cases to illustrate that is not easy to fix. Workaround is to do Set-* cmdlets by -Id and -Metadata instead of -IshObject holding the new values
                                 // ==> For now solved by passing ActionMode to IshFields.AddOrUpdateField where for Create/Update all ValueTypes are removed, last one wins
-                                // 3. For IshDocumentObj a IMetadataBinding field like FMBCONTENTREFTYPE cannot be submitted with ishvaluetype set to 'none' as that will throw
-                                //    [-105006] Field has configured metadata binding and it's value type can only be 'id' or 'element'
-                                // Another case to illustratie the complexity, theoretically FISHEXTENSIONCONFIG can be read to find out the IMetadataBinding fields.
                             }
                             break;
                         default:

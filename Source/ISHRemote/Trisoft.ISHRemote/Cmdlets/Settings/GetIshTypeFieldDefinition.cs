@@ -100,7 +100,21 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                     {
                         // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
                         WriteVerbose($"Importing Settings25.RetrieveFieldSetupByIshType in IshSession.ServerVersion[{IshSession.ServerVersion}]");
-                        IshSession.IshTypeFieldDefinition = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null)).IshTypeFieldDefinition;
+                        IshTypeFieldSetup ishTypeFieldSetup = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null));
+                        if (IshSession.ServerIshVersion.MajorVersion == 13 || (IshSession.ServerIshVersion.MajorVersion == 14 && IshSession.ServerIshVersion.RevisionVersion < 4))
+                        {
+                            // Loading/Merging Settings ISHMetadataBinding for 13/13.0.0 up till 14SP4/14.0.4 setup
+                            // Note that IMetadataBinding was introduced in 2016/12.0.0 but there was no dynamic FieldSetup retrieval
+                            // Passing IshExtensionConfig object to IshTypeFieldSetup constructor
+                            Logger.WriteDebug($"Loading Settings25.GetMetadata for field[" + FieldElements.ExtensionConfiguration + "]...");
+                            IshFields metadata = new IshFields();
+                            metadata.AddField(new IshRequestedMetadataField(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value));  // do not pass over IshTypeFieldSetup.ToIshRequestedMetadataFields, as we are initializing that object
+                            string xmlIshObjects = IshSession.Settings25.GetMetadata(metadata.ToXml());
+                            var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
+                            string xmlSettingsExtensionConfig = ishFields.GetFieldValue(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value);
+                            IshSettingsExtensionConfig.MergeIntoIshTypeFieldSetup(Logger, ishTypeFieldSetup, xmlSettingsExtensionConfig);
+                        }
+                        IshSession.IshTypeFieldDefinition = ishTypeFieldSetup.IshTypeFieldDefinition;
                         WriteObject(IshSession.IshTypeFieldDefinition, true);
                         WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count}]");
                     }
@@ -134,7 +148,21 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                         WriteDebug($"Importing using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
                         // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
                         WriteVerbose($"Importing Settings25.RetrieveFieldSetupByIshType in IshSession.ServerVersion[{IshSession.ServerVersion}]");
-                        IshSession.IshTypeFieldDefinition = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null)).IshTypeFieldDefinition;
+                        IshTypeFieldSetup ishTypeFieldSetup = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null));
+                        if (IshSession.ServerIshVersion.MajorVersion == 13 || (IshSession.ServerIshVersion.MajorVersion == 14 && IshSession.ServerIshVersion.RevisionVersion < 4))
+                        {
+                            // Loading/Merging Settings ISHMetadataBinding for 13/13.0.0 up till 14SP4/14.0.4 setup
+                            // Note that IMetadataBinding was introduced in 2016/12.0.0 but there was no dynamic FieldSetup retrieval
+                            // Passing IshExtensionConfig object to IshTypeFieldSetup constructor
+                            Logger.WriteDebug($"Loading Settings25.GetMetadata for field[" + FieldElements.ExtensionConfiguration + "]...");
+                            IshFields metadata = new IshFields();
+                            metadata.AddField(new IshRequestedMetadataField(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value));  // do not pass over IshTypeFieldSetup.ToIshRequestedMetadataFields, as we are initializing that object
+                            string xmlIshObjects = IshSession.Settings25.GetMetadata(metadata.ToXml());
+                            var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
+                            string xmlSettingsExtensionConfig = ishFields.GetFieldValue(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value);
+                            IshSettingsExtensionConfig.MergeIntoIshTypeFieldSetup(Logger, ishTypeFieldSetup, xmlSettingsExtensionConfig);
+                        }
+                        IshSession.IshTypeFieldDefinition = ishTypeFieldSetup.IshTypeFieldDefinition;
                         WriteObject(IshSession.IshTypeFieldDefinition, true);
                         WriteVerbose($"returned object count[{IshSession.IshTypeFieldDefinition.Count}]");
                     }
