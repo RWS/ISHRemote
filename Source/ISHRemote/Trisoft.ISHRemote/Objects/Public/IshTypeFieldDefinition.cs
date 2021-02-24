@@ -103,8 +103,6 @@ namespace Trisoft.ISHRemote.Objects.Public
                 StringBuilder mm = new StringBuilder();
                 mm.Append(IsMandatory ? 'M' : '-');
                 mm.Append(IsMultiValue ? 'n' : '1');
-                mm.Append(AllowOnUpdate ? 'U' : '-');
-                mm.Append(AllowOnSearch ? 'S' : '-');
                 return mm.ToString();
             }
         }

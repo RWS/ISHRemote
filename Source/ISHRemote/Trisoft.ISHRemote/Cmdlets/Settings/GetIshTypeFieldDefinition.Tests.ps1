@@ -91,7 +91,6 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 			# Initially test was 14s long doing a 'foreach($typeDefinition in $typeDefinitions)', now testing the first array entry
 			if ($typeDefinitions.Length -gt 0)
 			{
-				$typeDefinitions[0].CRUST.Length | Should Be 5
 				$typeDefinitions[0].AllowOnSmartTagging | Should Not BeNullOrEmpty
 				$typeDefinitions[0].AllowOnSmartTagging | Should BeOfType System.Boolean
 			}
@@ -108,6 +107,19 @@ Describe “Get-IshTypeFieldDefinition" -Tags "Read" {
 				}
 			}
 		}
+    }
+    
+    Context "IshTypeFieldDefinition - check properties" {
+        $typeDefinitions = Get-IshTypeFieldDefinition -IshSession $ishSession
+        
+        It "Check CRUST, MM and SDB length"{
+            if ($typeDefinitions.Length -gt 0)
+			{
+				$typeDefinitions[0].CRUST.Length | Should Be 5
+				$typeDefinitions[0].MM.Length | Should Be 2
+				$typeDefinitions[0].SDB.Length | Should Be 3
+            }
+        }
     }
 }
 
