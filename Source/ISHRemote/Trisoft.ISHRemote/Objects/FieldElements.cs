@@ -974,5 +974,13 @@ namespace Trisoft.ISHRemote.Objects
         public const string AnnotationSnapshotId = "FISHANNOTSNAPSHOTID";
 
         #endregion
+
+        #region BackgroundTask Fields
+        
+        /// <summary>
+        /// The ProgressId of the BackgroundTask.
+        /// </summary>
+        public const string ProgressId = "PROGRESSID";
+        #endregion
     }
 }
