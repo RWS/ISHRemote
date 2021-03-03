@@ -24,10 +24,10 @@ using Trisoft.ISHRemote.Exceptions;
 using System.Threading;
 using System.Xml;
 using Trisoft.ISHRemote.Interfaces;
-using Trisoft.ISHRemote.Folder25ServiceReference;
+//TODO [Must] ISHRemotev7+ Cleanup//using Trisoft.ISHRemote.Folder25ServiceReference;
 using System.Runtime.InteropServices;
 
-[assembly: ComVisible(false)]
+//TODO [Must] ISHRemotev7+ Cleanup//[assembly: ComVisible(false)]
 namespace Trisoft.ISHRemote.Cmdlets
 {
     /// <summary>

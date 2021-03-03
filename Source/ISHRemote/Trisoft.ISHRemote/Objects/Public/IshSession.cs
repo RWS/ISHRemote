@@ -60,6 +60,8 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly bool _ignoreSslPolicyErrors = false;
         private readonly bool _explicitIssuer = false;
 
+        //TODO [Must] ISHRemotev7+ Cleanup
+        /*
         private InfoShareWcfConnection _connection;
 
         private Annotation25ServiceReference.Annotation _annotation25;
@@ -81,6 +83,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private TranslationJob25ServiceReference.TranslationJob _translationJob25;
         private TranslationTemplate25ServiceReference.TranslationTemplate _translationTemplate25;
         private BackgroundTask25ServiceReference.BackgroundTask _backgroundTask25;
+        */
 
         /// <summary>
         /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
@@ -416,6 +419,8 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _chunkSize = value; }
         }
 
+        //TODO [Must] ISHRemotev7+ Cleanup
+        /*
         #region Web Services Getters
 
         public Annotation25ServiceReference.Annotation Annotation25
@@ -685,6 +690,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         #endregion
+*/
 
         private void VerifyTokenValidity()
         {

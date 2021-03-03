@@ -1,14 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISHRemote", "Trisoft.ISHRemote\ISHRemote.csproj", "{68CB1E31-D4CA-41B0-967E-23E73FB76F30}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8284EC27-BD9F-416F-9A30-D1B5D0E2ECE6}"
-	ProjectSection(SolutionItems) = preProject
-		Build.props = Build.props
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trisoft.ISHRemote", "Trisoft.ISHRemote\Trisoft.ISHRemote.csproj", "{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{68CB1E31-D4CA-41B0-967E-23E73FB76F30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68CB1E31-D4CA-41B0-967E-23E73FB76F30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68CB1E31-D4CA-41B0-967E-23E73FB76F30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68CB1E31-D4CA-41B0-967E-23E73FB76F30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {9E1EC0B0-E0AE-41D3-B7F5-3C99C3B1BE89}
+		SolutionGuid = {34D632D1-B7DF-4F53-8C77-01287855A61F}
 	EndGlobalSection
 EndGlobal
