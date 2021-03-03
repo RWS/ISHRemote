@@ -24,6 +24,7 @@ using Trisoft.ISHRemote.HelperClasses;
 using System.Linq;
 using Trisoft.ISHRemote.BackgroundTask25ServiceReference;
 using Trisoft.ISHRemote.EventMonitor25ServiceReference;
+using System.Text;
 
 namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
 {
@@ -36,16 +37,17 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// <example>
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
-    /// $ishBackgroundTask = Get-IshFolderContent -FolderPath "General\MyFolder" -VersionFilter Latest -Recurse | Add-IshBackgroundTask -EventType "SMARTTAG"
+    /// $ishBackgroundTask = Get-IshFolderContent -FolderPath "General\MyFolder\Topics" -VersionFilter Latest -LanguagesFilter en | Add-IshBackgroundTask -EventType "SMARTTAG"
     /// </code>
-    /// <para>Add BackgroundTask with event type"SMARTTAG" for the objects located under the "General\MyFolder" path</para> 
+    /// <para>Add BackgroundTask with event type "SMARTTAG" for the objects located under the "General\MyFolder\Topics" path</para> 
     /// </example>
     /// <example>
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
-    /// $ishBackgroundTask  = Add-IshBackgroundTask -EventType "PUSHTRANSLATIONS" -EventDescription "Custom event description" -RawInputData $rawData
+    /// $rawData = "<data><export-document-type>ISHPublication</export-document-type><export-document-level>lng</export-document-level><export-ishlngref>549482</export-ishlngref><creationdate>20210303070257182</creationdate></data>"
+    /// $ishBackgroundTask = Add-IshBackgroundTask -EventType "PUBLISH" -EventDescription "Custom publish event description" -RawInputData $rawData
     /// </code>
-    /// <para>Add background task with the event type "PUSHTRANSLATIONS" and provided event description and input data</para> 
+    /// <para>Add background task with the event type "PUBLISH" and provided event description and publish input raw data. Note: example code only, for publish operations usage of Publish-IshPublicationOutput is preferred.</para> 
     /// </example>
 
     [Cmdlet(VerbsCommon.Add, "IshBackgroundTask", SupportsShouldProcess = false)]
@@ -73,12 +75,12 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
-        public byte[] RawInputData { get; set; }
+        public string RawInputData { get; set; }
 
         /// <summary>
         /// <para type="description">Description of the event</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public string EventDescription { get; set; }
 
@@ -180,7 +182,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                     {
                         eventType = EventType,
                         hashId = "",
-                        inputData = RawInputData,
+                        inputData = Encoding.Unicode.GetBytes(RawInputData),
                         progressId = startEventResponse.progressId
                     };
                     var createBackgroundTaskResponse = IshSession.BackgroundTask25.CreateBackgroundTask(newBackgroundTaskRequest);
@@ -188,7 +190,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 }
 
                 // Find and return IshBackgroundTask object
-                metadataFilter.AddField(new IshMetadataFilterField(FieldElements.ProgressId, Enumerations.Level.Task, Enumerations.FilterOperator.Equal, progressId.ToString(), Enumerations.ValueType.Element));
+                metadataFilter.AddField(new IshMetadataFilterField(FieldElements.BackgroundTaskProgressId, Enumerations.Level.Task, Enumerations.FilterOperator.Equal, progressId.ToString(), Enumerations.ValueType.Element));
                 WriteDebug($"Finding BackgroundTask UserFilter[{_userFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 var xmlIshBackgroundTasks = IshSession.BackgroundTask25.Find(
                     _modifiedSince,

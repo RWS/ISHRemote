@@ -980,7 +980,7 @@ namespace Trisoft.ISHRemote.Objects
         /// <summary>
         /// The ProgressId of the BackgroundTask.
         /// </summary>
-        public const string ProgressId = "PROGRESSID";
+        public const string BackgroundTaskProgressId = "PROGRESSID";
         #endregion
     }
 }

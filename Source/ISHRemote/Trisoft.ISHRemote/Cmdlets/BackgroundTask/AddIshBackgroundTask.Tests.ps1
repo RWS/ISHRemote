@@ -5,7 +5,6 @@ try {
 
 Describe “Add-IshBackgroundTask" -Tags "Create" {
 	Write-Host "Initializing Test Data and Variables"
-	$eventType = "PUSHTRANSLATIONS"
 	$ishFolderTestRootOriginal = Get-IshFolder -IShSession $ishSession -FolderPath $folderTestRootPath
 	$folderIdTestRootOriginal = $ishFolderTestRootOriginal.IshFolderRef
 	$folderTypeTestRootOriginal = $ishFolderTestRootOriginal.IshFolderType
@@ -23,56 +22,69 @@ Describe “Add-IshBackgroundTask" -Tags "Create" {
     $ishObjectTopic1 = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 
 	$ishObjects = $ishFolderTopic | Get-IshFolderContent -IshSession $ishSession
-	Context "Add-IshBackgroundTask IshObjects passed via pipeline" {
-		$ishBackgroundTaskIshObjectsPipeline = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $eventType
+	Context "IshObjects passed via pipeline (multiple)" {
+		$ishBackgroundTaskIshObjectsPipeline = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 		It "Verify object properties returned by Add-IshBackgroundTask" {
+			$ishObjects.Count | Should BeExactly 2
 			$ishBackgroundTaskIshObjectsPipeline.Count | Should BeExactly 1
-			$ishBackgroundTaskIshObjectsPipeline.status_task_element | Should BeExactly "VBACKGROUNDTASKSTATUSPENDING"
-			$ishBackgroundTaskIshObjectsPipeline.EventType | Should BeExactly $eventType
+			$ishBackgroundTaskIshObjectsPipeline.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+			$ishBackgroundTaskIshObjectsPipeline.EventType | Should BeExactly $ishEventTypeToPurge
 			$ishBackgroundTaskIshObjectsPipeline.userid | Should BeExactly $ishSession.IshUserName
-		}
-		It "Pipe returned BackgroundTask to Get-IshBackgroundTask"{
-			$ishBackgroundTask = $ishBackgroundTaskIshObjectsPipeline | Get-IshBackgroundTask -IshSession $ishSession
-			$ishBackgroundTask.Count | Should BeExactly 1
-			$ishBackgroundTask.EventType | Should BeExactly $eventType
-			$ishBackgroundTask.userid | Should BeExactly $ishSession.IshUserName
 		}
 	}
 
-	Context "Add-IshBackgroundTask IshObjects passed as parameter" {
-		$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -IshSession $ishSession -EventType $eventType -IshObject $ishObjects
+	Context "IshObjects passed via pipeline (single)" {
+		$ishBackgroundTaskIshObjectsPipeline = $ishObjectTopic1 | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
+		It "Verify object properties returned by Add-IshBackgroundTask" {
+			$ishObjectTopic1.Count | Should BeExactly 1
+			$ishBackgroundTaskIshObjectsPipeline.Count | Should BeExactly 1
+			$ishBackgroundTaskIshObjectsPipeline.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+			$ishBackgroundTaskIshObjectsPipeline.EventType | Should BeExactly $ishEventTypeToPurge
+			$ishBackgroundTaskIshObjectsPipeline.userid | Should BeExactly $ishSession.IshUserName
+		}
+	}
+
+	Context "IshObjects passed as a parameter (multiple)" {
+		$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -IshObject $ishObjects
 		It "Verify object properties returned by Add-IshBackgroundTask" {
 			$ishBackgroundTaskIshObjectsParameter.Count | Should BeExactly 1
-			$ishBackgroundTaskIshObjectsParameter.status_task_element | Should BeExactly "VBACKGROUNDTASKSTATUSPENDING"
-			$ishBackgroundTaskIshObjectsParameter.EventType | Should BeExactly $eventType
+			$ishBackgroundTaskIshObjectsParameter.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+			$ishBackgroundTaskIshObjectsParameter.EventType | Should BeExactly $ishEventTypeToPurge
 			$ishBackgroundTaskIshObjectsParameter.userid | Should BeExactly $ishSession.IshUserName
 		}
-		It "Pipe returned BackgroundTask to Get-IshBackgroundTask"{
-			$ishBackgroundTask = $ishBackgroundTaskIshObjectsParameter | Get-IshBackgroundTask -IshSession $ishSession
-			$ishBackgroundTask.Count | Should BeExactly 1
-			$ishBackgroundTask.EventType | Should BeExactly $eventType
-			$ishBackgroundTask.userid | Should BeExactly $ishSession.IshUserName
+	}
+
+	Context "IshObjects passed as a parameter (single)" {
+		$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -IshObject $ishObjectTopic1
+		It "Verify object properties returned by Add-IshBackgroundTask" {
+			$ishObjectTopic1.Count | Should BeExactly 1
+			$ishBackgroundTaskIshObjectsParameter.Count | Should BeExactly 1
+			$ishBackgroundTaskIshObjectsParameter.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+			$ishBackgroundTaskIshObjectsParameter.EventType | Should BeExactly $ishEventTypeToPurge
+			$ishBackgroundTaskIshObjectsParameter.userid | Should BeExactly $ishSession.IshUserName
 		}
+		
 		It "Verify mandatory parameters" {
-			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $eventType -IshObject $null} | Should Throw
+			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject $null} | Should Throw
 			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $null -IshObject $ishObjects} | Should Throw
 		}
 	}
 	
 	Context "Add-IshBackgroundTask by providing parameters" {
-		$rawData = [System.Byte[]]::CreateInstance([System.Byte], 1)
+		$rawData = "<data><dataExample>Text</dataExample></data>"
 		$eventDescription = "Created by Powershell and ISHRemote"
-		$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $eventType -EventDescription $eventDescription -RawInputData $rawData
+		$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $rawData
 		It "Verify object properties returned by Add-IshBackgroundTask" {
 			$ishBackgroundTaskParameters.Count | Should BeExactly 1
-			$ishBackgroundTaskParameters.status_task_element | Should BeExactly "VBACKGROUNDTASKSTATUSPENDING"
-			$ishBackgroundTaskParameters.EventType | Should BeExactly $eventType
+			$ishBackgroundTaskParameters.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+			$ishBackgroundTaskParameters.EventType | Should BeExactly $ishEventTypeToPurge
 			$ishBackgroundTaskParameters.userid | Should BeExactly $ishSession.IshUserName
 		}
+         
 		It "Verify mandatory parameters" {
-			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $eventType -EventDescription $null -RawInputData $rawData} | Should Throw
+			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $null -RawInputData $rawData} | Should Throw
 			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $null -EventDescription $eventDescription -RawInputData $rawData} | Should Throw
-			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $eventType -EventDescription $eventDescription -RawInputData $null} | Should Throw
+			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $null} | Should Throw
 		}
 	}
 }
