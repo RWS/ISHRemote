@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Trisoft.ISHRemote {
+namespace Trisoft.ISHRemote.Properties.Resouces {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Trisoft.ISHRemote {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Trisoft.ISHRemote.ISHTypeFieldSetup", typeof(ISHTypeFieldSetup).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Trisoft.ISHRemote.Properties.Resouces.ISHTypeFieldSetup", typeof(ISHTypeFieldSetup).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,24 @@ namespace Trisoft.ISHRemote {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;lt;?xml version=&quot;1.0&quot;?&amp;gt;
+        ///&amp;lt;?xml-stylesheet href=&quot;full.export.xsl&quot; type=&quot;text/xsl&quot;?&amp;gt;
+        ///&amp;lt;!-- InfoShare Author 3.5.0 --&amp;gt;
+        ///&amp;lt;tridk:setup xml:lang=&quot;EN&quot; xmlns:tridk=&quot;urn:trisoft.be:Tridk:Setup:1.0&quot; tridk:version=&quot;120.11.0.3215&quot;&amp;gt;
+        ///	&amp;lt;tridk:cardtypes&amp;gt;
+        ///		&amp;lt;!-- General cardtypes --&amp;gt;
+        ///		&amp;lt;tridk:cardtype tridk:exportmode=&quot;cascade&quot; tridk:element=&quot;USER&quot; tridk:metatype=&quot;usercard&quot;&amp;gt;
+        ///			&amp;lt;tridk:displaydefinition&amp;gt;
+        ///				&amp;lt;tridk:label&amp;gt;User&amp;lt;/tridk:label&amp;gt;
+        ///				&amp;lt;tridk:descript [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string TriDKXmlSetupFullExport_12_00_01 {
+            get {
+                return ResourceManager.GetString("TriDKXmlSetupFullExport_12_00_01", resourceCulture);
             }
         }
     }

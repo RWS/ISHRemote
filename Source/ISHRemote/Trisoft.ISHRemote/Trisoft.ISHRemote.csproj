@@ -17,4 +17,28 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ISHTypeFieldSetup.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ISHTypeFieldSetup.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resouces\ISHTypeFieldSetup.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ISHTypeFieldSetup.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ISHTypeFieldSetup.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ISHTypeFieldSetup.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resouces\ISHTypeFieldSetup.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ISHTypeFieldSetup.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

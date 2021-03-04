@@ -95,11 +95,10 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// </summary>
         /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
         /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
+        /// <param name="_ishApplicationName">ASMX API requires an explicit Application Name, typically 'InfoShareAuthor' unless you used a non-default InstallTool inputparameter ProjectSuffix value</param>
         /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
         /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
         /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
-        /// <param name="timeoutIssue">Timeout to control Send/Receive timeouts of WCF when issuing a token</param>
-        /// <param name="timeoutService">Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies</param>
         /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
         public IshSession(ILogger logger, string webServicesBaseUrl, string _ishApplicationName, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
         {
@@ -178,7 +177,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                     if (_serverVersion.MajorVersion >= 13) 
                     {
                         _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
-                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null));
+                        string xmlTypeFieldSetup;
+                        Settings25.RetrieveFieldSetupByIshType(ref _authenticationContext, null, out xmlTypeFieldSetup);
+                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, xmlTypeFieldSetup);
                         _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
                     }
                     else
