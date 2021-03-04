@@ -37,11 +37,17 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly Uri _webServicesBaseUri;
         private readonly Uri _wsTrustIssuerUri;
         private readonly Uri _wsTrustIssuerMexUri;
+        private string _ishApplicationName;
         private string _ishUserName;
         private string _userName;
         private readonly SecureString _ishSecurePassword;
         private readonly string _separator = ", ";
         private readonly string _folderPathSeparator = @"\";
+        
+        /// <summary>
+        /// AuthenticationContext is accessible for the ASMX web services to pass by ref, in turn it is refreshed per API call
+        /// </summary>
+        internal string _authenticationContext;
 
         private IshVersion _serverVersion;
         private IshVersion _clientVersion;
@@ -52,38 +58,37 @@ namespace Trisoft.ISHRemote.Objects.Public
         private Enumerations.RequestedMetadataGroup _defaultRequestedMetadata = Enumerations.RequestedMetadataGroup.Basic;
 
         private int _chunkSize = 10485760;
-        private int _metadataBatchSize = 1000;
+        private int _metadataBatchSize = 999;
         private int _blobBatchSize = 50;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
-        private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
-        private readonly TimeSpan _timeoutService = TimeSpan.MaxValue;
+        //TODO [Must] ISHRemotev7+ Cleanup// private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
+        //TODO [Must] ISHRemotev7+ Cleanup// private readonly TimeSpan _timeoutService = TimeSpan.MaxValue;
         private readonly bool _ignoreSslPolicyErrors = false;
-        private readonly bool _explicitIssuer = false;
+        //TODO [Must] ISHRemotev7+ Cleanup// private readonly bool _explicitIssuer = false;
 
         //TODO [Must] ISHRemotev7+ Cleanup
         /*
         private InfoShareWcfConnection _connection;
-
-        private Annotation25ServiceReference.Annotation _annotation25;
-        private Application25ServiceReference.Application _application25;
-        private DocumentObj25ServiceReference.DocumentObj _documentObj25;
-        private Folder25ServiceReference.Folder _folder25;
-        private User25ServiceReference.User _user25;
-        private UserRole25ServiceReference.UserRole _userRole25;
-        private UserGroup25ServiceReference.UserGroup _userGroup25;
-        private ListOfValues25ServiceReference.ListOfValues _listOfValues25;
-        private PublicationOutput25ServiceReference.PublicationOutput _publicationOutput25;
-        private OutputFormat25ServiceReference.OutputFormat _outputFormat25;
-        private Settings25ServiceReference.Settings _settings25;
-        private EDT25ServiceReference.EDT _EDT25;
-        private EventMonitor25ServiceReference.EventMonitor _eventMonitor25;
-        private Baseline25ServiceReference.Baseline _baseline25;
-        private MetadataBinding25ServiceReference.MetadataBinding _metadataBinding25;
-        private Search25ServiceReference.Search _search25;
-        private TranslationJob25ServiceReference.TranslationJob _translationJob25;
-        private TranslationTemplate25ServiceReference.TranslationTemplate _translationTemplate25;
-        private BackgroundTask25ServiceReference.BackgroundTask _backgroundTask25;
         */
+        //private Annotation25ServiceReference.Annotation _annotation25;
+        private Application25ServiceReference.Application25SoapClient _application25;
+        //private DocumentObj25ServiceReference.DocumentObj _documentObj25;
+        private Folder25ServiceReference.Folder25SoapClient _folder25;
+        private User25ServiceReference.User25SoapClient _user25;
+        //private UserRole25ServiceReference.UserRole _userRole25;
+        //private UserGroup25ServiceReference.UserGroup _userGroup25;
+        //private ListOfValues25ServiceReference.ListOfValues _listOfValues25;
+        //private PublicationOutput25ServiceReference.PublicationOutput _publicationOutput25;
+        //private OutputFormat25ServiceReference.OutputFormat _outputFormat25;
+        private Settings25ServiceReference.Settings25SoapClient _settings25;
+        //private EDT25ServiceReference.EDT _EDT25;
+        //private EventMonitor25ServiceReference.EventMonitor _eventMonitor25;
+        //private Baseline25ServiceReference.Baseline _baseline25;
+        //private MetadataBinding25ServiceReference.MetadataBinding _metadataBinding25;
+        //private Search25ServiceReference.Search _search25;
+        //private TranslationJob25ServiceReference.TranslationJob _translationJob25;
+        //private TranslationTemplate25ServiceReference.TranslationTemplate _translationTemplate25;
+        //private BackgroundTask25ServiceReference.BackgroundTask _backgroundTask25;
 
         /// <summary>
         /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
@@ -96,10 +101,9 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <param name="timeoutIssue">Timeout to control Send/Receive timeouts of WCF when issuing a token</param>
         /// <param name="timeoutService">Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies</param>
         /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, TimeSpan timeoutIssue, TimeSpan timeoutService, bool ignoreSslPolicyErrors)
+        public IshSession(ILogger logger, string webServicesBaseUrl, string _ishApplicationName, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
         {
             _logger = logger;
-            _explicitIssuer = false;
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
             if (_ignoreSslPolicyErrors)
             {
@@ -111,11 +115,11 @@ namespace Trisoft.ISHRemote.Objects.Public
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
             _ishSecurePassword = ishSecurePassword;
             _timeout = timeout;
-            _timeoutIssue = timeoutIssue;
-            _timeoutService = timeoutService;
             CreateConnection();
         }
 
+        //TODO [Must] ISHRemotev7+ Cleanup
+        /*
         /// <summary>
         /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
         /// </summary>
@@ -151,33 +155,18 @@ namespace Trisoft.ISHRemote.Objects.Public
             _timeoutService = timeoutService;
             CreateConnection();
         }
+        */
 
         private void CreateConnection()
         {
-            //prepare connection for authentication/authorization
-            var connectionParameters = new InfoShareWcfConnectionParameters
-            {
-                Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
-                Timeout = _timeout,
-                IssueTimeout = _timeoutIssue,
-                ServiceTimeout = _timeoutService
-            };
-
-            if (_explicitIssuer)
-            {
-                _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, _wsTrustIssuerUri, _wsTrustIssuerMexUri, connectionParameters);
-            }
-            else
-            {
-                _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, connectionParameters);
-            }
+            // Before ISHRemotev7+ there was username/password and Active Directory authentication, where the logic came down to:
+            // Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
 
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
-            _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel");
-            var application25Proxy = _connection.GetApplication25Channel();
-            _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel.GetVersion");
-            _serverVersion = new IshVersion(application25Proxy.GetVersion());
-
+            _logger.WriteDebug("CreateConnection Application25.Login");
+            Application25.Login(_ishApplicationName, _ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword), ref _authenticationContext);
+            _logger.WriteDebug("CreateConnection Application25.GetVersion");
+            _serverVersion = new IshVersion(Application25.GetVersion());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -316,10 +305,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-
-                var application25Proxy = _connection.GetApplication25Channel();
-                return application25Proxy.Authenticate2();
+                return _authenticationContext;
             }
         }
 
@@ -342,6 +328,8 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _timeout = value; }
         }
 
+        //TODO [Must] ISHRemotev7+ Cleanup
+        /*
         /// <summary>
         /// Timeout to control Send/Receive timeouts of WCF when issuing a token
         /// </summary>
@@ -350,6 +338,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             get { return _timeoutIssue; }
             set { _timeoutIssue = value; }
         }
+        
 
         /// <summary>
         /// Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies
@@ -359,6 +348,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             get { return _timeoutService; }
             // set { _timeoutService = value; }  // requires reset of all proxies
         }
+        */
 
         /// <summary>
         /// Web Service Retrieve batch size, if implemented, expressed in number of Ids/Objects for usage in metadata calls
@@ -420,306 +410,320 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         //TODO [Must] ISHRemotev7+ Cleanup
-        /*
         #region Web Services Getters
 
-        public Annotation25ServiceReference.Annotation Annotation25
+        //public Annotation25ServiceReference.Annotation Annotation25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
+
+        //        if (_annotation25 == null)
+        //        {
+        //            _annotation25 = _connection.GetAnnotation25Channel();
+        //        }
+        //        return _annotation25;
+        //    }
+        //}
+
+        internal Application25ServiceReference.Application25SoapClient Application25
         {
             get
             {
-                VerifyTokenValidity();
-
-                if (_annotation25 == null)
-                {
-                    _annotation25 = _connection.GetAnnotation25Channel();
-                }
-                return _annotation25;
-            }
-        }
-
-        public Application25ServiceReference.Application Application25
-        {
-            get
-            {
-                VerifyTokenValidity();
+                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
 
                 if (_application25 == null)
                 {
-                    _application25 = _connection.GetApplication25Channel();
+                    _application25 = new Application25ServiceReference.Application25SoapClient(
+                        Application25ServiceReference.Application25SoapClient.EndpointConfiguration.Application25Soap12,
+                        _webServicesBaseUri.AbsoluteUri
+                        );
+                    _application25.InnerChannel.OperationTimeout = _timeout;
                 }
                 return _application25;
             }
         }
 
-        public User25ServiceReference.User User25
+        internal User25ServiceReference.User25SoapClient User25
         {
             get
             {
-                VerifyTokenValidity();
+                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
 
                 if (_user25 == null)
                 {
-                    _user25 = _connection.GetUser25Channel();
+                    _user25 = new User25ServiceReference.User25SoapClient(
+                        User25ServiceReference.User25SoapClient.EndpointConfiguration.User25Soap12,
+                        _webServicesBaseUri.AbsoluteUri
+                        );
+                    _user25.InnerChannel.OperationTimeout = _timeout;
                 }
                 return _user25;
             }
         }
 
-        public UserRole25ServiceReference.UserRole UserRole25
+        //public UserRole25ServiceReference.UserRole UserRole25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
+
+        //        if (_userRole25 == null)
+        //        {
+        //            _userRole25 = _connection.GetUserRole25Channel();
+        //        }
+        //        return _userRole25;
+        //    }
+        //}
+
+        //public UserGroup25ServiceReference.UserGroup UserGroup25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
+
+        //        if (_userGroup25 == null)
+        //        {
+        //            _userGroup25 = _connection.GetUserGroup25Channel();
+        //        }
+        //        return _userGroup25;
+        //    }
+        //}
+
+        //public DocumentObj25ServiceReference.DocumentObj DocumentObj25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
+
+        //        if (_documentObj25 == null)
+        //        {
+        //            _documentObj25 = _connection.GetDocumentObj25Channel();
+        //        }
+        //        return _documentObj25;
+        //    }
+        //}
+
+        //public PublicationOutput25ServiceReference.PublicationOutput PublicationOutput25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
+
+        //        if (_publicationOutput25 == null)
+        //        {
+        //            _publicationOutput25 = _connection.GetPublicationOutput25Channel();
+        //        }
+        //        return _publicationOutput25;
+        //    }
+        //}
+
+        internal Settings25ServiceReference.Settings25SoapClient Settings25
         {
             get
             {
-                VerifyTokenValidity();
-
-                if (_userRole25 == null)
-                {
-                    _userRole25 = _connection.GetUserRole25Channel();
-                }
-                return _userRole25;
-            }
-        }
-
-        public UserGroup25ServiceReference.UserGroup UserGroup25
-        {
-            get
-            {
-                VerifyTokenValidity();
-
-                if (_userGroup25 == null)
-                {
-                    _userGroup25 = _connection.GetUserGroup25Channel();
-                }
-                return _userGroup25;
-            }
-        }
-
-        public DocumentObj25ServiceReference.DocumentObj DocumentObj25
-        {
-            get
-            {
-                VerifyTokenValidity();
-
-                if (_documentObj25 == null)
-                {
-                    _documentObj25 = _connection.GetDocumentObj25Channel();
-                }
-                return _documentObj25;
-            }
-        }
-
-        public PublicationOutput25ServiceReference.PublicationOutput PublicationOutput25
-        {
-            get
-            {
-                VerifyTokenValidity();
-
-                if (_publicationOutput25 == null)
-                {
-                    _publicationOutput25 = _connection.GetPublicationOutput25Channel();
-                }
-                return _publicationOutput25;
-            }
-        }
-
-        public Settings25ServiceReference.Settings Settings25
-        {
-            get
-            {
-                VerifyTokenValidity();
+                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
 
                 if (_settings25 == null)
                 {
-                    _settings25 = _connection.GetSettings25Channel();
+                    _settings25 = new Settings25ServiceReference.Settings25SoapClient(
+                        Settings25ServiceReference.Settings25SoapClient.EndpointConfiguration.Settings25Soap12,
+                        _webServicesBaseUri.AbsoluteUri
+                        );
+                    _settings25.InnerChannel.OperationTimeout = _timeout;
                 }
                 return _settings25;
             }
         }
 
-        public EventMonitor25ServiceReference.EventMonitor EventMonitor25
+        //public EventMonitor25ServiceReference.EventMonitor EventMonitor25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
+
+        //        if (_eventMonitor25 == null)
+        //        {
+        //            _eventMonitor25 = _connection.GetEventMonitor25Channel();
+        //        }
+        //        return _eventMonitor25;
+        //    }
+        //}
+
+        //public Baseline25ServiceReference.Baseline Baseline25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
+
+        //        if (_baseline25 == null)
+        //        {
+        //            _baseline25 = _connection.GetBaseline25Channel();
+        //        }
+        //        return _baseline25;
+        //    }
+        //}
+
+        //public MetadataBinding25ServiceReference.MetadataBinding MetadataBinding25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
+
+        //        if (_metadataBinding25 == null)
+        //        {
+        //            _metadataBinding25 = _connection.GetMetadataBinding25Channel();
+        //        }
+        //        return _metadataBinding25;
+        //    }
+        //}
+
+        internal Folder25ServiceReference.Folder25SoapClient Folder25
         {
             get
             {
-                VerifyTokenValidity();
-
-                if (_eventMonitor25 == null)
-                {
-                    _eventMonitor25 = _connection.GetEventMonitor25Channel();
-                }
-                return _eventMonitor25;
-            }
-        }
-
-        public Baseline25ServiceReference.Baseline Baseline25
-        {
-            get
-            {
-                VerifyTokenValidity();
-
-                if (_baseline25 == null)
-                {
-                    _baseline25 = _connection.GetBaseline25Channel();
-                }
-                return _baseline25;
-            }
-        }
-
-        public MetadataBinding25ServiceReference.MetadataBinding MetadataBinding25
-        {
-            get
-            {
-                VerifyTokenValidity();
-
-                if (_metadataBinding25 == null)
-                {
-                    _metadataBinding25 = _connection.GetMetadataBinding25Channel();
-                }
-                return _metadataBinding25;
-            }
-        }
-
-        public Folder25ServiceReference.Folder Folder25
-        {
-            get
-            {
-                VerifyTokenValidity();
+                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
 
                 if (_folder25 == null)
                 {
-                    _folder25 = _connection.GetFolder25Channel();
+                    _folder25 = new Folder25ServiceReference.Folder25SoapClient(
+                        Folder25ServiceReference.Folder25SoapClient.EndpointConfiguration.Folder25Soap12,
+                        _webServicesBaseUri.AbsoluteUri
+                        );
+                    _folder25.InnerChannel.OperationTimeout = _timeout;
                 }
                 return _folder25;
             }
         }
 
-        public ListOfValues25ServiceReference.ListOfValues ListOfValues25
-        {
-            get
-            {
-                VerifyTokenValidity();
+        //public ListOfValues25ServiceReference.ListOfValues ListOfValues25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
 
-                if (_listOfValues25 == null)
-                {
-                    _listOfValues25 = _connection.GetListOfValues25Channel();
-                }
-                return _listOfValues25;
-            }
-        }
+        //        if (_listOfValues25 == null)
+        //        {
+        //            _listOfValues25 = _connection.GetListOfValues25Channel();
+        //        }
+        //        return _listOfValues25;
+        //    }
+        //}
 
-        public OutputFormat25ServiceReference.OutputFormat OutputFormat25
-        {
-            get
-            {
-                VerifyTokenValidity();
+        //public OutputFormat25ServiceReference.OutputFormat OutputFormat25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
 
-                if (_outputFormat25 == null)
-                {
-                    _outputFormat25 = _connection.GetOutputFormat25Channel();
-                }
-                return _outputFormat25;
-            }
-        }
+        //        if (_outputFormat25 == null)
+        //        {
+        //            _outputFormat25 = _connection.GetOutputFormat25Channel();
+        //        }
+        //        return _outputFormat25;
+        //    }
+        //}
 
-        public EDT25ServiceReference.EDT EDT25
-        {
-            get
-            {
-                VerifyTokenValidity();
+        //public EDT25ServiceReference.EDT EDT25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
 
-                if (_EDT25 == null)
-                {
-                    _EDT25 = _connection.GetEDT25Channel();
-                }
-                return _EDT25;
-            }
-        }
+        //        if (_EDT25 == null)
+        //        {
+        //            _EDT25 = _connection.GetEDT25Channel();
+        //        }
+        //        return _EDT25;
+        //    }
+        //}
 
-        public TranslationJob25ServiceReference.TranslationJob TranslationJob25
-        {
-            get
-            {
-                VerifyTokenValidity();
+        //public TranslationJob25ServiceReference.TranslationJob TranslationJob25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
 
-                if (_translationJob25 == null)
-                {
-                    _translationJob25 = _connection.GetTranslationJob25Channel();
-                }
-                return _translationJob25;
-            }
-        }
+        //        if (_translationJob25 == null)
+        //        {
+        //            _translationJob25 = _connection.GetTranslationJob25Channel();
+        //        }
+        //        return _translationJob25;
+        //    }
+        //}
 
-        public TranslationTemplate25ServiceReference.TranslationTemplate TranslationTemplate25
-        {
-            get
-            {
-                VerifyTokenValidity();
+        //public TranslationTemplate25ServiceReference.TranslationTemplate TranslationTemplate25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
 
-                if (_translationTemplate25 == null)
-                {
-                    _translationTemplate25 = _connection.GetTranslationTemplate25Channel();
-                }
-                return _translationTemplate25;
-            }
-        }
+        //        if (_translationTemplate25 == null)
+        //        {
+        //            _translationTemplate25 = _connection.GetTranslationTemplate25Channel();
+        //        }
+        //        return _translationTemplate25;
+        //    }
+        //}
 
-        public Search25ServiceReference.Search Search25
-        {
-            get
-            {
-                VerifyTokenValidity();
+        //public Search25ServiceReference.Search Search25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
 
-                if (_search25 == null)
-                {
-                    _search25 = _connection.GetSearch25Channel();
-                }
-                return _search25;
-            }
-        }
+        //        if (_search25 == null)
+        //        {
+        //            _search25 = _connection.GetSearch25Channel();
+        //        }
+        //        return _search25;
+        //    }
+        //}
 
-        public BackgroundTask25ServiceReference.BackgroundTask BackgroundTask25
-        {
-            get
-            {
-                VerifyTokenValidity();
+        //public BackgroundTask25ServiceReference.BackgroundTask BackgroundTask25
+        //{
+        //    get
+        //    {
+        //        VerifyTokenValidity();
 
-                if (_backgroundTask25 == null)
-                {
-                    _backgroundTask25 = _connection.GetBackgroundTask25Channel();
-                }
-                return _backgroundTask25;
-            }
-        }
+        //        if (_backgroundTask25 == null)
+        //        {
+        //            _backgroundTask25 = _connection.GetBackgroundTask25Channel();
+        //        }
+        //        return _backgroundTask25;
+        //    }
+        //}
 
         #endregion
-*/
 
-        private void VerifyTokenValidity()
-        {
-            if (_connection.IsValid) return;
+        //private void VerifyTokenValidity()
+        //{
+        //    if (_connection.IsValid) return;
 
-            // Not valid...
-            // ...dispose connection
-            _connection.Dispose();
-            // ...discard all channels
-            _application25 = null;
-            _baseline25 = null;
-            _documentObj25 = null;
-            _EDT25 = null;
-            _eventMonitor25 = null;
-            _folder25 = null;
-            _listOfValues25 = null;
-            _metadataBinding25 = null;
-            _outputFormat25 = null;
-            _publicationOutput25 = null;
-            _search25 = null;
-            _settings25 = null;
-            _translationJob25 = null;
-            _translationTemplate25 = null;
-            _user25 = null;
-            _userGroup25 = null;
-            _userRole25 = null;
-            // ...and re-create connection
-            CreateConnection();
-        }
+        //    // Not valid...
+        //    // ...dispose connection
+        //    _connection.Dispose();
+        //    // ...discard all channels
+        //    _application25 = null;
+        //    _baseline25 = null;
+        //    _documentObj25 = null;
+        //    _EDT25 = null;
+        //    _eventMonitor25 = null;
+        //    _folder25 = null;
+        //    _listOfValues25 = null;
+        //    _metadataBinding25 = null;
+        //    _outputFormat25 = null;
+        //    _publicationOutput25 = null;
+        //    _search25 = null;
+        //    _settings25 = null;
+        //    _translationJob25 = null;
+        //    _translationTemplate25 = null;
+        //    _user25 = null;
+        //    _userGroup25 = null;
+        //    _userRole25 = null;
+        //    // ...and re-create connection
+        //    CreateConnection();
+        //}
 
         public void Dispose()
         {

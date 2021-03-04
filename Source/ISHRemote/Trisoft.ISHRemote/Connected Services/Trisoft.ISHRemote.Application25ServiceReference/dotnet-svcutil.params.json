@@ -1,0 +1,18 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.0.2",
+  "options": {
+    "inputs": [
+      "https://medevddemeyer10.global.sdl.corp/InfoShareWSDITA/application25.asmx"
+    ],
+    "internalTypeAccess": true,
+    "namespaceMappings": [
+      "*, Trisoft.ISHRemote.Application25ServiceReference"
+    ],
+    "outputFile": "Reference.cs",
+    "serializerMode": "XmlSerializer",
+    "sync": true,
+    "targetFramework": "netstandard2.0",
+    "typeReuseMode": "All"
+  }
+}

@@ -24,7 +24,7 @@ using Trisoft.ISHRemote.Exceptions;
 using System.Threading;
 using System.Xml;
 using Trisoft.ISHRemote.Interfaces;
-//TODO [Must] ISHRemotev7+ Cleanup//using Trisoft.ISHRemote.Folder25ServiceReference;
+using Trisoft.ISHRemote.Folder25ServiceReference;
 using System.Runtime.InteropServices;
 
 //TODO [Must] ISHRemotev7+ Cleanup//[assembly: ComVisible(false)]
@@ -215,9 +215,9 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// <param name="ishSession">The <see cref="IshSession"/>.</param>
         /// <param name="baseFolderLabel">Label of the base folder</param>
         /// <returns>The BaseFolder enumeration value</returns>
-        internal virtual Folder25ServiceReference.BaseFolder BaseFolderLabelToEnum(IshSession ishSession, string baseFolderLabel)
+        internal virtual Folder25ServiceReference.eBaseFolder BaseFolderLabelToEnum(IshSession ishSession, string baseFolderLabel)
         {
-            foreach (Folder25ServiceReference.BaseFolder baseFolder in System.Enum.GetValues(typeof(Folder25ServiceReference.BaseFolder)))
+            foreach (Folder25ServiceReference.eBaseFolder baseFolder in System.Enum.GetValues(typeof(Folder25ServiceReference.eBaseFolder)))
             {
                 var folderLabel = BaseFolderEnumToLabel(ishSession, baseFolder);
                 if (String.CompareOrdinal(folderLabel, baseFolderLabel) == 0)
@@ -228,11 +228,14 @@ namespace Trisoft.ISHRemote.Cmdlets
 
             // The baseFolder is wrong
             // EL: DIRTY WORKAROUND BELOW TO THROW AN EXCEPTION WITH ERROR CODE 102001
-            string xmlIshFolder = ishSession.Folder25.GetMetadata(
-                BaseFolder.System,
+            string xmlIshFolder = ""; 
+                ishSession.Folder25.GetMetaData(
+                ref ishSession._authenticationContext,
+                eBaseFolder.System, 
                 new string[] { "'" + baseFolderLabel + "'" },  // Use faulty folder path with quotes added, so we can throw the expected exception with errorcode=102001
-                "");
-            return BaseFolder.Data;
+                "",
+                ref xmlIshFolder);
+            return eBaseFolder.Data;
         }
 
         /// <summary>
@@ -241,14 +244,17 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// <param name="ishSession">Client session object to the InfoShare server instance. Keeps track of your security tokens and provide you clients to the various API end points. Holds matching contract parameters like separators, batch and chunk sizes.</param>
         /// <param name="baseFolder">BaseFolder enumeration value</param>
         /// <returns>base folder label</returns>
-        internal virtual string BaseFolderEnumToLabel(IshSession ishSession, Folder25ServiceReference.BaseFolder baseFolder)
+        internal virtual string BaseFolderEnumToLabel(IshSession ishSession, Folder25ServiceReference.eBaseFolder baseFolder)
         {
             IshFields requestedMetadata = new IshFields();
             requestedMetadata.AddField(new IshRequestedMetadataField("FNAME", Enumerations.Level.None, Enumerations.ValueType.All));
-            string xmlIshFolder = ishSession.Folder25.GetMetadata(
+            string xmlIshFolder = "";
+            ishSession.Folder25.GetMetaData(
+                ref ishSession._authenticationContext,
                 baseFolder,
                 new string[] { },  // Use empty folder path so we can just get the basefolder name
-                requestedMetadata.ToXml());
+                requestedMetadata.ToXml(),
+                ref xmlIshFolder);
             XmlDocument result = new XmlDocument();
             result.LoadXml(xmlIshFolder);
             XmlElement xmlIshFolderElement = (XmlElement)result.SelectSingleNode("ishfolder");
