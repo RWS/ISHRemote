@@ -68,17 +68,10 @@ namespace Trisoft.ISHRemote.Objects
 
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xmlConnectionConfiguration);
-            Version schemaVersion = new Version(xmlDocument.SelectSingleNode("connectionconfiguration").Attributes.GetNamedItem("version").Value);
-            if (schemaVersion.Major == 1)
-            {
-                SoftwareVersion = xmlDocument.SelectSingleNode("connectionconfiguration/infosharesoftwareversion").Value;
-                ApplicationName = xmlDocument.SelectSingleNode("connectionconfiguration/infoshareapplicationname").Value;
-                InfoShareWSUrl = new Uri(xmlDocument.SelectSingleNode("connectionconfiguration/infosharewsurl").Value);
-            }
-            else
-            {
-                throw new TrisoftAutomationException($"IshConnectionConfiguration schemaVersion[{schemaVersion.ToString()}] is unsupported");
-            }
+            // Potential version check in the future: xmlDocument.SelectSingleNode("connectionconfiguration").Attributes.GetNamedItem("version").Value);
+            SoftwareVersion = xmlDocument.SelectSingleNode("connectionconfiguration/infosharesoftwareversion").InnerText;
+            ApplicationName = xmlDocument.SelectSingleNode("connectionconfiguration/infoshareapplicationname").InnerText;
+            InfoShareWSUrl = new Uri(xmlDocument.SelectSingleNode("connectionconfiguration/infosharewsurl").InnerText);
         }
     }
 }

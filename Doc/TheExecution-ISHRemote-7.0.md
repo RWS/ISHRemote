@@ -32,9 +32,12 @@ A table that describes what works, where cmdlets have been rewired, where tests 
     1. Slightly tweaked version of what Visual Studio runs to try to get rid of `ArrayOfStrings` is `dotnet-svcutil https://medevddemeyer10.global.sdl.corp/InfoShareWSDITA/folder25.asmx --outputDir "C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\Connected Services\Trisoft.ISHRemote.Folder25ServiceReference" --outputFile "C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\Connected Services\Trisoft.ISHRemote.Folder25ServiceReference\Reference.cs" --namespace *,Trisoft.ISHRemote.Folder25ServiceReference --internal --serializer XmlSerializer --sync` seems to work thanks to simpler `XmlSerializer` approach ... Added that in `Create-AllAsmxWebServices--dotnet-svcutil.bat` (perhaps future matching `Update-...bat` to refresh the references)
 1. NET Framework 4.5 project had `ISHTypeFieldSetup.resx` of ResX Schema 2.0 while net .NET Standard project expects ResX Schema 1.3 ... recreated the file.
 1. Added `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>` in build target `PropertyGroup` of `Trisoft.ISHRemote.csproj` so that referenced (NuGet) assemblies would be copied to `\bin\Debug\netstandard2.0\` and `\bin\Release\netstandard2.0`. By also ticking build xml documentation file and build event `"$(SolutionDir)..\Tools\XmlDoc2CmdletDoc\XmlDoc2CmdletDoc.exe" "$(TargetPath)"` the documentation is generated again.
+1. Added `ISHRemote.psd1` in the route to get the module working for PowerShell 7.1, previously this psd1 file was generated from `build.props`
 
 
 ## Next
+1. `SecureString` is Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
+    1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
 1. Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
 1. Consider build.props, and script
     1. Inspired from `\Properties\AssemblyInfo.cs`, `\Properties\AssemblyInfo.targets` and `\Properties\ModuleManifest.targets`
@@ -47,7 +50,7 @@ A table that describes what works, where cmdlets have been rewired, where tests 
 The below is a list to consider, before execution is preferably transformed into github issues
 
 1. Local `.snk` signing file, get inspired by Azure modules
-1. Enable Tls13, this force NET Framework 4.8
+1. Enable Tls13, this force NET Framework 4.8 ... is that part of netstandard2.0? Should we consider two build targets and have the `ISHRemote.psm1` decide at runtime which set to load?
 1. Auto complete on parameters
 1. `Get-Help` can still be based on tripple-slash (`///`) using `\ISHRemote\Source\Tools\XmlDoc2CmdletDoc`. Some source indicate separate markdown files, next to the C# source and Pester test files.
 

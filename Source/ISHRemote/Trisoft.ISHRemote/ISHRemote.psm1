@@ -4,7 +4,7 @@
 #   http://stackoverflow.com/questions/13583604/is-there-a-way-to-add-alias-to-powershell-cmdlet-programmatically
 #   http://stackoverflow.com/questions/14206595/unable-to-create-a-powershell-alias-in-a-binary-module
 
-Import-Module $PSScriptRoot\ISHRemote.dll
+Import-Module $PSScriptRoot\Trisoft.ISHRemote.dll
 
 $privateCmdlet  = @(Get-ChildItem -Path $PSScriptRoot\Scripts\Private\*.ps1 -ErrorAction SilentlyContinue -Exclude *.Tests.ps1)
 $publicCmdlet  = @(Get-ChildItem -Path $PSScriptRoot\Scripts\Public\*.ps1 -ErrorAction SilentlyContinue -Exclude *.Tests.ps1)
