@@ -22,6 +22,7 @@ using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Trisoft.ISHRemote.BackgroundTask25ServiceReference;
 using Trisoft.ISHRemote.EventMonitor25ServiceReference;
 using System.Text;
@@ -83,6 +84,12 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public string EventDescription { get; set; }
+
+        /// <summary>
+        /// <para type="description">Date time indicating that the background task should not be executed before it.</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        public DateTime? StartAfter { get; set; }
 
         /// <summary>
         /// <para type="description">The <see cref="IshObjects"/>s that will be used for background task creation.</para>
@@ -159,15 +166,26 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
             {
                 IshFields metadataFilter = new IshFields();
                 IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Find);
-                long progressId = 0;
+                var startEventResponse = new StartEventResponse();
+                var progressIds = new List<long>();
                 if (ParameterSetName == "IshObjectsGroup")
                 {
-                    var lngCardIds = _retrievedIshObjects.Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng])).ToList();
-                    progressId = IshSession.DocumentObj25.RaiseEventByIshLngRefs(lngCardIds.ToArray(), EventType);
-                }
+                   var ishObjectsDividedInBatches = DevideListInBatchesByLogicalId(_retrievedIshObjects, IshSession.MetadataBatchSize);
 
+                    int currentIshObjectsCount = 0;
+                    foreach (var ishObjectsGroup in ishObjectsDividedInBatches)
+                    {
+                        // Create BackgroundTask
+                        var lngCardIds = ishObjectsGroup.Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng])).ToList();
+                        var progressId = IshSession.DocumentObj25.RaiseEventByIshLngRefs(lngCardIds.ToArray(), EventType);
+                        progressIds.Add(progressId);
+                        currentIshObjectsCount += ishObjectsGroup.Count;
+                        WriteDebug($"RaiseEventByIshLngRefs.length[{lngCardIds.Count}] {currentIshObjectsCount}/{_retrievedIshObjects.Count}");
+                    }
+                }
+                
                 if (ParameterSetName == "ParameterGroup")
-                { 
+                {
                     // Start event 
                     var startEventRequest = new StartEventRequest
                     {
@@ -175,8 +193,27 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                         eventType = EventType,
                         maximumProgress = _startEventMaxProgress
                     };
-                    var startEventResponse = IshSession.EventMonitor25.StartEvent(startEventRequest);
-                    
+                    startEventResponse = IshSession.EventMonitor25.StartEvent(startEventRequest);
+                }
+
+                if (ParameterSetName == "ParameterGroup" && StartAfter != null)
+                { 
+                    // Create BackgroundTask 
+                    var newBackgroundTaskWithStartAfterRequest = new CreateBackgroundTaskWithStartAfterRequest
+                    {
+                        eventType = EventType,
+                        hashId = "",
+                        inputData = Encoding.Unicode.GetBytes(RawInputData),
+                        startAfter = StartAfter.Value,
+                        progressId = startEventResponse.progressId
+                    };
+                    var createBackgroundTaskStartAfterResponse = IshSession.BackgroundTask25.CreateBackgroundTaskWithStartAfter(newBackgroundTaskWithStartAfterRequest);
+                    var progressId = createBackgroundTaskStartAfterResponse.progressId;
+                    progressIds.Add(progressId);
+                }
+
+                if (ParameterSetName == "ParameterGroup" && StartAfter == null)
+                {
                     // Create BackgroundTask 
                     var newBackgroundTaskRequest = new CreateBackgroundTaskRequest
                     {
@@ -186,11 +223,25 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                         progressId = startEventResponse.progressId
                     };
                     var createBackgroundTaskResponse = IshSession.BackgroundTask25.CreateBackgroundTask(newBackgroundTaskRequest);
-                    progressId = createBackgroundTaskResponse.progressId;
+                    var progressId = createBackgroundTaskResponse.progressId;
+                    progressIds.Add(progressId);
                 }
 
                 // Find and return IshBackgroundTask object
-                metadataFilter.AddField(new IshMetadataFilterField(FieldElements.BackgroundTaskProgressId, Enumerations.Level.Task, Enumerations.FilterOperator.Equal, progressId.ToString(), Enumerations.ValueType.Element));
+                if (progressIds.Count > 1)
+                {
+                    var progressIdsAsString = string.Join(IshSession.Separator, progressIds.ToArray());
+                    metadataFilter.AddField(new IshMetadataFilterField(FieldElements.BackgroundTaskProgressId,
+                        Enumerations.Level.Task, Enumerations.FilterOperator.In, progressIdsAsString,
+                        Enumerations.ValueType.Element));
+                }
+                else
+                {
+                    metadataFilter.AddField(new IshMetadataFilterField(FieldElements.BackgroundTaskProgressId,
+                        Enumerations.Level.Task, Enumerations.FilterOperator.In, progressIds.First().ToString(),
+                        Enumerations.ValueType.Element));
+                }
+
                 WriteDebug($"Finding BackgroundTask UserFilter[{_userFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 var xmlIshBackgroundTasks = IshSession.BackgroundTask25.Find(
                     _modifiedSince,
