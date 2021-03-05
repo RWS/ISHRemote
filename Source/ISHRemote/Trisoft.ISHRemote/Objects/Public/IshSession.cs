@@ -39,7 +39,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private IshConnectionConfiguration _ishConnectionConfiguration;
         private string _ishUserName;
         private string _userName;
-        private readonly SecureString _ishSecurePassword;
+        private readonly string _ishPassword;
         private readonly string _separator = ", ";
         private readonly string _folderPathSeparator = @"\";
         
@@ -95,10 +95,10 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
         /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
         /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
-        /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
+        /// <param name="ishPassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
         /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
         /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
+        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, string ishPassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
         {
             _logger = logger;
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
@@ -110,7 +110,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
-            _ishSecurePassword = ishSecurePassword;
+            _ishPassword = ishPassword;
             _timeout = timeout;
             LoadConnectionConfiguration();
             CreateConnection();
@@ -147,7 +147,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _wsTrustIssuerMexUri = new Uri(wsTrustIssuerMexUrl);
 
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
-            _ishSecurePassword = ishSecurePassword;
+            _ishPassword = ishSecurePassword;
             _timeout = timeout;
             _timeoutIssue = timeoutIssue;
             _timeoutService = timeoutService;
@@ -174,11 +174,11 @@ namespace Trisoft.ISHRemote.Objects.Public
         private void CreateConnection()
         {
             // Before ISHRemotev7+ there was username/password and Active Directory authentication, where the logic came down to:
-            // Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
+            // Credential = _ishPassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishPassword)),
 
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateConnection Application25.Login");
-            Application25.Login(_ishConnectionConfiguration.ApplicationName, _ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword), ref _authenticationContext);
+            Application25.Login(_ishConnectionConfiguration.ApplicationName, _ishUserName, _ishPassword, ref _authenticationContext);
             _logger.WriteDebug("CreateConnection Application25.GetVersion");
             _serverVersion = new IshVersion(Application25.GetVersion());
         }

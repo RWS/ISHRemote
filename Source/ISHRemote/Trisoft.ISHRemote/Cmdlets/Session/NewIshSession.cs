@@ -54,14 +54,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>Building a session for the chosen service based on username/password authentication. The Timeout parameter, expressed as TimeSpan object, controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml.</para>
     /// </example>
-    /// <example>
-    /// <code>
-    /// $securePassword = ConvertTo-SecureString "MYPASSWORD" -AsPlainText -Force
-    /// $mycredentials = New-Object System.Management.Automation.PSCredential("MYISHUSERNAME", $securePassword)
-    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential $mycredentials
-    /// </code>
-    /// <para>Extensive automation example based on the PSCredential parameter. Responsibility of the plain text password is yours.</para>
-    /// </example>
     [Cmdlet(VerbsCommon.New, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(IshSession))]
     public sealed class NewIshSession : SessionCmdlet
@@ -127,7 +119,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         #region Private fields 
         private string _ishUserName = null;
         private string _ishPassword = null;
-        private SecureString _ishSecurePassword = null;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private bool _ignoreSslPolicyErrors = false;
 
@@ -140,20 +131,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 if (PSCredential != null)
                 {
                     _ishUserName = PSCredential.UserName;
-                    _ishSecurePassword = PSCredential.Password;
-                }
-                else if (!String.IsNullOrWhiteSpace(_ishPassword))
-                {
-                    _ishSecurePassword = SecureStringConversions.StringToSecureString(_ishPassword);
-                }
-                else
-                {
-                    _ishSecurePassword = null;
+                    WriteWarning($"PSCredential.Password conversion might be wrong because of Windows only cryptography!");
+                    _ishPassword = PSCredential.Password.ToString();
                 }
 
                 WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + "]");
                 WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
-                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _ignoreSslPolicyErrors);
+                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishPassword, _timeout, _ignoreSslPolicyErrors);
 
                 // Do early load of IshTypeFieldSetup (either <13-TriDKXmlSetup-based or >=13-RetrieveFieldSetupByIshType-API-based) for
                 // usage by ToIshMetadataFields/.../ToIshRequestedMetadataFields and Expand-ISHParameter.ps1 parameter autocompletion
