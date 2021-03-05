@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security;
 using Trisoft.ISHRemote.HelperClasses;
@@ -35,9 +36,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly ILogger _logger;
 
         private readonly Uri _webServicesBaseUri;
-        private readonly Uri _wsTrustIssuerUri;
-        private readonly Uri _wsTrustIssuerMexUri;
-        private string _ishApplicationName;
+        private IshConnectionConfiguration _ishConnectionConfiguration;
         private string _ishUserName;
         private string _userName;
         private readonly SecureString _ishSecurePassword;
@@ -66,10 +65,10 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly bool _ignoreSslPolicyErrors = false;
         //TODO [Must] ISHRemotev7+ Cleanup// private readonly bool _explicitIssuer = false;
 
-        //TODO [Must] ISHRemotev7+ Cleanup
-        /*
-        private InfoShareWcfConnection _connection;
-        */
+        
+        
+        //TODO [Must] ISHRemotev7+ Cleanup// private InfoShareWcfConnection _connection;
+
         //private Annotation25ServiceReference.Annotation _annotation25;
         private Application25ServiceReference.Application25SoapClient _application25;
         //private DocumentObj25ServiceReference.DocumentObj _documentObj25;
@@ -95,12 +94,11 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// </summary>
         /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
         /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
-        /// <param name="_ishApplicationName">ASMX API requires an explicit Application Name, typically 'InfoShareAuthor' unless you used a non-default InstallTool inputparameter ProjectSuffix value</param>
         /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
         /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
         /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
         /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string _ishApplicationName, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
+        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
         {
             _logger = logger;
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
@@ -114,6 +112,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
             _ishSecurePassword = ishSecurePassword;
             _timeout = timeout;
+            LoadConnectionConfiguration();
             CreateConnection();
         }
 
@@ -156,6 +155,22 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
         */
 
+        private void LoadConnectionConfiguration()
+        {
+            var client = new HttpClient();
+            client.Timeout = _timeout;
+            var connectionConfigurationUri = new Uri(_webServicesBaseUri, "connectionconfiguration.xml");
+            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{client.Timeout}]");
+            var responseMessage = client.GetAsync(connectionConfigurationUri).Result;
+            string response = responseMessage.Content.ReadAsStringAsync().Result;
+            _ishConnectionConfiguration = new IshConnectionConfiguration(response);
+            _logger.WriteDebug($"LoadConnectionConfiguration found InfoShareWSUrl[${_ishConnectionConfiguration.InfoShareWSUrl}] ApplicationName[${_ishConnectionConfiguration.ApplicationName}] SoftwareVersion[${_ishConnectionConfiguration.SoftwareVersion}]");
+            if (_ishConnectionConfiguration.InfoShareWSUrl != _webServicesBaseUri)
+            {
+                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _webServicesBaseUri[${_webServicesBaseUri}] differs from _ishConnectionConfiguration.InfoShareWSUrl[${_ishConnectionConfiguration.InfoShareWSUrl}]");
+            }
+        }
+
         private void CreateConnection()
         {
             // Before ISHRemotev7+ there was username/password and Active Directory authentication, where the logic came down to:
@@ -163,7 +178,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateConnection Application25.Login");
-            Application25.Login(_ishApplicationName, _ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword), ref _authenticationContext);
+            Application25.Login(_ishConnectionConfiguration.ApplicationName, _ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword), ref _authenticationContext);
             _logger.WriteDebug("CreateConnection Application25.GetVersion");
             _serverVersion = new IshVersion(Application25.GetVersion());
         }
@@ -198,7 +213,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                         _logger.WriteDebug($"Loading Settings25.GetMetadata for field[" + FieldElements.ExtensionConfiguration + "]...");
                         IshFields metadata = new IshFields();
                         metadata.AddField(new IshRequestedMetadataField(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value));  // do not pass over IshTypeFieldSetup.ToIshRequestedMetadataFields, as we are initializing that object
-                        string xmlIshObjects = Settings25.GetMetadata(metadata.ToXml());
+                        string xmlIshObjects = "";
+                        Settings25.GetMetaData(ref _authenticationContext, metadata.ToXml(), ref xmlIshObjects);
                         var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
                         string xmlSettingsExtensionConfig = ishFields.GetFieldValue(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value);
                         IshSettingsExtensionConfig.MergeIntoIshTypeFieldSetup(_logger, _ishTypeFieldSetup, xmlSettingsExtensionConfig);
@@ -251,7 +267,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
                     string requestedMetadata = "<ishfields><ishfield name='USERNAME' level='none'/></ishfields>";
-                    string xmlIshObjects = User25.GetMyMetadata(requestedMetadata);
+                    string xmlIshObjects = "";
+                    User25.GetMyMetaData(ref _authenticationContext, requestedMetadata, ref xmlIshObjects);
                     Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
                     IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
                     _userName = ishObjects.Objects[0].IshFields.GetFieldValue("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
@@ -410,8 +427,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _chunkSize = value; }
         }
 
-        //TODO [Must] ISHRemotev7+ Cleanup
-        #region Web Services Getters
+         #region Web Services Getters
 
         //public Annotation25ServiceReference.Annotation Annotation25
         //{
@@ -697,6 +713,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         #endregion
 
+        //TODO [Must] ISHRemotev7+ Cleanup
         //private void VerifyTokenValidity()
         //{
         //    if (_connection.IsValid) return;
@@ -728,7 +745,6 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         public void Dispose()
         {
-            _connection.Dispose();
             if (_ignoreSslPolicyErrors)
             {
                 CertificateValidationHelper.RestoreCertificateValidation();
