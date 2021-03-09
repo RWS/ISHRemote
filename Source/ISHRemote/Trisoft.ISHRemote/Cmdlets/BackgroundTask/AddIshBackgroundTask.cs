@@ -45,12 +45,21 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// <example>
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
-    /// $rawData = "<data><export-document-type>ISHPublication</export-document-type><export-document-level>lng</export-document-level><export-ishlngref>549482</export-ishlngref><creationdate>20210303070257182</creationdate></data>"
+    /// $rawData = "&lt;data&gt;&lt;export-document-type&gt;ISHPublication&lt;/export-document-type&gt;&lt;export-document-level&gt;lng&lt;/export-document-level&gt;&lt;export-ishlngref&gt;549482&lt;/export-ishlngref&gt;&lt;creationdate&gt;20210303070257182&lt;/creationdate&gt;&lt;/data&gt;"
     /// $ishBackgroundTask = Add-IshBackgroundTask -EventType "PUBLISH" -EventDescription "Custom publish event description" -RawInputData $rawData
     /// </code>
     /// <para>Add background task with the event type "PUBLISH" and provided event description and publish input raw data. Note: example code only, for publish operations usage of Publish-IshPublicationOutput is preferred.</para> 
     /// </example>
-
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $rawData = "&lt;data&gt;&lt;export-document-type&gt;ISHPublication&lt;/export-document-type&gt;&lt;export-document-level&gt;lng&lt;/export-document-level&gt;&lt;export-ishlngref&gt;549482&lt;/export-ishlngref&gt;&lt;creationdate&gt;20210303070257182&lt;/creationdate&gt;&lt;/data&gt;"
+    /// $date = (Get-Date).AddDays(1)
+    /// $ishBackgroundTask = Add-IshBackgroundTask -EventType "PUBLISH" -EventDescription "Custom publish event description" -RawInputData $rawData -StartAfter $date
+    /// </code>
+    /// <para>Add background task with the event type "PUBLISH" and provided event description and publish input raw data.
+    /// Provided StartAfter parameter with tomorrow's date indicates that background task should not be executed before this date. Note: example code only, for publish operations usage of Publish-IshPublicationOutput is preferred.</para> 
+    /// </example>
     [Cmdlet(VerbsCommon.Add, "IshBackgroundTask", SupportsShouldProcess = false)]
     [OutputType(typeof(IshBackgroundTask))]
     public sealed class AddIshBackgroundTask : BackgroundTaskCmdlet
@@ -196,7 +205,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                     startEventResponse = IshSession.EventMonitor25.StartEvent(startEventRequest);
                 }
 
-                if (ParameterSetName == "ParameterGroup" && StartAfter != null)
+                if (ParameterSetName == "ParameterGroup" && StartAfter.HasValue)
                 { 
                     // Create BackgroundTask 
                     var newBackgroundTaskWithStartAfterRequest = new CreateBackgroundTaskWithStartAfterRequest
@@ -212,7 +221,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                     progressIds.Add(progressId);
                 }
 
-                if (ParameterSetName == "ParameterGroup" && StartAfter == null)
+                if (ParameterSetName == "ParameterGroup" && !StartAfter.HasValue)
                 {
                     // Create BackgroundTask 
                     var newBackgroundTaskRequest = new CreateBackgroundTaskRequest

@@ -1,6 +1,51 @@
 ﻿Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
 . (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
 $cmdletName = "Add-IshBackgroundTask"
+
+function GetLngRefsByInputDataId([long]$inputDataId)
+{
+	[xml]$xmlBTDataObject = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($inputDataId)
+	[byte[]]$data = [Convert]::FromBase64String($xmlBTDataObject.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject."#cdata-section")
+	
+	#find where xml really starts
+	$position = 0
+	foreach($byte in $data)
+	{
+		if($byte -eq "60"){
+			break;
+		}
+		$position ++
+	}
+	
+	#convert to xml
+	[xml]$xmlContent = [System.Text.Encoding]::Unicode.GetString($data, $position, $data.Length - $position)
+
+	$retrievedLngRefsArray = @()
+	foreach($ishObject in $xmlContent.ishobjects.ishobject) 
+	{
+		$retrievedLngRefsArray += $ishObject.ishlngRef
+	}
+	
+	return $retrievedLngRefsArray
+}
+
+function GetLngRefsByBackgroundTasksArray($arrBackgroundTasks)
+{
+	if ($arrBackgroundTasks.Count -eq 0)
+	{
+		return $null
+	}
+	
+	$retrievedLngRefs = @()
+	foreach($ishBackgroundTask in $arrBackgroundTasks)
+	{
+		$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID 
+		$ishBackgroundTask = $ishBackgroundTask | Get-IshBackgroundTask -RequestedMetadata $requestedMetadata
+		$retrievedLngRefs += GetLngRefsByInputDataId -inputDataId $ishBackgroundTask.inputdataid
+	}
+	return $retrievedLngRefs
+}
+
 try {
 
 Describe “Add-IshBackgroundTask" -Tags "Create" {
@@ -33,14 +78,28 @@ Describe “Add-IshBackgroundTask" -Tags "Create" {
 	$ishObjectTopic3_4 = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -LogicalId "ISHREMOTE-LOGICALID-TOPIC-FORADDBT3" -Version '4' -Lng $ishLng -Metadata $ishTopicMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
 
 	$ishObjects = $ishFolderTopic | Get-IshFolderContent -IshSession $ishSession -VersionFilter ""
+	$createdLngRefs = $ishObjects | select -ExpandProperty LngRef
+	
 	Context "IshObjects passed via pipeline (multiple)" {
 		$ishBackgroundTaskIshObjectsPipeline = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
+		
 		It "Verify object properties returned by Add-IshBackgroundTask" {
 			$ishObjects.Count | Should BeExactly 10
 			$ishBackgroundTaskIshObjectsPipeline.Count | Should BeExactly 1
 			$ishBackgroundTaskIshObjectsPipeline.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
 			$ishBackgroundTaskIshObjectsPipeline.EventType | Should BeExactly $ishEventTypeToPurge
 			$ishBackgroundTaskIshObjectsPipeline.userid | Should BeExactly $ishSession.IshUserName
+		}
+		
+		It "Verify input data contains all expected objects" {
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID 
+			$ishBackgroundTaskIshObjectsPipeline = $ishBackgroundTaskIshObjectsPipeline | Get-IshBackgroundTask -RequestedMetadata $requestedMetadata
+			$retrievedLngRefs = GetLngRefsByInputDataId -inputDataId $ishBackgroundTaskIshObjectsPipeline.inputdataid
+			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+			foreach($lngRef in $retrievedLngRefs)
+			{
+				$createdLngRefs -contains $lngRef | Should BeExactly $true
+			}
 		}
 	}
 	
@@ -55,24 +114,52 @@ Describe “Add-IshBackgroundTask" -Tags "Create" {
 			$ishSession.MetadataBatchSize = 2
 			$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 			$ishBackgroundTasks.Count | Should BeExactly 3
+			
+			$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
+			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+			foreach($lngRef in $retrievedLngRefs)
+			{
+				$createdLngRefs -contains $lngRef | Should BeExactly $true
+			}
 		}
 		
 		It "Verify batch size 4" {
 			$ishSession.MetadataBatchSize = 4
 			$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 			$ishBackgroundTasks.Count | Should BeExactly 3
+			
+			$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
+			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+			foreach($lngRef in $retrievedLngRefs)
+			{
+				$createdLngRefs -contains $lngRef | Should BeExactly $true
+			}
 		}
 		
 		It "Verify batch size 6" {
 			$ishSession.MetadataBatchSize = 6
 			$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 			$ishBackgroundTasks.Count | Should BeExactly 2
+			
+			$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
+			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+			foreach($lngRef in $retrievedLngRefs)
+			{
+				$createdLngRefs -contains $lngRef | Should BeExactly $true
+			}
 		}
 
 		It "Verify batch size 10" {
 			$ishSession.MetadataBatchSize = 10
 			$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 			$ishBackgroundTasks.Count | Should BeExactly 1
+			
+			$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
+			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+			foreach($lngRef in $retrievedLngRefs)
+			{
+				$createdLngRefs -contains $lngRef | Should BeExactly $true
+			}
 		}
 		
 		$ishSession.MetadataBatchSize = $savedMetadataBatchSize
@@ -136,12 +223,21 @@ Describe “Add-IshBackgroundTask" -Tags "Create" {
 		$rawData = "<data><dataExample>Text</dataExample></data>"
 		$eventDescription = "Created by Powershell and ISHRemote (startAfter)"
 		$dateTomorrow = (Get-Date).AddDays(1)
-		$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $rawData -StartAfter $dateTomorrow
+		$ishBackgroundTaskStartsAfter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $rawData -StartAfter $dateTomorrow
+		
 		It "Verify object properties returned by Add-IshBackgroundTask" {
-			$ishBackgroundTaskParameters.Count | Should BeExactly 1
-			$ishBackgroundTaskParameters.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
-			$ishBackgroundTaskParameters.EventType | Should BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskParameters.userid | Should BeExactly $ishSession.IshUserName
+			$ishBackgroundTaskStartsAfter.Count | Should BeExactly 1
+			($ishBackgroundTaskStartsAfter.executeafterdate -eq $ishBackgroundTaskStartsAfter.creationdate) | Should Be $false
+			$ishBackgroundTaskStartsAfter.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+			$ishBackgroundTaskStartsAfter.EventType | Should BeExactly $ishEventTypeToPurge
+			$ishBackgroundTaskStartsAfter.userid | Should BeExactly $ishSession.IshUserName
+		}
+
+		It "Verify retrieved StartsAfter date matches provided StartsAfter" {
+			$retrievedExecuteAfter = New-Object DateTime
+			$conversionResult = [DateTime]::TryParseExact($ishBackgroundTaskStartsAfter.executeafterdate, "yyyy-MM-ddTHH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref]$retrievedExecuteAfter)
+			$conversionResult | Should BeExactly $true
+			$retrievedExecuteAfter.ToString("dd/MM/yyyy") | Should BeExactly $dateTomorrow.ToString("dd/MM/yyyy")	
 		}
 	}
 }
