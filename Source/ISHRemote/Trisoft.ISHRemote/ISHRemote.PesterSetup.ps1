@@ -54,6 +54,7 @@ $ishLngCombination = 'en'  # LanguageCombination like 'en+fr+nl' can only be exp
 $ishOutputFormatDitaXml = 'GUID-079A324-FE52-45C4-82CD-A1A9663C2777'  # 'DITA XML' element name
 $ishLovId = "DLANGUAGE"  # ListOfValues where the Lov tests will work on
 $ishLovId2 = "DRESOLUTION"  # ListOfValues where the Lov tests will work on
+$ishEventTypeToPurge = "PUSHTRANSLATIONS"
 
 #region Placeholder to inject your variable overrides. 
 Write-Host    "Initializing Global Test Data and Variables for debug"

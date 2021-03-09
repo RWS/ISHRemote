@@ -277,5 +277,36 @@ namespace Trisoft.ISHRemote.Cmdlets
             return outList;
         }
 
+        /// <summary>
+        /// Groups IshObjects list by LogicalIds and divides into multiple lists by batchsize so that objects with the same LogicalIds are never split between batches.
+        /// </summary>
+        /// <param name="list">List to devide</param>
+        /// <param name="batchSize"></param>
+        /// <returns>Multiple lists grouped by LogicalIds and having maximally batchsize elements, but the same LogicalId is never split between batches</returns>
+        internal List<List<IshObject>>DevideListInBatchesByLogicalId(List<IshObject> list, int batchSize)
+        {
+            var outList = new List<List<IshObject>>();
+
+            if (list != null)
+            {
+                var ishObjectsGroupedByIshRef = list.GroupBy(ishObject => ishObject.IshRef);
+                var tempList = new List<IshObject>(ishObjectsGroupedByIshRef.First().ToList());
+                foreach (var ishObjectsIshRefGroup in ishObjectsGroupedByIshRef.Skip(1))
+                {
+                    if (tempList.Count + ishObjectsIshRefGroup.Count() <= batchSize)
+                    {
+                        tempList.AddRange(ishObjectsIshRefGroup.ToList());
+                    }
+                    else
+                    {
+                        outList.Add(tempList);
+                        tempList = ishObjectsIshRefGroup.ToList();
+                    }
+                }
+                outList.Add(tempList);
+            }
+
+            return outList;
+        }
     }
 }

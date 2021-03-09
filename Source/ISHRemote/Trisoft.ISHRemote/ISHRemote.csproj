@@ -88,6 +88,7 @@
     <Compile Include="Cmdlets\Application\ApplicationCmdlet.cs" />
     <Compile Include="Cmdlets\Application\GetIshVersion.cs" />
     <Compile Include="Cmdlets\BackgroundTask\BackgroundTaskCmdlet.cs" />
+    <Compile Include="Cmdlets\BackgroundTask\AddIshBackgroundTask.cs" />
     <Compile Include="Cmdlets\BackgroundTask\GetIshBackgroundTask.cs" />
     <Compile Include="Cmdlets\Baseline\AddIshBaseline.cs" />
     <Compile Include="Cmdlets\Baseline\BaselineCmdlet.cs" />
