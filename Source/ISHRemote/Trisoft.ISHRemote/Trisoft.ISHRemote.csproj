@@ -1,29 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net472;netcoreapp3.1;net5.0</TargetFrameworks>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <DocumentationFile>bin\Debug\netstandard2.0\Trisoft.ISHRemote.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\net472\Trisoft.ISHRemote.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <DocumentationFile>bin\Release\netstandard2.0\Trisoft.ISHRemote.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\net472\Trisoft.ISHRemote.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="PowerShellStandard.Library" Version="7.0.0-preview.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.Security" Version="4.8.1" />
   </ItemGroup>
-
+    
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
@@ -61,8 +64,10 @@
     </None>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'net472'">
     <Exec Command="&quot;$(SolutionDir)..\Tools\XmlDoc2CmdletDoc\XmlDoc2CmdletDoc.exe&quot; &quot;$(TargetPath)&quot;" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`net472`,`netcoreapp3.1`))\" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`net472`,`net5.0`))\" />
   </Target>
 
 </Project>

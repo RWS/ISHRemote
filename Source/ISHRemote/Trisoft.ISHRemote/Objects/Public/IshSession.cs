@@ -453,7 +453,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     _application25 = new Application25ServiceReference.Application25SoapClient(
                         Application25ServiceReference.Application25SoapClient.EndpointConfiguration.Application25Soap12,
-                        _webServicesBaseUri.AbsoluteUri
+                        new Uri(_webServicesBaseUri, "application25.asmx").AbsoluteUri
                         );
                     _application25.InnerChannel.OperationTimeout = _timeout;
                 }
@@ -471,7 +471,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     _user25 = new User25ServiceReference.User25SoapClient(
                         User25ServiceReference.User25SoapClient.EndpointConfiguration.User25Soap12,
-                        _webServicesBaseUri.AbsoluteUri
+                        new Uri(_webServicesBaseUri, "user25.asmx").AbsoluteUri
                         );
                     _user25.InnerChannel.OperationTimeout = _timeout;
                 }
@@ -545,7 +545,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     _settings25 = new Settings25ServiceReference.Settings25SoapClient(
                         Settings25ServiceReference.Settings25SoapClient.EndpointConfiguration.Settings25Soap12,
-                        _webServicesBaseUri.AbsoluteUri
+                        new Uri(_webServicesBaseUri, "settings25.asmx").AbsoluteUri
                         );
                     _settings25.InnerChannel.OperationTimeout = _timeout;
                 }
@@ -605,7 +605,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     _folder25 = new Folder25ServiceReference.Folder25SoapClient(
                         Folder25ServiceReference.Folder25SoapClient.EndpointConfiguration.Folder25Soap12,
-                        _webServicesBaseUri.AbsoluteUri
+                        new Uri(_webServicesBaseUri, "folder25.asmx").AbsoluteUri
                         );
                     _folder25.InnerChannel.OperationTimeout = _timeout;
                 }

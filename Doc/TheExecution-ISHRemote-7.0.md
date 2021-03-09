@@ -2,10 +2,21 @@
 
 This page will try to track work in progress. And because I work on it in free time, it will help trace how I got where I am in the first place plus what is next. Inspired by [ThePlan-ISHRemote-7.0.md](./ThePlan-ISHRemote-7.0.md)
 
+# Problem
+1. First attempt under #81 was porting WCF-SOAP, but that got blocked as mentioned in [ThePlan-ISHRemote-7.0.md](./ThePlan-ISHRemote-7.0.md)
+2. Second attempt under #115 on ASMX-SOAP using cross-platform .NET Standard 2.0 library - catering for PowerShell 5.1 and NET Framework 4.8 and PowerShell 7.1+ and NET (Core) 3.1+ - is seemingly bocked by error `This operation is not supported on .NET Standard as Reflection.Emit is not available.` Browsing further I find
+    * https://github.com/dotnet/winforms/issues/860 stating "We don't support SOAP in .NET Core. You can try using WebAPI (for hosting) and HttpClient (for consumption)." of November 2019 by a Microsoft employee.
+    * https://github.com/dotnet/standard/issues/857 litterally reads "System.Web.Services.Protocols.Soap not supported on .net Standard" and is still open on March 2021.
+    * https://github.com/dotnet/runtime/issues/26007 reads "Should there be a .Net Standard 2.0 version of Reflection.Emit?" where Microsoft employees mention that ".Net Standard 2.0 libraries can't use typeBuilder.CreateType() (even though this code works both on .Net Framework 4.6.1 and .Net Core 2.0)" is intentional to not work in .NET Standard 2.0 (while it did work in 1.1 by a hack). So "you can use Reflection.Emit if you are writing .NET Core app or library you just cannot use it while writing .NET Standard library currently".
+1. Taking the route of multi-targetting, having `ISHRemote.psm1` resolve it just-in-time.
+
 # Cmdlet Progress and Compatilibity
 
 A table that describes what works, where cmdlets have been rewired, where tests have been adapted (potentially indicating compatibility issues).
 
+1. Runtime compatibility, currently aiming for
+    * PowerShell 5.1 and NET Framework 4.7.2
+    * PowerShell 7.1+ and NET (Core) 3.1+
 1. Public class `IshSession`
     1. Removed WCF proxies, for now the ASMX-SOAP client are internal only
     1. The logic of 'Internal' as provided by ISHDeploy's cmdlet `Enable-ISHIntegrationSTSInternalAuthentication` enabling `https://ish.example.com/ISHWS/Internal/` is removed as that is about WCF-SOAP home realm discovery.
@@ -33,9 +44,21 @@ A table that describes what works, where cmdlets have been rewired, where tests 
 1. NET Framework 4.5 project had `ISHTypeFieldSetup.resx` of ResX Schema 2.0 while net .NET Standard project expects ResX Schema 1.3 ... recreated the file.
 1. Added `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>` in build target `PropertyGroup` of `Trisoft.ISHRemote.csproj` so that referenced (NuGet) assemblies would be copied to `\bin\Debug\netstandard2.0\` and `\bin\Release\netstandard2.0`. By also ticking build xml documentation file and build event `"$(SolutionDir)..\Tools\XmlDoc2CmdletDoc\XmlDoc2CmdletDoc.exe" "$(TargetPath)"` the documentation is generated again.
 1. Added `ISHRemote.psd1` in the route to get the module working for PowerShell 7.1, previously this psd1 file was generated from `build.props`
-
+1. Taking the route of multi-targetting, having `ISHRemote.psm1` resolve it just-in-time. And not shipping netstandard2.0 but use that to generate the Get-Help from.
+1. The `\netstandard2.0\Trisoft.ISHRemote.dll-Help.xml` (where `netstandard2.0` most likely will not be skipped) will be generated over `XmlDoc2CmdletDoc`. These are MSBuild copied to the target folders in `Trisoft.ISHRemote.csproj`. This because `XmlDoc2CmdletDoc` cannot resolve/Find all references for the .NET (Core) assemblies.
+    ```
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'netstandard2.0'">
+      <Exec Command="&quot;$(SolutionDir)..\Tools\XmlDoc2CmdletDoc\XmlDoc2CmdletDoc.exe&quot; &quot;$(TargetPath)&quot;" />
+      <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netstandard2.0`,`net472`))\" />
+      <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netstandard2.0`,`netcoreapp3.1`))\" />
+      <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netstandard2.0`,`net5.0`))\" />
+    </Target>
+1. Error `System.Runtime.Loader.AssemblyLoadContext.OnAssemblyResolve(RuntimeAssembly assembly, String assemblyFullName)
+New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives` brought me here [Resolving PowerShell Module Assembly Dependency Conflicts](https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/). By running `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView` you can see that my wanted (latest) version 4.8.1 is not competing with the out-of-the-box version of PowerShell/dotnet.
+Publishing problem perhaps, as copying %USER%\.nuget\packages\system.servicemodel.http\4.8.1\lib\netcore50\System.ServiceModel.Http.dll to \Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\net5.0 and same for System.ServiceModel.Primitives.dll made it work under PowerShell 7. So next up is MSBuild/Publish routines/knowledge, inspired by Azure module. Could be caused by `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>`
 
 ## Next
+1. Remove `System.Reflection...` again if I go multi-target.
 1. Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
     1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
 1. Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
@@ -56,3 +79,5 @@ The below is a list to consider, before execution is preferably transformed into
 
 # References
 * HTTPS and SoapClient11 or SoapClient12 is discussed on https://medium.com/grensesnittet/integrating-with-soap-web-services-in-net-core-adebfad173fb
+* Error `System.Runtime.Loader.AssemblyLoadContext.OnAssemblyResolve(RuntimeAssembly assembly, String assemblyFullName)
+New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives` brought me here [Resolving PowerShell Module Assembly Dependency Conflicts](https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/). By running `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView` you can see which assemblies are loaded in your fresh PowerShell session.
