@@ -58,6 +58,7 @@ New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives`
 Publishing problem perhaps, as copying %USER%\.nuget\packages\system.servicemodel.http\4.8.1\lib\netcore50\System.ServiceModel.Http.dll to \Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\net5.0 and same for System.ServiceModel.Primitives.dll made it work under PowerShell 7. So next up is MSBuild/Publish routines/knowledge, inspired by Azure module. Could be caused by `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>`
 
 ## Next
+1. `ISHRemote.psm1` in a multi-target framework setup can detect in PowerShell if it is `Core` or `Desktop` and in turn if it is Framework, Core 3, Core 5 (or higher) by `[Environment]::Version` (which returns 5.0.3.-1)
 1. Remove `System.Reflection...` again if I go multi-target.
 1. Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
     1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
