@@ -2,7 +2,12 @@
 . (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
 $cmdletName = "Add-IshBackgroundTask"
 
-function GetLngRefsByInputDataId([long]$inputDataId)
+
+#
+# Script-file scope auxiliary function
+# Gets BackgroundTasks InputData to parse out the language cardids passed to the BackgroundTask event
+#
+function script:GetLngRefsByInputDataId([long]$inputDataId)
 {
 	[xml]$xmlBTDataObject = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($inputDataId)
 	[byte[]]$data = [Convert]::FromBase64String($xmlBTDataObject.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject."#cdata-section")
@@ -19,7 +24,6 @@ function GetLngRefsByInputDataId([long]$inputDataId)
 	
 	#convert to xml
 	[xml]$xmlContent = [System.Text.Encoding]::Unicode.GetString($data, $position, $data.Length - $position)
-
 	$retrievedLngRefsArray = @()
 	foreach($ishObject in $xmlContent.ishobjects.ishobject) 
 	{
@@ -29,7 +33,12 @@ function GetLngRefsByInputDataId([long]$inputDataId)
 	return $retrievedLngRefsArray
 }
 
-function GetLngRefsByBackgroundTasksArray($arrBackgroundTasks)
+
+#
+# Script-file scope auxiliary function
+# For every incoming IshBackgroundTask, retrieve InputData (that holds language cardids of the BackgroundTask event) and return as an array
+#
+function script:GetLngRefsByBackgroundTasksArray($arrBackgroundTasks)
 {
 	if ($arrBackgroundTasks.Count -eq 0)
 	{
@@ -80,160 +89,140 @@ Describe “Add-IshBackgroundTask" -Tags "Create" {
 	$ishObjects = $ishFolderTopic | Get-IshFolderContent -IshSession $ishSession -VersionFilter ""
 	$createdLngRefs = $ishObjects | select -ExpandProperty LngRef
 	
-	Context "IshObjects passed via pipeline (multiple)" {
-		$ishBackgroundTaskIshObjectsPipeline = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-		
-		It "Verify object properties returned by Add-IshBackgroundTask" {
-			$ishObjects.Count | Should BeExactly 10
-			$ishBackgroundTaskIshObjectsPipeline.Count | Should BeExactly 1
-			$ishBackgroundTaskIshObjectsPipeline.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
-			$ishBackgroundTaskIshObjectsPipeline.EventType | Should BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskIshObjectsPipeline.userid | Should BeExactly $ishSession.IshUserName
-		}
-		
-		It "Verify input data contains all expected objects" {
-			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID 
-			$ishBackgroundTaskIshObjectsPipeline = $ishBackgroundTaskIshObjectsPipeline | Get-IshBackgroundTask -RequestedMetadata $requestedMetadata
-			$retrievedLngRefs = GetLngRefsByInputDataId -inputDataId $ishBackgroundTaskIshObjectsPipeline.inputdataid
-			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
-			foreach($lngRef in $retrievedLngRefs)
-			{
-				$createdLngRefs -contains $lngRef | Should BeExactly $true
+
+	Context "Add-IshBackgroundTask IshObjectsGroup Parameter IshObject with implicit IshSession since 14SP4/14.0.4" {
+		if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
+			It "Parameter IshObject invalid" {
+				{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject "INVALIDISHOBJECT" } | Should Throw
 			}
+			It "Parameter EventType null" {
+				{ Add-IshBackgroundTask -EventType $null -IshObject  $ishObjects } | Should Throw
+			}
+			It "Pipeline IshObject Single" {
+				$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject $ishObjectTopic1_1
+				$ishObjectTopic1_1.Count | Should BeExactly 1
+				$ishBackgroundTaskIshObjectsParameter.Count | Should BeExactly 1
+				$ishBackgroundTaskIshObjectsParameter.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+				$ishBackgroundTaskIshObjectsParameter.EventType | Should BeExactly $ishEventTypeToPurge
+				$ishBackgroundTaskIshObjectsParameter.userid | Should BeExactly $ishSession.UserName
+			}
+			It "Pipeline IshObject Multiple" {
+				$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject $ishObjects
+				$ishBackgroundTaskIshObjectsParameter.Count | Should BeExactly 1
+				$ishBackgroundTaskIshObjectsParameter.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+				$ishBackgroundTaskIshObjectsParameter.EventType | Should BeExactly $ishEventTypeToPurge
+				$ishBackgroundTaskIshObjectsParameter.userid | Should BeExactly $ishSession.UserName
+			}
+		}
+	}
+
+	Context "Add-IshBackgroundTask IshObjectsGroup Pipeline IshObject since 14SP4/14.0.4" {
+		if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
+			$ishBackgroundTaskIshObjectsPipeline = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
+			It "Add-IshBackgroundTask returns IshBackgroundTask object" {
+				$ishObjects.Count | Should BeExactly 10
+				$ishBackgroundTaskIshObjectsPipeline.Count | Should BeExactly 1
+				$ishBackgroundTaskIshObjectsPipeline.GetType().Name | Should BeExactly "IshBackgroundTask"
+				$ishBackgroundTaskIshObjectsPipeline.EventType | Should BeExactly $ishEventTypeToPurge
+				$ishBackgroundTaskIshObjectsPipeline.userid | Should BeExactly $ishSession.UserName
+			}
+			It "Add-IshBackgroundTask returns IshBackgroundTask that launched with correct card ids" {
+				$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID 
+				$ishBackgroundTaskIshObjectsPipeline = $ishBackgroundTaskIshObjectsPipeline | Get-IshBackgroundTask -RequestedMetadata $requestedMetadata
+				$retrievedLngRefs = GetLngRefsByInputDataId -inputDataId $ishBackgroundTaskIshObjectsPipeline.inputdataid
+				$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+				foreach($lngRef in $retrievedLngRefs)
+				{
+					$createdLngRefs -contains $lngRef | Should BeExactly $true
+				}
+			}
+			It "Pipeline IshObject Single" {
+				$ishBackgroundTaskIshObjectsPipeline = $ishObjectTopic1_1 | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
+				$ishObjectTopic1_1.Count | Should BeExactly 1
+				$ishBackgroundTaskIshObjectsPipeline.Count | Should BeExactly 1
+				$ishBackgroundTaskIshObjectsPipeline.GetType().Name | Should BeExactly "IshBackgroundTask"
+				$ishBackgroundTaskIshObjectsPipeline.EventType | Should BeExactly $ishEventTypeToPurge
+				$ishBackgroundTaskIshObjectsPipeline.userid | Should BeExactly $ishSession.UserName
+			}
+			$savedMetadataBatchSize = $ishSession.MetadataBatchSize
+			It "Pipeline IshObject MetadataBatchSize[2] with LogicalId grouping" {
+				$ishSession.MetadataBatchSize = 2
+				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
+				$ishBackgroundTasks.Count | Should BeExactly 3
+				$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
+				$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+				foreach($lngRef in $retrievedLngRefs)
+				{
+					$createdLngRefs -contains $lngRef | Should BeExactly $true
+				}
+			}
+			It "Pipeline IshObject MetadataBatchSize[4] with LogicalId grouping" {
+				$ishSession.MetadataBatchSize = 4
+				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
+				$ishBackgroundTasks.Count | Should BeExactly 3
+				$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
+				$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+				foreach($lngRef in $retrievedLngRefs)
+				{
+					$createdLngRefs -contains $lngRef | Should BeExactly $true
+				}
+			}
+			It "Pipeline IshObject MetadataBatchSize[6] with LogicalId grouping" {
+				$ishSession.MetadataBatchSize = 6
+				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
+				$ishBackgroundTasks.Count | Should BeExactly 2
+				$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
+				$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+				foreach($lngRef in $retrievedLngRefs)
+				{
+					$createdLngRefs -contains $lngRef | Should BeExactly $true
+				}
+			}
+			It "Pipeline IshObject MetadataBatchSize[10] with LogicalId grouping" {
+				$ishSession.MetadataBatchSize = 10
+				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
+				$ishBackgroundTasks.Count | Should BeExactly 1
+				$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
+				$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
+				foreach($lngRef in $retrievedLngRefs)
+				{
+					$createdLngRefs -contains $lngRef | Should BeExactly $true
+				}
+			}
+			$ishSession.MetadataBatchSize = $savedMetadataBatchSize
 		}
 	}
 	
-	Context "IshObjects passed via pipeline (multiple) - divide into batches"{
-		$savedMetadataBatchSize = $ishSession.MetadataBatchSize
-		
-		It "Verify total number of objects under test" {
-			$ishObjects.Count | Should BeExactly 10
-		}
-
-		It "Verify batch size 2" {
-			$ishSession.MetadataBatchSize = 2
-			$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-			$ishBackgroundTasks.Count | Should BeExactly 3
-			
-			$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
-			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
-			foreach($lngRef in $retrievedLngRefs)
-			{
-				$createdLngRefs -contains $lngRef | Should BeExactly $true
-			}
-		}
-		
-		It "Verify batch size 4" {
-			$ishSession.MetadataBatchSize = 4
-			$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-			$ishBackgroundTasks.Count | Should BeExactly 3
-			
-			$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
-			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
-			foreach($lngRef in $retrievedLngRefs)
-			{
-				$createdLngRefs -contains $lngRef | Should BeExactly $true
-			}
-		}
-		
-		It "Verify batch size 6" {
-			$ishSession.MetadataBatchSize = 6
-			$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-			$ishBackgroundTasks.Count | Should BeExactly 2
-			
-			$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
-			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
-			foreach($lngRef in $retrievedLngRefs)
-			{
-				$createdLngRefs -contains $lngRef | Should BeExactly $true
-			}
-		}
-
-		It "Verify batch size 10" {
-			$ishSession.MetadataBatchSize = 10
-			$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-			$ishBackgroundTasks.Count | Should BeExactly 1
-			
-			$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
-			$retrievedLngRefs.Count | Should BeExactly $createdLngRefs.Count
-			foreach($lngRef in $retrievedLngRefs)
-			{
-				$createdLngRefs -contains $lngRef | Should BeExactly $true
-			}
-		}
-		
-		$ishSession.MetadataBatchSize = $savedMetadataBatchSize
-	}
-
-	Context "IshObjects passed via pipeline (single)" {
-		$ishBackgroundTaskIshObjectsPipeline = $ishObjectTopic1_1 | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-		It "Verify object properties returned by Add-IshBackgroundTask" {
-			$ishObjectTopic1_1.Count | Should BeExactly 1
-			$ishBackgroundTaskIshObjectsPipeline.Count | Should BeExactly 1
-			$ishBackgroundTaskIshObjectsPipeline.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
-			$ishBackgroundTaskIshObjectsPipeline.EventType | Should BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskIshObjectsPipeline.userid | Should BeExactly $ishSession.IshUserName
-		}
-	}
-
-	Context "IshObjects passed as a parameter (multiple)" {
-		$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -IshObject $ishObjects
-		It "Verify object properties returned by Add-IshBackgroundTask" {
-			$ishBackgroundTaskIshObjectsParameter.Count | Should BeExactly 1
-			$ishBackgroundTaskIshObjectsParameter.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
-			$ishBackgroundTaskIshObjectsParameter.EventType | Should BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskIshObjectsParameter.userid | Should BeExactly $ishSession.IshUserName
-		}
-	}
-
-	Context "IshObjects passed as a parameter (single)" {
-		$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -IshObject $ishObjectTopic1_1
-		It "Verify object properties returned by Add-IshBackgroundTask" {
-			$ishObjectTopic1_1.Count | Should BeExactly 1
-			$ishBackgroundTaskIshObjectsParameter.Count | Should BeExactly 1
-			$ishBackgroundTaskIshObjectsParameter.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
-			$ishBackgroundTaskIshObjectsParameter.EventType | Should BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskIshObjectsParameter.userid | Should BeExactly $ishSession.IshUserName
-		}
-		
-		It "Verify mandatory parameters" {
-			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject $null} | Should Throw
-			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $null -IshObject $ishObjects} | Should Throw
-		}
-	}
-	
-	Context "Add-IshBackgroundTask (Parameters group)" {
+	Context "Add-IshBackgroundTask ParameterGroup" {
+		# If you get the below error, it means you configured default purge operation $ishEventTypetoPurge (defaults to PUSHTRANSLATIONS in ISHRemote.PesterSetup.ps1) away
+		# FaultException`1: [-105001] The parameter eventType with value "PUSHTRANSLATIONS" is invalid. Make sure a handler with the eventType is configured in the Background Task Configuration XML [105001;InvalidParameter]
 		$rawData = "<data><dataExample>Text</dataExample></data>"
 		$eventDescription = "Created by Powershell and ISHRemote"
 		$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $rawData
-		It "Verify object properties returned by Add-IshBackgroundTask" {
+		It "Add-IshBackgroundTask returns IshBackgroundTask object" {
 			$ishBackgroundTaskParameters.Count | Should BeExactly 1
-			$ishBackgroundTaskParameters.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+			$ishBackgroundTaskParameters.GetType().Name | Should BeExactly "IshBackgroundTask"
 			$ishBackgroundTaskParameters.EventType | Should BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskParameters.userid | Should BeExactly $ishSession.IshUserName
+			$ishBackgroundTaskParameters.userid | Should BeExactly $ishSession.UserName
 		}
-         
-		It "Verify mandatory parameters" {
-			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $null -RawInputData $rawData} | Should Throw
-			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $null -EventDescription $eventDescription -RawInputData $rawData} | Should Throw
-			{$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $null} | Should Throw
+		It "Parameter EventDescription null" {
+			{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $null -RawInputData $rawData } | Should Throw
 		}
-	}
-	Context "Add-IshBackgroundTask (Parameters group with StartAfter)" {
-		$rawData = "<data><dataExample>Text</dataExample></data>"
-		$eventDescription = "Created by Powershell and ISHRemote (startAfter)"
-		$dateTomorrow = (Get-Date).AddDays(1)
-		$ishBackgroundTaskStartsAfter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $rawData -StartAfter $dateTomorrow
-		
-		It "Verify object properties returned by Add-IshBackgroundTask" {
+		It "Parameter EventType null" {
+			{ Add-IshBackgroundTask -EventType $null -EventDescription $eventDescription -RawInputData $rawData } | Should Throw
+		}
+		It "Parameter RawInputData null" {
+			{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $null } | Should Throw
+		}
+		It "Parameter StartAfter Tommorrow" {
+			$dateTomorrow = (Get-Date).AddDays(1)
+			$ishBackgroundTaskStartsAfter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription ($eventDescription + " StartAfter") -RawInputData $rawData -StartAfter $dateTomorrow
 			$ishBackgroundTaskStartsAfter.Count | Should BeExactly 1
 			($ishBackgroundTaskStartsAfter.executeafterdate -eq $ishBackgroundTaskStartsAfter.creationdate) | Should Be $false
-			$ishBackgroundTaskStartsAfter.GetType() | Should BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+			$ishBackgroundTaskStartsAfter.GetType().Name | Should BeExactly "IshBackgroundTask"
 			$ishBackgroundTaskStartsAfter.EventType | Should BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskStartsAfter.userid | Should BeExactly $ishSession.IshUserName
-		}
-
-		It "Verify retrieved StartsAfter date matches provided StartsAfter" {
+			$ishBackgroundTaskStartsAfter.userid | Should BeExactly $ishSession.UserName
+			# Verify returned submitted IshBackgroundTask.StartsAfter date matches provided tomorrow StartsAfter
 			$retrievedExecuteAfter = New-Object DateTime
 			$conversionResult = [DateTime]::TryParseExact($ishBackgroundTaskStartsAfter.executeafterdate, "yyyy-MM-ddTHH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref]$retrievedExecuteAfter)
 			$conversionResult | Should BeExactly $true

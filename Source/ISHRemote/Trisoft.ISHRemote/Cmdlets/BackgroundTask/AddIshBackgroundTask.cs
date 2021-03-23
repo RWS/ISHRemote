@@ -30,17 +30,26 @@ using System.Text;
 namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
 {
     /// <summary>
-    /// <para type="synopsis">Add BackgroundTask.</para>
-    /// <para type="description">Adds BackgroundTask in use cases: </para>
-    /// <para type="description">ParameterGroup uses BackgroundTask25 API to create BackgroundTask.</para>
-    /// <para type="description">IshObjectsGroup uses content object(s) passed via pipeline or as a parameter to trigger BackgroundTask event using DocumentObj25.RaiseEventByIshLngRefs.</para>
+    /// <para type="synopsis">The Add-IshBackgroundTask cmdlet add fire-and-forget asynchronous processing events to the CMS generic queuing system.</para>
+    /// <para type="description">Add-IshBackgroundTask ParameterGroup variation uses BackgroundTask25.CreateBackgroundTask(WithStartAfter) that allows you to submit generic messages. Note that this requires a generic BackgroundTask service message handler.</para>
+    /// <para type="description">Add-IshBackgroundTask IshObjectsGroup requires content object(s) which are transformed as message inputdata and passed to DocumentObj25.RaiseEventByIshLngRefs. This function will server-side validate the incoming objects and trigger an internal BackgroundTask25.CreateBackgroundTask.</para>
     /// </summary>
     /// <example>
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
-    /// $ishBackgroundTask = Get-IshFolderContent -FolderPath "General\MyFolder\Topics" -VersionFilter Latest -LanguagesFilter en | Add-IshBackgroundTask -EventType "SMARTTAG"
+    /// $ishBackgroundTask = Get-IshFolderContent -FolderPath "General\MyFolder\Topics" -VersionFilter Latest -LanguagesFilter en |
+    ///                      Add-IshBackgroundTask -EventType "SMARTTAG"
     /// </code>
     /// <para>Add BackgroundTask with event type "SMARTTAG" for the objects located under the "General\MyFolder\Topics" path</para> 
+    /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// $ishBackgroundTask = Get-IshFolder -FolderPath "General\Myfolder" -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary") -Recurse |
+    ///                      Get-IshFolderContent -FolderPath "General\MyFolder\Topics" -VersionFilter Latest -LanguagesFilter en |
+    ///                      Add-IshBackgroundTask -EventType "SMARTTAG"
+    /// </code>
+    /// <para>Add BackgroundTask with event type "SMARTTAG" for the latest-version en(glish) content objects of type topic, map and topic library; located under the "General\MyFolder" path. Trigger a legacy correction event of SMARTTAG across many folders. Note that Get-IshFolder gives you a progress bar for follow-up. Note that it is possible to configure the BackgroundTask-handler with a variation of the SMARTTAG event to do more-or-less fields for automatic concept suggestions.</para> 
     /// </example>
     /// <example>
     /// <code>
@@ -48,7 +57,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// $rawData = "&lt;data&gt;&lt;export-document-type&gt;ISHPublication&lt;/export-document-type&gt;&lt;export-document-level&gt;lng&lt;/export-document-level&gt;&lt;export-ishlngref&gt;549482&lt;/export-ishlngref&gt;&lt;creationdate&gt;20210303070257182&lt;/creationdate&gt;&lt;/data&gt;"
     /// $ishBackgroundTask = Add-IshBackgroundTask -EventType "PUBLISH" -EventDescription "Custom publish event description" -RawInputData $rawData
     /// </code>
-    /// <para>Add background task with the event type "PUBLISH" and provided event description and publish input raw data. Note: example code only, for publish operations usage of Publish-IshPublicationOutput is preferred.</para> 
+    /// <para>Add background task with the event type "PUBLISH" and provided event description and publish input raw data. Note: example code only, for publish operations usage of Publish-IshPublicationOutput cmdlet is preferred.</para> 
     /// </example>
     /// <example>
     /// <code>
@@ -58,7 +67,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// $ishBackgroundTask = Add-IshBackgroundTask -EventType "PUBLISH" -EventDescription "Custom publish event description" -RawInputData $rawData -StartAfter $date
     /// </code>
     /// <para>Add background task with the event type "PUBLISH" and provided event description and publish input raw data.
-    /// Provided StartAfter parameter with tomorrow's date indicates that background task should not be executed before this date. Note: example code only, for publish operations usage of Publish-IshPublicationOutput is preferred.</para> 
+    /// Provided StartAfter parameter with tomorrow's date indicates that background task should not be executed before this date. Note: example code only, for publish operations usage of Publish-IshPublicationOutput cmdlet is preferred.</para> 
     /// </example>
     [Cmdlet(VerbsCommon.Add, "IshBackgroundTask", SupportsShouldProcess = false)]
     [OutputType(typeof(IshBackgroundTask))]
@@ -73,7 +82,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         public IshSession IshSession { get; set; }
 
         /// <summary>
-        /// <para type="description">Type of the event (e.g. SMARTTAG)</para>
+        /// <para type="description">Type of the event (e.g. SMARTTAG). Needs a match CMS BackgroundTask service handler entry.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
@@ -95,7 +104,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         public string EventDescription { get; set; }
 
         /// <summary>
-        /// <para type="description">Date time indicating that the background task should not be executed before it.</para>
+        /// <para type="description">Date time indicating that the background task should not be picked up and executed before it.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         public DateTime? StartAfter { get; set; }
@@ -125,13 +134,13 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 case "ParameterGroup":
                     if ((IshSession.ServerIshVersion.MajorVersion < 13) || ((IshSession.ServerIshVersion.MajorVersion == 13) && (IshSession.ServerIshVersion.RevisionVersion < 2)))
                     {
-                        throw new PlatformNotSupportedException($"Add-IshBackgroundTask with the current parameter set requires server-side BackgroundTask API which only available starting from 13SP2/13.0.2 and up. ServerIshVersion[{IshSession.ServerVersion}]");
+                        throw new PlatformNotSupportedException($"Add-IshBackgroundTask with the current parameter set requires server-side BackgroundTask API which is only available starting from 13SP2/13.0.2 and up. ServerIshVersion[{IshSession.ServerVersion}]");
                     }
                     break;
                 case "IshObjectsGroup":
                     if ((IshSession.ServerIshVersion.MajorVersion < 14) || ((IshSession.ServerIshVersion.MajorVersion == 14) && (IshSession.ServerIshVersion.RevisionVersion < 4)))
                     {
-                        throw new PlatformNotSupportedException($"Add-IshBackgroundTask with the current parameter set requires server-side DocumentObj API which only available starting from 14SP4/14.0.4 and up. ServerIshVersion[{IshSession.ServerVersion}]");
+                        throw new PlatformNotSupportedException($"Add-IshBackgroundTask with the current parameter set requires server-side DocumentObj API which is only available starting from 14SP4/14.0.4 and up. ServerIshVersion[{IshSession.ServerVersion}]");
                     }
                     break;
             }
