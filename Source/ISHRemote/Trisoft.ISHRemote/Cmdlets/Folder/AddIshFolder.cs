@@ -50,7 +50,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         // TODO: [Could] FolderPath means creating all intermediate folders with the same security settings, same type as the detected last parent
         //  [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
         // Creating base folders is not allowed, so no 
