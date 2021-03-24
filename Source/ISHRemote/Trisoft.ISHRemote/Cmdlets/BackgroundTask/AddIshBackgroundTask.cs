@@ -46,7 +46,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// $ishBackgroundTask = Get-IshFolder -FolderPath "General\Myfolder" -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary") -Recurse |
-    ///                      Get-IshFolderContent -FolderPath "General\MyFolder\Topics" -VersionFilter Latest -LanguagesFilter en |
+    ///                      Get-IshFolderContent -VersionFilter Latest -LanguagesFilter en |
     ///                      Add-IshBackgroundTask -EventType "SMARTTAG"
     /// </code>
     /// <para>Add BackgroundTask with event type "SMARTTAG" for the latest-version en(glish) content objects of type topic, map and topic library; located under the "General\MyFolder" path. Trigger a legacy correction event of SMARTTAG across many folders. Note that Get-IshFolder gives you a progress bar for follow-up. Note that it is possible to configure the BackgroundTask-handler with a variation of the SMARTTAG event to do more-or-less fields for automatic concept suggestions.</para> 
