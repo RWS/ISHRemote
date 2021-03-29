@@ -178,7 +178,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of WCF when issuing a token. Defaults to maximum timespan.</para>
+        /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of WCF when issuing a token. Defaults to 30 minutes.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
         public TimeSpan TimeoutIssue
@@ -188,7 +188,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of WCF for ISHWS proxies. Defaults to maximum timespan.</para>
+        /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of WCF for ISHWS proxies. Defaults to 30 minutes.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
         public TimeSpan TimeoutService
@@ -212,8 +212,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         private string _ishPassword = null;
         private SecureString _ishSecurePassword = null;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
-        private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
-        private TimeSpan _timeoutService = TimeSpan.MaxValue;
+        private TimeSpan _timeoutIssue = new TimeSpan(0, 30, 0);
+        private TimeSpan _timeoutService = new TimeSpan(0, 30, 0);
         private bool _ignoreSslPolicyErrors = false;
 
         #endregion
