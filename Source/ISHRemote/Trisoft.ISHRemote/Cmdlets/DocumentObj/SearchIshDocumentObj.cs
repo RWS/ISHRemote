@@ -27,34 +27,104 @@ using System.Xml;
 namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 {
     /// <summary>
-    /// <para type="synopsis">Search - so Full-Text-Index as data source, while Find is Relational Database as data source - matching the search criteria. Metadata is retrieved like Get-IshDocumentObj would from the Relational Database.</para>
-    /// <para type="description">Passes the search criteria to the Search25 API where the result set is capped by -MaxHitsToReturn.</para>
-    /// <para type="description">Then uses DocumentObj25 API to retrieve ishobjects.</para>
+    /// <para type="synopsis">Search - so Full-Text-Index as data source, while Find is Relational Database as data source - matching the search criteria. Metadata is retrieved like Get-IshDocumentObj would, from the Relational Database.</para>
+    /// <para type="description">Search - so Full-Text-Index as data source, while Find is Relational Database as data source - matching the search criteria. Metadata is retrieved like Get-IshDocumentObj would, from the Relational Database.</para>
+    /// <para type="description">Passes the search criteria to the Search25 API where the result set is capped by -MaxHitsToReturn. See online documentation for advanced query support on this 'ishquery' domain specific language.</para>
+    /// <para type="description">Then the search results is enriched using the DocumentObj25 API to retrieve ishobjects. As the output are IshObjects on the pipeline any further handling by other ISHRemote cmdlets or more is enabled.</para>
     /// </summary>
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Search-IshDocumentObj -SimpleQuery "bluetooth" -MaxHitsToReturn 200
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
+    /// <para>Executes a Full-Text-Index search for 'bluetooth' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language. The MaxHitsToReturn limits the Full-Text-Index result set.</para>
+    /// <para>Results are returned sorted by the Full-Text-Index engine, first by score then by title.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Search-IshDocumentObj -SimpleQuery "bluetooth" -Count
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
+    /// <para>Executes a Full-Text-Index search for 'bluetooth' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language. The MaxHitsToReturn limits the Full-Text-Index result set.</para>
+    /// <para>Results a count of hits, there are no IshObjects on the pipeline (MaxHitsToReturn is 0).</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Search-IshDocumentObj -SimpleQuery "*" -MaxHitsToReturn 2000 |
+    /// Out-GridView -PassThru
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
+    /// <para>Executes a Full-Text-Index search for '*' in the ANY field of the LatestVersion collection (so all latest version content objects are returned), with no filter on object types and only in the user's language. The MaxHitsToReturn limits the Full-Text-Index result set.</para>
+    /// <para>Results are passed to Out-GridView where manual filtering can happen and the selection is passed to the pipeline for further processing.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// Search-IshDocumentObj -SimpleQuery "red AND green AND blue" | 
+    /// Get-IshDocumentObjData -FolderPath c:\temp\
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
+    /// <para>Executes a Full-Text-Index search for 'red AND green AND blue' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language. Note that the AND keyword is recognized as boolean operator for the ISHANYWHERE field, see API documentation.</para>
+    /// <para>Results are returned sorted by the Full-Text-Index engine, first by score then by title. And this IshObjects are passed to Get-IshDocumentObjData for (xml) file downloading.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
     /// $xmlQuery = @"
-    /// <ishquery>
-    ///   <and>
-    ///     <ishfield name = 'ISHANYWHERE'  level='none' ishoperator='contains'>change oil filter</ishfield>
-    ///   </and>
-    ///   <ishsort>
-    ///     <ishsortfield name = 'ISHSCORE' level='none' ishorder="d"/>
-    ///   </ishsort>
-    ///   <ishobjectfilters>
-    ///     <ishversionfilter>LatestVersion</ishversionfilter>
-    ///     <ishtypefilter>ISHModule</ishtypefilter>
-    ///     <ishtypefilter>ISHLibrary</ishtypefilter>
-    ///     <ishtypefilter>ISHMasterDoc</ishtypefilter>
-    ///     <ishlanguagefilter>en</ishlanguagefilter>
-    ///   </ishobjectfilters>
-    /// </ishquery>
+    /// &lt;ishquery&gt;
+    ///   &lt;and&gt;&lt;ishfield name='ISHANYWHERE' level='none' ishoperator='contains'&gt;change oil filter&lt;/ishfield&gt;&lt;/and&gt;
+    ///   &lt;ishsort&gt;
+    ///     &lt;ishsortfield name='ISHSCORE' level='none' ishorder='d'/&gt;
+    ///     &lt;ishsortfield name='FTITLE' level='logical' ishorder='d'/&gt;
+    ///   &lt;/ishsort&gt;
+    ///   &lt;ishobjectfilters&gt;
+    ///     &lt;ishversionfilter&gt;LatestVersion&lt;/ishversionfilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHModule&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHMasterDoc&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHLibrary&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHTemplate&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHIllustration&lt;/ishtypefilter&gt;
+    ///     &lt;ishlanguagefilter&gt;en&lt;/ishlanguagefilter&gt;
+    ///   &lt;/ishobjectfilters&gt;
+    /// &lt;/ishquery&gt;
     /// "@
     /// $requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
     /// Search-IshDocumentObj -XmlQuery $xmlQuery -MaxHitsToReturn 100 -RequestedMetadata $requestedMetadata
     /// </code>
-    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Executes a Full-Text-Index search for 'change oil filter' in the ANY field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language; results are returned sorted by the Full-Text-Index engine, and enriched with FISHSTATUSTYPE field on top of the $ishSession.DefaultRequestedMetadata</para>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
+    /// <para>Executes a Full-Text-Index search for 'change oil filter' in the ANY field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language; results are returned sorted by the Full-Text-Index engine, and enriched with FISHSTATUSTYPE field on top of the $ishSession.DefaultRequestedMetadata</para>
+    /// <para>The provided $xmlQuery is the default query of parameter set lead by -SimpleQuery; where the ISHANYWHERE is overwritten with the given -SimpleQuery value, and the ishlanguagefilter is overwritten with the user's language.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $xmlQuery = @"
+    /// &lt;ishquery&gt;
+    ///   &lt;and&gt;&lt;ishfield name='ISHANYWHERE' level='none' ishoperator='contains'&gt;change oil filter&lt;/ishfield&gt;&lt;/and&gt;
+    ///   &lt;ishsort&gt;
+    ///     &lt;ishsortfield name='ISHSCORE' level='none' ishorder='d'/&gt;
+    ///     &lt;ishsortfield name='FTITLE' level='logical' ishorder='d'/&gt;
+    ///   &lt;/ishsort&gt;
+    ///   &lt;ishobjectfilters&gt;
+    ///     &lt;ishversionfilter&gt;LatestVersion&lt;/ishversionfilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHModule&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHMasterDoc&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHLibrary&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHTemplate&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHIllustration&lt;/ishtypefilter&gt;
+    ///     &lt;ishlanguagefilter&gt;en&lt;/ishlanguagefilter&gt;
+    ///   &lt;/ishobjectfilters&gt;
+    /// &lt;/ishquery&gt;
+    /// "@
+    /// $requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
+    /// Search-IshDocumentObj -XmlQuery $xmlQuery -Count
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
+    /// <para>Executes a Full-Text-Index search for 'change oil filter' in the ANY field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language.</para>
+    /// <para>Results a count of hits, there are no IshObjects on the pipeline (MaxHitsToReturn is 0).</para>
     /// </example>
     [Cmdlet(VerbsCommon.Search, "IshDocumentObj", SupportsShouldProcess = false)]
     [OutputType(typeof(IshDocumentObj),typeof(long))]
@@ -164,62 +234,113 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         {
             try
             {
-                // 1. Validating the input
+                // 1. Transform the incoming simple query
                 switch (ParameterSetName)
                 {
                     case "SimpleQueryGroup":
                     case "SimpleQueryCountGroup":
-                        WriteDebug("Validating and converting incoming SimpleQuery");
+                        WriteDebug("Loading default query");
+                        _xmlQuery = @"<ishquery>
+                                      <and><ishfield name='ISHANYWHERE' level='none' ishoperator='contains'>change oil filter</ishfield></and>
+                                      <ishsort>
+                                        <ishsortfield name='ISHSCORE' level='none' ishorder='d'/>
+                                        <ishsortfield name='FTITLE' level='logical' ishorder='d'/>
+                                      </ishsort>
+                                      <ishobjectfilters>
+                                        <ishversionfilter>LatestVersion</ishversionfilter>
+                                        <ishtypefilter>ISHModule</ishtypefilter>
+                                        <ishtypefilter>ISHMasterDoc</ishtypefilter>
+                                        <ishtypefilter>ISHLibrary</ishtypefilter>
+                                        <ishtypefilter>ISHTemplate</ishtypefilter>
+                                        <ishtypefilter>ISHIllustration</ishtypefilter>
+                                        <ishlanguagefilter>en</ishlanguagefilter>
+                                      </ishobjectfilters>
+                                      </ishquery>";
+                        XmlDocument xmlDocument = new XmlDocument();
+                        xmlDocument.LoadXml(_xmlQuery);
+                        // Converting type filter, could be something like FolderTypeFilter in Get-IshFolder, not for now
+                        WriteDebug("Setting query string based on SimpleQuery");
+                        xmlDocument.SelectSingleNode("ishquery/and/ishfield").InnerText = SimpleQuery;
+                        WriteDebug("Setting language based on IshSession");
+                        xmlDocument.SelectSingleNode("ishquery/ishobjectfilters/ishlanguagefilter").InnerText = IshSession.UserLanguage;
+                        WriteDebug("Validating transformed XmlQuery");
+                        _xmlQuery = xmlDocument.OuterXml;
+                        WriteDebug("Validated transformed XmlQuery[" + xmlDocument.OuterXml + "]");
+                        
                         break;
+                }
+                // 2. Validate the incoming or generated raw xml query
+                switch (ParameterSetName)
+                {
                     case "XmlQueryGroup":
                     case "XmlQueryCountGroup":
                         WriteDebug("Validating incoming XmlQuery");
+                        //debug//_xmlQuery = @"<ishquery><and><ishfield name='ISHANYWHERE'  level='none' ishoperator='contains'>change oil filter</ishfield></and>
+                        //debug//   <ishsort><ishsortfield name='ISHSCORE' level='none' ishorder='d'/></ishsort>
+                        //debug//   <ishobjectfilters><ishversionfilter>LatestVersion</ishversionfilter><ishtypefilter>ISHModule</ishtypefilter><ishtypefilter>ISHMasterDoc</ishtypefilter><ishlanguagefilter>en</ishlanguagefilter>
+                        //debug//   </ishobjectfilters></ishquery>";
+                        XmlDocument xmlDocument = new XmlDocument();
+                        xmlDocument.LoadXml(_xmlQuery);
+                        _xmlQuery = xmlDocument.OuterXml;
+                        WriteDebug("Validated incoming XmlQuery[" + xmlDocument.OuterXml + "]");
                         break;
                 }
 
-                // 2. Executing
-                List<IshObject> returnIshObjects = new List<IshObject>();
+                // 3. Executing
                 switch (ParameterSetName)
                 {
                     case "SimpleQueryCountGroup":
                     case "XmlQueryCountGroup":
-                        // 2A. Executing the count query
-                        WriteDebug("Executing a count query");
-                        _maxHitsToReturn = 0; // because that is what -Count does
+                        {
+                            // 3A. Executing the count query
+                            WriteVerbose("Executing a count query");
+                            _maxHitsToReturn = 0; // because that is what -Count does
+                            Search25ServiceReference.PerformSearchResponse performSearchResponse = IshSession.Search25.PerformSearch(new Search25ServiceReference.PerformSearchRequest(_xmlQuery, _maxHitsToReturn));
+                            WriteObject(performSearchResponse.totalHitsFound);
+                        }
                         break;
 
                     case "XmlQueryGroup":
                     case "SimpleQueryGroup":
-                        // 2B. Executing the result query
-                        WriteDebug("Executing a result query");
-                        Search25ServiceReference.PerformSearchResponse performSearchResponse = IshSession.Search25.PerformSearch(new Search25ServiceReference.PerformSearchRequest(_xmlQuery, _maxHitsToReturn));
-                        var lngCardIds = new IshSearchResults(performSearchResponse.xmlSearchResults).LngRefs;
-
-                        // 3. Retrieving metadata on the search result
-                        WriteDebug("Retrieving metadata on the search result");
-                        IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
-
-                        //RetrieveMetadata
-                        WriteDebug("Retrieving CardIds.length[{lngCardIds.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] 0/{lngCardIds.Count}");
-                        // Devides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
-                        List<List<long>> devidedlngCardIdsList = DevideListInBatches<long>(lngCardIds, IshSession.MetadataBatchSize);
-                        int currentLngCardIdCount = 0;
-                        foreach (List<long> lngCardIdBatch in devidedlngCardIdsList)
                         {
-                            // Process language card ids in batches
-                            string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
-                                lngCardIdBatch.ToArray(),
-                                requestedMetadata.ToXml());
-                            IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
-                            returnIshObjects.AddRange(retrievedObjects.Objects);
-                            currentLngCardIdCount += lngCardIdBatch.Count;
-                            WriteDebug($"Retrieving CardIds.length[{lngCardIdBatch.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] including data {currentLngCardIdCount}/{lngCardIds.Count}");
-                        }
+                            // 3B. Executing the result query
+                            WriteVerbose("Executing a result query");
+                            Search25ServiceReference.PerformSearchResponse performSearchResponse = IshSession.Search25.PerformSearch(new Search25ServiceReference.PerformSearchRequest(_xmlQuery, _maxHitsToReturn));
+                            var lngCardIds = new IshSearchResults(performSearchResponse.xmlSearchResults).LngRefs;
 
-                        //TODO [Should] Search for massive search results, the returnIshObjects should be reset per for loop and also pushed on the pipeline... count should just be long object
-                        //TODO [Should] Search should get Progressbar like Get-IshFolder Recurse
-                        WriteVerbose("returned object count[" + returnIshObjects.Count + "]");
-                        WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
+                            if (lngCardIds.Count <= 0)
+                            {
+                                WriteWarning($"Search-IshDocumentObj returned 0 results for xmlQuery[{_xmlQuery}]");
+                            }
+                            else
+                            { 
+                                // 4. Retrieving metadata on the search result
+                                WriteDebug("Retrieving metadata on the search result");
+                                IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
+
+                                //RetrieveMetadata
+                                WriteDebug("Retrieving CardIds.length[" + lngCardIds.Count + "] RequestedMetadata.length[" + requestedMetadata.ToXml().Length + "] 0/" + lngCardIds.Count);
+                                // Devides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
+                                List<List<long>> devidedlngCardIdsList = DevideListInBatches<long>(lngCardIds, IshSession.MetadataBatchSize);
+                                int currentLngCardIdCount = 0;
+                                WriteParentProgress("Retrieving metadata for search results...", currentLngCardIdCount, lngCardIds.Count);
+                                foreach (List<long> lngCardIdBatch in devidedlngCardIdsList)
+                                {
+                                    // Process language card ids in batches
+                                    string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
+                                        lngCardIdBatch.ToArray(),
+                                        requestedMetadata.ToXml());
+                                    IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
+                                    List<IshObject> returnIshObjects = new List<IshObject>();
+                                    returnIshObjects.AddRange(retrievedObjects.Objects);
+                                    WriteObject(IshSession, ISHType, returnIshObjects.ConvertAll(x => (IshBaseObject)x), true);
+                                    currentLngCardIdCount += lngCardIdBatch.Count;
+                                    WriteParentProgress("Retrieving metadata for search results...", currentLngCardIdCount, lngCardIds.Count);
+                                    WriteDebug("Retrieving CardIds.length[" + lngCardIdBatch.Count + "] RequestedMetadata.length[" + requestedMetadata.ToXml().Length + "] " + currentLngCardIdCount + "/" + lngCardIds.Count);
+                                }
+                                WriteVerbose("returned object count[" + currentLngCardIdCount + "]");
+                            }
+                        }
                         break;
                 }
             }

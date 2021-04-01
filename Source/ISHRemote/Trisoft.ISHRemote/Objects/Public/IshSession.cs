@@ -39,6 +39,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly Uri _wsTrustIssuerMexUri;
         private string _ishUserName;
         private string _userName;
+        private string _userLanguage;
         private readonly SecureString _ishSecurePassword;
         private readonly string _separator = ", ";
         private readonly string _folderPathSeparator = @"\";
@@ -264,6 +265,26 @@ namespace Trisoft.ISHRemote.Objects.Public
                     _userName = ishObjects.Objects[0].IshFields.GetFieldValue("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
                 }
                 return _userName;
+            }
+        }
+
+        /// <summary>
+        /// The user language as available on the InfoShare User Profile in the CMS under field 'FISHUSERLANGUAGE'
+        /// </summary>
+        public string UserLanguage
+        {
+            get
+            {
+                if (_userLanguage == null)
+                {
+                    //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
+                    string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
+                    string xmlIshObjects = User25.GetMyMetadata(requestedMetadata);
+                    Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
+                    IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
+                    _userLanguage = ishObjects.Objects[0].IshFields.GetFieldValue("FISHUSERLANGUAGE", Enumerations.Level.None, Enumerations.ValueType.Value);
+                }
+                return _userLanguage;
             }
         }
 
