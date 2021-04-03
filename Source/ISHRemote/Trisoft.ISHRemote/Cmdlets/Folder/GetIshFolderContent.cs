@@ -69,8 +69,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// $metadataFilter = Set-IshMetadataFilterField -Level Lng -Name FSOURCELANGUAGE -FilterOperator Empty
+    /// $requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
     /// Get-IshFolder -FolderPath "\General\Mobile Phones Demo" -Recurse | 
-    /// Get-IshFolderContent -VersionFilter "" -MetadataFilter $metadataFilter
+    /// Get-IshFolderContent -VersionFilter "" -MetadataFilter $metadataFilter -RequestedMetadata $requestedMetadata 
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. The metadata filter will filter out source languages and the empty VersionFilter will return all versions of any object. The recursive folder allows you to control which area you do a check/conversion in, and give you progress as well.</para>
     /// </example>
@@ -97,6 +98,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
+
+        /// <summary>
+        /// <para type="description">The metadata fields to retrieve</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderIdGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FolderPathGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "BaseFolderGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFolderGroup")]
+        [ValidateNotNull]
+        public IshField[] RequestedMetadata { get; set; }
 
         /// <summary>
         /// <para type="description">Separated string with the full folder path</para>
@@ -280,7 +291,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         if (documentLogicalIds.Any())
                         {
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHIllustration, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHTemplate };
-                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
+                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
                             // Devides the list of LogicalIds in different lists that all have maximally MetadataBatchSize elements
                             List<List<string>> devidedDocumentLogicalIdsList = DevideListInBatches<string>(documentLogicalIds, IshSession.MetadataBatchSize);
@@ -288,7 +299,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             foreach (List<string> logicalIdBatch in devidedDocumentLogicalIdsList)
                             {
                                 currentLogicalIdCount += logicalIdBatch.Count;
-                                WriteDebug($"Retrieving DocumentObj.length[{logicalIdBatch.Count}] MetadataFilter.length[{metadataFilterFields.ToXml().Length}] {currentLogicalIdCount}/{documentLogicalIds.Count}");
+                                WriteDebug($"Retrieving DocumentObj.length[{logicalIdBatch.Count}] MetadataFilter.length[{metadataFilterFields.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{documentLogicalIds.Count}");
 
                                 if (VersionFilter != null && VersionFilter.Length > 0)
                                 {
@@ -311,7 +322,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 }
                                 else
                                 {
-                                    WriteVerbose($"Filtering DocumentObj using MetadataFilter.length[{metadataFilterFields.ToXml().Length}]");
+                                    WriteVerbose($"Filtering DocumentObj using MetadataFilter.length[{metadataFilterFields.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                                     xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(),
                                         DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter,
                                         metadataFilterFields.ToXml(),
@@ -331,7 +342,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         if (publicationLogicalIds.Any())
                         {
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHPublication };
-                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
+                            IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
                             // Devides the list of LogicalIds in different lists that all have maximally MetadataBatchSize elements
                             List<List<string>> devidedPublicationLogicalIdsList = DevideListInBatches<string>(publicationLogicalIds, IshSession.MetadataBatchSize);
