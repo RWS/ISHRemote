@@ -74,6 +74,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// Get-IshFolderContent -VersionFilter "" -MetadataFilter $metadataFilter -RequestedMetadata $requestedMetadata 
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. The metadata filter will filter out source languages and the empty VersionFilter will return all versions of any object. The recursive folder allows you to control which area you do a check/conversion in, and give you progress as well.</para>
+    /// <para>Note that -RequestedMetadata will be used on every folder passed over the pipeline by Get-IshFolder. Requesting metadata for Topics (ISHModule) might be unexisting on Publication folders or vice versa. Know that Get-IshFolder has a -FolderTypeFilter parameter to workaround that.</para>
     /// </example>
     /// <example>
     /// <code>
