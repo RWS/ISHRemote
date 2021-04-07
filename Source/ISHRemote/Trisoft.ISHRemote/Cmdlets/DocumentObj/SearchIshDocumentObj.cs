@@ -47,7 +47,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// Search-IshDocumentObj -SimpleQuery "bluetooth" -Count
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
-    /// <para>Executes a Full-Text-Index search for 'bluetooth' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language. The MaxHitsToReturn limits the Full-Text-Index result set.</para>
+    /// <para>Executes a Full-Text-Index search for 'bluetooth' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language.</para>
     /// <para>Results a count of hits, there are no IshObjects on the pipeline (MaxHitsToReturn is 0).</para>
     /// </example>
     /// <example>
