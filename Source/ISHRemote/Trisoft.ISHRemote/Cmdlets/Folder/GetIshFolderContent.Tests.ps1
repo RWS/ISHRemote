@@ -38,7 +38,8 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 	}
 
 	Context "Get-IshFolderContent returns latest IshObject[] object" {
-		$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic
+		$requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
+		$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -RequestedMetadata $requestedMetadata
 		It "GetType().Name" {
 			$ishObjects.GetType().Name | Should BeExactly "Object[]"
 		}
@@ -83,12 +84,14 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 			$ishObjects[0].version_version_value -ge 2 | Should Be $true 
 			#language
 			$ishObjects[0].fstatus.Length -ge 1 | Should Be $true 
-			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
+			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true
+			$ishObjects[0].fishstatustype -ge 0 | Should Be $true
 		}
 	}
 
 	Context "Get-IshFolderContent with empty VersionFilter returns IshObject[] object" {
-		$ishObjects = Get-IshFolderContent -IShSession $ishSession -VersionFilter "" -IshFolder $ishFolderTopic
+		$requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
+		$ishObjects = Get-IshFolderContent -IShSession $ishSession -VersionFilter "" -IshFolder $ishFolderTopic -RequestedMetadata $requestedMetadata
 		It "GetType().Name" {
 			$ishObjects.GetType().Name | Should BeExactly "Object[]"
 		}
@@ -134,6 +137,7 @@ Describe “Get-IshFolderContent" -Tags "Read" {
 			#language
 			$ishObjects[0].fstatus.Length -ge 1 | Should Be $true 
 			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
+			$ishObjects[0].fishstatustype -ge 0 | Should Be $true
         }
         It "ishObjects[0].version_version_value" { 
             # First version

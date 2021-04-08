@@ -125,17 +125,18 @@ The alternative is to navigate your data set in smaller chunks, then folders com
 1. Base folder `Data` is in practice "General", the repository root folder. Parameter `-FolderTypeFilter` is explicitly set for all content objects, implicitly skipping ISHPublication. Ommitting `-FolderTypeFilter` in practice means no filtering on object type.
 1. The pipeline IshFolder objects are passed to `Foreach-Object {...}` (short hand `%{...}`) to create a script block for custom actions.
     1. The pipeline IshFolder object in the script block is available as `$PSItem` (short hand `$_`). Initially to print a folder name.
-    1. The pipeline IshFolder object is passed to retrieve its folder content, specifically all languages on the latest (highest) version.
+    1. The pipeline IshFolder object is passed to retrieve its folder content, specifically all languages on the latest (highest) version. The `-RequestedMetadata` parameter allows to retrieve extra metadata on top of the IshSession `DefaultRequestedMetadata` (since [#123](https://github.com/sdl/ISHRemote/issues/123)).
     1. Returned IshObjects can be further handled like `Set-IshDocumentObj` or write to file, or `Get-IshDocumentObjData` to retrieve the actual files.
 1. Optionally in this sample, the pipeline IshObjects are passed to `Out-GridView` for visual representation. Notice the `-PassThru` which allows even further selection in that grid view, after pressing OK the selection is passed to the pipeline again.
 
 ```powershell
 New-IshSession -WsBaseUrl https://example.com/ISHWS/ -PSCredential Admin
 $metadataFilter = Set-IshMetadataFilterField -Level Lng -Name CHECKED-OUT-BY -FilterOperator In -Value ("Admin, Admin2")
+$requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
 $ishObjects = Get-IshFolder -BaseFolder Data -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary", "ISHIllustration", "ISHTemplate")  -Recurse | 
 Foreach-Object {
     Write-Host ("Handling folder[$($PSItem.name)]...")
-    $ishObjects = Get-IshFolderContent -IshFolder $PSItem -VersionFilter Latest -MetadataFilter $metadataFilter
+    $ishObjects = Get-IshFolderContent -IshFolder $PSItem -VersionFilter Latest -MetadataFilter $metadataFilter -RequestedMetadata $requestedMetadata
     # Create some report, some extra checks, a transformation, etc
     Write-Output $ishObjects
 } |
