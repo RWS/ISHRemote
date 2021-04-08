@@ -52,8 +52,14 @@ namespace Trisoft.ISHRemote.Objects.Public
         private Enumerations.PipelineObjectPreference _pipelineObjectPreference = Enumerations.PipelineObjectPreference.PSObjectNoteProperty;
         private Enumerations.RequestedMetadataGroup _defaultRequestedMetadata = Enumerations.RequestedMetadataGroup.Basic;
 
+        /// <summary>
+        /// Used by the SOAP API that retrieves files/blobs in multiple chunk, this parameter is the chunksize (10485760 bytes is 10Mb)
+        /// </summary>
         private int _chunkSize = 10485760;
-        private int _metadataBatchSize = 1000;
+        /// <summary>
+        /// Used to divide bigger data set retrievals in multiple API calls, 999 is the best optimization server-side (Oracle IN-clause only allows 999 values, so 1000 would mean 2x queries server-side)
+        /// </summary>
+        private int _metadataBatchSize = 999;
         private int _blobBatchSize = 50;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
