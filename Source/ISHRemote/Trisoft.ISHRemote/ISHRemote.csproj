@@ -107,6 +107,7 @@
     <Compile Include="Cmdlets\DocumentObj\GetIshDocumentObj.cs" />
     <Compile Include="Cmdlets\DocumentObj\DocumentObjCmdlet.cs" />
     <Compile Include="Cmdlets\DocumentObj\FindIshDocumentObj.cs" />
+    <Compile Include="Cmdlets\DocumentObj\SearchIshDocumentObj.cs" />
     <Compile Include="Cmdlets\DocumentObj\SetIshDocumentObj.cs" />
     <Compile Include="Cmdlets\EDT\AddIshEDT.cs" />
     <Compile Include="Cmdlets\EDT\EDTCmdlet.cs" />
@@ -149,6 +150,7 @@
     <None Include="Cmdlets\Annotation\RemoveIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\Annotation\SetIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\BackgroundTask\AddIshBackgroundTask.Tests.ps1" />
+    <None Include="Cmdlets\DocumentObj\SearchshDocumentObj.Tests.ps1" />
     <None Include="Cmdlets\ListOfValues\AddIshLovValue.Tests.ps1" />
     <None Include="Cmdlets\ListOfValues\GetIshLovValue.Tests.ps1" />
     <None Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.Tests.ps1" />
@@ -208,6 +210,7 @@
     <Compile Include="Objects\IshBackgroundTasks.cs" />
     <Compile Include="Objects\IshBaselineItems.cs" />
     <Compile Include="Objects\IshBaseObject.cs" />
+    <Compile Include="Objects\IshSearchResults.cs" />
     <Compile Include="Objects\IshSettingsExtensionConfig.cs" />
     <Compile Include="Objects\IshObjectFactory.cs" />
     <Compile Include="Objects\Public\IshBackgroundTask.cs" />
