@@ -73,15 +73,24 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
     /// </example>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential "username"
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
     /// Set-IshSetting -FieldName FISHLCURI -Value https://something/deleteThis
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Update CTCONFIGURATION field with the presented value.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential "username"
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
     /// Set-IshSetting -FieldName FISHLCURI 
+    /// </code>
+    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Update CTCONFIGURATION field with the value empty string ("").</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $originalValue = Get-IshSetting -FieldName FISHENABLEOUTOFDATE -ValueType Element
+    /// Set-IshSetting -FieldName FISHENABLEOUTOFDATE -ValueType Element -Value $true
+    /// Set-IshSetting -FieldName FISHENABLEOUTOFDATE -ValueType Element -Value $originalValue
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Update CTCONFIGURATION field with the value empty string ("").</para>
     /// </example>
@@ -121,6 +130,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         public string Value { get; set; }
 
         /// <summary>
+        /// <para type="description">The value type</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ValueGroup")]
+        public Enumerations.ValueType ValueType
+        {
+            get { return _valueType; }
+            set { _valueType = value; }
+        }
+
+        /// <summary>
         /// <para type="description">File on the Windows filesystem where to read the setting from</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileGroup")]
@@ -137,6 +156,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "FileGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
+
+        #region Private fields
+        /// <summary>
+        /// Private fields to store the parameters and provide a default for non-mandatory parameters
+        /// </summary>
+        private Enumerations.ValueType _valueType = Enumerations.ValueType.Value;
+        #endregion
 
         protected override void BeginProcessing()
         {
@@ -184,7 +210,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                 else
                 {
                     Value = Value ?? "";  // if the value is not offered we presumse empty string ("")
-                    metadata.AddField(new IshMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value, Value));
+                    metadata.AddField(new IshMetadataField(FieldName, Enumerations.Level.None, ValueType, Value));
                 }
 
                 if (ShouldProcess("CTCONFIGURATION"))

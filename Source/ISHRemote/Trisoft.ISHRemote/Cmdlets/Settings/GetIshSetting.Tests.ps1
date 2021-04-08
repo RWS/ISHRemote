@@ -17,10 +17,14 @@ Describe “Get-IshSetting" -Tags "Read" {
 	}
 
 	Context “Get-IshSetting ParameterGroup returns string object" {
-		It "Parameter IshSession implicit" {
+		It "Parameter FieldName" {
 			$fieldValue = Get-IshSetting -IShSession $ishSession -FieldName "NAME"
 			$fieldValue.GetType().Name | Should BeExactly "String"
 			$fieldValue | Should Be "Configuration card"
+		}
+		It "Parameter ValueType" {
+			$fieldValue = Get-IshSetting -FieldName FISHSYSTEMRESOLUTION -ValueType Element
+			$fieldValue.StartsWith('VRES') | Should Be $true
 		}
 	}
 
