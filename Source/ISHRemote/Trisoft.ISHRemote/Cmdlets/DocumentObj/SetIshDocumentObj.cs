@@ -118,7 +118,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupIshObjects")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
@@ -128,7 +128,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
         [ValidateNotNullOrEmpty]
         public string LogicalId { get; set; }
 
@@ -137,7 +137,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
         [ValidateNotNullOrEmpty]
         public string Version { get; set; }
 
@@ -146,7 +146,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
         [ValidateNotNullOrEmpty]
         public string Lng { get; set; }
 
@@ -164,7 +164,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupIshObjects")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
         [ValidateNotNull]
         public IshField[] Metadata { get; set; }
@@ -176,7 +176,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupIshObjects")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupMetadata")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
@@ -208,7 +208,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">Array with the objects for which to update the metadata. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "ParameterGroupIshObjects")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
 
@@ -251,7 +251,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 List<IshObject> returnedObjects = new List<IshObject>();
                 IshFields requiredCurrentMetadata = new IshFields(RequiredCurrentMetadata);
 
-                if (ParameterSetName == "ParameterGroupIshObjects")
+                if (ParameterSetName == "IshObjectsGroup")
                 {
                     int current = 0;
                     IshObject[] ishObjects = IshObject;

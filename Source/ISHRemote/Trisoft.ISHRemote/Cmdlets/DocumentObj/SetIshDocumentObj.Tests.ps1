@@ -111,7 +111,39 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 		}
 	}
 
-	Context "Set-IshDocumentObj ParameterGroupMetadataOnly" {
+	Context "Set-IshDocumentObj ParameterGroupMetadata" {
+		It "Mandatory parameter: LogicalId" {
+			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "updated title"
+			{Set-IshDocumentObj -IshSession $ishSession `
+								-Version "1" `
+								-Lng "en" `
+								-Metadata $ishMetadataFieldsSet} | Should Throw
+		}
+		It "Mandatory parameter: Version" {
+			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
+							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+							    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
+			$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+			
+			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "updated title"
+			{Set-IshDocumentObj -IshSession $ishSession `
+								-LogicalId $ishObjectToUpdate.IshRef `
+								-Lng "en" `
+								-Metadata $ishMetadataFieldsSet} | Should Throw
+		}
+		It "Mandatory parameter: Lng" {
+			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
+							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+							    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
+			$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+			
+			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "updated title"
+			{Set-IshDocumentObj -IshSession $ishSession `
+								-LogicalId $ishObjectToUpdate.IshRef `
+								-Version $ishObjectToUpdate.version_version_value `
+								-Metadata $ishMetadataFieldsSet} | Should Throw
+		}
+
 		It "Topic - metadata update" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -127,7 +159,6 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-Metadata $ishMetadataFieldsSet
 			$ishObject.ftitle_logical_value | Should Be $updatedTitle
 		}
-		
 		It "Topic - metadata update with RequiredCurrentMetadata accepted" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -161,7 +192,7 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 								-Lng $ishObjectToUpdate.doclanguage `
 								-Metadata $ishMetadataFieldsSet `
 								-RequiredCurrentMetadata $ishRequiredCurrentMetadata} | 
-			Should Throw '[-106011] The supplied expected metadata value "Released" does not match the current database value "Draft" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]'
+			Should Throw "The supplied expected metadata"
 		}
 		
 		It "Image - metadata update without Resolution" {
@@ -237,7 +268,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 								-Version $ishObjectToUpdate.version_version_value `
 								-Lng $ishObjectToUpdate.doclanguage `
 								-Resolution "VRESHIGH" `
-								-Metadata $ishMetadataFieldsSet} | Should Throw "[-102] The object $($ishObjectToUpdate.IshRef)=3=en=High does not exist. [co:""$($ishObjectToUpdate.IshRef)=3=en=High""] [102;ObjectNotFound]"
+								-Metadata $ishMetadataFieldsSet} | 
+			Should Throw "does not exist"
 		}
 	}
 
@@ -249,35 +281,38 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 
 		It "Parameter EDT explicitly EDTJPEG" {
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated title"
-			{ Set-IshDocumentObj -IshSession $ishSession `
+			{Set-IshDocumentObj -IshSession $ishSession `
 								 -LogicalId $ishObjectToUpdate.IshRef `
 								 -Version $ishObjectToUpdate.version_version_value `
 								 -Lng $ishObjectToUpdate.doclanguage `
 								 -Metadata $ishMetadataFieldsSet `
 								 -Edt "EDTJPEG" `
-								 -FileContent "INVALIDFILECONTENT"} | Should Throw "FileContent parameter is only supported with Edt='EDTXML'"
+								 -FileContent "INVALIDFILECONTENT"} |
+			Should Throw "FileContent parameter is only supported with Edt='EDTXML'"
 		}
 
 		It "Parameter FileContent has invalid xml content" {
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated title"
-			{ Set-IshDocumentObj -IshSession $ishSession `
+			{Set-IshDocumentObj -IshSession $ishSession `
 								 -LogicalId $ishObjectToUpdate.IshRef `
 								 -Version $ishObjectToUpdate.version_version_value `
 								 -Lng $ishObjectToUpdate.doclanguage `
 								 -Metadata $ishMetadataFieldsSet `
-								 -FileContent "INVALIDFILECONTENT"} | Should Throw "Data at the root level is invalid. Line 1, position 1."
+								 -FileContent "INVALIDFILECONTENT"} | 
+			Should Throw "Data at the root level is invalid. Line 1, position 1."
 		}
 
 		It "Provide both FileContent and FilePath" {
 			$tempFilePath = (New-TemporaryFile).FullName
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated title"
-			{ Set-IshDocumentObj -IshSession $ishSession `
+			{Set-IshDocumentObj -IshSession $ishSession `
 								 -LogicalId $ishObjectToUpdate.IshRef `
 								 -Version $ishObjectToUpdate.version_version_value `
 								 -Lng $ishObjectToUpdate.doclanguage `
 								 -Metadata $ishMetadataFieldsSet `
 								 -FileContent $ditaTopicFileContent `
-								 -FilePath $tempFilePath} | Should Throw "Parameter set cannot be resolved using the specified named parameters."
+								 -FilePath $tempFilePath} | 
+			Should Throw "Parameter set cannot be resolved using the specified named parameters."
 		}
 		
 		It "Topic - update blob only" {
@@ -304,7 +339,6 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-FileContent $updatedContent
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			[string]$ishObjectContent = Get-Content -Path $fileInfo		
-			
 			$ishObjectContent -eq $updatedContent | Should Be $true
 		}
 
@@ -398,7 +432,7 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 								-Metadata $ishMetadataFieldsSet `
 								-RequiredCurrentMetadata $ishRequiredCurrentMetadata `
 								-FileContent $updatedContent} | 
-			Should Throw '[-106011] The supplied expected metadata value "Released" does not match the current database value "Draft" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]'
+			Should Throw "The supplied expected metadata"
 		}
 		
 		It "Map - update blob and metadata" {
@@ -465,7 +499,6 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 	}
 	
 	Context “Set-IshDocumentObj ParameterGroupFilePath" {
-		
 		It "Image - update blob only (providing EDT)" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Mandatory parameters Image $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -589,7 +622,7 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 								-Metadata $ishMetadataFieldsSet `
 								-RequiredCurrentMetadata $ishRequiredCurrentMetadata `
 								-FilePath $tempFilePathUpdated} | 
-			Should Throw '[-106011] The supplied expected metadata value "Released" does not match the current database value "Draft" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]'
+			Should Throw "The supplied expected metadata"
 		}	
 		
 		It "Update Other like EDT-TEXT" {
@@ -629,121 +662,139 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 		}
 		
 		It "Parameter IshObject invalid" {
-			{ Set-IshDocumentObj -IshSession $ishSession -IshObject "INVALIDISHOBJECT" } | Should Throw "Cannot bind parameter 'IshObject'. Cannot convert the ""INVALIDISHOBJECT"" value of type ""System.String"" to type ""Trisoft.ISHRemote.Objects.Public.IshObject""."
+			{ Set-IshDocumentObj -IshSession $ishSession -IshObject "INVALIDISHOBJECT" } | 
+			Should Throw "Cannot bind parameter 'IshObject'. Cannot convert the ""INVALIDISHOBJECT"" value of type ""System.String"" to type ""Trisoft.ISHRemote.Objects.Public.IshObject""."
 		}
 
 		It "Provide as parameter/pipe deleted object" {
 			$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectToUpdate -Force
-			{$ishObjectSet = Set-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectToUpdate} | Should Throw "[-102] The language object $($ishObjectToUpdate.LngRef) does not exist. [c:""$($ishObjectToUpdate.LngRef)""] [102;ObjectNotFound]"
-			{$ishObjectSet = $ishObjectToUpdate | Set-IshDocumentObj -IshSession $ishSession } | Should Throw "[-102] The language object $($ishObjectToUpdate.LngRef) does not exist. [c:""$($ishObjectToUpdate.LngRef)""] [102;ObjectNotFound]"
+			{$ishObjectSet = Set-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectToUpdate} | 
+			Should Throw "does not exist"
+			{$ishObjectSet = $ishObjectToUpdate | Set-IshDocumentObj -IshSession $ishSession } | 
+			Should Throw "does not exist"
 		}
 		
 		It "Set metadata, provide multiple objects to IshObject" {
-			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent 
-			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
+			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+			 			  Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+			 			  Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			
 			$updatedTitle = $ishObjectA.ftitle_logical_value + "...updated"								
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value $updatedTitle
-			
 			$ishObjectArray = Set-IshDocumentObj -IshSession $ishSession -IshObject @($ishObjectA, $ishObjectB) -Metadata $ishMetadataFieldsSet
-			
-			[xml]$xmlRevisionInfoA = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectA.LngRef), "")
-			[xml]$xmlRevisionInfoB = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectB.LngRef), "")
+			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
 			$ishObjectArray.Count | Should Be 2
-			$xmlRevisionInfoA.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 1
-			$xmlRevisionInfoB.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 1
-			
+			$ishObjectA.ed -eq $ishObjectAUpdated.ed | Should Be $true
+			$ishObjectB.ed -eq $ishObjectBUpdated.ed | Should Be $true
 			$ishObjectArray[0].ftitle_logical_value | Should Be $updatedTitle
 			$ishObjectArray[1].ftitle_logical_value | Should Be $updatedTitle
 		}
 		
 		It "Resubmit blob, provide multiple objects to IshObject" {
-			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent | Get-IshDocumentObjData
-			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent | Get-IshDocumentObjData
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
+			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+						  Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata -IncludeData
+			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+						  Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata -IncludeData
 			
 			$ishObjectArray = Set-IshDocumentObj -IshSession $ishSession -IshObject @($ishObjectA, $ishObjectB)
-			[xml]$xmlRevisionInfoA = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectA.LngRef), "")
-			[xml]$xmlRevisionInfoB = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectB.LngRef), "")
+			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
 			$ishObjectArray.Count | Should Be 2
-			$xmlRevisionInfoA.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
-			$xmlRevisionInfoB.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
+			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should Be $true
+			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should Be $true
 		}
 		
 		It "Resubmit blob, provide multiple objects via pipeline" {
-			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
-			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
+			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+						  Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+						 Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishObjectAB = @($ishObjectA, $ishObjectB) | Get-IshDocumentObj -IshSession $ishSession -IncludeData
 			
 			$ishObjectArray = $ishObjectAB | Set-IshDocumentObj -IshSession $ishSession
-			[xml]$xmlRevisionInfoA = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectA.LngRef), "")
-			[xml]$xmlRevisionInfoB = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectB.LngRef), "")
+			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
 			$ishObjectArray.Count | Should Be 2
-			$xmlRevisionInfoA.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
-			$xmlRevisionInfoB.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
+			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should Be $true
+			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should Be $true
 		}
 
 		It "Resubmit blob, provide multiple objects via pipeline with RequiredCurrentMetadata accepted" {
-			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
-			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
+			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+						  Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+						 Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishObjectAB = @($ishObjectA, $ishObjectB) | Get-IshDocumentObj -IshSession $ishSession -IncludeData
 			
 			$ishRequiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			$ishObjectArray = $ishObjectAB | Set-IshDocumentObj -IshSession $ishSession -RequiredCurrentMetadata $ishRequiredCurrentMetadata
-			[xml]$xmlRevisionInfoA = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectA.LngRef), "")
-			[xml]$xmlRevisionInfoB = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectB.LngRef), "")
+			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
 			$ishObjectArray.Count | Should Be 2
-			$xmlRevisionInfoA.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
-			$xmlRevisionInfoB.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
+			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should Be $true
+			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should Be $true
 		}
 		
 		It "Resubmit blob, provide multiple objects via pipeline with RequiredCurrentMetadata rejected" {
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 			$ishObjectAB = @($ishObjectA, $ishObjectB) | Get-IshDocumentObj -IshSession $ishSession -IncludeData
 			
 			$ishRequiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased
 			{$ishObjectAB | Set-IshDocumentObj -IshSession $ishSession -RequiredCurrentMetadata $ishRequiredCurrentMetadata} | 
-						Should Throw '[-106011] The supplied expected metadata value "Released" does not match the current database value "Draft" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]'
+			Should Throw "The supplied expected metadata"
 		}
 		
 		It "Resubmit blob and set Metadata, provide multiple objects via pipeline" {
-			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
-			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
+			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent | 
+						  Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectB = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
+						  Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishObjectAB = @($ishObjectA, $ishObjectB) | Get-IshDocumentObj -IshSession $ishSession -IncludeData
 		
 			$updatedTitle = $ishObjectA.ftitle_logical_value + "...updated"								
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value $updatedTitle
 			$ishObjectArray = $ishObjectAB | Set-IshDocumentObj -IshSession $ishSession -Metadata $ishMetadataFieldsSet
-			[xml]$xmlRevisionInfoA = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectA.LngRef), "")
-			[xml]$xmlRevisionInfoB = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectB.LngRef), "")
+			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
 			$ishObjectArray.Count | Should Be 2
-			$xmlRevisionInfoA.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
-			$xmlRevisionInfoB.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
+			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should Be $true
+			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should Be $true
 			$ishObjectArray[0].ftitle_logical_value | Should Be $updatedTitle
 			$ishObjectArray[1].ftitle_logical_value | Should Be $updatedTitle
 		}
 
 		It "Resubmit blob and set Metadata, provide single object via pipeline" {
+			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession `
 													-IshFolder $ishFolderTopic `
 													-IshType ISHModule `
 													-Lng $ishLng `
 													-Metadata $ishTopicMetadata `
 													-FileContent $ditaTopicFileContent |
-								Get-IshDocumentObj -IshSession $ishSession -IncludeData		
+								Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata -IncludeData
 		
 			$updatedTitle = $ishObjectToUpdate.ftitle_logical_value + "...updated"								
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value $updatedTitle
-			$ishObject = $ishObjectToUpdate | Set-IshDocumentObj -IshSession $ishSession -Metadata $ishMetadataFieldsSet
-			[xml]$xmlRevisionInfo = $ishSession.DocumentObj25.RetrieveRevisionInfoByIshLngRefs(@($ishObjectToUpdate.LngRef), "")
+			$ishObject = $ishObjectToUpdate | 
+						 Set-IshDocumentObj -IshSession $ishSession -Metadata $ishMetadataFieldsSet |
+						 Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
-			$xmlRevisionInfo.SelectNodes("//ishobjects/ishobject/ishchanges/ishchange").Count | Should Be 2
+			$ishObjectToUpdate.ed -ne $ishObject.ed | Should Be $true
 			$ishObject.ftitle_logical_value | Should Be $updatedTitle
 		}
 	}
