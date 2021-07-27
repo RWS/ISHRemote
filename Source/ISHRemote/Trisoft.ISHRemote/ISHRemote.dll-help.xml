@@ -5704,7 +5704,7 @@ The Version object that holds all information about the current Server version</
 $version = Get-Version -IshSession $ishSession
 Write-Host $version</dev:code>
 			<dev:remarks>
-				<maml:para>Get current version of the SDL Tridion Docs Content Manager</maml:para>
+				<maml:para>Get current version of the Tridion Docs Content Manager</maml:para>
 				<maml:para />
 				<maml:para />
 				<maml:para>The Version object with Major, Minor, Revision properties:
@@ -6296,21 +6296,21 @@ An IshFolder array that holds all information about the folders which are moved.
 			<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="1">
 				<maml:name>WsBaseUrl</maml:name>
 				<maml:description>
-					<maml:para>SDL Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: &quot;https://example.com/InfoShareWS/&quot;</maml:para>
+					<maml:para>Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: &quot;https://example.com/InfoShareWS/&quot;</maml:para>
 				</maml:description>
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
 			<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="3">
 				<maml:name>IshUserName</maml:name>
 				<maml:description>
-					<maml:para>Username to login into SDL Tridion Docs Content Manager</maml:para>
+					<maml:para>Username to login into Tridion Docs Content Manager</maml:para>
 				</maml:description>
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
 			<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="4">
 				<maml:name>IshUserPassword</maml:name>
 				<maml:description>
-					<maml:para>Password to login into SDL Tridion Docs Content Manager</maml:para>
+					<maml:para>Password to login into Tridion Docs Content Manager</maml:para>
 				</maml:description>
 				<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			</command:parameter>
@@ -6334,7 +6334,7 @@ An IshFolder array that holds all information about the folders which are moved.
 		<command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="1">
 			<maml:name>WsBaseUrl</maml:name>
 			<maml:description>
-				<maml:para>SDL Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: &quot;https://example.com/InfoShareWS/&quot;</maml:para>
+				<maml:para>Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: &quot;https://example.com/InfoShareWS/&quot;</maml:para>
 			</maml:description>
 			<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			<dev:type>
@@ -6346,7 +6346,7 @@ An IshFolder array that holds all information about the folders which are moved.
 		<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="3">
 			<maml:name>IshUserName</maml:name>
 			<maml:description>
-				<maml:para>Username to login into SDL Tridion Docs Content Manager</maml:para>
+				<maml:para>Username to login into Tridion Docs Content Manager</maml:para>
 			</maml:description>
 			<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			<dev:type>
@@ -6358,7 +6358,7 @@ An IshFolder array that holds all information about the folders which are moved.
 		<command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="4">
 			<maml:name>IshUserPassword</maml:name>
 			<maml:description>
-				<maml:para>Password to login into SDL Tridion Docs Content Manager</maml:para>
+				<maml:para>Password to login into Tridion Docs Content Manager</maml:para>
 			</maml:description>
 			<command:parameterValue required="true" variableLength="false">String</command:parameterValue>
 			<dev:type>

@@ -1,6 +1,6 @@
 ﻿/*
-* Copyright (c) 2014 All Rights Reserved by the SDL Group.
-* 
+* Copyright © 2014 All Rights Reserved by the RWS Group for and on behalf of its affiliates and subsidiaries.
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at

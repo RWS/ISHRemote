@@ -1,12 +1,12 @@
 # Summary
 
-`ISHRemote` is a PowerShell module on SDL Tridion Docs Content Manager. Its goal is business automation on top of the Component Content Management System (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare). This library is constructed close to the "Web Services API" to:
+`ISHRemote` is a PowerShell module on Tridion Docs Content Manager. Its goal is business automation on top of the Component Content Management System (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare). This library is constructed close to the "Web Services API" to:
 * allow business logic automation ranging from triggering publishing into the continuous integration pipeline over legacy data correction up to provisioning
 * show case code examples and API best practices
 
 # Videos
 
-Have a look at the [Automating tasks in SDL Tridion Docs using PowerShell](https://youtu.be/3ItM2LDwh20) webinar. Supporting material, so you can easily copy-paste is on 
+Have a look at the [Automating tasks in Tridion Docs using PowerShell](https://youtu.be/3ItM2LDwh20) webinar. Supporting material, so you can easily copy-paste is on 
 
 * [Webinar Blogpost - Getting started with Microsoft PowerShell](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell-getting-started-with-microsoft-powershell)
 * [Webinar Blogpost - Examples](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell)
