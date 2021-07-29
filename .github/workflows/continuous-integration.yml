@@ -1,0 +1,25 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ 115-Milestone-Enable-PowerShell-Core ]
+  pull_request:
+    branches: [ 115-Milestone-Enable-PowerShell-Core ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore Source/ISHRemote/ISHRemote.sln
+    - name: Build
+      run: dotnet build --no-restore Source/ISHRemote/ISHRemote.sln
+#    - name: Test
+#      run: dotnet test --no-build --verbosity normal Source/ISHRemote/ISHRemote.sln
