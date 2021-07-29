@@ -112,7 +112,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     public sealed class TestIshSession : SessionCmdlet
     {
         /// <summary>
-        /// <para type="description">SDL Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: "https://example.com/ISHWS/"</para>
+        /// <para type="description">Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: "https://example.com/ISHWS/"</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
@@ -151,7 +151,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         public PSCredential PSCredential { get; set; }
 
         /// <summary>
-        /// <para type="description">Username to login into SDL Tridion Docs Content Manager. When left empty, fall back to ActiveDirectory.</para>
+        /// <para type="description">Username to login into Tridion Docs Content Manager. When left empty, fall back to ActiveDirectory.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
@@ -163,7 +163,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">Password to login into SDL Tridion Docs Content Manager</para>
+        /// <para type="description">Password to login into Tridion Docs Content Manager</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]

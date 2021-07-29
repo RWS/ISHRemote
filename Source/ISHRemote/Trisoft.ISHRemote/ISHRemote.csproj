@@ -1243,6 +1243,7 @@
     <None Include="Cmdlets\User\AddIshUser.Tests.ps1" />
     <None Include="Cmdlets\Session\TestIshSession.Tests.ps1" />
     <None Include="Cmdlets\EventMonitor\GetIshEvent.Tests.ps1" />
+    <Content Include="ISHRemote.dll-help.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />
@@ -1408,9 +1409,6 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <Content Include="ISHRemote.dll-help.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="Samples\Sample.Automate.ActiveDirectory.ps1" />
     <None Include="Samples\Sample.Automate.ProvisionUsers.ps1" />
     <None Include="ISHRemote.Format.ps1xml">

@@ -39,7 +39,7 @@ Param(
 Function CreateOrUpdateInternalUser{
 <#
 .DESCRIPTION
-	Create or update internal SDL Tridion Docs user.
+	Create or update internal Tridion Docs user.
 	By default all existing user groups are added to the user in "Create" and "Update" operations
 #>
 param(
@@ -204,7 +204,7 @@ $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name "FSTA
 $dedicatedIshUser = CreateOrUpdateInternalUser -ishSession $ishSession -userName $dedicatedIshUserName -userPassword $dedicatedIshUserPassword -userRoles $dedicatedIshUserRoles
 if($dedicatedIshUser -eq $null)
 {
-	Write-Host "Error on Create/Update of the dedicated SDL Tridion Docs user" 
+	Write-Host "Error on Create/Update of the dedicated Tridion Docs user" 
 	Exit
 }
 
