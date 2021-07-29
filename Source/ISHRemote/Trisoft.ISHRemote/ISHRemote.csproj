@@ -1243,7 +1243,6 @@
     <None Include="Cmdlets\User\AddIshUser.Tests.ps1" />
     <None Include="Cmdlets\Session\TestIshSession.Tests.ps1" />
     <None Include="Cmdlets\EventMonitor\GetIshEvent.Tests.ps1" />
-    <Content Include="ISHRemote.dll-help.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&amp;maponly.xml" />
     <Content Include="Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\dita-oasis\1.2\base\dtd\commonElements.mod" />
