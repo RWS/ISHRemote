@@ -1,5 +1,5 @@
 /*
-* Copyright © 2014 All Rights Reserved by the RWS Group for and on behalf of its affiliates and subsidiaries.
+* Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
     /// Get-IshUser | 
-    /// Set-IshMetadataField -Name FISHEMAIL -Value "ishremote@rws.com" | 
+    /// Set-IshMetadataField -Name FISHEMAIL -Value "ishremote@example.com" | 
     /// Set-IshUser
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets the current user (Admin) adapts the client-side memory structure to hold a new email address and sets in the repository.</para>
