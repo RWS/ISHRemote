@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net472;netcoreapp3.1;net5.0</TargetFrameworks>
-    <AssemblyVersion>7.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -74,5 +73,5 @@
     <!-- Ignore warning CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member' -->
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
-  
+
 </Project>

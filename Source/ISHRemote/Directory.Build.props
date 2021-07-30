@@ -1,0 +1,33 @@
+<Project>
+
+  <PropertyGroup>
+    <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
+    <RepositoryUrl>https://github.com/RWS/ISHRemote</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionPrefix>7.0.0</VersionPrefix>
+    <VersionSuffix Condition=" '$(GITHUB_RUN_ID)' == ''">preview-1.0</VersionSuffix>
+    <VersionSuffix Condition=" '$(GITHUB_RUN_ID)' != ''">preview-1.$(GITHUB_RUN_ID)</VersionSuffix>
+
+    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+    <FileVersion Condition=" '$(GITHUB_RUN_ID)' == ''">$(VersionPrefix).0</FileVersion>
+  	<FileVersion Condition=" '$(GITHUB_RUN_ID)' != ''">$(VersionPrefix).$(GITHUB_RUN_ID)</FileVersion>
+    <InformationalVersion>$(VersionPrefix)</InformationalVersion>
+
+    <PackageVersionPrefix>$(VersionPrefix)</PackageVersionPrefix>
+    <PackageVersionSuffix>$(VersionSuffix)</PackageVersionSuffix>
+
+    <Authors>RWS Group</Authors>
+    <Owners>RWS Group</Owners>
+    <Copyright>Copyright © $([System.DateTime]::Now.ToString('yyyy')) All Rights Reserved by the RWS Group.</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Default</AnalysisMode>
+  </PropertyGroup>
+
+</Project>
