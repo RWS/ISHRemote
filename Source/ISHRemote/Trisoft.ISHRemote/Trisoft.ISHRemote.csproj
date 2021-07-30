@@ -70,4 +70,9 @@
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`net472`,`net5.0`))\" />
   </Target>
 
+  <PropertyGroup>
+    <!-- Ignore warning CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member' -->
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  
 </Project>

@@ -20,6 +20,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore Source/ISHRemote/ISHRemote.sln
     - name: Build
-      run: dotnet build --no-restore --configuration release --verbosity normal Source/ISHRemote/ISHRemote.sln
+      run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
 #    - name: Test
 #      run: dotnet test --no-build --verbosity normal Source/ISHRemote/ISHRemote.sln
