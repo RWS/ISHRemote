@@ -8,12 +8,12 @@
 
   <PropertyGroup>
     <VersionPrefix>7.0.0</VersionPrefix>
-    <VersionSuffix Condition=" '$(GITHUB_RUN_ID)' == ''">preview-1.0</VersionSuffix>
-    <VersionSuffix Condition=" '$(GITHUB_RUN_ID)' != ''">preview-1.$(GITHUB_RUN_ID)</VersionSuffix>
+    <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' == ''">preview-1.0</VersionSuffix>
+    <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' != ''">preview-1.$(GITHUB_RUN_NUMBER)</VersionSuffix>
 
     <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
-    <FileVersion Condition=" '$(GITHUB_RUN_ID)' == ''">$(VersionPrefix).0</FileVersion>
-  	<FileVersion Condition=" '$(GITHUB_RUN_ID)' != ''">$(VersionPrefix).$(GITHUB_RUN_ID)</FileVersion>
+    <FileVersion Condition=" '$(GITHUB_RUN_NUMBER)' == ''">$(VersionPrefix).0</FileVersion>
+  	<FileVersion Condition=" '$(GITHUB_RUN_NUMBER)' != ''">$(VersionPrefix).$(GITHUB_RUN_NUMBER)</FileVersion>
     <InformationalVersion>$(VersionPrefix)</InformationalVersion>
 
     <PackageVersionPrefix>$(VersionPrefix)</PackageVersionPrefix>
