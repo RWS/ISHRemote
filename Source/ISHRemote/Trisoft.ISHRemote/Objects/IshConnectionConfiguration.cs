@@ -24,7 +24,7 @@ namespace Trisoft.ISHRemote.Objects
 {
     /// <summary>
     /// The connectionconfiguration.xml file is a discovery file that teels you how the web services are configured.
-    /// Since 2013/10.0.0 it indicates the token issuer for the active authentication flow. More recently we want to know the application name (used by ASMX web services).</para>
+    /// Since 2013/10.0.0 it indicates the token issuer for the active authentication flow. More recently we want to know the application name (used by ASMX web services).
     /// </summary>
     internal class IshConnectionConfiguration
     {

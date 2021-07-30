@@ -145,9 +145,9 @@ namespace Trisoft.ISHRemote.HelperClasses
                 {
                     catalog.Load(_catalogUri);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    throw ex;
+                    throw;
                 }
 
                 if (catalog != null)
@@ -289,9 +289,9 @@ namespace Trisoft.ISHRemote.HelperClasses
                 {
                     nextCatalog.Load(absoluteUri);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    throw ex;
+                    throw;
                 }
             }
             return nextCatalog;

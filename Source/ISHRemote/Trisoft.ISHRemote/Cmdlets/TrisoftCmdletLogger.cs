@@ -96,7 +96,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             {
                 _cmdlet.WriteProgress(_progressRecord);
             }
-            catch (PSInvalidOperationException exception)
+            catch (PSInvalidOperationException)
             {
                 //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
             }
@@ -123,7 +123,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             {
                 _cmdlet.WriteProgress(_parentProgressRecord);
             }
-            catch (PSInvalidOperationException exception)
+            catch (PSInvalidOperationException)
             {
                 //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
             }
@@ -140,7 +140,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             {
                 _cmdlet.WriteVerbose(message);
             }
-            catch (PSInvalidOperationException exception)
+            catch (PSInvalidOperationException)
             {
                 //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
             }
@@ -156,7 +156,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             {
                 _cmdlet.WriteDebug(message);
             }
-            catch (PSInvalidOperationException exception)
+            catch (PSInvalidOperationException)
             {
                 //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
             }
@@ -172,7 +172,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             {
                 _cmdlet.WriteWarning(message);
             }
-            catch (PSInvalidOperationException exception)
+            catch (PSInvalidOperationException)
             {
                 //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
             }
@@ -189,7 +189,7 @@ namespace Trisoft.ISHRemote.Cmdlets
             {
                 _cmdlet.WriteError(new ErrorRecord(ex, string.Empty, ErrorCategory.NotSpecified, errorObject));
             }
-            catch (PSInvalidOperationException exception)
+            catch (PSInvalidOperationException)
             {
                 //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
             }
