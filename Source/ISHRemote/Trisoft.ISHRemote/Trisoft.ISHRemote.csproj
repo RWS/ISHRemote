@@ -1,21 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472;netcoreapp3.1;net5.0</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TargetFrameworks>netcoreapp3.1;net5.0;net472</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <DocumentationFile>bin\Debug\net472\Trisoft.ISHRemote.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <DocumentationFile>bin\Release\net472\Trisoft.ISHRemote.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PowerShellStandard.Library" Version="7.0.0-preview.1" />
+    <PackageReference Include="PowerShellStandard.Library" Version="7.0.0-preview.1" Condition="'$(TargetFramework)' != 'net5.0'" />
+    <PackageReference Include="System.Management.Automation" Version="7.1.3" Condition="'$(TargetFramework)' == 'net5.0'" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
@@ -24,6 +17,7 @@
     <PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.Security" Version="4.8.1" />
+    <PackageReference Include="XmlDoc2CmdletDoc" Version="0.4.0-dotnetcore0001" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   </ItemGroup>
     
   <ItemGroup>
@@ -63,10 +57,15 @@
     </None>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(TargetFramework)' == 'net472'">
-    <Exec Command="&quot;$(SolutionDir)..\Tools\XmlDoc2CmdletDoc\XmlDoc2CmdletDoc.exe&quot; &quot;$(TargetPath)&quot;" />
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`net472`,`netcoreapp3.1`))\" />
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`net472`,`net5.0`))\" />
+  <!-- Hack to get XmlDoc2CmdletDoc to work -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <XmlDoc2CmdletDocToolPath>netcoreapp3.1\XmlDoc2CmdletDoc.dll</XmlDoc2CmdletDocToolPath>
+    <XmlDocToolsPath>netcoreapp3.1\XmlDoc2CmdletDoc.dll</XmlDocToolsPath>
+  </PropertyGroup>
+
+  <Target Name="CopyCmdletDoc" AfterTargets="AfterBuild" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netcoreapp3.1`,`net472`))\" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netcoreapp3.1`,`net5.0`))\" />
   </Target>
 
   <PropertyGroup>
