@@ -6,7 +6,6 @@
 
 # My project-specific files
 ISHRemote.psd1
-AssemblyInfo.cs
 
 # My debug files
 ISHRemote.PesterSetup.Debug.ps1

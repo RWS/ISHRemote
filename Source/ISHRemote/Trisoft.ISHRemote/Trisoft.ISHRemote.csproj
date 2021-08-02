@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="PowerShellStandard.Library" Version="7.0.0-preview.1" Condition="'$(TargetFramework)' != 'net5.0'" />
-    <PackageReference Include="System.Management.Automation" Version="7.1.3" Condition="'$(TargetFramework)' == 'net5.0'" />
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.1.3" Condition="'$(TargetFramework)' == 'net5.0'" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
@@ -66,6 +66,18 @@
   <Target Name="CopyCmdletDoc" AfterTargets="AfterBuild" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netcoreapp3.1`,`net472`))\" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netcoreapp3.1`,`net5.0`))\" />
+  </Target>
+
+  <!-- Generating Module Manifest -->
+  <Target Name="ModuleManifest" AfterTargets="CopyCmdletDoc" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PropertyGroup>
+      <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">pwsh</PowerShellExe>
+      <ManifestPath>$(TargetDir)\$(ModuleName).psd1</ManifestPath>
+      <RootModule>$(ModuleName).psm1</RootModule>
+      <NestedModules>&apos;$(ModuleName).dll&apos;</NestedModules>
+      <FormatsToProcessPath>$(ModuleName).Format.ps1xml</FormatsToProcessPath>
+    </PropertyGroup>
+    <Exec Command='$(PowerShellExe) -NonInteractive -command "New-ModuleManifest -Path &apos;$(ManifestPath)&apos; -FormatsToProcess &apos;$(FormatsToProcessPath)&apos; -RootModule &apos;$(RootModule)&apos; -NestedModules @($(NestedModules)) -ModuleVersion &apos;$(ModuleVersion)&apos; -Prerelease &apos;$(Prerelease)&apos; -Guid &apos;$(ModuleGuid)&apos; -Author &apos;$(Authors)&apos; -CompanyName &apos;$(CompanyName)&apos; -Copyright &apos;$(Copyright)&apos; -Description &apos;$(ModuleDescription)&apos; -PowerShellVersion &apos;$(MinPowerShellVersion)&apos; -ClrVersion &apos;$(MinCLRVersion)&apos; -DotNetFrameworkVersion &apos;$(MinDotNetVersion)&apos; -LicenseUri &apos;$(LicenseUri)&apos; -ProjectUri &apos;$(ProjectUri)&apos;"'/>
   </Target>
 
   <PropertyGroup>
