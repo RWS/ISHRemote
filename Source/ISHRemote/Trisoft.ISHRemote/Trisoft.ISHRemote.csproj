@@ -48,15 +48,6 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="ISHRemote.Format.ps1xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ISHRemote.psm1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
   <!-- Hack to get XmlDoc2CmdletDoc to work -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <XmlDoc2CmdletDocToolPath>netcoreapp3.1\XmlDoc2CmdletDoc.dll</XmlDoc2CmdletDocToolPath>
@@ -64,20 +55,57 @@
   </PropertyGroup>
 
   <Target Name="CopyCmdletDoc" AfterTargets="AfterBuild" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netcoreapp3.1`,`net472`))\" />
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netcoreapp3.1`,`net5.0`))\" />
+    <PropertyGroup>
+      <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
+    <Move SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
   </Target>
 
-  <!-- Generating Module Manifest -->
-  <Target Name="ModuleManifest" AfterTargets="CopyCmdletDoc" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <!-- Generating Module Manifest only once -->
+  <Target Name="ModuleManifest" AfterTargets="CopyCmdletDoc" Condition="'$(TargetFramework)' == 'net472'">
     <PropertyGroup>
       <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">pwsh</PowerShellExe>
-      <ManifestPath>$(TargetDir)\$(ModuleName).psd1</ManifestPath>
+      <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
+      <ManifestPath>$(ISHRemoteDir)/$(ModuleName).psd1</ManifestPath>
       <RootModule>$(ModuleName).psm1</RootModule>
-      <NestedModules>&apos;$(ModuleName).dll&apos;</NestedModules>
       <FormatsToProcessPath>$(ModuleName).Format.ps1xml</FormatsToProcessPath>
     </PropertyGroup>
-    <Exec Command='$(PowerShellExe) -NonInteractive -command "New-ModuleManifest -Path &apos;$(ManifestPath)&apos; -FormatsToProcess &apos;$(FormatsToProcessPath)&apos; -RootModule &apos;$(RootModule)&apos; -NestedModules @($(NestedModules)) -ModuleVersion &apos;$(ModuleVersion)&apos; -Prerelease &apos;$(Prerelease)&apos; -Guid &apos;$(ModuleGuid)&apos; -Author &apos;$(Authors)&apos; -CompanyName &apos;$(CompanyName)&apos; -Copyright &apos;$(Copyright)&apos; -Description &apos;$(ModuleDescription)&apos; -PowerShellVersion &apos;$(MinPowerShellVersion)&apos; -ClrVersion &apos;$(MinCLRVersion)&apos; -DotNetFrameworkVersion &apos;$(MinDotNetVersion)&apos; -LicenseUri &apos;$(LicenseUri)&apos; -ProjectUri &apos;$(ProjectUri)&apos;"'/>
+    <Exec Command='$(PowerShellExe) -NonInteractive -command "New-ModuleManifest -Path &apos;$(ManifestPath)&apos; -FormatsToProcess &apos;$(FormatsToProcessPath)&apos; -RootModule &apos;$(RootModule)&apos; -ModuleVersion &apos;$(ModuleVersion)&apos; -Prerelease &apos;$(Prerelease)&apos; -Guid &apos;$(ModuleGuid)&apos; -Author &apos;$(Authors)&apos; -CompanyName &apos;$(CompanyName)&apos; -Copyright &apos;$(Copyright)&apos; -Description &apos;$(ModuleDescription)&apos; -PowerShellVersion &apos;$(MinPowerShellVersion)&apos; -ClrVersion &apos;$(MinCLRVersion)&apos; -DotNetFrameworkVersion &apos;$(MinDotNetVersion)&apos; -LicenseUri &apos;$(LicenseUri)&apos; -ProjectUri &apos;$(ProjectUri)&apos;"'/>
+  </Target>
+
+  <!-- Copy all the required files to folder named ISHRemote which is needed for packaging -->
+  <Target Name="CopyRequiredFilesToPowerShellModuleFolder" AfterTargets="ModuleManifest" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PropertyGroup>
+      <LocalPSRepoDir>$(ProjectDir)bin/$(Configuration)</LocalPSRepoDir>
+      <ISHRemoteFrameworkDir>$(ProjectDir)bin/$(Configuration)/ISHRemote/$(TargetFramework)</ISHRemoteFrameworkDir>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ISHRemoteFiles Include="$(TargetDir)/**/*.*"/>
+    </ItemGroup>
+
+    <RemoveDir Directories="$(ISHRemoteFrameworkDir)" Condition="Exists('$(ISHRemoteFrameworkDir)')" />
+    <MakeDir Directories="$(ISHRemoteFrameworkDir)" />
+    <Copy SourceFiles="@(ISHRemoteFiles)" DestinationFiles="@(ISHRemoteFiles->'$(ISHRemoteFrameworkDir)\%(RecursiveDir)%(Filename)%(Extension)')"/>
+
+    <Copy SourceFiles="$(ProjectDir)ISHRemote.psm1" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
+    <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
+  </Target>
+
+  <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(TargetFramework)' == 'net472'">
+    <PropertyGroup>
+      <LocalPSRepo>$(ProjectDir)bin/$(Configuration)</LocalPSRepo>
+      <ISHRemoteModulePath>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteModulePath>
+      <ISHRemoteModuleFileName>$(ProjectDir)bin/$(Configuration)/ISHRemote.$(ModuleVersion)-$(Prerelease).nupkg</ISHRemoteModuleFileName>
+      <NuGetApiKey Condition=" '$(NuGetApiKey)' == ''">AnyStringWillDo</NuGetApiKey>
+    </PropertyGroup>
+
+    <Delete Files="$(ISHRemoteModuleFileName)" Condition="Exists('$(ISHRemoteModuleFileName)')" />
+
+    <Exec Command="pwsh -NonInteractive -command &quot;Register-PSRepository -Name LocalPSRepo -SourceLocation '$(LocalPSRepo)' -ScriptSourceLocation '$(LocalPSRepo)' -InstallationPolicy Trusted&quot;"/>
+    <Exec Command="pwsh -NonInteractive -command &quot;Publish-Module -Path '$(ISHRemoteModulePath)' -Repository LocalPsRepo -NuGetApiKey '$(NuGetApiKey)'&quot;"/>
+    <Exec Command="pwsh -NonInteractive -command &quot;Unregister-PSRepository -Name LocalPSRepo&quot;"/>
   </Target>
 
   <PropertyGroup>

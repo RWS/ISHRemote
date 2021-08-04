@@ -34,7 +34,8 @@
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
 	  <ModuleVersion>$(Major).$(Minor).$(Revision)</ModuleVersion>
     <ModuleBuildVersion>$(Major).$(Minor).$(Build).$(Revision)</ModuleBuildVersion>
-    <Prerelease>$(VersionSuffix)</Prerelease>
+    <Prerelease Condition=" '$(GITHUB_RUN_NUMBER)' == ''">preview001</Prerelease>
+    <Prerelease Condition=" '$(GITHUB_RUN_NUMBER)' != ''">preview$([System.String]::Format('{0:D3}', $([System.UInt16]::Parse($(GITHUB_RUN_NUMBER)))))</Prerelease>
     <ModuleName>$(ProductName)</ModuleName>
     <ModuleTitle>Tridion Docs Content Manager $(ProductName)</ModuleTitle>
     <ModuleDescription>Business automation module on top of Tridion Docs Content Manager (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare)</ModuleDescription>
