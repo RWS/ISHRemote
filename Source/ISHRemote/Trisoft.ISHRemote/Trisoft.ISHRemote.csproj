@@ -95,7 +95,7 @@
 
   <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(TargetFramework)' == 'net472'">
     <PropertyGroup>
-      <LocalPSRepo>$(ProjectDir)bin/$(Configuration)</LocalPSRepo>
+      <LocalPSRepo>$(ProjectDir)bin\$(Configuration)</LocalPSRepo>
       <ISHRemoteModulePath>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteModulePath>
       <ISHRemoteModuleFileName>$(ProjectDir)bin/$(Configuration)/ISHRemote.$(ModuleVersion)-$(Prerelease).nupkg</ISHRemoteModuleFileName>
       <NuGetApiKey Condition=" '$(NuGetApiKey)' == ''">AnyStringWillDo</NuGetApiKey>
