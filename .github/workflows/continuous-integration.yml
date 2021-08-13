@@ -13,18 +13,43 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+    
     - name: Restore dependencies
       run: dotnet restore Source/ISHRemote/ISHRemote.sln
+    
     - name: Build
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
+    
+    - name: Install PSScriptAnalyzer module
+      shell: pwsh
+      run: |
+        Set-PSRepository PSGallery -InstallationPolicy Trusted
+        Install-Module PSScriptAnalyzer -ErrorAction Stop
+    
+    - name: Lint with PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        Invoke-ScriptAnalyzer -Path . -Recurse -Outvariable issues
+        $errors   = $issues.Where({$_.Severity -eq 'Error'})
+        $warnings = $issues.Where({$_.Severity -eq 'Warning'})
+        if ($errors) {
+            Write-Error "There were $($errors.Count) errors and $($warnings.Count) warnings total."
+        } else {
+            Write-Output "There were $($errors.Count) errors and $($warnings.Count) warnings total."
+        }
+        $errors
+        $warnings
+    
     - name: Archive ISHRemote module
       uses: actions/upload-artifact@v2
       with: 
