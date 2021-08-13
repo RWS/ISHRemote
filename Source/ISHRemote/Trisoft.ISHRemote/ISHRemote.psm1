@@ -35,13 +35,13 @@ $binaryModuleRoot = $PSModuleRoot
 
 
 if (($PSVersionTable.Keys -contains "PSEdition") -and ($PSVersionTable.PSEdition -eq 'Desktop')) {
-    $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net472'
+    $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net48'
 }
 else
 {
     if ($PSVersionTable.PSVersion -gt [Version]'7.1')
     {
-        $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'netcoreapp3.1'
+        $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net5.0'
     }
 }
 

@@ -452,7 +452,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                 if (_application25 == null)
                 {
                     _application25 = new Application25ServiceReference.Application25SoapClient(
-                        Application25ServiceReference.Application25SoapClient.EndpointConfiguration.Application25Soap12,
+                        Application25ServiceReference.Application25SoapClient.EndpointConfiguration.Application25Soap,
                         new Uri(_webServicesBaseUri, "application25.asmx").AbsoluteUri
                         );
                     _application25.InnerChannel.OperationTimeout = _timeout;
