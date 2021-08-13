@@ -25,5 +25,8 @@ jobs:
       run: dotnet restore Source/ISHRemote/ISHRemote.sln
     - name: Build
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
-#    - name: Test
-#      run: dotnet test --no-build --verbosity normal Source/ISHRemote/ISHRemote.sln
+    - name: Archive ISHRemote module
+      uses: actions/upload-artifact@v2
+      with: 
+        name: ISHRemote-module
+        path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/*.nupkg
