@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net48;net5.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <CopyLocalLockFileAssemblies Condition="'$(TargetFramework)' == 'net5.0'">true</CopyLocalLockFileAssemblies>
     <CopyLocalLockFileAssemblies Condition="'$(TargetFramework)' == 'netcoreapp3.1'">true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
@@ -78,7 +77,7 @@
   </Target>
 
   <!-- Copy all the required files to folder named ISHRemote which is needed for packaging -->
-  <Target Name="CopyRequiredFilesToPowerShellModuleFolder" AfterTargets="ModuleManifest" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' AND '$(TargetFramework)' != 'netcoreapp3.1'">
+  <Target Name="CopyRequiredFilesToPowerShellModuleFolder" AfterTargets="ModuleManifest" Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
     <PropertyGroup>
       <LocalPSRepoDir>$(ProjectDir)bin/$(Configuration)</LocalPSRepoDir>
       <ISHRemoteFrameworkDir>$(ProjectDir)bin/$(Configuration)/ISHRemote/$(TargetFramework)</ISHRemoteFrameworkDir>
@@ -86,17 +85,19 @@
     
     <ItemGroup>
         <ISHRemoteFiles Include="$(TargetDir)/**/*.*" />
+        <ISHRemoteScriptFiles Include="$(ProjectDir)/Scripts/**/*.*" />
     </ItemGroup>
 
     <RemoveDir Directories="$(ISHRemoteFrameworkDir)" Condition="Exists('$(ISHRemoteFrameworkDir)')" />
     <MakeDir Directories="$(ISHRemoteFrameworkDir)" />
     <Copy SourceFiles="@(ISHRemoteFiles)" DestinationFiles="@(ISHRemoteFiles-&gt;'$(ISHRemoteFrameworkDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(ISHRemoteScriptFiles)" DestinationFiles="@(ISHRemoteScriptFiles-&gt;'$(LocalPSRepoDir)\ISHRemote\Scripts\%(RecursiveDir)%(Filename)%(Extension)')" />
 
     <Copy SourceFiles="$(ProjectDir)ISHRemote.psm1" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
     <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
   </Target>
 
-  <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(TargetFramework)' == 'net5.0'">
+  <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' AND '$(TargetFramework)' == 'net5.0'">
     <PropertyGroup>
       <LocalPSRepo>$(ProjectDir)bin\$(Configuration)</LocalPSRepo>
       <ISHRemoteModulePath>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteModulePath>

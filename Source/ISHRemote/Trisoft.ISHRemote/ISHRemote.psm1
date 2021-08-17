@@ -24,7 +24,9 @@
 #
 # Script module for module 'ISHRemote'
 #
-Set-StrictMode -Version Latest
+
+# Required for Expand-ISHParameter.ps1 because $global:options might not exists
+Set-StrictMode -Off
 
 # Set up some helper variables to make it easier to work with the module
 $PSModule = $ExecutionContext.SessionState.Module
@@ -32,7 +34,6 @@ $PSModuleRoot = $PSModule.ModuleBase
 
 # Import the appropriate nested binary module based on the current PowerShell version
 $binaryModuleRoot = $PSModuleRoot
-
 
 if (($PSVersionTable.Keys -contains "PSEdition") -and ($PSVersionTable.PSEdition -eq 'Desktop')) {
     $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net48'
@@ -47,6 +48,23 @@ else
 
 $binaryModulePath = Join-Path -Path $binaryModuleRoot -ChildPath 'Trisoft.ISHRemote.dll'
 $binaryModule = Import-Module -Name $binaryModulePath -PassThru
+
+$privateCmdlet  = @(Get-ChildItem -Path $PSScriptRoot\Scripts\Private\*.ps1 -ErrorAction SilentlyContinue -Exclude *.Tests.ps1)
+$publicCmdlet  = @(Get-ChildItem -Path $PSScriptRoot\Scripts\Public\*.ps1 -ErrorAction SilentlyContinue -Exclude *.Tests.ps1)
+Foreach($import in @($privateCmdlet + $publicCmdlet))
+{
+    Try
+    {
+        Write-Debug ("[" + $MyInvocation.MyCommand + "] Loading [" + $import.fullname + "]")
+        . $import.fullname
+    }
+    Catch
+    {
+        Write-Error -Message "Failed to import function $($import.fullname): $_"
+    }
+}
+
+Set-StrictMode -Version Latest
 
 # When the module is unloaded, remove the nested binary module that was loaded with it
 $PSModule.OnRemove = {
