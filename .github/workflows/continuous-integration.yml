@@ -39,7 +39,7 @@ jobs:
     - name: Lint with PSScriptAnalyzer
       shell: pwsh
       run: |
-        Invoke-ScriptAnalyzer -Path . -Recurse -Outvariable issues
+        Invoke-ScriptAnalyzer -Path Source/ISHRemote/Trisoft.ISHRemote/Scripts -Recurse -Outvariable issues
         $errors   = $issues.Where({$_.Severity -eq 'Error'})
         $warnings = $issues.Where({$_.Severity -eq 'Warning'})
         if ($errors) {

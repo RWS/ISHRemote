@@ -19,8 +19,8 @@ function Register-IshAuxParameterCompleter {
        Specifies the name of the argument to complete
        .PARAMETER ScriptBlock
        Specifies the script to use for completion.
-       The script block should take 5 arguments: 
-            $commandName : the name of the completed command 
+       The script block should take 5 arguments:
+            $commandName : the name of the completed command
             $parameterName : the name of the completed parameter
             $wordToComplete : the start of the word to complete
             $commandAst : the abstract syntax tree when completion is done using Ast

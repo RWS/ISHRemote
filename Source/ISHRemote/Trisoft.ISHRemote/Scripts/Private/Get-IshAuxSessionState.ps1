@@ -8,7 +8,7 @@ function Get-IshAuxSessionState
 .EXAMPLE
 	Get-IshAuxSessionState -Name "ISHRemoteSessionStateIshSession"
 #>
-[CmdletBinding()] 
+[CmdletBinding()]
 param(
 	$Name
 )

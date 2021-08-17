@@ -31,12 +31,11 @@ function New-IshAuxCompletionResult {
         [string]$ListItemText = $CompletionText,
         [string]$ToolTip = $CompletionText
     )
-    
     End {
         if ($CompletionText -match '^[^\''].*\s.*[^\'']$') {
             $CompletionText = "'" + ($CompletionText -replace "'", "''") + "'"
         }
-            
+
         New-Object System.Management.Automation.CompletionResult $CompletionText, $ListItemText, 'ParameterValue', $ToolTip
     }
 }
