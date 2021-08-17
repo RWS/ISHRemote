@@ -54,21 +54,27 @@ A table that describes what works, where cmdlets have been rewired, where tests 
       <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netstandard2.0`,`net5.0`))\" />
     </Target>
 1. Error `System.Runtime.Loader.AssemblyLoadContext.OnAssemblyResolve(RuntimeAssembly assembly, String assemblyFullName)
-New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives` brought me here [Resolving PowerShell Module Assembly Dependency Conflicts](https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/). By running `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView` you can see that my wanted (latest) version 4.8.1 is not competing with the out-of-the-box version of PowerShell/dotnet.
+New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives' brought me here [Resolving PowerShell Module Assembly Dependency Conflicts](https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/). By running `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView` you can see that my wanted (latest) version 4.8.1 is not competing with the out-of-the-box version of PowerShell/dotnet.
 Publishing problem perhaps, as copying %USER%\.nuget\packages\system.servicemodel.http\4.8.1\lib\netcore50\System.ServiceModel.Http.dll to \Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\net5.0 and same for System.ServiceModel.Primitives.dll made it work under PowerShell 7. So next up is MSBuild/Publish routines/knowledge, inspired by Azure module. Could be caused by `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>`
+    1. Kudos to @ivandelagemaat for getting the build sytem running, one module for Windows PowerShell and PowerShell Core. Below some quick notes on the most important victories. Even integrated the NuGet package of `XmlDoc2CmdletDoc`
+    1. He added a `.github/workflows/continuous-integration.yml` file that autobuilds this branch. And `\Source\ISHRemote\Directory.Build.props`
+    1. Rolled back to older 'System.ServiceModel.Primitives' versions. The ones that came with PowerShell SDK, this avoids the Azure assembly loader variations and more.
+    1. Earlier code used proxy `Application25Soap12` which is lowered to `Application25Soap` (probably 1.1) which in essence is ASMX anyway.
+    1. Consider build.props, and script
+        1. Inspired from `\Properties\AssemblyInfo.cs`, `\Properties\AssemblyInfo.targets` and `\Properties\ModuleManifest.targets`
+        1. `Trisoft.ISHRemote\ISHRemote.PostBuild.ps1`
+    1. It looks like `PSSnapIn` was wiring up the format xml. The class was removed, who now suggests to pick up the rendering format xml.
+    1. `ISHRemote.psm1` in a multi-target framework setup can detect in PowerShell if it is `Core` or `Desktop` and in turn if it is Framework, Core 3, Core 5 (or higher) by `[Environment]::Version` (which returns 5.0.3.-1)... based on `$PSVersionTable`
+1. Cleaned up `NewIshSession.Tests.ps1` noticing the HTTPS/SSL (even TLS1.3) is missing, Timeout parameters are uncertain, PSCredential is a gap... but test has been cleaned up given 48 successes
 
 ## Next
-1. `ISHRemote.psm1` in a multi-target framework setup can detect in PowerShell if it is `Core` or `Desktop` and in turn if it is Framework, Core 3, Core 5 (or higher) by `[Environment]::Version` (which returns 5.0.3.-1)
-1. Remove `System.Reflection...` again if I go multi-target.
+1. Build `Debug` in the same way as `Release` with copied `Scripts` folder (also the only folder for PSScriptAnalyzer to enforce) so that `ISHRemote.PesterSetup.ps1` can keep pointing to the `Debug` packaged ISHRemote.
+1. `$IshSession.Protocol` with enum values `Asmx-AuthenticationContext` and `OpenAPI-BasicAuthentication`... defaults currently to Asmx, could later be detected based on the url or `clientconfiguration.xml`
+1. Is `CertificateValidationHelper.cs` and `ServicePointManagerHelper.cs` still the way to do certificate bypass? Make sure TLS 1.3 is activated (possible since net4.8 and higher)
+1. `TrisoftCmdlet.cs` says `[assembly: ComVisible(false)]` ... brrr? Why?
 1. Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
     1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
 1. Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
-1. Consider build.props, and script
-    1. Inspired from `\Properties\AssemblyInfo.cs`, `\Properties\AssemblyInfo.targets` and `\Properties\ModuleManifest.targets`
-    1. `Trisoft.ISHRemote\ISHRemote.PostBuild.ps1`
-1. It looks like `PSSnapIn` was wiring up the format xml. The class was removed, who now suggests to pick up the rendering format xml.
-1. Is `CertificateValidationHelper.cs` and `ServicePointManagerHelper.cs` still the way to do certificate bypass?
-1. `TrisoftCmdlet.cs` says `[assembly: ComVisible(false)]` ... brrr? Why?
 
 # Backlog
 The below is a list to consider, before execution is preferably transformed into github issues
@@ -76,9 +82,9 @@ The below is a list to consider, before execution is preferably transformed into
 1. Local `.snk` signing file, get inspired by Azure modules
 1. Enable Tls13, this force NET Framework 4.8 ... is that part of netstandard2.0? Should we consider two build targets and have the `ISHRemote.psm1` decide at runtime which set to load?
 1. Auto complete on parameters
-1. `Get-Help` can still be based on tripple-slash (`///`) using `\ISHRemote\Source\Tools\XmlDoc2CmdletDoc`. Some source indicate separate markdown files, next to the C# source and Pester test files.
+1. `Get-Help` can still be based on tripple-slash (`///`) using `\ISHRemote\Source\Tools\XmlDoc2CmdletDoc`. Some source indicate separate markdown files, next to the C# source and Pester test files. There is a NuGet package, native .NET (Core) integrated.
 
 # References
 * HTTPS and SoapClient11 or SoapClient12 is discussed on https://medium.com/grensesnittet/integrating-with-soap-web-services-in-net-core-adebfad173fb
 * Error `System.Runtime.Loader.AssemblyLoadContext.OnAssemblyResolve(RuntimeAssembly assembly, String assemblyFullName)
-New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives` brought me here [Resolving PowerShell Module Assembly Dependency Conflicts](https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/). By running `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView` you can see which assemblies are loaded in your fresh PowerShell session.
+New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives' brought me here [Resolving PowerShell Module Assembly Dependency Conflicts](https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/). By running `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView` you can see which assemblies are loaded in your fresh PowerShell session. Rolled back to older 'System.ServiceModel.Primitives' versions. The ones that came with PowerShell SDK, this avoids the Azure assembly loader variations and more.

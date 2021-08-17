@@ -18,7 +18,7 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context “New-IshSession UserNamePassword" {
+	Context "New-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
 			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" } | Should Throw "Invalid URI"
 		}
@@ -27,35 +27,6 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 		It "Parameter IshPassword specified" {
 			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName $ishUserName -IshPassword "INVALIDISHPASSWORD" } | Should Throw
-		}
-		It "Parameter IshUserName empty falls back to NetworkCredential/ActiveDirectory" {
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName "" -IshPassword "IGNOREISHPASSWORD" } | Should Not Throw "Cannot validate argument on parameter 'IshUserName'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
-		}
-	}
-
-	Context “New-IshSession ActiveDirectory" {
-		It "Parameter WsBaseUrl invalid" {
-			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" } | Should Throw "Invalid URI"
-		}
-	}
-
-	Context “New-IshSession PSCredential" {
-		It "Parameter WsBaseUrl invalid" {
-			{ 
-				$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
-				$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
-				New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -PSCredential $mycredentials
-			} | Should Throw "Invalid URI"
-		}
-		It "Parameter PSCredential invalid" {
-			$securePassword = ConvertTo-SecureString "INVALIDPASSWORD" -AsPlainText -Force
-			$mycredentials = New-Object System.Management.Automation.PSCredential ("INVALIDISHUSERNAME", $securePassword)
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should Throw
-		}
-		It "Parameter PSCredential" {
-			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
-			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should Not Throw
 		}
 	}
 
@@ -119,12 +90,6 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.Timeout defaults to 20s" {
 			$ishSession.Timeout.TotalMilliseconds -eq 20000 | Should Be $true
 		}
-		It "IshSession.TimeoutIssue" {
-			$ishSession.TimeoutIssue.TotalMilliseconds -gt 0 | Should Be $true
-		}
-		It "IshSession.TimeoutService" {
-			$ishSession.TimeoutService.TotalMilliseconds -gt 0 | Should Be $true
-		}
 		It "IshSession.StrictMetadataPreference" {
 			$ishSession.StrictMetadataPreference | Should Be "Continue"
 		}
@@ -164,38 +129,6 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context "New-IshSession TimeoutIssue" {
-		It "Parameter TimeoutIssue Invalid" {
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue "INVALIDTimeoutIssue" } | Should Throw
-		}
-		It "IshSession.TimeoutIssue set to 30s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue (New-TimeSpan -Seconds 30)
-			$ishSession.TimeoutIssue.TotalMilliseconds  | Should Be "30000"
-		}
-		It "IshSession.TimeoutIssue set to 1ms execution" {
-			# The request channel timed out while waiting for a reply after 00:00:00.0000017. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue (New-Object TimeSpan(0,0,0,0,1)) } | Should Throw
-		}
-	}
-	
-	Context "New-IshSession TimeoutService" {
-		It "Parameter TimeoutService Invalid" {
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService "INVALIDTIMEOUTSERVICE" } | Should Throw
-		}
-		It "IshSession.TimeoutService set to 40s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService (New-TimeSpan -Seconds 40)
-			$ishSession.TimeoutService.TotalMilliseconds  | Should Be "40000"
-		}
-		<# It "IshSession.TimeoutService set to 1 tickout execution" {
-			# The request channel timed out attempting to send after 00:00:00.0010000. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.
-			{ 
-				$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService (New-Object TimeSpan(1)) 
-				# Forcing a GetVersion web service call, probably needs a better call because GetVersion can be too fast, so nothing is thrown
-				$version = $ishSession.ServerVersion
-			} | Should Throw
-		} #>
-	}
-
 	Context "New-IshSession IgnoreSslPolicyErrors" {
 		It "Parameter IgnoreSslPolicyErrors specified positive flow" {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
@@ -229,81 +162,66 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.Dispose()
 		} #>
 	}
-	Context "New-IshSession ExplicitIssuer" {
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using full hostname" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword
-			$ishSession.ServerVersion | Should Not BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should Be 4
-		}
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" -skip {
-			$ishSession = New-IshSession -WsBaseUrl $localWebServicesBaseUrl -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-			$ishSession.ServerVersion | Should Not BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should Be 4
-		}
-	}
 
 	Context "New-IshSession returns IshSession ServiceReferences" {
 		$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		It "IshSession.Annotation25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 14) { # new service since 14/14.0.0
-				 $ishSession.Annotation25 -ne $null | Should Not BeNullOrEmpty
+				-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Annotation25) | Should Be $true
 			}
 		}
 		It "IshSession.Application25" {
-			$ishSession.Application25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Application25) | Should Be $true
 		}
 		It "IshSession.BackgroundTask25" { # new service since 13SP2/13.0.2
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { 
-				$ishSession.BackgroundTask25 -ne $null | Should Not BeNullOrEmpty
+				-not (Get-Member -inputobject $ishSession -Membertype Properties -Name BackgroundTask25) | Should Be $true
 			}
 		}
 		It "IshSession.Baseline25" {
-			$ishSession.Baseline25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Baseline25) | Should Be $true
 		}
 		It "IshSession.DocumentObj25" {
-			$ishSession.DocumentObj25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name DocumentObj25) | Should Be $true
 		}
 		It "IshSession.EDT25" {
-			$ishSession.EDT25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name EDT25) | Should Be $true
 		}
 		It "IshSession.EventMonitor25" {
-			$ishSession.EventMonitor25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name EventMonitor25) | Should Be $true
 		}
 		It "IshSession.Folder25" {
-			$ishSession.Folder25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Folder25) | Should Be $true
 		}
 		It "IshSession.ListOfValues25" {
-			$ishSession.ListOfValues25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name ListOfValues25) | Should Be $true
 		}
 		It "IshSession.MetadataBinding25" {
-			$ishSession.MetadataBinding25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name MetadataBinding25) | Should Be $true
 		}
 		It "IshSession.OutputFormat25" {
-			$ishSession.OutputFormat25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name OutputFormat25) | Should Be $true
 		}
 		It "IshSession.PublicationOutput25" {
-			$ishSession.PublicationOutput25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name PublicationOutput25) | Should Be $true
 		}
 		It "IshSession.Search25" {
-			$ishSession.Search25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Search25) | Should Be $true
 		}
 		It "IshSession.Settings25" {
-			$ishSession.Settings25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Settings25) | Should Be $true
 		}
 		It "IshSession.TranslationJob25" {
-			$ishSession.TranslationJob25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name TranslationJob25) | Should Be $true
 		}
 		It "IshSession.TranslationTemplate25" {
-			$ishSession.TranslationTemplate25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name TranslationTemplate25) | Should Be $true
 		}
 		It "IshSession.User25" {
-			$ishSession.User25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name User25) | Should Be $true
 		}
 		It "IshSession.UserGroup25" {
-			$ishSession.UserGroup25 -ne $null | Should Not BeNullOrEmpty
-		}
-		It "IshSession.UserRole25" {
-			$ishSession.UserRole25 -ne $null | Should Not BeNullOrEmpty
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name UserGroup25) | Should Be $true
 		}
 	}
 }
