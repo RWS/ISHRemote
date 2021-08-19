@@ -9,7 +9,12 @@ Write-Host "Generating and Executing Import-Module Statement..."
 $project = (Split-Path -Parent $MyInvocation.MyCommand.Path).ToLower()
 $project = $project.Substring(0, $project.LastIndexOf("ishremote"))
 $project = ($project + "ishremote")
-Import-Module (Join-Path $project "\bin\debug\ISHRemote") -DisableNameChecking
+if ($env:GITHUB_ACTIONS -eq "true") {
+	Import-Module (Join-Path $project "\bin\release\ISHRemote") -DisableNameChecking
+}
+else {
+	Import-Module (Join-Path $project "\bin\debug\ISHRemote") -DisableNameChecking
+}
 Write-Host    "Initializing Global Test Data and Variables"
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
 Write-Verbose "Initializing OASIS DITA File Contents"
@@ -32,12 +37,27 @@ $ditaMapWithTopicrefFileContent = @"
 "@
 
 Write-Verbose "Initializing variables for UserName/Password based tests, so ISHSTS-like..."
-$baseUrl = 'https://ish.example.com'
+$baseUrl = $env:ISH_BASE_URL
+if ($null -eq $baseUrl)
+{
+	$baseUrl = 'https://ish.example.com'
+}
+
+$ishUserName = $env:ISH_USER_NAME
+if ($null -eq $ishUserName)
+{
+	$ishUserName = 'admin'
+}
+
+$ishPassword = $env:ISH_PASSWORD
+if ($null -eq $ishPassword)
+{
+	$ishPassword = 'admin'
+}
+
 $webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
 $wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
 $wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
-$ishUserName = 'admin'
-$ishPassword = 'admin'
 Write-Verbose "Initializing variables for System Setup"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed
 $ishLng = 'VLANGUAGEEN'
@@ -84,7 +104,7 @@ $localWsTrustIssuerMexUrl =  $wsTrustIssuerMexUrl.Replace($hostname,"localhost")
 #
 #if ($null -eq $global:ishSession)
 #{
-	$global:ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+	# $global:ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 #}
-$ishSession = $global:ishSession
+# $ishSession = $global:ishSession
 # TODO [Must] The StateStore is now required for all tests, but it is only done in New-IshSession. 50s performance boost to gain 

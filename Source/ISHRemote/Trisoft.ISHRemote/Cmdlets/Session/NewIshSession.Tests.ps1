@@ -1,139 +1,143 @@
-﻿Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-. (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
-$cmdletName = "New-IshSession"
-try {
+﻿BeforeAll {
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
+	Write-Host BeforeAll loading the extra script
+	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
+
+	Write-Host "Initializing Test Data and Variables"
+}
 
 Describe "New-IshSession" -Tags "Read" {
-	Write-Host "Initializing Test Data and Variables"
-	$ishSession = $null  # Resetting generic $ishSession
 
 	Context "New-IshSession ISHDeploy::Enable-ISHIntegrationSTSInternalAuthentication/Prepare-SupportAccess.ps1" {
 		It "Parameter WsBaseUrl contains 'SDL' (legacy script)" -skip {
 			$ishSession = New-IshSession -WsBaseUrl https://example.com/ISHWS/SDL/ -IshUserName x -IshPassword y
-			$ishSession.ServerVersion | Should Not BeNullOrEmpty
+			$ishSession.ServerVersion | Should -Not BeNullOrEmpty
 		}
 		It "Parameter WsBaseUrl contains 'Internal' (ISHDeploy)" -skip {
 			$ishSession = New-IshSession -WsBaseUrl https://example.com/ISHWS/Internal/ -IshUserName x -IshPassword y
-			$ishSession.ServerVersion | Should Not BeNullOrEmpty
+			$ishSession.ServerVersion | Should -Not BeNullOrEmpty
 		}
 	}
 
 	Context "New-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
-			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" } | Should Throw "Invalid URI"
+			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" } | Should -Throw "Invalid URI: The hostname could not be parsed."
 		}
 		It "Parameter IshUserName invalid" {
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" } | Should Throw
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" } | Should -Throw
 		}
 		It "Parameter IshPassword specified" {
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName $ishUserName -IshPassword "INVALIDISHPASSWORD" } | Should Throw
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName $ishUserName -IshPassword "INVALIDISHPASSWORD" } | Should -Throw
 		}
 	}
 
 	Context "New-IshSession returns IshSession object" {
-		$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		BeforeAll {
+			Write-Host $webServicesBaseUrl $ishUserName $ishPassword
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		}
 		It "GetType()" {
-			$ishSession.GetType().Name | Should BeExactly "IshSession"
+			$ishSession.GetType().Name | Should -BeExactly "IshSession"
 		}
 		It "IshSession.AuthenticationContext" {
-			$ishSession.AuthenticationContext | Should Not BeNullOrEmpty
+			$ishSession.AuthenticationContext | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.BlobBatchSize" {
-			$ishSession.BlobBatchSize -gt 0 | Should Be $true
+			$ishSession.BlobBatchSize -gt 0 | Should -Be $true
 		}
 		It "IshSession.ChunkSize" {
-			$ishSession.ChunkSize -gt 0 | Should Be $true
+			$ishSession.ChunkSize -gt 0 | Should -Be $true
 		}
 		It "IshSession.ClientVersion" {
-			$ishSession.ClientVersion | Should Not BeNullOrEmpty
+			$ishSession.ClientVersion | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.ClientVersion not 0.0.0.0" {
-			$ishSession.ClientVersion | Should Not Be "0.0.0.0"
+			$ishSession.ClientVersion | Should -Not -Be "0.0.0.0"
 		}
 		It "IshSession.FolderPathSeparator" {
-			$ishSession.FolderPathSeparator | Should Be "\"
+			$ishSession.FolderPathSeparator | Should -Be "\"
 		}
 		It "IshSession.IshUserName" {
-			$ishSession.IshUserName | Should Not BeNullOrEmpty
+			$ishSession.IshUserName | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.UserName" {
-			$ishSession.UserName | Should Not BeNullOrEmpty
+			$ishSession.UserName | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.IshTypeFieldDefinition" {
-			$ishSession.IshTypeFieldDefinition | Should Not BeNullOrEmpty
+			$ishSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.IshTypeFieldDefinition.Count" {
-			$ishSession.IshTypeFieldDefinition.Count -gt 460 | Should Be $true
+			$ishSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
 		}
 		It "IshSession.IshTypeFieldDefinition.GetType().Name" {
-			$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should BeExactly "IshTypeFieldDefinition"
-			$ishSession.IshTypeFieldDefinition[0].ISHType | Should Not BeNullOrEmpty
-			$ishSession.IshTypeFieldDefinition[0].Level | Should Not BeNullOrEmpty
-			$ishSession.IshTypeFieldDefinition[0].Name | Should Not BeNullOrEmpty
-			$ishSession.IshTypeFieldDefinition[0].DataType | Should Not BeNullOrEmpty
+			$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
+			$ishSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
+			$ishSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
+			$ishSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
+			$ishSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.MetadataBatchSize" {
-			$ishSession.MetadataBatchSize -gt 0 | Should Be $true
+			$ishSession.MetadataBatchSize -gt 0 | Should -Be $true
 		}
 		It "IshSession.Separator" {
-			$ishSession.Separator | Should Be ", "
+			$ishSession.Separator | Should -Be ", "
 		}
 		It "IshSession.ServerVersion empty (ISHWS down?)" {
-			$ishSession.ServerVersion | Should Not BeNullOrEmpty
+			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.ServerVersion not 0.0.0.0" {
-			$ishSession.ServerVersion | Should Not Be "0.0.0.0"
+			$ishSession.ServerVersion | Should -Not -Be "0.0.0.0"
 		}
 		It "IshSession.ServerVersion contains 4 dot-seperated parts" {
-			$ishSession.ServerVersion.Split(".").Length | Should Be 4
+			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
 		It "IshSession.Timeout defaults to 20s" {
-			$ishSession.Timeout.TotalMilliseconds -eq 20000 | Should Be $true
+			$ishSession.Timeout.TotalMilliseconds -eq 20000 | Should -Be $true
 		}
 		It "IshSession.StrictMetadataPreference" {
-			$ishSession.StrictMetadataPreference | Should Be "Continue"
+			$ishSession.StrictMetadataPreference | Should -Be "Continue"
 		}
 		It "IshSession.PipelineObjectPreference" {
-			$ishSession.PipelineObjectPreference | Should Be "PSObjectNoteProperty"
+			$ishSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
 		}
 		It "IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
 		}
 		It "IshSession.WebServicesBaseUrl" {
-			$ishSession.WebServicesBaseUrl | Should Not BeNullOrEmpty
+			$ishSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
 		}
 	}
 
 	Context "New-IshSession WsBaseUrl without ending slash" {
-		# .NET throws unhandy "Reference to undeclared entity 'raquo'." error
-		$webServicesBaseUrlWithoutEndingSlash = $webServicesBaseUrl.Substring(0,$webServicesBaseUrl.Length-1)
 		It "WsBaseUrl without ending slash" {
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should Not Throw
+			# .NET throws unhandy "Reference to undeclared entity 'raquo'." error
+			$webServicesBaseUrlWithoutEndingSlash = $webServicesBaseUrl.Substring(0,$webServicesBaseUrl.Length-1)
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should -Not -Throw
 		}
 	}
 
 	Context "New-IshSession Timeout" {
 		It "Parameter Timeout Invalid" {
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout "INVALIDTIMEOUT" } | Should Throw
+			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout "INVALIDTIMEOUT" } | Should -Throw
 		}
 		It "IshSession.Timeout set to 30s" {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-TimeSpan -Seconds 60)
-			$ishSession.Timeout.TotalMilliseconds  | Should Be "60000"
+			$ishSession.Timeout.TotalMilliseconds  | Should -Be "60000"
 		}
 		It "IshSession.Timeout on INVALID url set to 1ms execution" {
 			# TaskCanceledException: A task was canceled.
 			{
 				$invalidWebServicesBaseUrl = $webServicesBaseUrl -replace "://", "://INVALID"
 				$ishSession = New-IshSession -WsBaseUrl $invalidWebServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-Object TimeSpan(0,0,0,0,1))
-			} | Should Throw
+			} | Should -Throw
 		}
 	}
 
 	Context "New-IshSession IgnoreSslPolicyErrors" {
 		It "Parameter IgnoreSslPolicyErrors specified positive flow" {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-			$ishSession.ServerVersion | Should Not BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should Be 4
+			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
+			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
 		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -skip {
 			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
@@ -144,8 +148,8 @@ Describe "New-IshSession" -Tags "Read" {
 			$computername = $hostname.Substring(0,$hostname.IndexOf("."))
 			$webServicesBaseUrlToComputerName = $webServicesBaseUrl.Replace($hostname,$computername)
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToComputerName -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-			$ishSession.ServerVersion | Should Not BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should Be 4
+			$ishSession.ServerVersion | Should -Not BeNullOrEmpty
+			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 			$ishSession.Dispose()
 		}
 		<# It "Parameter IgnoreSslPolicyErrors specified negative flow (Resolve-DnsName)" -skip {
@@ -164,69 +168,66 @@ Describe "New-IshSession" -Tags "Read" {
 	}
 
 	Context "New-IshSession returns IshSession ServiceReferences" {
-		$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		BeforeAll {
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		}
 		It "IshSession.Annotation25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 14) { # new service since 14/14.0.0
-				-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Annotation25) | Should Be $true
+				-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Annotation25) | Should -Be $true
 			}
 		}
 		It "IshSession.Application25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Application25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Application25) | Should -Be $true
 		}
 		It "IshSession.BackgroundTask25" { # new service since 13SP2/13.0.2
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { 
-				-not (Get-Member -inputobject $ishSession -Membertype Properties -Name BackgroundTask25) | Should Be $true
+				-not (Get-Member -inputobject $ishSession -Membertype Properties -Name BackgroundTask25) | Should -Be $true
 			}
 		}
 		It "IshSession.Baseline25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Baseline25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Baseline25) | Should -Be $true
 		}
 		It "IshSession.DocumentObj25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name DocumentObj25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name DocumentObj25) | Should -Be $true
 		}
 		It "IshSession.EDT25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name EDT25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name EDT25) | Should -Be $true
 		}
 		It "IshSession.EventMonitor25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name EventMonitor25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name EventMonitor25) | Should -Be $true
 		}
 		It "IshSession.Folder25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Folder25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Folder25) | Should -Be $true
 		}
 		It "IshSession.ListOfValues25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name ListOfValues25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name ListOfValues25) | Should -Be $true
 		}
 		It "IshSession.MetadataBinding25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name MetadataBinding25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name MetadataBinding25) | Should -Be $true
 		}
 		It "IshSession.OutputFormat25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name OutputFormat25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name OutputFormat25) | Should -Be $true
 		}
 		It "IshSession.PublicationOutput25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name PublicationOutput25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name PublicationOutput25) | Should -Be $true
 		}
 		It "IshSession.Search25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Search25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Search25) | Should -Be $true
 		}
 		It "IshSession.Settings25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Settings25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Settings25) | Should -Be $true
 		}
 		It "IshSession.TranslationJob25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name TranslationJob25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name TranslationJob25) | Should -Be $true
 		}
 		It "IshSession.TranslationTemplate25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name TranslationTemplate25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name TranslationTemplate25) | Should -Be $true
 		}
 		It "IshSession.User25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name User25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name User25) | Should -Be $true
 		}
 		It "IshSession.UserGroup25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name UserGroup25) | Should Be $true
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name UserGroup25) | Should -Be $true
 		}
 	}
-}
-
-	
-} finally {
-	Write-Host "Cleaning Test Data and Variables"
 }

@@ -54,13 +54,13 @@ jobs:
         name: ISHRemote-module
         path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/*.nupkg
 
-    # - name: Test with Pester
-    #   shell: pwsh
-    #   run: Invoke-Pester Unit.Tests.ps1 -Passthru | Export-CliXml -Path Unit.Tests.xml
-    # - name: Upload test results
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: ubuntu-Unit-Tests
-    #     path: Unit.Tests.xml
+    - name: Test CmdLets with Pester
+      shell: pwsh
+      run: Invoke-Pester Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/Session/NewIshSession.Tests.ps1 -Passthru | Export-CliXml -Path NewIshSession.Pester.Tests.xml
+    - name: Upload test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: New-IshSession pester test results
+        path: NewIshSession.Pester.Tests.xml
 
-    # if: ${{ always() }}
+#    if: ${{ always() }}
