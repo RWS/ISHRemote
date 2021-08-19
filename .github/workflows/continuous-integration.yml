@@ -56,6 +56,10 @@ jobs:
 
     - name: Test CmdLets with Pester
       shell: pwsh
+      env:
+        ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
+        ISH_USER_NAME: ${{ secrets.ISH_USER_NAME }}
+        ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
       run: Invoke-Pester Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/Session/NewIshSession.Tests.ps1 -Passthru | Export-CliXml -Path NewIshSession.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v2
