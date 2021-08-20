@@ -42,7 +42,6 @@ if ([string]::IsNullOrEmpty($baseUrl))
 {
 	$baseUrl = 'https://ish.example.com'
 }
-Write-Host baseUrl: $baseUrl
 
 $ishUserName = $env:ISH_USER_NAME
 if ([string]::IsNullOrEmpty($ishUserName))

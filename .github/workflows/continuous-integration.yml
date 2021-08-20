@@ -28,6 +28,8 @@ jobs:
       run: dotnet restore Source/ISHRemote/ISHRemote.sln
     
     - name: Build
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
     
     - name: Install PSScriptAnalyzer module
