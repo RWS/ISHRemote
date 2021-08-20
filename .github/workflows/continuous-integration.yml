@@ -66,5 +66,4 @@ jobs:
       with:
         name: New-IshSession pester test results
         path: NewIshSession.Pester.Tests.xml
-
-#    if: ${{ always() }}
+      if: ${{ always() }}

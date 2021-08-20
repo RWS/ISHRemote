@@ -33,7 +33,6 @@ Describe "New-IshSession" -Tags "Read" {
 
 	Context "New-IshSession returns IshSession object" {
 		BeforeAll {
-			Write-Host $webServicesBaseUrl $ishUserName $ishPassword
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		}
 		It "GetType()" {

@@ -38,19 +38,20 @@ $ditaMapWithTopicrefFileContent = @"
 
 Write-Verbose "Initializing variables for UserName/Password based tests, so ISHSTS-like..."
 $baseUrl = $env:ISH_BASE_URL
-if ($null -eq $baseUrl)
+if ([string]::IsNullOrEmpty($baseUrl))
 {
 	$baseUrl = 'https://ish.example.com'
 }
+Write-Host baseUrl: $baseUrl
 
 $ishUserName = $env:ISH_USER_NAME
-if ($null -eq $ishUserName)
+if ([string]::IsNullOrEmpty($ishUserName))
 {
 	$ishUserName = 'admin'
 }
 
 $ishPassword = $env:ISH_PASSWORD
-if ($null -eq $ishPassword)
+if ([string]::IsNullOrEmpty($ishPassword))
 {
 	$ishPassword = 'admin'
 }
