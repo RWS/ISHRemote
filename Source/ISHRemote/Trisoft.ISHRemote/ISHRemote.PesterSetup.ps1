@@ -55,9 +55,6 @@ if ([string]::IsNullOrEmpty($ishPassword))
 	$ishPassword = 'admin'
 }
 
-$webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
-$wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
-$wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
 Write-Verbose "Initializing variables for System Setup"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed
 $ishLng = 'VLANGUAGEEN'
@@ -90,6 +87,10 @@ if (Test-Path -Path $debugPesterSetupFilePath -PathType Leaf)
 	# $ishPassword = 'mypassword'
 }
 #endregion
+
+$webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
+$wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
+$wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
 
 $webServicesBaseUrl -match "https://((?<hostname>.+))+/(.)+/" | Out-Null
 $hostname=$Matches['hostname']

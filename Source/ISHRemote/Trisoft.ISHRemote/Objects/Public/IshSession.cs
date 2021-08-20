@@ -161,8 +161,8 @@ namespace Trisoft.ISHRemote.Objects.Public
             client.Timeout = _timeout;
             var connectionConfigurationUri = new Uri(_webServicesBaseUri, "connectionconfiguration.xml");
             _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{client.Timeout}]");
-            var responseMessage = client.GetAsync(connectionConfigurationUri).Result;
-            string response = responseMessage.Content.ReadAsStringAsync().Result;
+            var responseMessage = client.GetAsync(connectionConfigurationUri).GetAwaiter().GetResult();
+            string response = responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             _ishConnectionConfiguration = new IshConnectionConfiguration(response);
             _logger.WriteDebug($"LoadConnectionConfiguration found InfoShareWSUrl[${_ishConnectionConfiguration.InfoShareWSUrl}] ApplicationName[${_ishConnectionConfiguration.ApplicationName}] SoftwareVersion[${_ishConnectionConfiguration.SoftwareVersion}]");
             if (_ishConnectionConfiguration.InfoShareWSUrl != _webServicesBaseUri)
