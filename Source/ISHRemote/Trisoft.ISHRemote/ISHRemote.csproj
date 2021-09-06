@@ -150,7 +150,7 @@
     <None Include="Cmdlets\Annotation\RemoveIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\Annotation\SetIshAnnotation.Tests.ps1" />
     <None Include="Cmdlets\BackgroundTask\AddIshBackgroundTask.Tests.ps1" />
-    <None Include="Cmdlets\DocumentObj\SearchshDocumentObj.Tests.ps1" />
+    <None Include="Cmdlets\DocumentObj\SearchIshDocumentObj.Tests.ps1" />
     <None Include="Cmdlets\ListOfValues\AddIshLovValue.Tests.ps1" />
     <None Include="Cmdlets\ListOfValues\GetIshLovValue.Tests.ps1" />
     <None Include="Cmdlets\PublicationOutput\AddIshPublicationOutput.Tests.ps1" />
