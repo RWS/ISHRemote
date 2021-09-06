@@ -4,7 +4,7 @@
     <Minor>13</Minor>
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
     <!-- <AdvBuild>$([System.DateTime]::UtcNow.ToString("HHmmss"))</AdvBuild> -->
-    <Revision>1</Revision>
+    <Revision>2</Revision>
 	<ModuleVersion>$(Major).$(Minor).0.$(Revision)</ModuleVersion>
     <ModuleBuildVersion>$(Major).$(Minor).$(Build).$(Revision)</ModuleBuildVersion>
     <FullModuleBuildVersion>$(Major).$(Minor).$(Revision)</FullModuleBuildVersion>
@@ -19,9 +19,9 @@
     <MinPowerShellVersion>4.0</MinPowerShellVersion>
     <MinCLRVersion>4.0</MinCLRVersion>
     <MinDotNetVersion>4.5</MinDotNetVersion>
-    <DocPortalLink>https://sdl.github.io/$(ProductName)/</DocPortalLink>
-    <DocPortalLink>https://sdl.github.io/$(ProductName)/</DocPortalLink>
-    <LicenseUri>https://github.com/sdl/$(ProductName)/blob/master/LICENSE.TXT</LicenseUri>
-    <ProjectUri>https://github.com/sdl/$(ProductName)/</ProjectUri>
+    <DocPortalLink>https://rws.github.io/$(ProductName)/</DocPortalLink>
+    <DocPortalLink>https://rws.github.io/$(ProductName)/</DocPortalLink>
+    <LicenseUri>https://github.com/rws/$(ProductName)/blob/master/LICENSE.TXT</LicenseUri>
+    <ProjectUri>https://github.com/rws/$(ProductName)/</ProjectUri>
   </PropertyGroup>
 </Project>

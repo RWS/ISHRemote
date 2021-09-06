@@ -9,7 +9,7 @@ The plan is to work on an ISHRemote v7+ that will work on PowerShell (Core) cros
 
 
 ## General...
-ISHRemote is a PowerShell module on SDL Tridion Docs Content Manager. Its goal is business automation on top of the Component Content Management System (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare). This library is constructed close to the "Web Services API" to:
+ISHRemote is a PowerShell module on Tridion Docs Content Manager. Its goal is business automation on top of the Component Content Management System (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare). This library is constructed close to the "Web Services API" to:
 - allow business logic automation ranging from triggering publishing into the continuous integration pipeline over legacy data correction up to provisioning
 - show case code examples and API best practices
 
@@ -45,7 +45,7 @@ When the CMS introduces its next public API successor based on OpenAPI-REST, a r
 
 
 ## Milestone - Reintroduce Modern Authentication...
-Initially we dropped WCF-SOAP protected by claims-based OASIS WS-Trust/WS-Federation authentication. ISHRemote changes are required to step into the Modern Authentication world (OpenIDConnect, OAuth, passive and active scenarios,...) using the new public OpenAPI-REST. See [SDL Tridion Docs Architectural Runway (TXS2020) - SDL Community](https://community.sdl.com/product-groups/sdl-tridion/tridion-docs/b/weblog/posts/sdl-tridion-docs-architectural-runway-txs2020)
+Initially we dropped WCF-SOAP protected by claims-based OASIS WS-Trust/WS-Federation authentication. ISHRemote changes are required to step into the Modern Authentication world (OpenIDConnect, OAuth, passive and active scenarios,...) using the new public OpenAPI-REST. See [Tridion Docs Architectural Runway (TXS2020) - Community](https://community.sdl.com/product-groups/sdl-tridion/tridion-docs/b/weblog/posts/sdl-tridion-docs-architectural-runway-txs2020)
 
 
 ## Suggestions...

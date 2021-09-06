@@ -1,10 +1,10 @@
 # Release Notes of ISHRemote v0.13
 
-Actual detailed release notes are on [Github](https://github.com/sdl/ISHRemote/releases/tag/v0.13), below some code samples.
+Actual detailed release notes are on [Github](https://github.com/rws/ISHRemote/releases/tag/v0.13), below some code samples.
 
 Remember
-* All C# source code of the ISHRemote library is online at [Source](https://github.com/sdl/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of WS-Trust protocol ([InfoShareWcfConnection.cs](https://github.com/sdl/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/InfoShareWcfConnection.cs)).
-* All PowerShell-based Pester integration tests are located per cmdlet complying with the `*.tests.ps1` file naming convention. See for example [AddIshDocumentObj.Tests.ps1](https://github.com/sdl/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/DocumentObj/AddIshDocumentObj.Tests.ps1) or [TestIshValidXml.Tests.ps1](https://github.com/sdl/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/FileProcessor/TestIshValidXml.Tests.ps1)
+* All C# source code of the ISHRemote library is online at [Source](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of WS-Trust protocol ([InfoShareWcfConnection.cs](https://github.com/rws/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/InfoShareWcfConnection.cs)).
+* All PowerShell-based Pester integration tests are located per cmdlet complying with the `*.tests.ps1` file naming convention. See for example [AddIshDocumentObj.Tests.ps1](https://github.com/rws/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/DocumentObj/AddIshDocumentObj.Tests.ps1) or [TestIshValidXml.Tests.ps1](https://github.com/rws/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/FileProcessor/TestIshValidXml.Tests.ps1)
 
 ## Type and Field Setup
 
@@ -101,7 +101,7 @@ The above wildcard search can be used to see if the Full-Text-Index service for 
 
 ### Problem Statement
 
-The main problem is that repositories can be small regarding amount of folders and content objects or can become very big after years of usage. Initially people will use `Find-IshDocumentObj` or `Find-IshPublicationOutput` to filter and retrieve the content objects you are interested to process further. However, as described in [#49](https://github.com/sdl/ISHRemote/issues/49), you potentially are pulling your full database to the memory of your PowerShell process.
+The main problem is that repositories can be small regarding amount of folders and content objects or can become very big after years of usage. Initially people will use `Find-IshDocumentObj` or `Find-IshPublicationOutput` to filter and retrieve the content objects you are interested to process further. However, as described in [#49](https://github.com/rws/ISHRemote/issues/49), you potentially are pulling your full database to the memory of your PowerShell process.
 
 ### Sample - Trigger Smart Tags across folder and subfolders
 
@@ -125,7 +125,7 @@ The alternative is to navigate your data set in smaller chunks, then folders com
 1. Base folder `Data` is in practice "General", the repository root folder. Parameter `-FolderTypeFilter` is explicitly set for all content objects, implicitly skipping ISHPublication. Ommitting `-FolderTypeFilter` in practice means no filtering on object type.
 1. The pipeline IshFolder objects are passed to `Foreach-Object {...}` (short hand `%{...}`) to create a script block for custom actions.
     1. The pipeline IshFolder object in the script block is available as `$PSItem` (short hand `$_`). Initially to print a folder name.
-    1. The pipeline IshFolder object is passed to retrieve its folder content, specifically all languages on the latest (highest) version. The `-RequestedMetadata` parameter allows to retrieve extra metadata on top of the IshSession `DefaultRequestedMetadata` (since [#123](https://github.com/sdl/ISHRemote/issues/123)).
+    1. The pipeline IshFolder object is passed to retrieve its folder content, specifically all languages on the latest (highest) version. The `-RequestedMetadata` parameter allows to retrieve extra metadata on top of the IshSession `DefaultRequestedMetadata` (since [#123](https://github.com/rws/ISHRemote/issues/123)).
     1. Returned IshObjects can be further handled like `Set-IshDocumentObj` or write to file, or `Get-IshDocumentObjData` to retrieve the actual files.
 1. Optionally in this sample, the pipeline IshObjects are passed to `Out-GridView` for visual representation. Notice the `-PassThru` which allows even further selection in that grid view, after pressing OK the selection is passed to the pipeline again.
 
@@ -145,5 +145,5 @@ Out-GridView -PassThru
 
 ### Sample - Convert-ISHCustomDocumentObj
 
-More examples are in [Sample.Automate.LegacyCorrection.ps1](https://github.com/sdl/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/Samples/Sample.Automate.LegacyCorrection.ps1)
+More examples are in [Sample.Automate.LegacyCorrection.ps1](https://github.com/rws/ISHRemote/blob/master/Source/ISHRemote/Trisoft.ISHRemote/Samples/Sample.Automate.LegacyCorrection.ps1)
 

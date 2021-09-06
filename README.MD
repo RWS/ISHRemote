@@ -6,7 +6,7 @@
 
 # Videos
 
-Have a look at the [Automating tasks in SDL Tridion Docs using PowerShell](https://youtu.be/3ItM2LDwh20) webinar. Supporting material, so you can easily copy-paste is on 
+Have a look at the [Automating tasks in Tridion Docs using PowerShell](https://youtu.be/3ItM2LDwh20) webinar. Supporting material, so you can easily copy-paste is on 
 
 * [Webinar Blogpost - Getting started with Microsoft PowerShell](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell-getting-started-with-microsoft-powershell)
 * [Webinar Blogpost - Examples](https://community.sdl.com/product-groups/sdl-tridion-dx/tridion-docs/b/weblog/posts/automating-tasks-in-sdl-tridion-docs-using-powershell)
