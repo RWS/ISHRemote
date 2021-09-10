@@ -17,10 +17,14 @@ Describe “Get-IshSetting" -Tags "Read" {
 	}
 
 	Context “Get-IshSetting ParameterGroup returns string object" {
-		It "Parameter IshSession implicit" {
+		It "Parameter FieldName" {
 			$fieldValue = Get-IshSetting -IShSession $ishSession -FieldName "NAME"
 			$fieldValue.GetType().Name | Should BeExactly "String"
 			$fieldValue | Should Be "Configuration card"
+		}
+		It "Parameter ValueType" {
+			$fieldValue = Get-IshSetting -FieldName FISHSYSTEMRESOLUTION -ValueType Element
+			$fieldValue.StartsWith('VRES') | Should Be $true
 		}
 	}
 
@@ -83,12 +87,11 @@ Describe “Get-IshSetting" -Tags "Read" {
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 			$ishFields.GetType().Name | Should BeExactly "Object[]"
 			$ishVersion = Get-IshVersion
-			$expectedIshFieldsLength = 0
-			if($ishVersion.MajorVersion -le 13) { $expectedIshFieldsLength = 19 }
-			if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -eq 0) { $expectedIshFieldsLength = 22 } # 14.0.0, fields FISHCOLLECTIVESPACESCFG, FISHPREVIEWRESOLUTION(value), FISHPREVIEWRESOLUTION(element) were added
-			if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -ge 1) { $expectedIshFieldsLength = 23 } # 14.0.1, field FISHANNOTATIONSTATECONFG was added
-			if($ishVersion.MajorVersion -gt 14) { $expectedIshFieldsLength = 23 }
-			$ishFields.Length | Should Be $expectedIshFieldsLength					
+			$expectedIshFieldsLength = 19  # Minimal amount of basic fields since we have the (hardcoded) call since 13.0.0
+			# if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -eq 0) { $expectedIshFieldsLength = 22 } # 14.0.0, fields FISHCOLLECTIVESPACESCFG, FISHPREVIEWRESOLUTION(value), FISHPREVIEWRESOLUTION(element) were added
+			# if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -ge 1) { $expectedIshFieldsLength = 23 } # 14.0.1, field FISHANNOTATIONSTATECONFG was added
+			# if($ishVersion.MajorVersion -gt 14) { $expectedIshFieldsLength = 23 }
+			$ishFields.Length -ge $expectedIshFieldsLength | Should Be $true
 			(Get-IshMetadataField -IshSession $ishSession -IshField $ishFields -Name "NAME" -Level None) | Should Be "Configuration card"
 		}
 		It "Parameter IshSession.DefaultRequestedMetadata=All" {
@@ -98,12 +101,13 @@ Describe “Get-IshSetting" -Tags "Read" {
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 			$ishFields.GetType().Name | Should BeExactly "Object[]"
 			$ishVersion = Get-IshVersion
-			$expectedIshFieldsLength = 0
-			if($ishVersion.MajorVersion -le 13) { $expectedIshFieldsLength = 31 }
-			if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -eq 0) { $expectedIshFieldsLength = 34 } # 14.0.0, fields FISHCOLLECTIVESPACESCFG, FISHPREVIEWRESOLUTION(value), FISHPREVIEWRESOLUTION(element) were added
-			if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -ge 1) { $expectedIshFieldsLength = 35 } # 14.0.1, field FISHANNOTATIONSTATECONFG was added
-			if($ishVersion.MajorVersion -gt 14) { $expectedIshFieldsLength = 35 }
-			$ishFields.Length | Should Be $expectedIshFieldsLength
+			$expectedIshFieldsLength = 31  # Minimal amount of all fields since we have the (hardcoded) call since 13.0.0
+			# if($ishVersion.MajorVersion -le 13) { $expectedIshFieldsLength = 31 }
+			# if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -eq 0) { $expectedIshFieldsLength = 34 } # 14.0.0, fields FISHCOLLECTIVESPACESCFG, FISHPREVIEWRESOLUTION(value), FISHPREVIEWRESOLUTION(element) were added
+			# if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -ge 1) { $expectedIshFieldsLength = 35 } # 14.0.1, field FISHANNOTATIONSTATECONFG was added
+			# if($ishVersion.MajorVersion -eq 14 -and $ishVersion.RevisionVersion -ge 4) { $expectedIshFieldsLength = 37 } # 14.0.4, field FISHENABLESMARTTAGGING was added
+			# if($ishVersion.MajorVersion -gt 14) { $expectedIshFieldsLength = 35 }
+			$ishFields.Length -ge $expectedIshFieldsLength | Should Be $true
 			(Get-IshMetadataField -IshSession $ishSession -IshField $ishFields -Name "NAME" -Level None) | Should Be "Configuration card"
 		}
 	}

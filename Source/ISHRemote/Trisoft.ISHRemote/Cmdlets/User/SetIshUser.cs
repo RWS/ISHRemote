@@ -33,7 +33,7 @@ namespace Trisoft.ISHRemote.Cmdlets.User
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
     /// Get-IshUser | 
-    /// Set-IshMetadataField -Name FISHEMAIL -Value "ishremote@sdl.com" | 
+    /// Set-IshMetadataField -Name FISHEMAIL -Value "ishremote@example.com" | 
     /// Set-IshUser
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Gets the current user (Admin) adapts the client-side memory structure to hold a new email address and sets in the repository.</para>

@@ -99,6 +99,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         public string FieldName { get; set; }
 
         /// <summary>
+        /// <para type="description">The value type</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
+        public Enumerations.ValueType ValueType
+        {
+            get { return _valueType; }
+            set { _valueType = value; }
+        }
+
+        /// <summary>
         /// <para type="description">File on the Windows filesystem where to save the retrieved setting</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
@@ -111,6 +121,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public SwitchParameter Force { get; set; }
+
+        #region Private fields
+        /// <summary>
+        /// Private fields to store the parameters and provide a default for non-mandatory parameters
+        /// </summary>
+        private Enumerations.ValueType _valueType = Enumerations.ValueType.Value;
+        #endregion
 
         protected override void BeginProcessing()
         {
@@ -135,7 +152,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                 }
                 else if (FieldName != null)
                 {
-                    requestedMetadata.AddField(new IshRequestedMetadataField(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value));
+                    requestedMetadata.AddField(new IshRequestedMetadataField(FieldName, Enumerations.Level.None, ValueType));
                 }
 
                 var metadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, requestedMetadata, Enumerations.ActionMode.Read);
@@ -155,7 +172,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                         Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
                         var fileMode = (Force.IsPresent) ? FileMode.Create : FileMode.CreateNew;
 
-                        string value = ishFields.GetFieldValue(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value);
+                        string value = ishFields.GetFieldValue(FieldName, Enumerations.Level.None, ValueType);
                         if (!String.IsNullOrEmpty(value))
                         {
                             try
@@ -203,7 +220,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                     else
                     {
                         WriteVerbose("returned object count[1]");
-                        WriteObject(ishFields.GetFieldValue(FieldName, Enumerations.Level.None, Enumerations.ValueType.Value));
+                        WriteObject(ishFields.GetFieldValue(FieldName, Enumerations.Level.None, ValueType));
                     }
                 }
             }

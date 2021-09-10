@@ -39,6 +39,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly Uri _wsTrustIssuerMexUri;
         private string _ishUserName;
         private string _userName;
+        private string _userLanguage;
         private readonly SecureString _ishSecurePassword;
         private readonly string _separator = ", ";
         private readonly string _folderPathSeparator = @"\";
@@ -51,8 +52,14 @@ namespace Trisoft.ISHRemote.Objects.Public
         private Enumerations.PipelineObjectPreference _pipelineObjectPreference = Enumerations.PipelineObjectPreference.PSObjectNoteProperty;
         private Enumerations.RequestedMetadataGroup _defaultRequestedMetadata = Enumerations.RequestedMetadataGroup.Basic;
 
+        /// <summary>
+        /// Used by the SOAP API that retrieves files/blobs in multiple chunk, this parameter is the chunksize (10485760 bytes is 10Mb)
+        /// </summary>
         private int _chunkSize = 10485760;
-        private int _metadataBatchSize = 1000;
+        /// <summary>
+        /// Used to divide bigger data set retrievals in multiple API calls, 999 is the best optimization server-side (Oracle IN-clause only allows 999 values, so 1000 would mean 2x queries server-side)
+        /// </summary>
+        private int _metadataBatchSize = 999;
         private int _blobBatchSize = 50;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
@@ -264,6 +271,26 @@ namespace Trisoft.ISHRemote.Objects.Public
                     _userName = ishObjects.Objects[0].IshFields.GetFieldValue("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
                 }
                 return _userName;
+            }
+        }
+
+        /// <summary>
+        /// The user language as available on the InfoShare User Profile in the CMS under field 'FISHUSERLANGUAGE'
+        /// </summary>
+        public string UserLanguage
+        {
+            get
+            {
+                if (_userLanguage == null)
+                {
+                    //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
+                    string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
+                    string xmlIshObjects = User25.GetMyMetadata(requestedMetadata);
+                    Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
+                    IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
+                    _userLanguage = ishObjects.Objects[0].IshFields.GetFieldValue("FISHUSERLANGUAGE", Enumerations.Level.None, Enumerations.ValueType.Value);
+                }
+                return _userLanguage;
             }
         }
 
