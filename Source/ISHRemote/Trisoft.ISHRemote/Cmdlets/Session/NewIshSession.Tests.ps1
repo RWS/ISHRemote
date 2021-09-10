@@ -29,8 +29,8 @@ Describe "New-IshSession" -Tags "Read" {
 		It "Parameter IshPassword specified" {
 			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName $ishUserName -IshPassword "INVALIDISHPASSWORD" } | Should -Throw
 		}
-		It "Parameter IshUserName empty falls back to NetworkCredential/ActiveDirectory" {
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName "" -IshPassword "IGNOREISHPASSWORD" } | Should -Not Throw "Cannot validate argument on parameter 'IshUserName'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
+		It "Parameter IshUserName empty falls back to NetworkCredential/ActiveDirectory" -Skip:(-Not $isISHRemoteWindowsAuthentication) {
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName "" -IshPassword "IGNOREISHPASSWORD" } | Should -Not -Throw "Cannot validate argument on parameter 'IshUserName'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
 		}
 	}
 
@@ -46,7 +46,7 @@ Describe "New-IshSession" -Tags "Read" {
 				$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
 				$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
 				New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -PSCredential $mycredentials
-			} | Should -Throw "Invalid URI"
+			} | Should -Throw "Invalid URI: The hostname could not be parsed."
 		}
 		It "Parameter PSCredential invalid" {
 			$securePassword = ConvertTo-SecureString "INVALIDPASSWORD" -AsPlainText -Force
@@ -56,7 +56,7 @@ Describe "New-IshSession" -Tags "Read" {
 		It "Parameter PSCredential" {
 			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
 			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should -Not Throw
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should -Not -Throw
 		}
 	}
 
@@ -146,7 +146,7 @@ Describe "New-IshSession" -Tags "Read" {
 		It "WsBaseUrl without ending slash" {
 			# .NET throws unhandy "Reference to undeclared entity 'raquo'." error
 			$webServicesBaseUrlWithoutEndingSlash = $webServicesBaseUrl.Substring(0,$webServicesBaseUrl.Length-1)
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should -Not Throw
+			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should -Not -Throw
 		}
 	}
 
@@ -155,7 +155,7 @@ Describe "New-IshSession" -Tags "Read" {
 			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout "INVALIDTIMEOUT" } | Should -Throw
 		}
 		It "IshSession.Timeout set to 30s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-TimeSpan -Seconds 60)
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-TimeSpan -Seconds 60) -WarningAction Ignore -ErrorAction Ignore
 			$ishSession.Timeout.TotalMilliseconds  | Should -Be "60000"
 		}
 		It "IshSession.Timeout on INVALID url set to 1ms execution" {
@@ -172,7 +172,7 @@ Describe "New-IshSession" -Tags "Read" {
 			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue "INVALIDTimeoutIssue" } | Should -Throw
 		}
 		It "IshSession.TimeoutIssue set to 30s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue (New-TimeSpan -Seconds 30)
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue (New-TimeSpan -Seconds 30) -WarningAction Ignore -ErrorAction Ignore
 			$ishSession.TimeoutIssue.TotalMilliseconds  | Should -Be "30000"
 		}
 		It "IshSession.TimeoutIssue set to 1ms execution" {
@@ -186,7 +186,7 @@ Describe "New-IshSession" -Tags "Read" {
 			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService "INVALIDTIMEOUTSERVICE" } | Should -Throw
 		}
 		It "IshSession.TimeoutService set to 40s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService (New-TimeSpan -Seconds 40)
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService (New-TimeSpan -Seconds 40) -WarningAction Ignore -ErrorAction Ignore
 			$ishSession.TimeoutService.TotalMilliseconds  | Should -Be "40000"
 		}
 		It "IshSession.TimeoutService set to 1 tickout execution" {
@@ -201,11 +201,11 @@ Describe "New-IshSession" -Tags "Read" {
 
 	Context "New-IshSession IgnoreSslPolicyErrors" {
 		It "Parameter IgnoreSslPolicyErrors specified positive flow" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore
 			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
-		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -skip {
+		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -Skip {
 			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
 			$slash1Position = $webServicesBaseUrl.IndexOf("/")
 			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
@@ -218,7 +218,7 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 			$ishSession.Dispose()
 		}
-		<# It "Parameter IgnoreSslPolicyErrors specified negative flow (Resolve-DnsName)" -skip {
+		<# It "Parameter IgnoreSslPolicyErrors specified negative flow (Resolve-DnsName)" -Skip {
 			# replace hostname like example.com with ip-address
 			$slash1Position = $webServicesBaseUrl.IndexOf("/")
 			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
@@ -238,8 +238,8 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" -skip {
-			$ishSession = New-IshSession -WsBaseUrl $localWebServicesBaseUrl -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" -Skip:($isISHRemoteWcf) {
+			$ishSession = New-IshSession -WsBaseUrl $localWebServicesBaseUrl -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore
 			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
