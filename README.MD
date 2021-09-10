@@ -120,10 +120,11 @@ synchronized with the code.
 
 ## Testing Standards
 
+Initial testing was based on Pester 3.4.0 which came as part of Windows 10/2016, to introduce support for PowerShell 7+ we switched to Pester 5+ ([#115](https://github.com/RWS/ISHRemote/issues/115)|[#132](https://github.com/RWS/ISHRemote/issues/132)). To force an upgrade from pre-packaged Pester 3.4.0, have a look at [Pester Installation](https://pester.dev/docs/introduction/installation), although on most systems it comes down to
+`Install-Module -Name Pester -Force -SkipPublisherCheck``.
 * Most Pester tests are acceptance test, enriched which some unit tests where possible.
-* Using a dot-sourced `ISHRemote.PesterSetup.ps1` include in all `*.Tests.ps1` to specify the variables (not initialization) consistently
-* Using the -Tag with "Create", "Read", "Update", "Delete" to allow [Pester grouping](See https://github.com/pester/Pester/wiki/Describe) Tags
-* Data initialization and breakdown are key but also time consuming. BeforeEach/AfterEach are run for every It block, so makes things slow.
+* Using a central `ISHRemote.PesterSetup.ps1` (with optional `ISHRemote.PesterSetup.Debug.ps1` override) in all `*.Tests.ps1` to specify the variables (not initialization) consistently
+* Data initialization and breakdown are key but also time consuming. After a test run, your system is left in its original state.
 
 # Coding Prerequisites and Best Practices
 
