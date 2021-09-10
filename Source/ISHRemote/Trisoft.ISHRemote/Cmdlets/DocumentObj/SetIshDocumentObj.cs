@@ -58,7 +58,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     ///$ishObject = Add-IshDocumentObj -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng "en" -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
     ///$ishObject = $ishObject | Set-IshDocumentObj -Metadata(Set-IshMetadataField -Name "FTITLE" -Level Lng -Value "Updated topic title")
     /// </code>
-    /// <para>Create a topic in a folder and then overwrite its metadata (FTITLE) using piped IshObject to the Set-IshDocumentObj cmd-let. New-IshSession will submit into SessionState, so it can be reused by all cmd-lets.</para>
+    /// <para>Create a topic in a folder and then overwrite its metadata (FTITLE) using piped IshObject to the Set-IshDocumentObj cmdlet. New-IshSession will submit into SessionState, so it can be reused by all cmdlets.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -84,7 +84,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     ///                                -FileContent $ditaTopicFileContentUpdated `
     ///                                -Metadata(Set-IshMetadataField -Name "FTITLE" -Level Logical -Value "Updated topic title and content")
     /// </code>
-    /// <para>Create a topic in a folder and then overwrite its metadata (FTITLE) and blob by providing parameters and FileContent value to the Set-IshDocumentObj cmd-let. New-IshSession will submit into SessionState, so it can be reused by all cmd-lets.</para>
+    /// <para>Create a topic in a folder and then overwrite its metadata (FTITLE) and blob by providing parameters and FileContent value to the Set-IshDocumentObj cmdlet. New-IshSession will submit into SessionState, so it can be reused by all cmdlets.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -107,7 +107,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     ///                                -FilePath $tempFilePath `
     ///                                -Metadata(Set-IshMetadataField -Name "FTITLE" -Level Logical -Value "Updated topic title and content using file path")
     /// </code>
-    /// <para>Create a topic in a folder and then overwrite its metadata (FTITLE) and blob by providing parameters and FilePath value to the Set-IshDocumentObj cmd-let. New-IshSession will submit into SessionState, so it can be reused by all cmd-lets.</para>
+    /// <para>Create a topic in a folder and then overwrite its metadata (FTITLE) and blob by providing parameters and FilePath value to the Set-IshDocumentObj cmdlet. New-IshSession will submit into SessionState, so it can be reused by all cmdlets.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Set, "IshDocumentObj", SupportsShouldProcess = true)]
     [OutputType(typeof(IshDocumentObj))]
@@ -228,7 +228,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         }
 
         /// <summary>
-        /// Process the Set-IshDocumentObj command-let.
+        /// Process the Set-IshDocumentObj cmdlet.
         /// </summary>
         /// <exception cref="TrisoftAutomationException"></exception>
         /// <exception cref="Exception"></exception>
@@ -315,7 +315,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     {
                         if (!_edt.Equals("EDTXML", StringComparison.Ordinal))
                         {
-                            throw new NotImplementedException("FileContent parameter is only supported with Edt='EDTXML'");
+                            throw new NotImplementedException($"FileContent parameter is only supported with EDT[EDTXML], not EDT[{_edt}].");
                         }
 
                         var doc = XDocument.Parse(FileContent, LoadOptions.PreserveWhitespace);

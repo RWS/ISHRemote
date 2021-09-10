@@ -5,7 +5,6 @@ $cmdletName = "Set-IshDocumentObj"
 
 #
 # Script-file scope auxiliary function
-# Gets BackgroundTasks InputData to parse out the language cardids passed to the BackgroundTask event
 #
 function script:CreateSquareImageBySideSize([int]$size)
 {
@@ -246,7 +245,7 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$ishObject.ftitle_logical_value | Should Be $updatedTitle
 		}
 		
-			It "Image - metadata update with non-matching Resolution" {
+		It "Image - metadata update with non-matching Resolution" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Image $timestamp" |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
@@ -288,7 +287,7 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 								 -Metadata $ishMetadataFieldsSet `
 								 -Edt "EDTJPEG" `
 								 -FileContent "INVALIDFILECONTENT"} |
-			Should Throw "FileContent parameter is only supported with Edt='EDTXML'"
+			Should Throw "FileContent parameter is only supported with EDT[EDTXML], not EDT[EDTJPEG]."
 		}
 
 		It "Parameter FileContent has invalid xml content" {
@@ -466,6 +465,7 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$ishObjectContent -eq $updatedContent | Should Be $true
 
 		}
+
 		It "Lib - update blob and metadata" {
 			$ishLibMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Lib update $timestamp" |
 						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
