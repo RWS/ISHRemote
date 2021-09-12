@@ -1,7 +1,11 @@
-﻿Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-. (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
-$scriptFolderPath = Split-Path -Parent $MyInvocation.MyCommand.Path  # Needs to be outside Describe script block
-$cmdletName = "New-IshObfuscatedFile"
+BeforeAll {
+	$cmdletName = "New-IshObfuscatedFile"
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
+	
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
+	$tempFolder = [System.IO.Path]::GetTempPath()
+	$scriptFolderPath = Split-Path -Parent $PSCommandPath
 
 $ditaTaskFileContent = @"
 <?xml version="1.0" ?>
@@ -30,87 +34,88 @@ $ditaObfuscatedBookMapWithNavtitleFileContent = @"
 
 "@ # empty line space is required for comparison
 
-try {
-	
-	$tempFolder = [System.IO.Path]::GetTempPath()
-Describe "New-IshObfuscatedFile" -Tags "Read" {
-	Write-Host "Initializing Test Data and Variables"		
-	$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
-	New-Item -ItemType Directory -Path $rootFolder
-	$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
-	New-Item -ItemType Directory -Path $inputFolder
-	$outputFolder = Join-Path -Path $rootFolder -ChildPath "output"
-	New-Item -ItemType Directory -Path $outputFolder
-	
-	$taskFilePath = Join-Path -Path $inputFolder -ChildPath "task==1=en.xml"
-	Set-Content -Path $taskFilePath -Value $ditaTaskFileContent -Encoding UTF8
-	
-	$bookMapFilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==1=en.xml"
-	Set-Content -Path $bookMapFilePath -Value $ditaBookMapFileContent -Encoding UTF8
+}
 
-	$imageFilePath = Join-Path -Path $inputFolder -ChildPath "image==1=en.jpg"
-	Add-Type -AssemblyName "System.Drawing"
-	$bmp = New-Object -TypeName System.Drawing.Bitmap(100,100)
-	for ($i = 0; $i -lt 100; $i++) {    for ($j = 0; $j -lt 100; $j++) { $bmp.SetPixel($i, $j, 'Red') }    }
-	$bmp.Save($imageFilePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
-	
-	  
+Describe "New-IshObfuscatedFile" -Tags "Read" {
+	BeforeAll {
+		Write-Host "Initializing Test Data and Variables"		
+		$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
+		New-Item -ItemType Directory -Path $rootFolder
+		$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
+		New-Item -ItemType Directory -Path $inputFolder
+		$outputFolder = Join-Path -Path $rootFolder -ChildPath "output"
+		New-Item -ItemType Directory -Path $outputFolder
+		
+		$taskFilePath = Join-Path -Path $inputFolder -ChildPath "task==1=en.xml"
+		Set-Content -Path $taskFilePath -Value $ditaTaskFileContent -Encoding UTF8
+		
+		$bookMapFilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==1=en.xml"
+		Set-Content -Path $bookMapFilePath -Value $ditaBookMapFileContent -Encoding UTF8
+
+		$imageFilePath = Join-Path -Path $inputFolder -ChildPath "image==1=en.jpg"
+		Add-Type -AssemblyName "System.Drawing"
+		$bmp = New-Object -TypeName System.Drawing.Bitmap(100,100)
+		for ($i = 0; $i -lt 100; $i++) {    for ($j = 0; $j -lt 100; $j++) { $bmp.SetPixel($i, $j, 'Red') }    }
+		$bmp.Save($imageFilePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
+	}
 	Context "New-IshObfuscatedFile" {
-		$taskFileInfo = New-IshObfuscatedFile -FolderPath $outputFolder `
-											  -FilePath $taskFilePath
+		BeforeAll {
+			$taskFileInfo = New-IshObfuscatedFile -FolderPath $outputFolder `
+												-FilePath $taskFilePath
+		}
 		It "GetType().Name" {
-			$taskFileInfo.GetType().Name | Should BeExactly "FileInfo"
+			$taskFileInfo.GetType().Name | Should -BeExactly "FileInfo"
 		}
 		It "OutputFilePath" {
-			($taskFileInfo.FullName -eq (Join-Path -Path $outputFolder -ChildPath "task==1=en.xml")) | Should Be $True
+			($taskFileInfo.FullName -eq (Join-Path -Path $outputFolder -ChildPath "task==1=en.xml")) | Should -Be $True
 		}
 		It "Task Result String Comparison" {
-			(Get-Content -Path $taskFileInfo -Raw) -eq $ditaObfuscatedTaskFileContent | Should Be $True
+			(Get-Content -Path $taskFileInfo -Raw) -eq $ditaObfuscatedTaskFileContent | Should -Be $True
 		}
 		It "BookMap Result String Comparison without XmlAttributesToObfuscate @navtitle" {
 			$bookMapFileInfo = New-IshObfuscatedFile -FolderPath $outputFolder -FilePath $bookMapFilePath
-			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaObfuscatedBookMapWithoutNavtitleFileContent | Should Be $True
+			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaObfuscatedBookMapWithoutNavtitleFileContent | Should -Be $True
 		}
 		It "BookMap Result String Comparison with XmlAttributesToObfuscate @navtitle" {
 			$bookMapFileInfo = New-IshObfuscatedFile -FolderPath $outputFolder -FilePath $bookMapFilePath -XmlAttributesToObfuscate @("navtitle")
-			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaObfuscatedBookMapWithNavtitleFileContent | Should Be $True
+			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaObfuscatedBookMapWithNavtitleFileContent | Should -Be $True
 		}
 		It "Image Result Comparison" {
 			$imageFilePath = New-IshObfuscatedFile -FolderPath $outputFolder `
 											       -FilePath $imageFilePath
-			$imageFilePath.Count -gt 0 | Should Be $True
+			$imageFilePath.Count -gt 0 | Should -Be $True
 		}
 		It "Parameter XmlFileExtensions invalid" {
 			{
 				 New-IshObfuscatedFile -FolderPath $outputFolder -FilePath $bookMapFilePath -XmlFileExtensions "INVALID"
-			} | Should Not Throw
+			} | Should -Not -Throw
 		}
 		It "Parameter ImageFileExtensions invalid" {
 			{
 				 New-IshObfuscatedFile -FolderPath $outputFolder -FilePath $imageFilePath -ImageFileExtensions "INVALID"
-			} | Should Not Throw
+			} | Should -Not -Throw
 		}
 		It "Parameter FilePath Single" {
 			$fileInfoArray =New-IshObfuscatedFile -FolderPath $outputFolder -FilePath $taskFilePath
-			$fileInfoArray.Count | Should Be 1
+			$fileInfoArray.Count | Should -Be 1
 		}
 		It "Parameter FilePath Multiple" {
 			$fileInfoArray = New-IshObfuscatedFile -FolderPath $outputFolder -FilePath @($taskFilePath,$bookMapFilePath)
-			$fileInfoArray.Count | Should Be 2
+			$fileInfoArray.Count | Should -Be 2
 		}
 		It "Pipeline FilePath Single" {
 			$fileInfos = Get-Item -Path $taskFilePath
-			($fileInfos | New-IshObfuscatedFile -FolderPath $outputFolder).Count | Should Be 1
+			($fileInfos | New-IshObfuscatedFile -FolderPath $outputFolder).Count | Should -Be 1
 		}
 		It "Pipeline FilePath Multiple" {
 			$fileInfos = @((Get-Item -Path $taskFilePath), (Get-Item -Path $bookMapFilePath))
-			($fileInfos | New-IshObfuscatedFile -FolderPath $outputFolder).Count | Should Be 2
+			($fileInfos | New-IshObfuscatedFile -FolderPath $outputFolder).Count | Should -Be 2
 		}
 	}
 }
 
-
-} finally {
-	Write-Host "Cleaning Test Data and Variables"
+AfterAll {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 	try { Remove-Item (Join-Path $tempFolder $cmdletName) -Recurse -Force } catch { }
 }
+

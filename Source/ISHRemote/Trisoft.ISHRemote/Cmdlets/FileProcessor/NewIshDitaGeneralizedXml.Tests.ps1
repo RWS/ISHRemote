@@ -1,7 +1,11 @@
-Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-. (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
-$scriptFolderPath = Split-Path -Parent $MyInvocation.MyCommand.Path  # Needs to be outside Describe script block
-$cmdletName = "New-IshDitaGeneralizedXml"
+BeforeAll {
+	$cmdletName = "New-IshDitaGeneralizedXml"
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
+	
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
+	$tempFolder = [System.IO.Path]::GetTempPath()
+	$scriptFolderPath = Split-Path -Parent $PSCommandPath
 
 $ditaTaskFileContent = @"
 <?xml version="1.0" ?>
@@ -25,50 +29,50 @@ $ditaGeneralizedBookMapFileContent = @"
 
 "@ # empty line space is required for comparison
 
-try {
+}	
 	
-	$tempFolder = [System.IO.Path]::GetTempPath()
 Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
-	Write-Host "Initializing Test Data and Variables"
-	$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
-	New-Item -ItemType Directory -Path $rootFolder
-	$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
-	New-Item -ItemType Directory -Path $inputFolder
-	$outputFolder = Join-Path -Path $rootFolder -ChildPath "output"
-	New-Item -ItemType Directory -Path $outputFolder
-	$taskFilePath = Join-Path -Path $inputFolder -ChildPath "task==1=en.xml"
-	Set-Content -Path $taskFilePath -Value $ditaTaskFileContent -Encoding UTF8
-	$bookMapFilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==1=en.xml"
-	Set-Content -Path $bookMapFilePath -Value $ditaBookMapFileContent -Encoding UTF8
-	Write-Host "Testing Catalog Existance"
-	# Location of the catalog xml that contains the specialized dtds
-	$specializedCatalogFilePath = Join-Path -Path $scriptFolderPath -ChildPath "..\..\Samples\Data-GeneralizeDitaXml\SpecializedDTDs\catalog-alldita12dtds.xml"
-	# Location of the catalog xml that contains the "base" dtds
-    $generalizedCatalogFilePath = Join-Path -Path $scriptFolderPath -ChildPath "..\..\Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&maponly.xml"
-	# File that contains a mapping between the specialized dtd and the according generalized dtd.
-    $generalizationCatalogMappingFilePath = Join-Path -Path $scriptFolderPath -ChildPath "..\..\Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml"
-	if (-Not (Test-Path -Path $specializedCatalogFilePath -PathType Leaf)) { Write-Warning ("Catalog specializedCatalogFilePath[$specializedCatalogFilePath] missing!") }
-	if (-Not (Test-Path -Path $generalizedCatalogFilePath -PathType Leaf)) { Write-Warning ("Catalog generalizedCatalogFilePath[$generalizedCatalogFilePath] missing!") }
-	if (-Not (Test-Path -Path $generalizationCatalogMappingFilePath -PathType Leaf)) { Write-Warning ("Catalog generalizationCatalogMappingFilePath[$generalizationCatalogMappingFilePath] missing!") }
-	# If you would have specialized attributes from the DITA 1.2 "props" attribute, specify those attributes here to generalize them to the "props" attribute again.  Here just using modelyear, market, vehicle as an example
-	$attributesToGeneralizeToProps = @("modelA", "modelB", "modelC")
-	# If you would have specialized attributes from the DITA 1.2 "base" attribute, specify those attributes here to generalize them to the "base" attribute again. Here just using basea, baseb, basec as an example
-	$attributesToGeneralizeToBase = @("basea", "baseb", "basec")
-
-	  
+	BeforeAll {
+		$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
+		New-Item -ItemType Directory -Path $rootFolder
+		$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
+		New-Item -ItemType Directory -Path $inputFolder
+		$outputFolder = Join-Path -Path $rootFolder -ChildPath "output"
+		New-Item -ItemType Directory -Path $outputFolder
+		$taskFilePath = Join-Path -Path $inputFolder -ChildPath "task==1=en.xml"
+		Set-Content -Path $taskFilePath -Value $ditaTaskFileContent -Encoding UTF8
+		$bookMapFilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==1=en.xml"
+		Set-Content -Path $bookMapFilePath -Value $ditaBookMapFileContent -Encoding UTF8
+		Write-Host "Testing Catalog Existance"
+		# Location of the catalog xml that contains the specialized dtds
+		$specializedCatalogFilePath = Join-Path -Path $scriptFolderPath -ChildPath "..\..\Samples\Data-GeneralizeDitaXml\SpecializedDTDs\catalog-alldita12dtds.xml"
+		# Location of the catalog xml that contains the "base" dtds
+		$generalizedCatalogFilePath = Join-Path -Path $scriptFolderPath -ChildPath "..\..\Samples\Data-GeneralizeDitaXml\GeneralizedDTDs\catalog-dita12topic&maponly.xml"
+		# File that contains a mapping between the specialized dtd and the according generalized dtd.
+		$generalizationCatalogMappingFilePath = Join-Path -Path $scriptFolderPath -ChildPath "..\..\Samples\Data-GeneralizeDitaXml\generalization-catalog-mapping.xml"
+		if (-Not (Test-Path -Path $specializedCatalogFilePath -PathType Leaf)) { Write-Warning ("Catalog specializedCatalogFilePath[$specializedCatalogFilePath] missing!") }
+		if (-Not (Test-Path -Path $generalizedCatalogFilePath -PathType Leaf)) { Write-Warning ("Catalog generalizedCatalogFilePath[$generalizedCatalogFilePath] missing!") }
+		if (-Not (Test-Path -Path $generalizationCatalogMappingFilePath -PathType Leaf)) { Write-Warning ("Catalog generalizationCatalogMappingFilePath[$generalizationCatalogMappingFilePath] missing!") }
+		# If you would have specialized attributes from the DITA 1.2 "props" attribute, specify those attributes here to generalize them to the "props" attribute again.  Here just using modelyear, market, vehicle as an example
+		$attributesToGeneralizeToProps = @("modelA", "modelB", "modelC")
+		# If you would have specialized attributes from the DITA 1.2 "base" attribute, specify those attributes here to generalize them to the "base" attribute again. Here just using basea, baseb, basec as an example
+		$attributesToGeneralizeToBase = @("basea", "baseb", "basec")
+	}
 	Context "New-IshDitaGeneralizedXml" {
-		$taskFileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
-											  -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
-											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
-											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
-											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
-											  -FolderPath $outputFolder `
-											  -FilePath $taskFilePath
+		BeforeAll {
+			$taskFileInfo = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
+												-GeneralizedCatalogFilePath $generalizedCatalogFilePath `
+												-GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
+												-AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
+												-AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
+												-FolderPath $outputFolder `
+												-FilePath $taskFilePath
+		}
 		It "GetType().Name" {
-			$taskFileInfo.GetType().Name | Should BeExactly "FileInfo"
+			$taskFileInfo.GetType().Name | Should -BeExactly "FileInfo"
 		}
 		It "Task Result String Comparison" {
-			(Get-Content -Path $taskFileInfo -Raw) -eq $ditaGeneralizedTaskFileContent | Should Be $True
+			(Get-Content -Path $taskFileInfo -Raw) -eq $ditaGeneralizedTaskFileContent | Should -Be $True
 		}
 		It "BookMap without Attributes options Result String Comparison" {
 			$bookMapFileInfo = Get-Item $bookMapFilePath | 
@@ -76,7 +80,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 							                             -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
 														 -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 														 -FolderPath $outputFolder
-			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaGeneralizedBookMapFileContent | Should Be $True
+			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaGeneralizedBookMapFileContent | Should -Be $True
 		}
 		It "Parameter SpecializedCatalogFilePath invalid" {
 			{
@@ -87,7 +91,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
-			} | Should Throw
+			} | Should -Throw
 		}
 		It "Parameter GeneralizedCatalogFilePath invalid" {
 			{
@@ -98,7 +102,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
-			} | Should Throw
+			} | Should -Throw
 		}
 		It "Parameter GeneralizationCatalogMappingFilePath invalid" {
 			{
@@ -109,7 +113,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
-			} | Should Throw
+			} | Should -Throw
 		}
 		It "Parameter FilePath invalid will result in warning" {
 			{
@@ -120,7 +124,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath "INVALIDILEPATH"
-			} | Should Not Throw
+			} | Should -Not -Throw
 		}
 		It "Parameter FilePath Single" {
 			$fileInfoArray = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
@@ -130,7 +134,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
-			$fileInfoArray.Count | Should Be 1
+			$fileInfoArray.Count | Should -Be 1
 		}
 		It "Parameter FilePath Multiple" {
 			$fileInfoArray = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
@@ -140,7 +144,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath @($taskFilePath,$bookMapFilePath)
-			$fileInfoArray.Count | Should Be 2
+			$fileInfoArray.Count | Should -Be 2
 		}
 		It "Pipeline FilePath Single" {
 			$fileInfos = Get-Item -Path $taskFilePath
@@ -149,7 +153,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
-											  -FolderPath $outputFolder).Count | Should Be 1
+											  -FolderPath $outputFolder).Count | Should -Be 1
 		}
 		It "Pipeline FilePath Multiple" {
 			$fileInfos = @((Get-Item -Path $taskFilePath), (Get-Item -Path $bookMapFilePath))
@@ -158,13 +162,13 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
-											  -FolderPath $outputFolder).Count | Should Be 2
+											  -FolderPath $outputFolder).Count | Should -Be 2
 		}
 	}
 }
 
-
-} finally {
-	Write-Host "Cleaning Test Data and Variables"
+AfterAll {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 	try { Remove-Item (Join-Path $tempFolder $cmdletName) -Recurse -Force } catch { }
 }
+

@@ -1,42 +1,42 @@
-Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-. (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
-$cmdletName = "Add-IshUserRole"
-try {
+BeforeAll {
+	$cmdletName = "Add-IshUserRole"
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
+
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
+}
 
 Describe "Add-IshUserRole" -Tags "Create" {
-	Write-Host "Initializing Test Data and Variables"
-	
 	Context "Add-IshUserRole ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Add-IshUserRole -IShSession "INVALIDISHSESSION" -Name "INVALIDUSERROLENAME" } | Should Throw
+			{ Add-IshUserRole -IShSession "INVALIDISHSESSION" -Name "INVALIDUSERROLENAME" } | Should -Throw
 		}
 	}
-
 	Context "Add-IshUserRole ParameterGroup" {
 		It "GetType().Name" {
 			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
-			$ishObject.GetType().Name | Should BeExactly "IshUserRole"
-			$ishObject.Count | Should Be 1
-			(ConvertTo-Json $ishObject).Length -gt 2 | Should Be $true
+			$ishObject.GetType().Name | Should -BeExactly "IshUserRole"
+			$ishObject.Count | Should -Be 1
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should -Be $true
 		}
 		It "Parameter Metadata" {
 			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FDESCRIPTION" -Level None -Value "Description of $userRoleName"
 			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata
-			$ishObject.Count | Should Be 1
-			$ishObject.IshRef -Like "VUSER*" | Should Be $true
+			$ishObject.Count | Should -Be 1
+			$ishObject.IshRef -Like "VUSER*" | Should -Be $true
 		}
 		It "Parameter Metadata return descriptive metadata" {
 			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FDESCRIPTION" -Level None -Value "Description of $userRoleName"
 			$ishObject = Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata
-			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should Be $true
-			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERROLENAME -Level None).Length -gt 1 | Should Be $true
-			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
-			$ishObject.fishobjectactive.Length -ge 1 | Should Be $true 
-			$ishObject.fishuserrolename.Length -ge 1 | Should Be $true 
-			$ishObject.fishuserrolename_none_element.StartsWith('VUSERROLE') | Should Be $true 
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should -Be $true
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERROLENAME -Level None).Length -gt 1 | Should -Be $true
+			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$ishObject.fishobjectactive.Length -ge 1 | Should -Be $true 
+			$ishObject.fishuserrolename.Length -ge 1 | Should -Be $true 
+			$ishObject.fishuserrolename_none_element.StartsWith('VUSERROLE') | Should -Be $true 
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference
@@ -47,58 +47,59 @@ Describe "Add-IshUserRole" -Tags "Create" {
 						Set-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -Level None -Value "SomethingReadAccess"  |
 						Set-IshMetadataField -IshSession $ishSession -Name "OWNER" -Level None -Value "SomethingOwner" |
 						Set-IshMetadataField -IshSession $ishSession -Name "INVALIDFIELDNAME" -Level None -Value "SomethingInvalidFieldName"
-			{ Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata } | Should Throw
+			{ Add-IshUserRole -IshSession $ishSession -Name $userRoleName -Metadata $metadata } | Should -Throw
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}
-
 	Context "Add-IshUserRole IshObjectsGroup" {
-		$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
-		$ishObjectA = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
-		$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " B")
-		$ishObjectB = Add-IshUserRole -IshSession $ishSession -Name $userRoleName | 
-		              Get-IshUserRole -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHUSERROLENAME")
-		$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " C")
-		$ishObjectC = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
-		$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " D")
-		$ishObjectD = Add-IshUserRole -IshSession $ishSession -Name $userRoleName | 
-		              Get-IshUserRole -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHUSERROLENAME")
-		$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " E")
-		$ishObjectE = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
-		$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " F")
-		$ishObjectF = Add-IshUserRole -IshSession $ishSession -Name $userRoleName | 
-		              Get-IshUserRole -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHUSERROLENAME")
-		Remove-IshUserRole -IshSession $ishSession -IshObject @($ishObjectA,$ishObjectB,$ishObjectC,$ishObjectD,$ishObjectE,$ishObjectF)
-		Start-Sleep -Milliseconds 1000  # Avoids uniquesness error which only up to the second " Cannot insert duplicate key row in object 'dbo.CARD' with unique index 'CARD_NAME_I1'. The duplicate key value is (VUSERROLEADD-ISHUSERROLE20161012164716068A12/10/2016 16:47:16)."
+		BeforeAll {
+			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
+			$ishObjectA = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
+			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " B")
+			$ishObjectB = Add-IshUserRole -IshSession $ishSession -Name $userRoleName | 
+						Get-IshUserRole -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHUSERROLENAME")
+			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " C")
+			$ishObjectC = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
+			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " D")
+			$ishObjectD = Add-IshUserRole -IshSession $ishSession -Name $userRoleName | 
+						Get-IshUserRole -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHUSERROLENAME")
+			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " E")
+			$ishObjectE = Add-IshUserRole -IshSession $ishSession -Name $userRoleName
+			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " F")
+			$ishObjectF = Add-IshUserRole -IshSession $ishSession -Name $userRoleName | 
+						Get-IshUserRole -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHUSERROLENAME")
+			Remove-IshUserRole -IshSession $ishSession -IshObject @($ishObjectA,$ishObjectB,$ishObjectC,$ishObjectD,$ishObjectE,$ishObjectF)
+			Start-Sleep -Milliseconds 1000  # Avoids uniquesness error which only up to the second " Cannot insert duplicate key row in object 'dbo.CARD' with unique index 'CARD_NAME_I1'. The duplicate key value is (VUSERROLEADD-ISHUSERROLE20161012164716068A12/10/2016 16:47:16)."
+		}
 		It "Parameter IshObject invalid" {
-			{ Add-IshUserRole -IShSession $ishSession -IshObject "INVALIDUSERROLE" } | Should Throw
+			{ Add-IshUserRole -IShSession $ishSession -IshObject "INVALIDUSERROLE" } | Should -Throw
 		}
 		It "Parameter IshObject Single with implicit IshSession" {
 			$ishObjects = Add-IshUserRole -IshObject $ishObjectA
 			$ishObjects | Remove-IshUserRole
-			$ishObjects.Count | Should Be 1
+			$ishObjects.Count | Should -Be 1
 		}
 		It "Parameter IshObject Multiple with implicit IshSession" {
 			$ishObjects = Add-IshUserRole -IshObject @($ishObjectB,$ishObjectC)
 			$ishObjects | Remove-IshUserRole
-			$ishObjects.Count | Should Be 2
+			$ishObjects.Count | Should -Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$ishObjects = $ishObjectD | Add-IshUserRole -IshSession $ishSession
 			$ishObjects | Remove-IshUserRole -IshSession $ishSession
-			$ishObjects.Count | Should Be 1
+			$ishObjects.Count | Should -Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$ishObjects = @($ishObjectE,$ishObjectF) | Add-IshUserRole -IshSession $ishSession
 			$ishObjects | Remove-IshUserRole -IshSession $ishSession
-			$ishObjects.Count | Should Be 2
+			$ishObjects.Count | Should -Be 2
 		}
 	}
 }
 
-
-} finally {
-	Write-Host "Cleaning Test Data and Variables"
+AfterAll {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 	$userRoles = Find-IshUserRole -IshSession $ishSession -MetadataFilter (Set-IshMetadataFilterField -IshSession $ishSession -Name "FISHUSERROLENAME" -FilterOperator like -Value "$cmdletName%")
 	try { Remove-IshUserRole -IshSession $ishSession -IshObject $userRoles } catch { }
 }
+
