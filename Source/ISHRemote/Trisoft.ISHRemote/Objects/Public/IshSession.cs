@@ -390,7 +390,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         public int MetadataBatchSize
         {
             get { return _metadataBatchSize; }
-            set { _metadataBatchSize = value; }
+            set { _metadataBatchSize = (value > 0) ? value : 999; }
         }
 
         /// <summary>
