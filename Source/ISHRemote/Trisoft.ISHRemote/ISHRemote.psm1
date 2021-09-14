@@ -46,6 +46,7 @@ else
     }
 }
 
+Write-Debug ("[" + $MyInvocation.MyCommand + "] Loading [" + $binaryModuleRoot + "] on PSEdition[" + $PSVersionTable.PSEdition + "] + PSVersion[" + $PSVersionTable.PSVersion + "]")
 $binaryModulePath = Join-Path -Path $binaryModuleRoot -ChildPath 'Trisoft.ISHRemote.dll'
 $binaryModule = Import-Module -Name $binaryModulePath -PassThru
 

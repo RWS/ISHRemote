@@ -3,12 +3,14 @@
 This page will try to track work in progress. And because I work on it in free time, it will help trace how I got where I am in the first place plus what is next. Inspired by [ThePlan-ISHRemote-7.0.md](./ThePlan-ISHRemote-7.0.md)
 
 # Problem
+
 1. First attempt under #81 was porting WCF-SOAP, but that got blocked as mentioned in [ThePlan-ISHRemote-7.0.md](./ThePlan-ISHRemote-7.0.md)
 2. Second attempt under #115 on ASMX-SOAP using cross-platform .NET Standard 2.0 library - catering for PowerShell 5.1 and NET Framework 4.8 and PowerShell 7.1+ and NET (Core) 3.1+ - is seemingly bocked by error `This operation is not supported on .NET Standard as Reflection.Emit is not available.` Browsing further I find
     * https://github.com/dotnet/winforms/issues/860 stating "We don't support SOAP in .NET Core. You can try using WebAPI (for hosting) and HttpClient (for consumption)." of November 2019 by a Microsoft employee.
     * https://github.com/dotnet/standard/issues/857 litterally reads "System.Web.Services.Protocols.Soap not supported on .net Standard" and is still open on March 2021.
     * https://github.com/dotnet/runtime/issues/26007 reads "Should there be a .Net Standard 2.0 version of Reflection.Emit?" where Microsoft employees mention that ".Net Standard 2.0 libraries can't use typeBuilder.CreateType() (even though this code works both on .Net Framework 4.6.1 and .Net Core 2.0)" is intentional to not work in .NET Standard 2.0 (while it did work in 1.1 by a hack). So "you can use Reflection.Emit if you are writing .NET Core app or library you just cannot use it while writing .NET Standard library currently".
 1. Taking the route of multi-targetting, having `ISHRemote.psm1` resolve it just-in-time.
+
 
 # Cmdlet Progress and Compatilibity
 
@@ -19,12 +21,13 @@ A table that describes what works, where cmdlets have been rewired, where tests 
     * PowerShell 7.1+ and NET (Core) 3.1+
 1. Public class `IshSession`
     1. Removed WCF proxies, for now the ASMX-SOAP client are internal only
-    1. The logic of 'Internal' as provided by ISHDeploy's cmdlet `Enable-ISHIntegrationSTSInternalAuthentication` enabling `https://ish.example.com/ISHWS/Internal/` is removed as that is about WCF-SOAP home realm discovery.
+    1. The logic of 'Internal' (or 'SDL') as provided by ISHDeploy's cmdlet `Enable-ISHIntegrationSTSInternalAuthentication` enabling `https://ish.example.com/ISHWS/Internal/` is removed as that is about WCF-SOAP home realm discovery.
 1. Cmdlet `New-IshSession`
     1. Removed parameter sets `ActiveDirectory`, `ActiveDirectory-ExplicitIssuer`, `UserNamePassword-ExplicitIssuer` and `PSCredential-ExplicitIssuer` are removed as that is about WCF-SOAP home realm discovery or Windows Authentication.
     1. Parameters `-WsTrustIssuerUrl` and `-WsTrustIssuerMexUrl` are removed as that is about WCF-SOAP home realm discovery.
     1. Parameter `-IshUserName` can no longer be empty, the default of empty to force `NetworkCredentials` for Windows Authentication doesn't make sense on ASMX-SOAP.
     1. Parameters `-TimeoutIssue` and `-TimeoutService` are removed as they belong to WCF-SOAP.
+    2. Added parameter `-Protocol` which defaults to `AsmxAuthenticationContext`, on route for future options `OpenApiBasicAuthentication` (temporary combination to enable performance/compatibility testing) and `OpenApiOpenConnectId` for proper releasing.
 
 # Project Creation
 1. The starting point was just-before ISHRemote v0.13 release. Removed the `\ISHRemote\Source\ISHRemote` folder. Keeping the `\ISHRemote\Source\Tools` folder, holding `XmlDoc2CmdletDoc`.
@@ -54,7 +57,7 @@ A table that describes what works, where cmdlets have been rewired, where tests 
       <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(TargetDir.Replace(`netstandard2.0`,`net5.0`))\" />
     </Target>
 1. Error `System.Runtime.Loader.AssemblyLoadContext.OnAssemblyResolve(RuntimeAssembly assembly, String assemblyFullName)
-New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives' brought me here [Resolving PowerShell Module Assembly Dependency Conflicts](https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/). By running `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView` you can see that my wanted (latest) version 4.8.1 is not competing with the out-of-the-box version of PowerShell/dotnet.
+New-IshSession: Could not load file or assembly 'System.ServiceModel.Primitives'` brought me here [Resolving PowerShell Module Assembly Dependency Conflicts](https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/). By running `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView` you can see that my wanted (latest) version 4.8.1 is not competing with the out-of-the-box version of PowerShell/dotnet.
 Publishing problem perhaps, as copying %USER%\.nuget\packages\system.servicemodel.http\4.8.1\lib\netcore50\System.ServiceModel.Http.dll to \Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\net5.0 and same for System.ServiceModel.Primitives.dll made it work under PowerShell 7. So next up is MSBuild/Publish routines/knowledge, inspired by Azure module. Could be caused by `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>`
     1. Kudos to @ivandelagemaat for getting the build sytem running, one module for Windows PowerShell and PowerShell Core. Below some quick notes on the most important victories. Even integrated the NuGet package of `XmlDoc2CmdletDoc`
     1. He added a `.github/workflows/continuous-integration.yml` file that autobuilds this branch. And `\Source\ISHRemote\Directory.Build.props`
@@ -65,16 +68,59 @@ Publishing problem perhaps, as copying %USER%\.nuget\packages\system.servicemode
         1. `Trisoft.ISHRemote\ISHRemote.PostBuild.ps1`
     1. It looks like `PSSnapIn` was wiring up the format xml. The class was removed, who now suggests to pick up the rendering format xml.
     1. `ISHRemote.psm1` in a multi-target framework setup can detect in PowerShell if it is `Core` or `Desktop` and in turn if it is Framework, Core 3, Core 5 (or higher) by `[Environment]::Version` (which returns 5.0.3.-1)... based on `$PSVersionTable`
-1. Cleaned up `NewIshSession.Tests.ps1` noticing the HTTPS/SSL (even TLS1.3) is missing, Timeout parameters are uncertain, PSCredential is a gap... but test has been cleaned up given 48 successes
+1. Cleaned up `NewIshSession.Tests.ps1` noticing the HTTPS/SSL (even TLS1.3) is missing, Timeout parameters are uncertain, PSCredential is a gap... but test has been cleaned up given 48 successes. Main branch ISHRemote v0.14 had all Pester tests refactored to Pester 5.3.0 (see #132)... still conditional/skip flags required to distuingish between WCF/ASMX/OpenAPI
+6. `TrisoftCmdlet.cs` says `[assembly: ComVisible(false)]` ... brrr? Why? Removed
+1. Build `Debug` in the same way as `Release` with copied `Scripts` folder (also the only folder for PSScriptAnalyzer to enforce) so that `ISHRemote.PesterSetup.ps1` can keep pointing to the `Debug` packaged ISHRemote.
 
 ## Next
-1. Build `Debug` in the same way as `Release` with copied `Scripts` folder (also the only folder for PSScriptAnalyzer to enforce) so that `ISHRemote.PesterSetup.ps1` can keep pointing to the `Debug` packaged ISHRemote.
-1. `$IshSession.Protocol` with enum values `Asmx-AuthenticationContext` and `OpenAPI-BasicAuthentication`... defaults currently to Asmx, could later be detected based on the url or `clientconfiguration.xml`
-1. Is `CertificateValidationHelper.cs` and `ServicePointManagerHelper.cs` still the way to do certificate bypass? Make sure TLS 1.3 is activated (possible since net4.8 and higher)
-1. `TrisoftCmdlet.cs` says `[assembly: ComVisible(false)]` ... brrr? Why?
-1. Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
+1. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code
+7. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder.
+   1. Folder25.Create -> API30.Create (ready)
+   2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (NotImplemented planned for PI20.4)
+   3. Folder25.Delete -> API30.DeleteFolder (ready)
+   4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
+   5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
+   6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
+8. Is `CertificateValidationHelper.cs` and `ServicePointManagerHelper.cs` still the way to do certificate bypass? Make sure TLS 1.3 is activated (possible since net4.8 and higher)
+9. Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
     1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
-1. Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
+10. Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
+
+
+# Performance
+
+Curious about performance, one of the first cmdlets we need to run tests are around IshFolder, so a simple performance test could be around that.
+```powershell
+$ishSession # as admin to mecdev12qa01/ORA19 as a constant in the equation as it offers the three API variations
+(Measure-Command -Expression {
+    $folderCmdletRootPath = "\General\__ISHRemote"
+    $ishFolder = Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath
+    $ownedByTestRootOriginal = $ishfolder.fusergroup_none_element #Get-IshMetadataField -IshSession $ishSession -Name "FUSERGROUP" -ValueType Element -IshField $ishFolder.IshField
+    $readAccessTestRootOriginal = $ishfolder.readaccess_none_element #(Get-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -ValueType Element -IshField $ishFolderTestRootOriginal.IshField).Split($ishSession.Separator)
+    $ishFoldersToRemove = @()
+    foreach ($folderName in 0..99)
+    {
+        Write-Host ("Creating folder["+$folderName+"]")
+        $ishFoldersToRemove += Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolder.IshFolderRef) -FolderType ISHNone -FolderName "Add-IshFolder Performance $folderName" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
+    }
+    foreach ($ishFolderToRemove in $ishFoldersToRemove)
+    {
+        Write-Host ("Removing folder["+$ishFolderToRemove.fname+"]")
+        Remove-IshFolder -IshSession $ishSession -IshFolder $ishFolderToRemove
+    }
+}).TotalMilliseconds
+```
+
+The below information was collected via `$PSVersionTable`
+
+| Test Runs | WCF (0.13.8112.2) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Core 7.1.4    | OpenAPI (7.0...) on Desktop 5.1.19041.1151 | OpenAPI (7.0...) on Core 7.1.4        | 
+| :---      | ---:                   | ---:                   | ---:          | ---:                   | ---:              |
+| Run 1     |                50494ms |                        |               |                        |                   |
+| Run 2     |                50478ms |                        |               |                        |                   |
+| Run 3     |                52067ms |                        |               |                        |                   |
+| Run 4     |                50494ms |                        |               |                        |                   |
+| Run 5     |                48050ms |                        |               |                        |                   |
+
 
 # Backlog
 The below is a list to consider, before execution is preferably transformed into github issues
