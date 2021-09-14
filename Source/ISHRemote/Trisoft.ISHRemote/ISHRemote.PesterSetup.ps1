@@ -1,18 +1,27 @@
 ﻿#
 # Tests Header dot-sourced import PS1 file for *.Tests.ps1 files
 #
+
+# Quick check if you are using Pester 5, or default installed Pester 3.4.0 (#132)
+$pesterVersion = [version](Get-Command Invoke-Pester).Version
+if ($pesterVersion -lt [version]("5.3.0")) { Write-Warning ("ISHRemote.PesterSetup.ps1 Invoke-Pester version["+$pesterVersion+"] while 5.3+ is expected!") }
+
 $DebugPreference   = "SilentlyContinue"   # Continue or SilentlyContinue
 $VerbosePreference = "SilentlyContinue"   # Continue or SilentlyContinue
 $WarningPreference = "Continue"   # Continue or SilentlyContinue or Stop
 $ProgressPreference= "SilentlyContinue"   # Continue or SilentlyContinue
-Write-Host "Generating and Executing Import-Module Statement..."
+
+# Generating and Executing Import-Module Statement
 $project = (Split-Path -Parent $MyInvocation.MyCommand.Path).ToLower()
 $project = $project.Substring(0, $project.LastIndexOf("ishremote"))
 $project = ($project + "ishremote")
-Import-Module (Join-Path $project "\bin\debug\ISHRemote") -DisableNameChecking
-Write-Host    "Initializing Global Test Data and Variables"
+$moduleFolder = Join-Path $project "\bin\debug\ISHRemote"
+Write-Host ("Running ISHRemote.PesterSetup.ps1 Import Module folder["+$moduleFolder+"] ...")
+Import-Module ($moduleFolder) -DisableNameChecking
+
+Write-Host "Running ISHRemote.PesterSetup.ps1 Global Test Data and Variables initialization"
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
-Write-Verbose "Initializing OASIS DITA File Contents"
+Write-Verbose "Running ISHRemote.PesterSetup.ps1 OASIS DITA File Contents initialization"
 $ditaTopicFileContent = @"
 <?xml version="1.0" ?>
 <!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
@@ -31,14 +40,14 @@ $ditaMapWithTopicrefFileContent = @"
 </map>
 "@
 
-Write-Verbose "Initializing variables for UserName/Password based tests, so ISHSTS-like..."
+Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for UserName/Password based tests, so ISHSTS-like...initialization"
 $baseUrl = 'https://ish.example.com'
 $webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
 $wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
 $wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
 $ishUserName = 'admin'
 $ishPassword = 'admin'
-Write-Verbose "Initializing variables for System Setup"
+Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for System Setup initialization"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed
 $ishLng = 'VLANGUAGEEN'
 $ishLngLabel = 'en'
@@ -57,7 +66,7 @@ $ishLovId2 = "DRESOLUTION"  # ListOfValues where the Lov tests will work on
 $ishEventTypeToPurge = "PUSHTRANSLATIONS"
 
 #region Placeholder to inject your variable overrides. 
-Write-Host    "Initializing Global Test Data and Variables for debug"
+Write-Host "Running ISHRemote.PesterSetup.ps1 Global Test Data and Variables for debug initialization"
 $debugPesterSetupFilePath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "ISHRemote.PesterSetup.Debug.ps1"
 if (Test-Path -Path $debugPesterSetupFilePath -PathType Leaf)
 {

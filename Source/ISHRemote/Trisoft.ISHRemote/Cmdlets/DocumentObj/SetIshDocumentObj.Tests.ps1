@@ -1,122 +1,122 @@
-﻿Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-. (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
-$cmdletName = "Set-IshDocumentObj"
-
-
-#
-# Script-file scope auxiliary function
-#
-function script:CreateSquareImageBySideSize([int]$size)
-{
-	Add-Type -AssemblyName "System.Drawing"
-	$bmp = New-Object -TypeName System.Drawing.Bitmap($size, $size)
-	for ($i = 0; $i -lt $size; $i++)
-	{
-		for ($j = 0; $j -lt $size; $j++)
-		{
-			$bmp.SetPixel($i, $j, 'Red')
-		}
-	}
+BeforeAll {
+	$cmdletName = "Set-IshDocumentObj"
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
 	
-	return $bmp
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
+	$tempFolder = [System.IO.Path]::GetTempPath()
+	#
+	# Script-file scope auxiliary function
+	#
+	function script:CreateSquareImageBySideSize([int]$size)
+	{
+		Add-Type -AssemblyName "System.Drawing"
+		$bmp = New-Object -TypeName System.Drawing.Bitmap($size, $size)
+		for ($i = 0; $i -lt $size; $i++)
+		{
+			for ($j = 0; $j -lt $size; $j++)
+			{
+				$bmp.SetPixel($i, $j, 'Red')
+			}
+		}
+		
+		return $bmp
+	}
 }
 
-try {
-$tempFolder = [System.IO.Path]::GetTempPath()
-Describe “Set-IshDocumentObj" -Tags "Create" {
-	Write-Host "Initializing Test Data and Variables"
-	$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FNAME" |
-	                     Set-IshRequestedMetadataField -IshSession $ishSession -Name "FDOCUMENTTYPE" |
-	                     Set-IshRequestedMetadataField -IshSession $ishSession -Name "READ-ACCESS" -ValueType Element |
-	                     Set-IshRequestedMetadataField -IshSession $ishSession -Name "FUSERGROUP" -ValueType Element 
-	$ishFolderTestRootOriginal = Get-IshFolder -IShSession $ishSession -FolderPath $folderTestRootPath -RequestedMetadata $requestedMetadata
-	$folderIdTestRootOriginal = $ishFolderTestRootOriginal.IshFolderRef
-	$folderTypeTestRootOriginal = $ishFolderTestRootOriginal.IshFolderType
-	Write-Debug ("folderIdTestRootOriginal[" + $folderIdTestRootOriginal + "] folderTypeTestRootOriginal[" + $folderTypeTestRootOriginal + "]")
-	$ownedByTestRootOriginal = Get-IshMetadataField -IshSession $ishSession -Name "FUSERGROUP" -ValueType Element -IshField $ishFolderTestRootOriginal.IshField
-	$readAccessTestRootOriginal = (Get-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -ValueType Element -IshField $ishFolderTestRootOriginal.IshField).Split($ishSession.Separator)
+Describe "Set-IshDocumentObj" -Tags "Create" {
+	BeforeAll {
+		$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FNAME" |
+							Set-IshRequestedMetadataField -IshSession $ishSession -Name "FDOCUMENTTYPE" |
+							Set-IshRequestedMetadataField -IshSession $ishSession -Name "READ-ACCESS" -ValueType Element |
+							Set-IshRequestedMetadataField -IshSession $ishSession -Name "FUSERGROUP" -ValueType Element 
+		$ishFolderTestRootOriginal = Get-IshFolder -IShSession $ishSession -FolderPath $folderTestRootPath -RequestedMetadata $requestedMetadata
+		$folderIdTestRootOriginal = $ishFolderTestRootOriginal.IshFolderRef
+		$folderTypeTestRootOriginal = $ishFolderTestRootOriginal.IshFolderType
+		Write-Debug ("folderIdTestRootOriginal[" + $folderIdTestRootOriginal + "] folderTypeTestRootOriginal[" + $folderTypeTestRootOriginal + "]")
+		$ownedByTestRootOriginal = Get-IshMetadataField -IshSession $ishSession -Name "FUSERGROUP" -ValueType Element -IshField $ishFolderTestRootOriginal.IshField
+		$readAccessTestRootOriginal = (Get-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -ValueType Element -IshField $ishFolderTestRootOriginal.IshField).Split($ishSession.Separator)
 
-	$global:ishFolderCmdlet = Add-IshFolder -IShSession $ishSession -ParentFolderId $folderIdTestRootOriginal -FolderType ISHNone -FolderName $cmdletName -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-	$ishFolderTopic = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHModule -FolderName "Topic" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-	$ishFolderMap = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHMasterDoc -FolderName "Map" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-	$ishFolderLib = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHLibrary -FolderName "Library" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-	$ishFolderImage = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHIllustration -FolderName "Image" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-	$ishFolderOther = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHTemplate -FolderName "Other" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
+		$global:ishFolderCmdlet = Add-IshFolder -IShSession $ishSession -ParentFolderId $folderIdTestRootOriginal -FolderType ISHNone -FolderName $cmdletName -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
+		$ishFolderTopic = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHModule -FolderName "Topic" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
+		$ishFolderMap = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHMasterDoc -FolderName "Map" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
+		$ishFolderLib = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHLibrary -FolderName "Library" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
+		$ishFolderImage = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHIllustration -FolderName "Image" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
+		$ishFolderOther = Add-IshFolder -IshSession $ishSession -ParentFolderId ($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHTemplate -FolderName "Other" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
 
-	# Create files with two images: 100*100 and 200*200
-	$tempFilePathImage100x100 = (New-TemporaryFile).FullName
-	$bmp = CreateSquareImageBySideSize -size 100
-	$bmp.Save($tempFilePathImage100x100, [System.Drawing.Imaging.ImageFormat]::Jpeg)
-	$tempFilePathImage200x200 = (New-TemporaryFile).FullName
-	$bmp = CreateSquareImageBySideSize -size 200
-	$bmp.Save($tempFilePathImage200x200, [System.Drawing.Imaging.ImageFormat]::Jpeg)
-	
+		# Create files with two images: 100*100 and 200*200
+		$tempFilePathImage100x100 = (New-TemporaryFile).FullName
+		$bmp = CreateSquareImageBySideSize -size 100
+		$bmp.Save($tempFilePathImage100x100, [System.Drawing.Imaging.ImageFormat]::Jpeg)
+		$tempFilePathImage200x200 = (New-TemporaryFile).FullName
+		$bmp = CreateSquareImageBySideSize -size 200
+		$bmp.Save($tempFilePathImage200x200, [System.Drawing.Imaging.ImageFormat]::Jpeg)
+	}
 	Context "Set-IshDocumentObj returns IshObject object (Topic)" {
-		
-		$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
-						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-		$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession `
-												-FolderId $ishFolderTopic.IshFolderRef `
-												-IshType ISHModule `
-												-Lng $ishLng `
-												-Metadata $ishTopicMetadata `
-												-FileContent $ditaTopicFileContent
-		$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated topic title $timestamp"
-		$ishObject = Set-IshDocumentObj -IshSession $ishSession `
-										-LogicalId $ishObjectToUpdate.IshRef `
-										-Version $ishObjectToUpdate.version_version_value `
-										-Lng $ishObjectToUpdate.doclanguage `
-										-Metadata $ishMetadataFieldsSet
-										
+		BeforeAll {	
+			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
+								Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+								Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
+			$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession `
+													-FolderId $ishFolderTopic.IshFolderRef `
+													-IshType ISHModule `
+													-Lng $ishLng `
+													-Metadata $ishTopicMetadata `
+													-FileContent $ditaTopicFileContent
+			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated topic title $timestamp"
+			$ishObject = Set-IshDocumentObj -IshSession $ishSession `
+											-LogicalId $ishObjectToUpdate.IshRef `
+											-Version $ishObjectToUpdate.version_version_value `
+											-Lng $ishObjectToUpdate.doclanguage `
+											-Metadata $ishMetadataFieldsSet
+		}								
 		It "GetType().Name" {
-			$ishObject.GetType().Name | Should BeExactly "IshDocumentObj"
+			$ishObject.GetType().Name | Should -BeExactly "IshDocumentObj"
 		}
 		It "ishObject.IshData" {
-			{ $ishObject.IshData } | Should Not Throw
+			{ $ishObject.IshData } | Should -Not -Throw
 		}
 		It "ishObject.IshField" {
-			$ishObject.IshField | Should Not BeNullOrEmpty
+			$ishObject.IshField | Should -Not -BeNullOrEmpty
 		}
 		It "ishObject.IshRef" {
-			$ishObject.IshRef | Should Not BeNullOrEmpty
+			$ishObject.IshRef | Should -Not -BeNullOrEmpty
 		}
 		It "ishObject.IshType" {
-			$ishObject.IshType | Should Not BeNullOrEmpty
+			$ishObject.IshType | Should -Not -BeNullOrEmpty
 		}
 		It "ishObject.ObjectRef" {
-			$ishObject.ObjectRef | Should Not BeNullOrEmpty
+			$ishObject.ObjectRef | Should -Not -BeNullOrEmpty
 		}
 		It "ishObject.VersionRef" {
-			$ishObject.VersionRef | Should Not BeNullOrEmpty
+			$ishObject.VersionRef | Should -Not -BeNullOrEmpty
 		}
 		It "ishObject.LngRef" {
-			$ishObject.LngRef | Should Not BeNullOrEmpty
+			$ishObject.LngRef | Should -Not -BeNullOrEmpty
 		}
 		It "ishObject ConvertTo-Json" {
-			(ConvertTo-Json $ishObject).Length -gt 2 | Should Be $true
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should -Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
 			#logical
-			$ishObject.ftitle_logical_value.Length -ge 1 | Should Be $true 
+			$ishObject.ftitle_logical_value.Length -ge 1 | Should -Be $true 
 			#version
-			$ishObject.version_version_value.Length -ge 1 | Should Be $true 
+			$ishObject.version_version_value.Length -ge 1 | Should -Be $true 
 			#language
-			$ishObject.fstatus.Length -ge 1 | Should Be $true 
-			$ishObject.fstatus_lng_element.StartsWith('VSTATUS') | Should Be $true 
-			$ishObject.doclanguage.Length -ge 1 | Should Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
-			$ishObject.doclanguage_lng_element.StartsWith('VLANGUAGE') | Should Be $true 
+			$ishObject.fstatus.Length -ge 1 | Should -Be $true 
+			$ishObject.fstatus_lng_element.StartsWith('VSTATUS') | Should -Be $true 
+			$ishObject.doclanguage.Length -ge 1 | Should -Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
+			$ishObject.doclanguage_lng_element.StartsWith('VLANGUAGE') | Should -Be $true 
 		}
 	}
-
 	Context "Set-IshDocumentObj ParameterGroupMetadata" {
 		It "Mandatory parameter: LogicalId" {
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "updated title"
 			{Set-IshDocumentObj -IshSession $ishSession `
 								-Version "1" `
 								-Lng "en" `
-								-Metadata $ishMetadataFieldsSet} | Should Throw
+								-Metadata $ishMetadataFieldsSet} | Should -Throw
 		}
 		It "Mandatory parameter: Version" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
@@ -128,7 +128,7 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			{Set-IshDocumentObj -IshSession $ishSession `
 								-LogicalId $ishObjectToUpdate.IshRef `
 								-Lng "en" `
-								-Metadata $ishMetadataFieldsSet} | Should Throw
+								-Metadata $ishMetadataFieldsSet} | Should -Throw
 		}
 		It "Mandatory parameter: Lng" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
@@ -140,9 +140,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			{Set-IshDocumentObj -IshSession $ishSession `
 								-LogicalId $ishObjectToUpdate.IshRef `
 								-Version $ishObjectToUpdate.version_version_value `
-								-Metadata $ishMetadataFieldsSet} | Should Throw
+								-Metadata $ishMetadataFieldsSet} | Should -Throw
 		}
-
 		It "Topic - metadata update" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -156,7 +155,7 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-Version $ishObjectToUpdate.version_version_value `
 											-Lng $ishObjectToUpdate.doclanguage `
 											-Metadata $ishMetadataFieldsSet
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
 		}
 		It "Topic - metadata update with RequiredCurrentMetadata accepted" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
@@ -173,9 +172,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-Lng $ishObjectToUpdate.doclanguage `
 											-Metadata $ishMetadataFieldsSet `
 											-RequiredCurrentMetadata $ishRequiredCurrentMetadata
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
 		}
-		
 		It "Topic - metadata update with RequiredCurrentMetadata rejected" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -185,15 +183,17 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$updatedTitle = $ishObjectToUpdate.ftitle_logical_value + "...updated"
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value $updatedTitle
 			$ishRequiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased
-			{Set-IshDocumentObj -IshSession $ishSession `
+			$exception = { Set-IshDocumentObj -IshSession $ishSession `
 								-LogicalId $ishObjectToUpdate.IshRef `
 								-Version $ishObjectToUpdate.version_version_value `
 								-Lng $ishObjectToUpdate.doclanguage `
 								-Metadata $ishMetadataFieldsSet `
-								-RequiredCurrentMetadata $ishRequiredCurrentMetadata} | 
-			Should Throw "The supplied expected metadata"
+								-RequiredCurrentMetadata $ishRequiredCurrentMetadata } | Should -Throw -PassThru
+								 "The supplied expected metadata"
+			# 14.0.4 message is: [-106011] The supplied expected metadata value "Released" does not match the current database value "In progress" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]
+			$exception -like "*106011*" | Should -Be $true 
+			$exception -like "*InvalidCurrentMetadata*" | Should -Be $true
 		}
-		
 		It "Image - metadata update without Resolution" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Image $timestamp" |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -216,9 +216,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-Version $ishObjectToUpdate.version_version_value `
 											-Lng $ishObjectToUpdate.doclanguage `
 											-Metadata $ishMetadataFieldsSet
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
 		}
-		
 		It "Image - metadata update with Resolution" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Image $timestamp" |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -242,9 +241,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-Lng $ishObjectToUpdate.doclanguage `
 											-Resolution $ishResolution `
 											-Metadata $ishMetadataFieldsSet
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
 		}
-		
 		It "Image - metadata update with non-matching Resolution" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Image $timestamp" |
 							    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -262,34 +260,37 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 
 			$updatedTitle = $ishObjectToUpdate.ftitle_logical_value + "...updated"
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value $updatedTitle
-			{Set-IshDocumentObj -IshSession $ishSession `
+			$exception = { Set-IshDocumentObj -IshSession $ishSession `
 								-LogicalId $ishObjectToUpdate.IshRef `
 								-Version $ishObjectToUpdate.version_version_value `
 								-Lng $ishObjectToUpdate.doclanguage `
 								-Resolution "VRESHIGH" `
-								-Metadata $ishMetadataFieldsSet} | 
-			Should Throw "does not exist"
+								-Metadata $ishMetadataFieldsSet } | Should -Throw -PassThru
+			# 14.0.4 message is: [-102] The object GUID-862BD02A-422D-4E42-8626-725A12CF6D3A=3=en=High does not exist. [co:"GUID-862BD02A-422D-4E42-8626-725A12CF6D3A=3=en=High"] [102;ObjectNotFound]
+			$exception -like "*102*" | Should -Be $true 
+			$exception -like "*ObjectNotFound*" | Should -Be $true
 		}
 	}
-
-	Context “Set-IshDocumentObj ParameterGroupFileContent" {
-		$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Set All Parameters Topic $timestamp" |
-					        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-		    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-		$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Version '1' -Lng $ishLng -Metadata $ishTopicMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
-
+	Context "Set-IshDocumentObj ParameterGroupFileContent" {
+		BeforeAll {
+			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Set All Parameters Topic $timestamp" |
+								Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+								Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
+			$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Version '1' -Lng $ishLng -Metadata $ishTopicMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
+		}
 		It "Parameter EDT explicitly EDTJPEG" {
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated title"
-			{Set-IshDocumentObj -IshSession $ishSession `
+			$exception = { Set-IshDocumentObj -IshSession $ishSession `
 								 -LogicalId $ishObjectToUpdate.IshRef `
 								 -Version $ishObjectToUpdate.version_version_value `
 								 -Lng $ishObjectToUpdate.doclanguage `
 								 -Metadata $ishMetadataFieldsSet `
 								 -Edt "EDTJPEG" `
-								 -FileContent "INVALIDFILECONTENT"} |
-			Should Throw "FileContent parameter is only supported with EDT[EDTXML], not EDT[EDTJPEG]."
+								 -FileContent "INVALIDFILECONTENT" } | Should -Throw -PassThru 
+			# ISHRemote message is: FileContent parameter is only supported with EDT[EDTXML], not EDT[EDTJPEG].
+			$exception -like "*FileContent*" | Should -Be $true
+			$exception -like "*EDTXML*" | Should -Be $true
 		}
-
 		It "Parameter FileContent has invalid xml content" {
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated title"
 			{Set-IshDocumentObj -IshSession $ishSession `
@@ -298,9 +299,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 								 -Lng $ishObjectToUpdate.doclanguage `
 								 -Metadata $ishMetadataFieldsSet `
 								 -FileContent "INVALIDFILECONTENT"} | 
-			Should Throw "Data at the root level is invalid. Line 1, position 1."
+			Should -Throw "Data at the root level is invalid. Line 1, position 1."
 		}
-
 		It "Provide both FileContent and FilePath" {
 			$tempFilePath = (New-TemporaryFile).FullName
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated title"
@@ -311,9 +311,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 								 -Metadata $ishMetadataFieldsSet `
 								 -FileContent $ditaTopicFileContent `
 								 -FilePath $tempFilePath} | 
-			Should Throw "Parameter set cannot be resolved using the specified named parameters."
+			Should -Throw "Parameter set cannot be resolved using the specified named parameters."
 		}
-		
 		It "Topic - update blob only" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Set All Parameters Topic $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -338,9 +337,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-FileContent $updatedContent
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			[string]$ishObjectContent = Get-Content -Path $fileInfo		
-			$ishObjectContent -eq $updatedContent | Should Be $true
+			$ishObjectContent -eq $updatedContent | Should -Be $true
 		}
-
 		It "Topic - update blob and metadata" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Set All Parameters Topic $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -368,10 +366,9 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			[string]$ishObjectContent = Get-Content -Path $fileInfo		
 			
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
-			$ishObjectContent -eq $updatedContent | Should Be $true
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
+			$ishObjectContent -eq $updatedContent | Should -Be $true
 		}
-		
 		It "Topic - update (RequiredCurrentMetadata accepted)" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic update with RequiredCurrentMetadata accepted $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -401,10 +398,9 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			[string]$ishObjectContent = Get-Content -Path $fileInfo		
 			
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
-			$ishObjectContent -eq $updatedContent | Should Be $true
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
+			$ishObjectContent -eq $updatedContent | Should -Be $true
 		}	
-		
 		It "Topic - update (RequiredCurrentMetadata rejected)" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic update with RequiredCurrentMetadata rejected $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -424,16 +420,17 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$updatedContent = $ishObjectToUpdateContent.Replace("(optional)", "(optional-updated)")
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value $updatedTitle
 			$ishRequiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased
-			{Set-IshDocumentObj -IshSession $ishSession `
+			$exception = { Set-IshDocumentObj -IshSession $ishSession `
 								-LogicalId $ishObjectToUpdate.IshRef `
 								-Version $ishObjectToUpdate.version_version_value `
 								-Lng $ishObjectToUpdate.doclanguage `
 								-Metadata $ishMetadataFieldsSet `
 								-RequiredCurrentMetadata $ishRequiredCurrentMetadata `
-								-FileContent $updatedContent} | 
-			Should Throw "The supplied expected metadata"
+								-FileContent $updatedContent } | Should -Throw -PassThru
+			# 14.0.4 message is:  [-106011] The supplied expected metadata value "Released" does not match the current database value "In progress" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]
+			$exception -like "*106011*" | Should -Be $true 
+			$exception -like "*InvalidCurrentMetadata*" | Should -Be $true
 		}
-		
 		It "Map - update blob and metadata" {
 			$ishMapMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Map update $timestamp" |
 						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -461,11 +458,10 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			[string]$ishObjectContent = Get-Content -Path $fileInfo		
 			
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
-			$ishObjectContent -eq $updatedContent | Should Be $true
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
+			$ishObjectContent -eq $updatedContent | Should -Be $true
 
 		}
-
 		It "Lib - update blob and metadata" {
 			$ishLibMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Lib update $timestamp" |
 						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -493,12 +489,11 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			[string]$ishObjectContent = Get-Content -Path $fileInfo		
 			
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
-			$ishObjectContent -eq $updatedContent | Should Be $true
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
+			$ishObjectContent -eq $updatedContent | Should -Be $true
 		}
 	}
-	
-	Context “Set-IshDocumentObj ParameterGroupFilePath" {
+	Context "Set-IshDocumentObj ParameterGroupFilePath" {
 		It "Image - update blob only (providing EDT)" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Mandatory parameters Image $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -523,9 +518,8 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-FilePath $tempFilePathImage200x200
 
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
-			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should Be $true
+			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should -Be $true
 		}
-
 		It "Image - update metadata and blob (providing EDT)" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Mandatory parameters Image $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -555,10 +549,9 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
-			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should Be $true
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
+			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should -Be $true
 		}
-		
 		It "Image - update metadata and blob providing EDT, RequiredCurrentMetadata accepted" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Mandatory parameters Image with  RequiredCurrentMetadata $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -590,10 +583,9 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
-			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should Be $true
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
+			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should -Be $true
 		}
-		
 		It "Topic - update metadata and blob, RequiredCurrentMetadata rejected" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic update with RequiredCurrentMetadata rejected $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -615,16 +607,17 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$updatedContent | Out-File -FilePath $tempFilePathUpdated -Force
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value $updatedTitle
 			$ishRequiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased
-			{Set-IshDocumentObj -IshSession $ishSession `
+			$exception = { Set-IshDocumentObj -IshSession $ishSession `
 								-LogicalId $ishObjectToUpdate.IshRef `
 								-Version $ishObjectToUpdate.version_version_value `
 								-Lng $ishObjectToUpdate.doclanguage `
 								-Metadata $ishMetadataFieldsSet `
 								-RequiredCurrentMetadata $ishRequiredCurrentMetadata `
-								-FilePath $tempFilePathUpdated} | 
-			Should Throw "The supplied expected metadata"
+								-FilePath $tempFilePathUpdated } | Should -Throw -PassThru
+			# 14.0.4 message is:  [-106011] The supplied expected metadata value "Released" does not match the current database value "In progress" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]
+			$exception -like "*106011*" | Should -Be $true 
+			$exception -like "*InvalidCurrentMetadata*" | Should -Be $true
 		}	
-		
 		It "Update Other like EDT-TEXT" {
 			$ishOtherMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Update Other like EDT-TEXT $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
@@ -646,35 +639,36 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 											-FilePath $tempFilePath
 			$fileInfo = $ishObject | Get-IshDocumentObjData -IshSession $ishSession -FolderPath (Join-Path $tempFolder $cmdletName)
 			
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
-			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should Be $true
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
+			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should -Be $true
 		}
 	}
-
-	Context “Set-IshDocumentObj IshObjectsGroup" {
-		$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
-						    Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
-						    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-
-		It "Parameter/pipe IshObject is empty" {
-			{Set-IshDocumentObj -IshSession $ishSession -IshObject @()} | Should Not Throw
-			{@() | Set-IshDocumentObj -IshSession $ishSession} | Should Not Throw
+	Context "Set-IshDocumentObj IshObjectsGroup" {
+		BeforeAll {
+			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
+								Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+								Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 		}
-		
+		It "Parameter/pipe IshObject is empty" {
+			{Set-IshDocumentObj -IshSession $ishSession -IshObject @()} | Should -Not -Throw
+			{@() | Set-IshDocumentObj -IshSession $ishSession} | Should -Not -Throw
+		}
 		It "Parameter IshObject invalid" {
 			{ Set-IshDocumentObj -IshSession $ishSession -IshObject "INVALIDISHOBJECT" } | 
-			Should Throw "Cannot bind parameter 'IshObject'. Cannot convert the ""INVALIDISHOBJECT"" value of type ""System.String"" to type ""Trisoft.ISHRemote.Objects.Public.IshObject""."
+			Should -Throw "Cannot bind parameter 'IshObject'. Cannot convert the ""INVALIDISHOBJECT"" value of type ""System.String"" to type ""Trisoft.ISHRemote.Objects.Public.IshObject""."
 		}
-
 		It "Provide as parameter/pipe deleted object" {
 			$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectToUpdate -Force
-			{$ishObjectSet = Set-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectToUpdate} | 
-			Should Throw "does not exist"
-			{$ishObjectSet = $ishObjectToUpdate | Set-IshDocumentObj -IshSession $ishSession } | 
-			Should Throw "does not exist"
+			$exception = { $ishObjectSet = Set-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectToUpdate } | Should -Throw -PassThru
+			# 14.0.4 message is: [-102] The object GUID-862BD02A-422D-4E42-8626-725A12CF6D3A=3=en=High does not exist. [co:"GUID-862BD02A-422D-4E42-8626-725A12CF6D3A=3=en=High"] [102;ObjectNotFound]
+			$exception -like "*102*" | Should -Be $true 
+			$exception -like "*ObjectNotFound*" | Should -Be $true
+			$exception = { $ishObjectSet = $ishObjectToUpdate | Set-IshDocumentObj -IshSession $ishSession } | Should -Throw -PassThru
+			# 14.0.4 message is: [-102] The object GUID-862BD02A-422D-4E42-8626-725A12CF6D3A=3=en=High does not exist. [co:"GUID-862BD02A-422D-4E42-8626-725A12CF6D3A=3=en=High"] [102;ObjectNotFound]
+			$exception -like "*102*" | Should -Be $true 
+			$exception -like "*ObjectNotFound*" | Should -Be $true
 		}
-		
 		It "Set metadata, provide multiple objects to IshObject" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
@@ -688,13 +682,12 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
-			$ishObjectArray.Count | Should Be 2
-			$ishObjectA.ed -eq $ishObjectAUpdated.ed | Should Be $true
-			$ishObjectB.ed -eq $ishObjectBUpdated.ed | Should Be $true
-			$ishObjectArray[0].ftitle_logical_value | Should Be $updatedTitle
-			$ishObjectArray[1].ftitle_logical_value | Should Be $updatedTitle
+			$ishObjectArray.Count | Should -Be 2
+			$ishObjectA.ed -eq $ishObjectAUpdated.ed | Should -Be $true
+			$ishObjectB.ed -eq $ishObjectBUpdated.ed | Should -Be $true
+			$ishObjectArray[0].ftitle_logical_value | Should -Be $updatedTitle
+			$ishObjectArray[1].ftitle_logical_value | Should -Be $updatedTitle
 		}
-		
 		It "Resubmit blob, provide multiple objects to IshObject" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
@@ -706,11 +699,10 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
-			$ishObjectArray.Count | Should Be 2
-			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should Be $true
-			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should Be $true
+			$ishObjectArray.Count | Should -Be 2
+			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should -Be $true
+			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should -Be $true
 		}
-		
 		It "Resubmit blob, provide multiple objects via pipeline" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
@@ -723,11 +715,10 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
-			$ishObjectArray.Count | Should Be 2
-			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should Be $true
-			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should Be $true
+			$ishObjectArray.Count | Should -Be 2
+			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should -Be $true
+			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should -Be $true
 		}
-
 		It "Resubmit blob, provide multiple objects via pipeline with RequiredCurrentMetadata accepted" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent |
@@ -741,11 +732,10 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
-			$ishObjectArray.Count | Should Be 2
-			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should Be $true
-			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should Be $true
+			$ishObjectArray.Count | Should -Be 2
+			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should -Be $true
+			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should -Be $true
 		}
-		
 		It "Resubmit blob, provide multiple objects via pipeline with RequiredCurrentMetadata rejected" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
@@ -753,10 +743,11 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$ishObjectAB = @($ishObjectA, $ishObjectB) | Get-IshDocumentObj -IshSession $ishSession -IncludeData
 			
 			$ishRequiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased
-			{$ishObjectAB | Set-IshDocumentObj -IshSession $ishSession -RequiredCurrentMetadata $ishRequiredCurrentMetadata} | 
-			Should Throw "The supplied expected metadata"
+			$exception = { $ishObjectAB | Set-IshDocumentObj -IshSession $ishSession -RequiredCurrentMetadata $ishRequiredCurrentMetadata } | Should -Throw -PassThru
+			# 14.0.4 message is:  [-106011] The supplied expected metadata value "Released" does not match the current database value "In progress" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]
+			$exception -like "*106011*" | Should -Be $true 
+			$exception -like "*InvalidCurrentMetadata*" | Should -Be $true
 		}
-		
 		It "Resubmit blob and set Metadata, provide multiple objects via pipeline" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectA = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent | 
@@ -771,13 +762,12 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 			$ishObjectAUpdated = $ishObjectA | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishObjectBUpdated = $ishObjectB | Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
-			$ishObjectArray.Count | Should Be 2
-			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should Be $true
-			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should Be $true
-			$ishObjectArray[0].ftitle_logical_value | Should Be $updatedTitle
-			$ishObjectArray[1].ftitle_logical_value | Should Be $updatedTitle
+			$ishObjectArray.Count | Should -Be 2
+			$ishObjectA.ed -ne $ishObjectAUpdated.ed | Should -Be $true
+			$ishObjectB.ed -ne $ishObjectBUpdated.ed | Should -Be $true
+			$ishObjectArray[0].ftitle_logical_value | Should -Be $updatedTitle
+			$ishObjectArray[1].ftitle_logical_value | Should -Be $updatedTitle
 		}
-
 		It "Resubmit blob and set Metadata, provide single object via pipeline" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "ED" -Level Lng
 			$ishObjectToUpdate = Add-IshDocumentObj -IshSession $ishSession `
@@ -794,17 +784,17 @@ Describe “Set-IshDocumentObj" -Tags "Create" {
 						 Set-IshDocumentObj -IshSession $ishSession -Metadata $ishMetadataFieldsSet |
 						 Get-IshDocumentObj -IshSession $ishSession -RequestedMetadata $requestedMetadata
 
-			$ishObjectToUpdate.ed -ne $ishObject.ed | Should Be $true
-			$ishObject.ftitle_logical_value | Should Be $updatedTitle
+			$ishObjectToUpdate.ed -ne $ishObject.ed | Should -Be $true
+			$ishObject.ftitle_logical_value | Should -Be $updatedTitle
 		}
 	}
 }
 
-
-} finally {
-	Write-Host "Cleaning Test Data and Variables"
+AfterAll {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
 	try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse | Get-IshFolderContent -IshSession $ishSession | Remove-IshDocumentObj -IshSession $ishSession -Force } catch { }
 	try { Remove-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse } catch { }
 	try { Remove-Item $tempFilePath -Force } catch { }
 }
+

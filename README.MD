@@ -38,8 +38,10 @@ Note that we rely on `Windows PowerShell` (FullCLR), and not `PowerShell Core` (
 ## Install
 Open a PowerShell, then you can find and install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator. The `-Force` will make you bypass some security/trust questions.
 
-		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
-        Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
+Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
+```
 
 ![ISHRemote-0.7--InstallModuleFromPSGallery 1024x512](./Doc/Images/ISHRemote-0.7--InstallModuleFromPSGallery.gif)
 
@@ -47,15 +49,18 @@ Open a PowerShell, then you can find and install the ISHRemote module. CurrentUs
 
 Open a PowerShell and run.
 
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
-        Update-Module ISHRemote
-
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
+Update-Module ISHRemote
+```
  
 ## Uninstall
 
 Open a PowerShell and run.
 
-        Uninstall-Module ISHRemote -AllVersion 
+```powershell
+Uninstall-Module ISHRemote -AllVersion 
+```
 
 # Backlog & Feedback
 Any feedback is welcome. Please log a GitHub issue, make sure you submit your version number, expected and current result,...
@@ -72,20 +77,6 @@ Any feedback is welcome. Please log a GitHub issue, make sure you submit your ve
   it probably means you didn't provide enough (mandatory) parameters to the WCF/SVC code so passing null parameters. Typically an `-IshPassword` is missing or using an existing username.
 * ISHDeploy `Enable-ISHIntegrationSTSInternalAuthentication/Disable-ISHIntegrationSTSInternalAuthentication` adds a /ISHWS/Internal/connectionconfiguration.xml that a different issuer should be used. As ISHRemote doesn't have an app.config, all the artifacts are derived from the RelyingParty WSDL provided mex endpoint (e.g. /ISHSTS/issue/wstrust/mex).  
 If you get error `New-IshSession : The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.`, it probably means you initialized `-WsBaseUrl` without the `/Internal/` (or `/SDL/`) segment, meaning you are using the primary configured STS.
-
-## Testing Known Issues
-
-* If a test fails with `Object reference not set to an instance of an object.`, it probably means that somewhere in your `*.Tests.ps1` you return an object and forgot a `Write-Host` or something.
-
-        Result StackTrace: 
-        at PowerShellTools.TestAdapter.PowerShellTestExecutor.RunTest(PowerShell powerShell, TestCase testCase, IRunContext runContext)
-        at PowerShellTools.TestAdapter.PowerShellTestExecutor.RunTests(IEnumerable``1 tests, IRunContext runContext, IFrameworkHandle frameworkHandle)
-
-* When using Visual Studio to run a single "Run Selected Test", the Test Explorer in turn will 
-  run an [Invoke-Pester](https://github.com/pester/Pester/wiki/Invoke-Pester) command with the following parameters
-    * `Path` The path where Invoke-Pester begins to search for test files. The default is the current directory.
-    * `TestName` Informs Invoke-Pester to only run Describe blocks that match this name. This value may contain wildcards.  
-    This means that all `*.Tests.ps1` are executed in the same folder back-to-back, but only the Describe that matches the given TestName will be trully tested. So every `*.Tests.ps1` prerequisites and finally block will be called and have to be clean.
 
 ## Documentation Known Issues
 * [XmlDoc2CmdletDoc bug 22](https://github.com/red-gate/XmlDoc2CmdletDoc/issues/22) `System.ArgumentException: Property Get method was not found.` at `XmlDoc2CmdletDoc.Core.Domain.Parameter.get_DefaultValue()`   means you are missing a Get'er on a Property like `public IshFolder IshFolder { set { _folderId = value.IshFolderRef; } }`
@@ -120,17 +111,20 @@ synchronized with the code.
 
 ## Testing Standards
 
+Initial testing was based on Pester 3.4.0 which came as part of Windows 10/2016, to introduce support for PowerShell 7+ we switched to Pester 5+ ([#115](https://github.com/RWS/ISHRemote/issues/115)|[#132](https://github.com/RWS/ISHRemote/issues/132)). To force an upgrade from pre-packaged Pester 3.4.0, have a look at [Pester Installation](https://pester.dev/docs/introduction/installation), although on most systems it comes down to
+`Install-Module -Name Pester -Force -SkipPublisherCheck`.
 * Most Pester tests are acceptance test, enriched which some unit tests where possible.
-* Using a dot-sourced `ISHRemote.PesterSetup.ps1` include in all `*.Tests.ps1` to specify the variables (not initialization) consistently
-* Using the -Tag with "Create", "Read", "Update", "Delete" to allow [Pester grouping](See https://github.com/pester/Pester/wiki/Describe) Tags
-* Data initialization and breakdown are key but also time consuming. BeforeEach/AfterEach are run for every It block, so makes things slow.
+* Using a central `ISHRemote.PesterSetup.ps1` (with optional `ISHRemote.PesterSetup.Debug.ps1` override) in all `*.Tests.ps1` to specify the variables (not initialization) consistently
+* Data initialization and breakdown are key but also time consuming. After a test run, your system is left in its original state.
+
+In `ISHRemote.PesterSetup.Debug.ps1` override the global variables used for tests. **Don't forget not to commit those custom values**.
 
 # Coding Prerequisites and Best Practices
 
 ## Release Build and Publish To PowerShell Gallery
 
 Rought steps to release...
-1. Use Visual Studio to build a `Debug` build. Run an `Invoke-Pester` on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
+1. Use Visual Studio to build a `Debug` build. Run an `Invoke-Pester` (minimally v5.3.0) on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
 1. Use Visual Studio to build a `Release` build. Change `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\ISHRemote.PesterSetup.ps1` to forcefully load `\bin\release\` (instead of `\bin\debug\`). Run an `Invoke-Pester` on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
 1. The folder content of `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Release\` will be published
     1. Check all files, especially `Scripts` that you have all files.
@@ -139,45 +133,8 @@ Rought steps to release...
 1. Check availability of latest version on https://www.powershellgallery.com/packages/ISHRemote/
 1. Github releases
     1. Edit and release the notes on https://github.com/sdl/ISHRemote/releases/
-    1. Start new release notes, under a new version number like `v0.10-beta`
+    1. Start new release notes, under a new version number like `v0.14-beta`
 1. Close version milestone on https://github.com/sdl/ISHRemote/milestone/
-
-## Testing and Debugging using Pester in Visual Studio 2015
-
-[src1](http://www.powershellmagazine.com/2014/03/12/get-started-with-pester-powershell-unit-testing-framework/) [src2](http://www.powershellmagazine.com/2014/03/27/testing-your-powershell-scripts-with-pester-assertions-and-more/) [src3](https://www.simple-talk.com/sysadmin/powershell/practical-powershell-unit-testing-getting-started/) [src4](https://github.com/pester/Pester/wiki
-Prerequisites)
-
-In `ISHRemote.PesterSetup.Debug.ps1` override the global variables used for tests. **Don't forget not to commit those custom values**.
-
-### Prerequisites
-
-1. Install or make sure you run Windows Management Framework v5, so Windows PowerShell v5 for Pester support, see https://msdn.microsoft.com/en-us/powershell/wmf/requirements
-1. Install [Powershell Tools for Visual Studio 2015](https://visualstudiogallery.msdn.microsoft.com/c9eb3ba8-0c59-4944-9a62-6eee37294597/view/Discussions/1)
-1. Install Pester and have it available in `%userprofile%\My Documents\WindowsPowerShell\Modules\Pester`
-
-    [Warning](https://www.nuget.org/packages/Pester/): Install `Pester` as Administrator, see  :  `Install-Package Pester -Source PSGallery` will eventually show you `Failed to load Pester module. The specified module 'Pester' was not loaded because no valid module 
-file was found in any module directory.` when running [Tests in Visual Studio](http://rostacik.net/2015/12/16/how-to-use-nuget-packages-even-with-powershell-projects-with-visual-studio-2015/)
-[Solution](https://writeabout.net/2016/01/01/visual-studio-github-powershell-pester/) is to copy content of `%ProgramFiles%\WindowsPowerShell\Modules\Pester\3.4.0" to "%userprofile%\My Documents\WindowsPowerShell\Modules\Pester`
-
-## Debugging using F5 In Visual Studio 2015
-[src](http://www.powershellmagazine.com/2014/04/08/basics-of-writing-a-powershell-module-with-c-part-2-debugging/)
-
-In the properties window, select Debug tab and select Start external program under Start Options. 
-Navigate to PowerShell.exe for the architecture of your project. In the Start Options -> 
-Command Line Arguments textbox, enter the parameters for the PowerShell executable that will 
-automatically load the module once it is compiled. The debugger starts always in the default 
-location where the DLL is generated. So, there is no need to specify the full path. In the case 
-of our module the option would be:
-
-    C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell.exe
-	-noexit -command "&{ import-module .\ISHRemote.psm1 -verbose}"
-	OR
-	-noexit -command "&{ ..\..\Samples\Sample.Automate.EventMonitor.ps1}"
-	OR COMBINED
-	-noexit -command "&{ import-module .\ISHRemote.psm1 -verbose; ..\..\Samples\Sample.Automate.EventMonitor.ps1}"
- 
-Warning: If you get a security warning, run the above exact powershell.exe command using Run As Administrator, 
-then execute `Set-ExecutionPolicy Unrestricted`
 
 ## Debugging PowerShell in Visual Studio Code
 
@@ -190,12 +147,3 @@ Setting up your Visual Studio Code is explained on the internet, see [Scripting 
 - [Tyler Leonhardt - Visual Studio Code: deep dive into debugging your PowerShell scripts](https://www.youtube.com/watch?v=cSbIXmlkr8o)
 - [Writing Compiled PowerShell Cmdlets by Thomas Rayner](https://www.youtube.com/watch?v=O0lk92W799)
 
-## Static Code Analysis (experiment)
-
-1. Using `Docker Desktop` and `PowerShell Core 6` started `docker run -d --name sonarqube -p 9000:9000 sonarqube`
-1. Navigated to `http://localhost:9000/` going to through the new project wizard (admin, ISHRemote)
-1. Using `MSBuild Command Prompt for VS2015` triggered
-    1. `C:\TEMP\sonar\sonarscanner-msbuild\SonarScanner.MSBuild.exe begin /k:"ISHRemote" /d:sonar.host.url="http://localhost:9000" /d:sonar.login="9e96746fe7c2c8d11f6be0eed88cf3fb08c586d3"`
-    1. `MsBuild.exe /t:Rebuild`
-    1. `C:\TEMP\sonar\sonarscanner-msbuild\SonarScanner.MSBuild.exe end /d:sonar.login="9e96746fe7c2c8d11f6be0eed88cf3fb08c586d3"`
-1. Then look at the analysis :)

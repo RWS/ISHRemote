@@ -1,7 +1,11 @@
-﻿Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-. (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
-$scriptFolderPath = Split-Path -Parent $MyInvocation.MyCommand.Path  # Needs to be outside Describe script block
-$cmdletName = "Test-IshValidXml"
+BeforeAll {
+	$cmdletName = "Test-IshValidXml"
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
+	
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
+	$tempFolder = [System.IO.Path]::GetTempPath()
+	$scriptFolderPath = Split-Path -Parent $PSCommandPath
 
 $ditaTaskFileContent = @"
 <?xml version="1.0" ?>
@@ -30,72 +34,71 @@ $ditaObfuscatedBookMapWithNavtitleFileContent = @"
 
 "@ # empty line space is required for comparison
 
-try {
+}
 
-	$tempFolder = [System.IO.Path]::GetTempPath()
 Describe "Test-IshValidXml" -Tags "Read" {
-	Write-Host "Initializing Test Data and Variables"
-	$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
-	New-Item -ItemType Directory -Path $rootFolder
-	$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
-	New-Item -ItemType Directory -Path $inputFolder
-	
-	$task1FilePath = Join-Path -Path $inputFolder -ChildPath "task==1=en.xml"
-	Set-Content -Path $task1FilePath -Value $ditaTaskFileContent -Encoding UTF8
-	$task2FilePath = Join-Path -Path $inputFolder -ChildPath "task==2=en.xml"
-	Set-Content -Path $task2FilePath -Value $ditaObfuscatedTaskFileContent -Encoding UTF8
-	
-	$bookMap1FilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==1=en.xml"
-	Set-Content -Path $bookMap1FilePath -Value $ditaBookMapFileContent -Encoding UTF8
-	$bookMap2FilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==2=en.xml"
-	Set-Content -Path $bookMap2FilePath -Value $ditaObfuscatedBookMapWithoutNavtitleFileContent -Encoding UTF8
-	$bookMap3FilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==3=en.xml"
-	Set-Content -Path $bookMap3FilePath -Value $ditaObfuscatedBookMapWithNavtitleFileContent -Encoding UTF8
+	BeforeAll {
+		$rootFolder = Join-Path -Path $tempFolder -ChildPath $cmdletName 
+		New-Item -ItemType Directory -Path $rootFolder
+		$inputFolder = Join-Path -Path $rootFolder -ChildPath "input"
+		New-Item -ItemType Directory -Path $inputFolder
+		
+		$task1FilePath = Join-Path -Path $inputFolder -ChildPath "task==1=en.xml"
+		Set-Content -Path $task1FilePath -Value $ditaTaskFileContent -Encoding UTF8
+		$task2FilePath = Join-Path -Path $inputFolder -ChildPath "task==2=en.xml"
+		Set-Content -Path $task2FilePath -Value $ditaObfuscatedTaskFileContent -Encoding UTF8
+		
+		$bookMap1FilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==1=en.xml"
+		Set-Content -Path $bookMap1FilePath -Value $ditaBookMapFileContent -Encoding UTF8
+		$bookMap2FilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==2=en.xml"
+		Set-Content -Path $bookMap2FilePath -Value $ditaObfuscatedBookMapWithoutNavtitleFileContent -Encoding UTF8
+		$bookMap3FilePath = Join-Path -Path $inputFolder -ChildPath "bookmap==3=en.xml"
+		Set-Content -Path $bookMap3FilePath -Value $ditaObfuscatedBookMapWithNavtitleFileContent -Encoding UTF8
 
-	$catalogFilePath = Join-Path -Path $scriptFolderPath -ChildPath "..\..\Samples\Data-GeneralizeDitaXml\SpecializedDTDs\catalog-alldita12dtds.xml"
-	  
+		$catalogFilePath = Join-Path -Path $scriptFolderPath -ChildPath "..\..\Samples\Data-GeneralizeDitaXml\SpecializedDTDs\catalog-alldita12dtds.xml"
+	}  
 	Context "Test-IshValidXml" {
-		$result = Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath $task1FilePath
 		It "GetType().Name" {
-			$result.GetType().Name | Should BeExactly "Boolean"
+			$result = Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath $task1FilePath
+			$result.GetType().Name | Should -BeExactly "Boolean"
 		}
 		It "Parameter XmlCatalogFilePath invalid" {
 			{
 				Test-IshValidXml -XmlCatalogFilePath "INVALID" -FilePath $task1FilePath
-			} | Should Throw
+			} | Should -Throw
 		}
 		It "Parameter FilePath invalid" {
-			Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath "INVALID" | Should Be $False
+			Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath "INVALID" | Should -Be $False
 		}
 		It "Parameter FilePath Single" {
 			$resultArray = Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath $task1FilePath
-			$resultArray.Count | Should Be 1
-			$resultArray[0] | Should Be $True
+			$resultArray.Count | Should -Be 1
+			$resultArray[0] | Should -Be $True
 		}
 		It "Parameter FilePath Multiple" {
 			$resultArray = Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath @($task1FilePath,$task2FilePath)
-			$resultArray.Count | Should Be 2
-			$resultArray[0] | Should Be $True
-			$resultArray[1] | Should Be $False
+			$resultArray.Count | Should -Be 2
+			$resultArray[0] | Should -Be $True
+			$resultArray[1] | Should -Be $False
 		}
 		It "Pipeline FilePath Single" {
 			$fileInfoArray = Get-Item -Path $task2FilePath
 			$resultArray = $fileInfoArray | Test-IshValidXml -XmlCatalogFilePath $catalogFilePath
-			$resultArray.Count | Should Be 1
-			$resultArray[0] | Should Be $False
+			$resultArray.Count | Should -Be 1
+			$resultArray[0] | Should -Be $False
 		}
 		It "Pipeline FilePath Multiple" {
 			$fileInfoArray = @((Get-Item -Path $bookMap2FilePath), (Get-Item -Path $bookMap3FilePath))
 			$resultArray = $fileInfoArray | Test-IshValidXml -XmlCatalogFilePath $catalogFilePath
-			$resultArray.Count | Should Be 2
-			$resultArray[0] | Should Be $False
-			$resultArray[1] | Should Be $False
+			$resultArray.Count | Should -Be 2
+			$resultArray[0] | Should -Be $False
+			$resultArray[1] | Should -Be $False
 		}
 	}
 }
 
-
-} finally {
-	Write-Host "Cleaning Test Data and Variables"
+AfterAll {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 	try { Remove-Item (Join-Path $tempFolder $cmdletName) -Recurse -Force } catch { }
 }
+

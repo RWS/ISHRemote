@@ -1,56 +1,61 @@
-﻿Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-. (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
-$cmdletName = "Get-IshVersion"
-try {
-	Write-Host "Initializing Test Data and Variables"
+BeforeAll {
+	$cmdletName = "Get-IshVersion"
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
 
-Describe “Get-IshVersion" -Tags "Read" {
-	Context “Get-IshVersion Parameters" {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
+}
+
+Describe "Get-IshVersion" -Tags "Read" {
+	Context "Get-IshVersion Parameters" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshVersion -IshSession "INVALIDISHSESSION" } | Should Throw
+			{ Get-IshVersion -IshSession "INVALIDISHSESSION" } | Should -Throw
 		}
 	}
 
 	Context "Get-IshVersion returns IshVersion object" {
-		$ishVersion = Get-IshVersion -IshSession $ishSession
+		BeforeAll {
+			$ishVersion = Get-IshVersion -IshSession $ishSession
+		}
 		It "GetType()" {
-			$ishVersion.GetType().Name | Should BeExactly "IshVersion"
+			$ishVersion.GetType().Name | Should -BeExactly "IshVersion"
 		}
 		It "IshVersion.MajorVersion" {
-			$ishVersion.MajorVersion -ge 0 | Should Be $true
+			$ishVersion.MajorVersion -ge 0 | Should -Be $true
 		}
 		It "IshVersion.MinorVersion" {
-			$ishVersion.MinorVersion -ge 0 | Should Be $true
+			$ishVersion.MinorVersion -ge 0 | Should -Be $true
 		}
 		It "IshVersion.BuildVersion" {
-			$ishVersion.BuildVersion -ge 0 | Should Be $true
+			$ishVersion.BuildVersion -ge 0 | Should -Be $true
 		}
 		It "IshSession.RevisionVersion" {
-			$ishVersion.RevisionVersion -ge 0 | Should Be $true
+			$ishVersion.RevisionVersion -ge 0 | Should -Be $true
 		}
 	}
 
 	Context "Get-IshVersion without IshSession returns IshVersion object" {
-		$ishVersion = Get-IshVersion
+		BeforeAll {
+			$ishVersion = Get-IshVersion
+		}
 		It "GetType()" {
-			$ishVersion.GetType().Name | Should BeExactly "IshVersion"
+			$ishVersion.GetType().Name | Should -BeExactly "IshVersion"
 		}
 		It "IshVersion.MajorVersion" {
-			$ishVersion.MajorVersion -ge 0 | Should Be $true
+			$ishVersion.MajorVersion -ge 0 | Should -Be $true
 		}
 		It "IshVersion.MinorVersion" {
-			$ishVersion.MinorVersion -ge 0 | Should Be $true
+			$ishVersion.MinorVersion -ge 0 | Should -Be $true
 		}
 		It "IshVersion.BuildVersion" {
-			$ishVersion.BuildVersion -ge 0 | Should Be $true
+			$ishVersion.BuildVersion -ge 0 | Should -Be $true
 		}
 		It "IshSession.RevisionVersion" {
-			$ishVersion.RevisionVersion -ge 0 | Should Be $true
+			$ishVersion.RevisionVersion -ge 0 | Should -Be $true
 		}
 	}
 }
-
 	
-} finally {
-	Write-Host "Cleaning Test Data and Variables"
+AfterAll {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 }

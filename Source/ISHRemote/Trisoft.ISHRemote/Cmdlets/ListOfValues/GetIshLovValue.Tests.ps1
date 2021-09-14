@@ -1,59 +1,59 @@
-﻿Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-. (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "..\..\ISHRemote.PesterSetup.ps1")
-$cmdletName = "Get-IshLovValue"
-try {
-	
-Describe “Get-IshLovValue" -Tags "Create" {
-	Write-Host "Initializing Test Data and Variables"
+BeforeAll {
+	$cmdletName = "Get-IshLovValue"
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
 
-	Context “Get-IshLovValue ParameterGroup" {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
+}
+	
+Describe "Get-IshLovValue" -Tags "Create" {
+	Context "Get-IshLovValue ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshLovValue -IShSession "INVALIDISHSESSION" -LovId $ishLovId -IshLovValue "ISHREMOTE$ishLovId" } | Should Throw
+			{ Get-IshLovValue -IShSession "INVALIDISHSESSION" -LovId $ishLovId -IshLovValue "ISHREMOTE$ishLovId" } | Should -Throw
 		}
 	}
-
 	Context "Get-IshLovValue returns one IshLovValue object" {
-		$ishLovValueId = $ishLng
-		$ishLovValue = Get-IshLovValue -IShSession $ishSession -LovId $ishLovId -LovValueId $ishLovValueId
+		BeforeAll {
+			$ishLovValueId = $ishLng
+			$ishLovValue = Get-IshLovValue -IShSession $ishSession -LovId $ishLovId -LovValueId $ishLovValueId
+		}
 		It "GetType().Name" {
-			$ishLovValue.GetType().Name | Should BeExactly "IshLovValue"
+			$ishLovValue.GetType().Name | Should -BeExactly "IshLovValue"
 		}
 		It "ishLovValue.IshLovValueRef" {
-			$ishLovValue.IshLovValueRef -ge 0 | Should Be $true
+			$ishLovValue.IshLovValueRef -ge 0 | Should -Be $true
 		}
 		It "ishLovValue.LovId" {
-			$ishLovValue.LovId | Should Be "$ishLovId"
+			$ishLovValue.LovId | Should -Be "$ishLovId"
 		}
 		It "ishLovValue.IshRef" {
-			$ishLovValue.IshRef | Should be $ishLovValueId
+			$ishLovValue.IshRef | Should -Be $ishLovValueId
 		}
 		It "ishLovValue.Label" {
-			$ishLovValue.Label -ge 0 | Should Be $true
+			$ishLovValue.Label -ge 0 | Should -Be $true
 		}
 		It "ishLovValue.Description" {
-			$ishLovValue.Description -ge 0 | Should Be $true
+			$ishLovValue.Description -ge 0 | Should -Be $true
 		}
 		It "ishLovValue.Active" {
-			$ishLovValue.Active -ge 0 | Should Be $true
+			$ishLovValue.Active -ge 0 | Should -Be $true
 		}
 	}
-
 	Context "Get-IshLovValue returns two IshLovValue object" {
-		$ishLovValues = Get-IshLovValue -IShSession $ishSession -LovId ($ishLovId,$ishLovId2) -LovValueId ($ishLng,$ishResolution)
 		It "Count" {
-			$ishLovValues.Count | Should Be 2
+			$ishLovValues = Get-IshLovValue -IShSession $ishSession -LovId ($ishLovId,$ishLovId2) -LovValueId ($ishLng,$ishResolution)
+			$ishLovValues.Count | Should -Be 2
 		}
 	}
-
 	Context "Get-IshLovValue by LovId returns many IshLovValue objects" {
-		$ishLovValues = Get-IshLovValue -IShSession $ishSession -LovId $ishLovId 
 		It "Count" {
-			$ishLovValues.Count -ge 3 | Should Be $true
+			$ishLovValues = Get-IshLovValue -IShSession $ishSession -LovId $ishLovId 
+			$ishLovValues.Count -ge 3 | Should -Be $true
 		}
 	}
 }
 
-
-} finally {
-	Write-Host "Cleaning Test Data and Variables"
+AfterAll {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 }
+
