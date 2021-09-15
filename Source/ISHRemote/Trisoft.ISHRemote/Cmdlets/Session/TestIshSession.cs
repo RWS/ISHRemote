@@ -26,31 +26,44 @@ using System.Security;
 namespace Trisoft.ISHRemote.Cmdlets.Session
 {
     /// <summary>
-    /// <para type="synopsis">The New-IshSession cmdlet creates a new IshSession object using the parameters that are provided.</para>
-    /// <para type="description">The New-IshSession cmdlet creates a new IshSession object using the parameters that are provided.</para>
-    /// <para type="description">The object contains the service endpoint proxies, and api contract information like multi-value separator, date format, etc</para>
+    /// <para type="synopsis">The Test-IshSession cmdlet creates a new IshSession object using the parameters that are provided.</para>
+    /// <para type="description">The Test-IshSession cmdlet internal creates a minimal IshSession object using the parameters that are provided.</para>
+    /// <para type="description">Tests the WebServices (ISHWS-activation) and validates the credentials in the 'InfoShare' database (ConnectionString-activation).</para>
     /// </summary>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin"
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin"
     /// </code>
     /// <para>Building a session for the chosen service based on username/password authentication. The username/password will be used to build a NetworkCredential object to pass for authentication to the service.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// </code>
-    /// <para>Iteratively the New-IshSession line with PSCredential parameter holding a string representation will prompt you for a password.</para>
+    /// <para>Building a session for the chosen service based on Active Directory authentication. An implicit NetworkCredential object will be passed for authentication to the service.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Timeout (New-TimeSpan -Seconds 30)
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Timeout (New-TimeSpan -Seconds 30)
     /// </code>
     /// <para>Building a session for the chosen service based on username/password authentication. The Timeout parameter, expressed as TimeSpan object, controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml.</para>
     /// </example>
-    [Cmdlet(VerbsCommon.New, "IshSession", SupportsShouldProcess = false)]
-    [OutputType(typeof(IshSession))]
-    public sealed class NewIshSession : SessionCmdlet
+    /// <example>
+    /// <code>
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -IgnoreSslPolicyErrors
+    /// </code>
+    /// <para>IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -IgnoreSslPolicyErrors -Verbose
+    /// Invoke-WebRequest -Uri "https://example.com/ISHCM/InfoShareAuthor.asp" -UseBasicParsing
+    /// </code>
+    /// <para>These lines of code activate and hence test the WebServices (ISHWS-activation) and validates the credentials in the 'InfoShare' database (ConnectionString-activation). The extra .ASP line triggers WebClient (ISHCM-activation) and the COM+ application (Trisoft-InfoShare-Author).</para>
+    /// </example>
+    [Cmdlet(VerbsDiagnostic.Test, "IshSession", SupportsShouldProcess = false)]
+    [OutputType(typeof(bool))]
+    public sealed class TestIshSession : SessionCmdlet
     {
         /// <summary>
         /// <para type="description">Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: "https://example.com/ISHWS/"</para>
@@ -117,37 +130,28 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
                 IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishPassword, _timeout, _ignoreSslPolicyErrors);
 
+                // Keep the IshSession initialization as minimal as possible
                 // Do early load of IshTypeFieldSetup (either <13-TriDKXmlSetup-based or >=13-RetrieveFieldSetupByIshType-API-based) for
                 // usage by ToIshMetadataFields/.../ToIshRequestedMetadataFields and Expand-ISHParameter.ps1 parameter autocompletion
-                var ishTypeFieldSetup = ishSession.IshTypeFieldSetup;
+                //var ishTypeFieldSetup = ishSession.IshTypeFieldSetup;
 
-                // Submit the PSVariable so you don't have to specify '-IshSession $ishSession' all the time, can be retrieved in every cmdlet, preferably in BeginProcessing()
-                WriteVerbose($"Storing IshSession[{ishSession.Name}] under SessionState.{ISHRemoteSessionStateIshSession}");
-                this.SessionState.PSVariable.Set(ISHRemoteSessionStateIshSession, ishSession);
-
-                WriteObject(ishSession);
+                WriteObject(true);
             }
-            catch (NotSupportedException notSupportedException)
+             catch (TrisoftAutomationException trisoftAutomationException)
             {
-                WriteError(new ErrorRecord(notSupportedException, "-1", ErrorCategory.InvalidOperation, null));
-            }
-            catch (TrisoftAutomationException trisoftAutomationException)
-            {
-                ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+                WriteVerbose(trisoftAutomationException.Message);
+                WriteObject(false);
             }
             catch (AggregateException aggregateException)
             {
                 var flattenedAggregateException = aggregateException.Flatten();
-                WriteWarning(flattenedAggregateException.ToString());
-                ThrowTerminatingError(new ErrorRecord(flattenedAggregateException, base.GetType().Name, ErrorCategory.NotSpecified, null));
+                WriteVerbose(flattenedAggregateException.ToString());
+                WriteObject(false);
             }
             catch (Exception exception)
             {
-                if (exception.InnerException != null)
-                {
-                    WriteWarning(exception.InnerException.ToString());
-                }
-                ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
+                WriteVerbose(exception.Message);
+                WriteObject(false);
             }
         }
     }

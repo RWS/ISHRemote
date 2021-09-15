@@ -71,20 +71,23 @@ Publishing problem perhaps, as copying %USER%\.nuget\packages\system.servicemode
 1. Cleaned up `NewIshSession.Tests.ps1` noticing the HTTPS/SSL (even TLS1.3) is missing, Timeout parameters are uncertain, PSCredential is a gap... but test has been cleaned up given 48 successes. Main branch ISHRemote v0.14 had all Pester tests refactored to Pester 5.3.0 (see #132)... still conditional/skip flags required to distuingish between WCF/ASMX/OpenAPI
 6. `TrisoftCmdlet.cs` says `[assembly: ComVisible(false)]` ... brrr? Why? Removed
 1. Build `Debug` in the same way as `Release` with copied `Scripts` folder (also the only folder for PSScriptAnalyzer to enforce) so that `ISHRemote.PesterSetup.ps1` can keep pointing to the `Debug` packaged ISHRemote.
+2. Aligned Session, so `New-IshSession` and `Test-IshSession` with upcoming 0.14 (#132) including PesterV5 tests.
 
 ## Next
 1. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code
-7. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder.
+7. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
    1. Folder25.Create -> API30.Create (ready)
    2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (NotImplemented planned for PI20.4)
    3. Folder25.Delete -> API30.DeleteFolder (ready)
    4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
+1. Next is add all SoapClient proxies
 8. Is `CertificateValidationHelper.cs` and `ServicePointManagerHelper.cs` still the way to do certificate bypass? Make sure TLS 1.3 is activated (possible since net4.8 and higher)
 9. Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
     1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
 10. Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
+11. ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1
 
 
 # Performance

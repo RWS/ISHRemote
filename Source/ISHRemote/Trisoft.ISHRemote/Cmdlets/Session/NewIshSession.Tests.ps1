@@ -1,21 +1,21 @@
 ﻿BeforeAll {
-	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 for MyCommand[" + $MyInvocation.MyCommand + "]...")
-	Write-Host BeforeAll loading the extra script
+	$cmdletName = "New-IshSession"
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
 	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
-
-	Write-Host "Initializing Test Data and Variables"
+	
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
+	$ishSession = $null  # Resetting generic $ishSession
 }
 
 Describe "New-IshSession" -Tags "Read" {
-
 	Context "New-IshSession ISHDeploy::Enable-ISHIntegrationSTSInternalAuthentication/Prepare-SupportAccess.ps1" {
 		It "Parameter WsBaseUrl contains 'SDL' (legacy script)" -skip {
 			$ishSession = New-IshSession -WsBaseUrl https://example.com/ISHWS/SDL/ -IshUserName x -IshPassword y
-			$ishSession.ServerVersion | Should -Not BeNullOrEmpty
+			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 		}
 		It "Parameter WsBaseUrl contains 'Internal' (ISHDeploy)" -skip {
 			$ishSession = New-IshSession -WsBaseUrl https://example.com/ISHWS/Internal/ -IshUserName x -IshPassword y
-			$ishSession.ServerVersion | Should -Not BeNullOrEmpty
+			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 		}
 	}
 
@@ -90,8 +90,8 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.ServerVersion contains 4 dot-seperated parts" {
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
-		It "IshSession.Timeout defaults to 20s" {
-			$ishSession.Timeout.TotalMilliseconds -eq 20000 | Should -Be $true
+		It "IshSession.Timeout defaults to 30m" {
+			$ishSession.Timeout.TotalMinutes -eq 30 | Should -Be $true
 		}
 		It "IshSession.StrictMetadataPreference" {
 			$ishSession.StrictMetadataPreference | Should -Be "Continue"
@@ -111,7 +111,7 @@ Describe "New-IshSession" -Tags "Read" {
 		It "WsBaseUrl without ending slash" {
 			# .NET throws unhandy "Reference to undeclared entity 'raquo'." error
 			$webServicesBaseUrlWithoutEndingSlash = $webServicesBaseUrl.Substring(0,$webServicesBaseUrl.Length-1)
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should -Not -Throw
+			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should -Not -Throw
 		}
 	}
 
@@ -120,7 +120,7 @@ Describe "New-IshSession" -Tags "Read" {
 			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout "INVALIDTIMEOUT" } | Should -Throw
 		}
 		It "IshSession.Timeout set to 30s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-TimeSpan -Seconds 60)
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-TimeSpan -Seconds 60) -WarningAction Ignore -ErrorAction Ignore
 			$ishSession.Timeout.TotalMilliseconds  | Should -Be "60000"
 		}
 		It "IshSession.Timeout on INVALID url set to 1ms execution" {
@@ -134,11 +134,11 @@ Describe "New-IshSession" -Tags "Read" {
 
 	Context "New-IshSession IgnoreSslPolicyErrors" {
 		It "Parameter IgnoreSslPolicyErrors specified positive flow" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore
 			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
-		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -skip {
+		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -Skip {
 			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
 			$slash1Position = $webServicesBaseUrl.IndexOf("/")
 			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
@@ -147,11 +147,11 @@ Describe "New-IshSession" -Tags "Read" {
 			$computername = $hostname.Substring(0,$hostname.IndexOf("."))
 			$webServicesBaseUrlToComputerName = $webServicesBaseUrl.Replace($hostname,$computername)
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToComputerName -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-			$ishSession.ServerVersion | Should -Not BeNullOrEmpty
+			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 			$ishSession.Dispose()
 		}
-		<# It "Parameter IgnoreSslPolicyErrors specified negative flow (Resolve-DnsName)" -skip {
+		<# It "Parameter IgnoreSslPolicyErrors specified negative flow (Resolve-DnsName)" -Skip {
 			# replace hostname like example.com with ip-address
 			$slash1Position = $webServicesBaseUrl.IndexOf("/")
 			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
@@ -160,8 +160,8 @@ Describe "New-IshSession" -Tags "Read" {
 			$ipAddress = Resolve-DnsName –Name $hostname  # only available on Windows Server 2012 R2 and Windows 8.1
 			$webServicesBaseUrlToIpAddress = $webServicesBaseUrl.Replace($hostname,$ipAddress)
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-			$ishSession.ServerVersion | Should Not BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should Be 4
+			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
+			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 			$ishSession.Dispose()
 		} #>
 	}
@@ -228,5 +228,12 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.UserGroup25" {
 			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name UserGroup25) | Should -Be $true
 		}
+		It "IshSession.UserRole25" {
+			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name UserRole25) | Should -Be $true
+		}
 	}
+}
+
+AfterAll {
+	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 }

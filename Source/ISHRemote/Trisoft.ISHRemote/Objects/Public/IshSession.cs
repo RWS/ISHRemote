@@ -39,6 +39,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private IshConnectionConfiguration _ishConnectionConfiguration;
         private string _ishUserName;
         private string _userName;
+        private string _userLanguage;
         private readonly string _ishPassword;
         private readonly string _separator = ", ";
         private readonly string _folderPathSeparator = @"\";
@@ -56,18 +57,17 @@ namespace Trisoft.ISHRemote.Objects.Public
         private Enumerations.PipelineObjectPreference _pipelineObjectPreference = Enumerations.PipelineObjectPreference.PSObjectNoteProperty;
         private Enumerations.RequestedMetadataGroup _defaultRequestedMetadata = Enumerations.RequestedMetadataGroup.Basic;
 
+        /// <summary>
+        /// Used by the SOAP API that retrieves files/blobs in multiple chunk, this parameter is the chunksize (10485760 bytes is 10Mb)
+        /// </summary>
         private int _chunkSize = 10485760;
+        /// <summary>
+        /// Used to divide bigger data set retrievals in multiple API calls, 999 is the best optimization server-side (Oracle IN-clause only allows 999 values, so 1000 would mean 2x queries server-side)
+        /// </summary>
         private int _metadataBatchSize = 999;
         private int _blobBatchSize = 50;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
-        //TODO [Must] ISHRemotev7+ Cleanup// private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
-        //TODO [Must] ISHRemotev7+ Cleanup// private readonly TimeSpan _timeoutService = TimeSpan.MaxValue;
         private readonly bool _ignoreSslPolicyErrors = false;
-        //TODO [Must] ISHRemotev7+ Cleanup// private readonly bool _explicitIssuer = false;
-
-        
-        
-        //TODO [Must] ISHRemotev7+ Cleanup// private InfoShareWcfConnection _connection;
 
         //private Annotation25ServiceReference.Annotation _annotation25;
         private Application25ServiceReference.Application25SoapClient _application25;
@@ -116,45 +116,6 @@ namespace Trisoft.ISHRemote.Objects.Public
             CreateConnection();
         }
 
-        //TODO [Must] ISHRemotev7+ Cleanup
-        /*
-        /// <summary>
-        /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
-        /// </summary>
-        /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
-        /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
-        /// <param name="wsTrustIssuerUrl">The url to the security token service wstrust endpoint. For example 'https://example.com/ISHSTS/issue/wstrust/mixed/username'</param>
-        /// <param name="wsTrustIssuerMexUrl">The binding for the wsTrustEndpoint url</param>
-        /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
-        /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
-        /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
-        /// <param name="timeoutIssue">Timeout to control Send/Receive timeouts of WCF when issuing a token</param>
-        /// <param name="timeoutService">Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies</param>
-        /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string wsTrustIssuerUrl, string wsTrustIssuerMexUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, TimeSpan timeoutIssue, TimeSpan timeoutService, bool ignoreSslPolicyErrors)
-        {
-            _logger = logger;
-            _explicitIssuer = true;
-            _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
-            if (_ignoreSslPolicyErrors)
-            {
-                CertificateValidationHelper.OverrideCertificateValidation();
-            }
-            ServicePointManagerHelper.RestoreCertificateValidation();
-            // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
-            _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
-            _wsTrustIssuerUri = new Uri(wsTrustIssuerUrl);
-            _wsTrustIssuerMexUri = new Uri(wsTrustIssuerMexUrl);
-
-            _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
-            _ishPassword = ishSecurePassword;
-            _timeout = timeout;
-            _timeoutIssue = timeoutIssue;
-            _timeoutService = timeoutService;
-            CreateConnection();
-        }
-        */
-
         private void LoadConnectionConfiguration()
         {
             var client = new HttpClient();
@@ -164,10 +125,10 @@ namespace Trisoft.ISHRemote.Objects.Public
             var responseMessage = client.GetAsync(connectionConfigurationUri).GetAwaiter().GetResult();
             string response = responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             _ishConnectionConfiguration = new IshConnectionConfiguration(response);
-            _logger.WriteDebug($"LoadConnectionConfiguration found InfoShareWSUrl[${_ishConnectionConfiguration.InfoShareWSUrl}] ApplicationName[${_ishConnectionConfiguration.ApplicationName}] SoftwareVersion[${_ishConnectionConfiguration.SoftwareVersion}]");
+            _logger.WriteDebug($"LoadConnectionConfiguration found InfoShareWSUrl[{_ishConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{_ishConnectionConfiguration.ApplicationName}] SoftwareVersion[{_ishConnectionConfiguration.SoftwareVersion}]");
             if (_ishConnectionConfiguration.InfoShareWSUrl != _webServicesBaseUri)
             {
-                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _webServicesBaseUri[${_webServicesBaseUri}] differs from _ishConnectionConfiguration.InfoShareWSUrl[${_ishConnectionConfiguration.InfoShareWSUrl}]");
+                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _webServicesBaseUri[{_webServicesBaseUri}] differs from _ishConnectionConfiguration.InfoShareWSUrl[{_ishConnectionConfiguration.InfoShareWSUrl}]. Using _webServicesBaseUri.");
             }
         }
 
@@ -277,6 +238,27 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
+        /// <summary>
+        /// The user language as available on the InfoShare User Profile in the CMS under field 'FISHUSERLANGUAGE'
+        /// </summary>
+        public string UserLanguage
+        {
+            get
+            {
+                if (_userLanguage == null)
+                {
+                    //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
+                    string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
+                    string xmlIshObjects = "";
+                    User25.GetMyMetaData(ref _authenticationContext, requestedMetadata, ref xmlIshObjects);
+                    Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
+                    IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
+                    _userLanguage = ishObjects.Objects[0].IshFields.GetFieldValue("FISHUSERLANGUAGE", Enumerations.Level.None, Enumerations.ValueType.Value);
+                }
+                return _userLanguage;
+            }
+        }
+
         internal IshVersion ServerIshVersion
         {
             get { return _serverVersion; }
@@ -346,35 +328,13 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _timeout = value; }
         }
 
-        //TODO [Must] ISHRemotev7+ Cleanup
-        /*
-        /// <summary>
-        /// Timeout to control Send/Receive timeouts of WCF when issuing a token
-        /// </summary>
-        public TimeSpan TimeoutIssue
-        {
-            get { return _timeoutIssue; }
-            set { _timeoutIssue = value; }
-        }
-        
-
-        /// <summary>
-        /// Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies
-        /// </summary>
-        public TimeSpan TimeoutService
-        {
-            get { return _timeoutService; }
-            // set { _timeoutService = value; }  // requires reset of all proxies
-        }
-        */
-
         /// <summary>
         /// Web Service Retrieve batch size, if implemented, expressed in number of Ids/Objects for usage in metadata calls
         /// </summary>
         public int MetadataBatchSize
         {
             get { return _metadataBatchSize; }
-            set { _metadataBatchSize = value; }
+            set { _metadataBatchSize = (value > 0) ? value : 999; }
         }
 
         /// <summary>
