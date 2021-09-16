@@ -14,25 +14,25 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Setup .NET
+    - name: Setup .NET 3.1.x
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
     
-    - name: Setup .NET
+    - name: Setup .NET 5.0.x
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
     
-    - name: Restore dependencies
+    - name: Restore project and dependencies
       run: dotnet restore Source/ISHRemote/ISHRemote.sln
     
-    - name: Build
+    - name: Build Solution
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
     
-    - name: Install PSScriptAnalyzer module
+    - name: Setup PowerShell PSScriptAnalyzer
       shell: pwsh
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
@@ -56,16 +56,16 @@ jobs:
         name: ISHRemote-module
         path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/*.nupkg
 
-    - name: Test CmdLets with Pester
+    - name: Pester Test Cmdlets on Windows using PowerShell 7.x
       shell: pwsh
       env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
         ISH_USER_NAME: ${{ secrets.ISH_USER_NAME }}
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
-      run: Invoke-Pester Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/Session/NewIshSession.Tests.ps1 -Passthru | Export-CliXml -Path NewIshSession.Pester.Tests.xml
+      run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/ -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
-        name: New-IshSession pester test results
-        path: NewIshSession.Pester.Tests.xml
+        name: Cmdlets pester test results
+        path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
