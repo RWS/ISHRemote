@@ -228,13 +228,14 @@ namespace Trisoft.ISHRemote.Cmdlets
 
             // The baseFolder is wrong
             // EL: DIRTY WORKAROUND BELOW TO THROW AN EXCEPTION WITH ERROR CODE 102001
+            // Use faulty folder path with quotes added, so we can throw the expected exception with errorcode=102001
             string xmlIshFolder = ""; 
-                ishSession.Folder25.GetMetaData(
-                ref ishSession._authenticationContext,
-                eBaseFolder.System, 
-                new string[] { "'" + baseFolderLabel + "'" },  // Use faulty folder path with quotes added, so we can throw the expected exception with errorcode=102001
-                "",
-                ref xmlIshFolder);
+            var response = ishSession.Folder25.GetMetaData(new GetMetaDataRequest() { 
+                psAuthContext = ishSession._authenticationContext, 
+                peBaseFolder = eBaseFolder.System,
+                pasFolderPath= new string[] { "'" + baseFolderLabel + "'" }, 
+                psXMLRequestedMetaData = "",
+                psOutXMLFolderList = xmlIshFolder });
             return eBaseFolder.Data;
         }
 
@@ -249,12 +250,14 @@ namespace Trisoft.ISHRemote.Cmdlets
             IshFields requestedMetadata = new IshFields();
             requestedMetadata.AddField(new IshRequestedMetadataField("FNAME", Enumerations.Level.None, Enumerations.ValueType.All));
             string xmlIshFolder = "";
-            ishSession.Folder25.GetMetaData(
-                ref ishSession._authenticationContext,
-                baseFolder,
-                new string[] { },  // Use empty folder path so we can just get the basefolder name
-                requestedMetadata.ToXml(),
-                ref xmlIshFolder);
+            // Use empty folder path so we can just get the basefolder name
+            var response = ishSession.Folder25.GetMetaData(new GetMetaDataRequest() { 
+                psAuthContext = ishSession._authenticationContext, 
+                peBaseFolder = baseFolder, 
+                pasFolderPath = new string[] { }, 
+                psXMLRequestedMetaData = requestedMetadata.ToXml(), 
+                psOutXMLFolderList = xmlIshFolder });
+            xmlIshFolder = response.psOutXMLFolderList;
             XmlDocument result = new XmlDocument();
             result.LoadXml(xmlIshFolder);
             XmlElement xmlIshFolderElement = (XmlElement)result.SelectSingleNode("ishfolder");

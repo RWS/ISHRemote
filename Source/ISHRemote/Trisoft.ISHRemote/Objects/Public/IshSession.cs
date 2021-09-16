@@ -20,9 +20,16 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using System.Security;
+using System.ServiceModel.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel;
+
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Interfaces;
+using Trisoft.ISHRemote.Application25ServiceReference;
+using Trisoft.ISHRemote.Folder25ServiceReference;
+using Trisoft.ISHRemote.Settings25ServiceReference;
+using Trisoft.ISHRemote.User25ServiceReference;
 
 namespace Trisoft.ISHRemote.Objects.Public
 {
@@ -69,17 +76,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private readonly bool _ignoreSslPolicyErrors = false;
 
+        // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
+        private readonly HttpClient _httpClient;
+
         //private Annotation25ServiceReference.Annotation _annotation25;
-        private Application25ServiceReference.Application25SoapClient _application25;
+        private Application25ServiceReference.Application25Soap _application25;
         //private DocumentObj25ServiceReference.DocumentObj _documentObj25;
-        private Folder25ServiceReference.Folder25SoapClient _folder25;
-        private User25ServiceReference.User25SoapClient _user25;
+        private Folder25ServiceReference.Folder25Soap _folder25;
+        private User25ServiceReference.User25Soap _user25;
         //private UserRole25ServiceReference.UserRole _userRole25;
         //private UserGroup25ServiceReference.UserGroup _userGroup25;
         //private ListOfValues25ServiceReference.ListOfValues _listOfValues25;
         //private PublicationOutput25ServiceReference.PublicationOutput _publicationOutput25;
         //private OutputFormat25ServiceReference.OutputFormat _outputFormat25;
-        private Settings25ServiceReference.Settings25SoapClient _settings25;
+        private Settings25ServiceReference.Settings25Soap _settings25;
         //private EDT25ServiceReference.EDT _EDT25;
         //private EventMonitor25ServiceReference.EventMonitor _eventMonitor25;
         //private Baseline25ServiceReference.Baseline _baseline25;
@@ -101,12 +111,23 @@ namespace Trisoft.ISHRemote.Objects.Public
         public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, string ishPassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
         {
             _logger = logger;
+            
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
+            HttpClientHandler handler = new HttpClientHandler();
+            _logger.WriteDebug($"Enabling Tls, Tls11, Tls12 and Tls13 security protocols Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
             if (_ignoreSslPolicyErrors)
             {
-                CertificateValidationHelper.OverrideCertificateValidation();
+                // ISHRemote 0.x used CertificateValidationHelper.OverrideCertificateValidation which only works on net48 and overwrites the full AppDomain,
+                // below solution is cleaner for HttpHandler (so connectionconfiguration.xml and future OpenAPI) and SOAP proxies use factory.Credentials.ServiceCertificate.SslCertificateAuthentication
+                //CertificateValidationHelper.OverrideCertificateValidation();
+                // overwrite certificate handling for HttpClient requests
+                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             }
-            ServicePointManagerHelper.RestoreCertificateValidation();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+            handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
+            _httpClient = new HttpClient(handler);
+            _httpClient.Timeout = _timeout;
+
             // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
@@ -118,11 +139,9 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         private void LoadConnectionConfiguration()
         {
-            var client = new HttpClient();
-            client.Timeout = _timeout;
             var connectionConfigurationUri = new Uri(_webServicesBaseUri, "connectionconfiguration.xml");
-            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{client.Timeout}]");
-            var responseMessage = client.GetAsync(connectionConfigurationUri).GetAwaiter().GetResult();
+            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{_httpClient.Timeout}]");
+            var responseMessage = _httpClient.GetAsync(connectionConfigurationUri).GetAwaiter().GetResult();
             string response = responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             _ishConnectionConfiguration = new IshConnectionConfiguration(response);
             _logger.WriteDebug($"LoadConnectionConfiguration found InfoShareWSUrl[{_ishConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{_ishConnectionConfiguration.ApplicationName}] SoftwareVersion[{_ishConnectionConfiguration.SoftwareVersion}]");
@@ -139,7 +158,15 @@ namespace Trisoft.ISHRemote.Objects.Public
 
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateConnection Application25.Login");
-            Application25.Login(_ishConnectionConfiguration.ApplicationName, _ishUserName, _ishPassword, ref _authenticationContext);
+            var response = Application25.Login(new LoginRequest()
+            {
+                psApplication = _ishConnectionConfiguration.ApplicationName,
+                psUserName = _ishUserName,
+                psPassword = _ishPassword,
+                psOutAuthContext = _authenticationContext
+            });
+            _authenticationContext = response.psOutAuthContext;
+            //Application25.Login(_ishConnectionConfiguration.ApplicationName, _ishUserName, _ishPassword, ref _authenticationContext);
             _logger.WriteDebug("CreateConnection Application25.GetVersion");
             _serverVersion = new IshVersion(Application25.GetVersion());
         }
@@ -154,7 +181,12 @@ namespace Trisoft.ISHRemote.Objects.Public
                     {
                         _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
                         string xmlTypeFieldSetup;
-                        Settings25.RetrieveFieldSetupByIshType(ref _authenticationContext, null, out xmlTypeFieldSetup);
+                        var response = Settings25.RetrieveFieldSetupByIshType(new RetrieveFieldSetupByIshTypeRequest() {
+                            psAuthContext = _authenticationContext,
+                            pasIshTypes = null
+                        });
+                        _authenticationContext = response.psAuthContext;
+                        xmlTypeFieldSetup = response.psOutXMLFieldSetup;
                         _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, xmlTypeFieldSetup);
                         _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
                     }
@@ -175,7 +207,14 @@ namespace Trisoft.ISHRemote.Objects.Public
                         IshFields metadata = new IshFields();
                         metadata.AddField(new IshRequestedMetadataField(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value));  // do not pass over IshTypeFieldSetup.ToIshRequestedMetadataFields, as we are initializing that object
                         string xmlIshObjects = "";
-                        Settings25.GetMetaData(ref _authenticationContext, metadata.ToXml(), ref xmlIshObjects);
+                        var response = Settings25.GetMetaData(new Settings25ServiceReference.GetMetaDataRequest()
+                        {
+                            psAuthContext = _authenticationContext,
+                            psXMLRequestedMetaData = metadata.ToXml(),
+                            psOutXMLObjList = xmlIshObjects
+                        });
+                        _authenticationContext = response.psAuthContext;
+                        xmlIshObjects = response.psOutXMLObjList;
                         var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
                         string xmlSettingsExtensionConfig = ishFields.GetFieldValue(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value);
                         IshSettingsExtensionConfig.MergeIntoIshTypeFieldSetup(_logger, _ishTypeFieldSetup, xmlSettingsExtensionConfig);
@@ -229,7 +268,12 @@ namespace Trisoft.ISHRemote.Objects.Public
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
                     string requestedMetadata = "<ishfields><ishfield name='USERNAME' level='none'/></ishfields>";
                     string xmlIshObjects = "";
-                    User25.GetMyMetaData(ref _authenticationContext, requestedMetadata, ref xmlIshObjects);
+                    var response = User25.GetMyMetaData(new GetMyMetaDataRequest() { 
+                        psAuthContext = _authenticationContext, 
+                        psXMLRequestedMetaData= requestedMetadata, 
+                        psOutXMLObjList = xmlIshObjects });
+                    _authenticationContext = response.psAuthContext;
+                    xmlIshObjects = response.psOutXMLObjList;
                     Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
                     IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
                     _userName = ishObjects.Objects[0].IshFields.GetFieldValue("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
@@ -250,7 +294,12 @@ namespace Trisoft.ISHRemote.Objects.Public
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
                     string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
                     string xmlIshObjects = "";
-                    User25.GetMyMetaData(ref _authenticationContext, requestedMetadata, ref xmlIshObjects);
+                    var response = User25.GetMyMetaData(new GetMyMetaDataRequest() { 
+                        psAuthContext = _authenticationContext, 
+                        psXMLRequestedMetaData = requestedMetadata,
+                        psOutXMLObjList = xmlIshObjects });
+                    _authenticationContext = response.psAuthContext;
+                    xmlIshObjects = response.psOutXMLObjList;
                     Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
                     IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
                     _userLanguage = ishObjects.Objects[0].IshFields.GetFieldValue("FISHUSERLANGUAGE", Enumerations.Level.None, Enumerations.ValueType.Value);
@@ -403,7 +452,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         //    }
         //}
 
-        internal Application25ServiceReference.Application25SoapClient Application25
+        internal Application25ServiceReference.Application25Soap Application25
         {
             get
             {
@@ -411,17 +460,33 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_application25 == null)
                 {
-                    _application25 = new Application25ServiceReference.Application25SoapClient(
-                        Application25ServiceReference.Application25SoapClient.EndpointConfiguration.Application25Soap,
-                        new Uri(_webServicesBaseUri, "application25.asmx").AbsoluteUri
-                        );
-                    _application25.InnerChannel.OperationTimeout = _timeout;
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "application25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<Application25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    { 
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _application25 = factory.CreateChannel();
                 }
                 return _application25;
             }
         }
 
-        internal User25ServiceReference.User25SoapClient User25
+        internal User25ServiceReference.User25Soap User25
         {
             get
             {
@@ -429,11 +494,27 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_user25 == null)
                 {
-                    _user25 = new User25ServiceReference.User25SoapClient(
-                        User25ServiceReference.User25SoapClient.EndpointConfiguration.User25Soap12,
-                        new Uri(_webServicesBaseUri, "user25.asmx").AbsoluteUri
-                        );
-                    _user25.InnerChannel.OperationTimeout = _timeout;
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "user25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<User25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _user25 = factory.CreateChannel();
                 }
                 return _user25;
             }
@@ -495,7 +576,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         //    }
         //}
 
-        internal Settings25ServiceReference.Settings25SoapClient Settings25
+        internal Settings25ServiceReference.Settings25Soap Settings25
         {
             get
             {
@@ -503,11 +584,27 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_settings25 == null)
                 {
-                    _settings25 = new Settings25ServiceReference.Settings25SoapClient(
-                        Settings25ServiceReference.Settings25SoapClient.EndpointConfiguration.Settings25Soap12,
-                        new Uri(_webServicesBaseUri, "settings25.asmx").AbsoluteUri
-                        );
-                    _settings25.InnerChannel.OperationTimeout = _timeout;
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "settings25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<Settings25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _settings25 = factory.CreateChannel();
                 }
                 return _settings25;
             }
@@ -555,7 +652,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         //    }
         //}
 
-        internal Folder25ServiceReference.Folder25SoapClient Folder25
+        internal Folder25ServiceReference.Folder25Soap Folder25
         {
             get
             {
@@ -563,11 +660,27 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_folder25 == null)
                 {
-                    _folder25 = new Folder25ServiceReference.Folder25SoapClient(
-                        Folder25ServiceReference.Folder25SoapClient.EndpointConfiguration.Folder25Soap12,
-                        new Uri(_webServicesBaseUri, "folder25.asmx").AbsoluteUri
-                        );
-                    _folder25.InnerChannel.OperationTimeout = _timeout;
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "folder25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<Folder25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _folder25 = factory.CreateChannel();
                 }
                 return _folder25;
             }
@@ -705,10 +818,6 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         public void Dispose()
         {
-            if (_ignoreSslPolicyErrors)
-            {
-                CertificateValidationHelper.RestoreCertificateValidation();
-            }
         }
         public void Close()
         {

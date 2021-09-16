@@ -138,7 +138,24 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
-		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -Skip {
+		It "Parameter IgnoreSslPolicyErrors specified negative flow like host IPv4 address" {
+			# replace hostname like machinename.somedomain.com to ipaddress only as often certificates are valid for machinename/localhost as well
+			$slash1Position = $webServicesBaseUrl.IndexOf("/")
+			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
+			$slash3Position = $webServicesBaseUrl.IndexOf("/",$slash2Position+1)
+			$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position-1)
+			$ipv4Addresses = [System.Net.Dns]::GetHostAddresses($hostname) | 
+			                 Where-Object -Property IsIPv6LinkLocal -ne $true | 
+							 Select-Object -Property IPAddressToString  # returning @(192.168.1.160,10.100.139.126)
+			foreach ($ipv4Address in $ipv4Addresses)
+			{
+				$webServicesBaseUrlWithIpAddress = $webServicesBaseUrl.Replace($hostname,$ipv4Address.IPAddressToString)
+				$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+				$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
+				$ishSession.ServerVersion.Split(".").Length | Should -Be 4
+			}
+		}
+		It "Parameter IgnoreSslPolicyErrors specified negative flow like hostname (segment-one-url)" -Skip {
 			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
 			$slash1Position = $webServicesBaseUrl.IndexOf("/")
 			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)

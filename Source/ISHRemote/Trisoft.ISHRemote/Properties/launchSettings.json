@@ -3,7 +3,7 @@
     "Trisoft.ISHRemote": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command {Import-Module \"C:\\GITHUB\\ISHRemote\\Source\\ISHRemote\\Trisoft.ISHRemote\\bin\\Debug\\netstandard2.0\\ISHRemote.psm1\" -Verbose -Debug; New-IshSession -WsBaseUrl  https://mecdev14qa04.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Debug -Verbose }",
+      "commandLineArgs": "-NoExit -Command {Import-Module \"C:\\GITHUB\\ISHRemote\\Source\\ISHRemote\\Trisoft.ISHRemote\\bin\\Debug\\ISHRemote\"}",
       "nativeDebugging": true
     }
   }
