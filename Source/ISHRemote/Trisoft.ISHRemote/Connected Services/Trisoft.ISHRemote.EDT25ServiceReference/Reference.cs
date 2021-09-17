@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", ConfigurationName="Trisoft.ISHRemote.EDT25ServiceReference.EDT25Soap")]
-    internal interface EDT25Soap
+    public interface EDT25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:EDT:2.5/GetList", ReplyAction="*")]
@@ -76,7 +76,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetList", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class GetListRequest
+    public partial class GetListRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -99,7 +99,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetListResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class GetListResponse
+    public partial class GetListResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -126,7 +126,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetadata", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class GetMetadataRequest
+    public partial class GetMetadataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -157,7 +157,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetadataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class GetMetadataResponse
+    public partial class GetMetadataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -200,7 +200,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetadata", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetadataRequest
+    public partial class RetrieveMetadataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -239,7 +239,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetadataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetadataResponse
+    public partial class RetrieveMetadataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -266,7 +266,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Find", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class FindRequest
+    public partial class FindRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -301,7 +301,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FindResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class FindResponse
+    public partial class FindResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -328,7 +328,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class CreateRequest
+    public partial class CreateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -359,7 +359,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class CreateResponse
+    public partial class CreateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -386,7 +386,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class UpdateRequest
+    public partial class UpdateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -417,7 +417,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class UpdateResponse
+    public partial class UpdateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -440,7 +440,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class DeleteRequest
+    public partial class DeleteRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -463,7 +463,7 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", IsWrapped=true)]
-    internal partial class DeleteResponse
+    public partial class DeleteResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EDT:2.5", Order=0)]
@@ -484,13 +484,13 @@ namespace Trisoft.ISHRemote.EDT25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface EDT25SoapChannel : Trisoft.ISHRemote.EDT25ServiceReference.EDT25Soap, System.ServiceModel.IClientChannel
+    public interface EDT25SoapChannel : Trisoft.ISHRemote.EDT25ServiceReference.EDT25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class EDT25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.EDT25ServiceReference.EDT25Soap>, Trisoft.ISHRemote.EDT25ServiceReference.EDT25Soap
+    public partial class EDT25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.EDT25ServiceReference.EDT25Soap>, Trisoft.ISHRemote.EDT25ServiceReference.EDT25Soap
     {
         
         /// <summary>

@@ -5,7 +5,6 @@
     "inputs": [
       "https://ish.example.com/ISHWS/userrole25.asmx"
     ],
-    "internalTypeAccess": true,
     "namespaceMappings": [
       "*, Trisoft.ISHRemote.UserRole25ServiceReference"
     ],

@@ -189,64 +189,64 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 		It "IshSession.Annotation25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 14) { # new service since 14/14.0.0
-				-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Annotation25) | Should -Be $true
+				 $ishSession.Annotation25 -ne $null | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Application25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Application25) | Should -Be $true
+			$ishSession.Application25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.BackgroundTask25" { # new service since 13SP2/13.0.2
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { 
-				-not (Get-Member -inputobject $ishSession -Membertype Properties -Name BackgroundTask25) | Should -Be $true
+				$ishSession.BackgroundTask25 -ne $null | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Baseline25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Baseline25) | Should -Be $true
+			$ishSession.Baseline25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.DocumentObj25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name DocumentObj25) | Should -Be $true
+			$ishSession.DocumentObj25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.EDT25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name EDT25) | Should -Be $true
+			$ishSession.EDT25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.EventMonitor25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name EventMonitor25) | Should -Be $true
+			$ishSession.EventMonitor25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.Folder25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Folder25) | Should -Be $true
+			$ishSession.Folder25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.ListOfValues25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name ListOfValues25) | Should -Be $true
+			$ishSession.ListOfValues25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.MetadataBinding25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name MetadataBinding25) | Should -Be $true
+			$ishSession.MetadataBinding25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.OutputFormat25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name OutputFormat25) | Should -Be $true
+			$ishSession.OutputFormat25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.PublicationOutput25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name PublicationOutput25) | Should -Be $true
+			$ishSession.PublicationOutput25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.Search25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Search25) | Should -Be $true
+			$ishSession.Search25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.Settings25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name Settings25) | Should -Be $true
+			$ishSession.Settings25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.TranslationJob25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name TranslationJob25) | Should -Be $true
+			$ishSession.TranslationJob25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.TranslationTemplate25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name TranslationTemplate25) | Should -Be $true
+			$ishSession.TranslationTemplate25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.User25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name User25) | Should -Be $true
+			$ishSession.User25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.UserGroup25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name UserGroup25) | Should -Be $true
+			$ishSession.UserGroup25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.UserRole25" {
-			-not (Get-Member -inputobject $ishSession -Membertype Properties -Name UserRole25) | Should -Be $true
+			$ishSession.UserRole25 -ne $null | Should -Not -BeNullOrEmpty
 		}
 	}
 }

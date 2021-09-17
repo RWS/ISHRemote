@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.Search25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", ConfigurationName="Trisoft.ISHRemote.Search25ServiceReference.Search25Soap")]
-    internal interface Search25Soap
+    public interface Search25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:Search:2.5/PerformSearch", ReplyAction="*")]
@@ -36,7 +36,7 @@ namespace Trisoft.ISHRemote.Search25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="PerformSearch", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", IsWrapped=true)]
-    internal partial class PerformSearchRequest
+    public partial class PerformSearchRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", Order=0)]
@@ -71,7 +71,7 @@ namespace Trisoft.ISHRemote.Search25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="PerformSearchResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", IsWrapped=true)]
-    internal partial class PerformSearchResponse
+    public partial class PerformSearchResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", Order=0)]
@@ -121,7 +121,7 @@ namespace Trisoft.ISHRemote.Search25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="PerformSearchInPublication", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", IsWrapped=true)]
-    internal partial class PerformSearchInPublicationRequest
+    public partial class PerformSearchInPublicationRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", Order=0)]
@@ -168,7 +168,7 @@ namespace Trisoft.ISHRemote.Search25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="PerformSearchInPublicationResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", IsWrapped=true)]
-    internal partial class PerformSearchInPublicationResponse
+    public partial class PerformSearchInPublicationResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Search:2.5", Order=0)]
@@ -201,13 +201,13 @@ namespace Trisoft.ISHRemote.Search25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface Search25SoapChannel : Trisoft.ISHRemote.Search25ServiceReference.Search25Soap, System.ServiceModel.IClientChannel
+    public interface Search25SoapChannel : Trisoft.ISHRemote.Search25ServiceReference.Search25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class Search25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.Search25ServiceReference.Search25Soap>, Trisoft.ISHRemote.Search25ServiceReference.Search25Soap
+    public partial class Search25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.Search25ServiceReference.Search25Soap>, Trisoft.ISHRemote.Search25ServiceReference.Search25Soap
     {
         
         /// <summary>

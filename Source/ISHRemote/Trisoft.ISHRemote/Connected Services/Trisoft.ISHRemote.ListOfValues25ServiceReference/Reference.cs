@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", ConfigurationName="Trisoft.ISHRemote.ListOfValues25ServiceReference.ListOfValues25Soap")]
-    internal interface ListOfValues25Soap
+    public interface ListOfValues25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5/RetrieveLists", ReplyAction="*")]
@@ -68,7 +68,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveLists", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class RetrieveListsRequest
+    public partial class RetrieveListsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -95,7 +95,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveListsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class RetrieveListsResponse
+    public partial class RetrieveListsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -138,7 +138,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveValues", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class RetrieveValuesRequest
+    public partial class RetrieveValuesRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -169,7 +169,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveValuesResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class RetrieveValuesResponse
+    public partial class RetrieveValuesResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -196,7 +196,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateValue", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class CreateValueRequest
+    public partial class CreateValueRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -231,7 +231,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateValueResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class CreateValueResponse
+    public partial class CreateValueResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -258,7 +258,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateValue2", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class CreateValue2Request
+    public partial class CreateValue2Request
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -293,7 +293,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateValue2Response", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class CreateValue2Response
+    public partial class CreateValue2Response
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -320,7 +320,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateValue", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class UpdateValueRequest
+    public partial class UpdateValueRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -359,7 +359,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateValueResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class UpdateValueResponse
+    public partial class UpdateValueResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -382,7 +382,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteValue", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class DeleteValueRequest
+    public partial class DeleteValueRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -409,7 +409,7 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteValueResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", IsWrapped=true)]
-    internal partial class DeleteValueResponse
+    public partial class DeleteValueResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:ListOfValue:2.5", Order=0)]
@@ -430,13 +430,13 @@ namespace Trisoft.ISHRemote.ListOfValues25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface ListOfValues25SoapChannel : Trisoft.ISHRemote.ListOfValues25ServiceReference.ListOfValues25Soap, System.ServiceModel.IClientChannel
+    public interface ListOfValues25SoapChannel : Trisoft.ISHRemote.ListOfValues25ServiceReference.ListOfValues25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class ListOfValues25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.ListOfValues25ServiceReference.ListOfValues25Soap>, Trisoft.ISHRemote.ListOfValues25ServiceReference.ListOfValues25Soap
+    public partial class ListOfValues25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.ListOfValues25ServiceReference.ListOfValues25Soap>, Trisoft.ISHRemote.ListOfValues25ServiceReference.ListOfValues25Soap
     {
         
         /// <summary>

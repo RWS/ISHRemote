@@ -5,7 +5,6 @@
     "inputs": [
       "https://ish.example.com/ISHWS/translationjob25.asmx"
     ],
-    "internalTypeAccess": true,
     "namespaceMappings": [
       "*, Trisoft.ISHRemote.TranslationJob25ServiceReference"
     ],

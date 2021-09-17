@@ -14,7 +14,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", ConfigurationName="Trisoft.ISHRemote.TranslationTemplate25ServiceReference.TranslationTemplate25Soap" +
         "")]
-    internal interface TranslationTemplate25Soap
+    public interface TranslationTemplate25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5/Retrieve", ReplyAction="*")]
@@ -55,7 +55,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Retrieve", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", IsWrapped=true)]
-    internal partial class RetrieveRequest
+    public partial class RetrieveRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", Order=0)]
@@ -78,7 +78,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", IsWrapped=true)]
-    internal partial class RetrieveResponse
+    public partial class RetrieveResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", Order=0)]
@@ -105,7 +105,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", IsWrapped=true)]
-    internal partial class CreateRequest
+    public partial class CreateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", Order=0)]
@@ -128,7 +128,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", IsWrapped=true)]
-    internal partial class CreateResponse
+    public partial class CreateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", Order=0)]
@@ -151,7 +151,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", IsWrapped=true)]
-    internal partial class DeleteRequest
+    public partial class DeleteRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", Order=0)]
@@ -170,7 +170,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", IsWrapped=true)]
-    internal partial class DeleteResponse
+    public partial class DeleteResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", Order=0)]
@@ -193,7 +193,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteByTypeAndAlias", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", IsWrapped=true)]
-    internal partial class DeleteByTypeAndAliasRequest
+    public partial class DeleteByTypeAndAliasRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", Order=0)]
@@ -220,7 +220,7 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteByTypeAndAliasResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", IsWrapped=true)]
-    internal partial class DeleteByTypeAndAliasResponse
+    public partial class DeleteByTypeAndAliasResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationTemplate:2.5", Order=0)]
@@ -241,13 +241,13 @@ namespace Trisoft.ISHRemote.TranslationTemplate25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface TranslationTemplate25SoapChannel : Trisoft.ISHRemote.TranslationTemplate25ServiceReference.TranslationTemplate25Soap, System.ServiceModel.IClientChannel
+    public interface TranslationTemplate25SoapChannel : Trisoft.ISHRemote.TranslationTemplate25ServiceReference.TranslationTemplate25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class TranslationTemplate25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.TranslationTemplate25ServiceReference.TranslationTemplate25Soap>, Trisoft.ISHRemote.TranslationTemplate25ServiceReference.TranslationTemplate25Soap
+    public partial class TranslationTemplate25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.TranslationTemplate25ServiceReference.TranslationTemplate25Soap>, Trisoft.ISHRemote.TranslationTemplate25ServiceReference.TranslationTemplate25Soap
     {
         
         /// <summary>

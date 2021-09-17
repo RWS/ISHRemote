@@ -5,7 +5,6 @@
     "inputs": [
       "https://ish.example.com/ISHWS/application25.asmx"
     ],
-    "internalTypeAccess": true,
     "namespaceMappings": [
       "*, Trisoft.ISHRemote.Application25ServiceReference"
     ],

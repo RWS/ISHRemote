@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", ConfigurationName="Trisoft.ISHRemote.TranslationJob25ServiceReference.TranslationJob25Soap")]
-    internal interface TranslationJob25Soap
+    public interface TranslationJob25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5/GetPossibleTargetStatuses" +
@@ -164,7 +164,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetPossibleTargetStatuses", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class GetPossibleTargetStatusesRequest
+    public partial class GetPossibleTargetStatusesRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -187,7 +187,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetPossibleTargetStatusesResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class GetPossibleTargetStatusesResponse
+    public partial class GetPossibleTargetStatusesResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -214,7 +214,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetaData", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class GetMetaDataRequest
+    public partial class GetMetaDataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -245,7 +245,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetaDataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class GetMetaDataResponse
+    public partial class GetMetaDataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -272,7 +272,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetTranslationJob", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class GetTranslationJobRequest
+    public partial class GetTranslationJobRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -311,7 +311,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetTranslationJobResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class GetTranslationJobResponse
+    public partial class GetTranslationJobResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -346,7 +346,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetaData", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetaDataRequest
+    public partial class RetrieveMetaDataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -381,7 +381,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetaDataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetaDataResponse
+    public partial class RetrieveMetaDataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -408,7 +408,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Find", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class FindRequest
+    public partial class FindRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -439,7 +439,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FindResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class FindResponse
+    public partial class FindResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -466,7 +466,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveTranslationJobItems", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class RetrieveTranslationJobItemsRequest
+    public partial class RetrieveTranslationJobItemsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -497,7 +497,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveTranslationJobItemsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class RetrieveTranslationJobItemsResponse
+    public partial class RetrieveTranslationJobItemsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -524,7 +524,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveExternalTranslationJobs", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class RetrieveExternalTranslationJobsRequest
+    public partial class RetrieveExternalTranslationJobsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -551,7 +551,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveExternalTranslationJobsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class RetrieveExternalTranslationJobsResponse
+    public partial class RetrieveExternalTranslationJobsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -578,7 +578,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateTranslationJob", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class CreateTranslationJobRequest
+    public partial class CreateTranslationJobRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -621,7 +621,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateTranslationJobResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class CreateTranslationJobResponse
+    public partial class CreateTranslationJobResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -648,7 +648,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateTranslationJob3", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class UpdateTranslationJob3Request
+    public partial class UpdateTranslationJob3Request
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -695,7 +695,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateTranslationJob3Response", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class UpdateTranslationJob3Response
+    public partial class UpdateTranslationJob3Response
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -718,7 +718,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class DeleteRequest
+    public partial class DeleteRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -741,7 +741,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class DeleteResponse
+    public partial class DeleteResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -764,7 +764,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="SetMetaData3", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class SetMetaData3Request
+    public partial class SetMetaData3Request
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -795,7 +795,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="SetMetaData3Response", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class SetMetaData3Response
+    public partial class SetMetaData3Response
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -818,7 +818,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateTranslationJobItems", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class CreateTranslationJobItemsRequest
+    public partial class CreateTranslationJobItemsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -849,7 +849,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateTranslationJobItemsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class CreateTranslationJobItemsResponse
+    public partial class CreateTranslationJobItemsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -872,7 +872,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateTranslationJobItems", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class UpdateTranslationJobItemsRequest
+    public partial class UpdateTranslationJobItemsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -903,7 +903,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateTranslationJobItemsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class UpdateTranslationJobItemsResponse
+    public partial class UpdateTranslationJobItemsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -926,7 +926,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteTranslationJobItems", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class DeleteTranslationJobItemsRequest
+    public partial class DeleteTranslationJobItemsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -953,7 +953,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteTranslationJobItemsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class DeleteTranslationJobItemsResponse
+    public partial class DeleteTranslationJobItemsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -976,7 +976,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateExternalTranslationJobs", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class CreateExternalTranslationJobsRequest
+    public partial class CreateExternalTranslationJobsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -1007,7 +1007,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateExternalTranslationJobsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class CreateExternalTranslationJobsResponse
+    public partial class CreateExternalTranslationJobsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -1030,7 +1030,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteExternalTranslationJobs", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class DeleteExternalTranslationJobsRequest
+    public partial class DeleteExternalTranslationJobsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -1057,7 +1057,7 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteExternalTranslationJobsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", IsWrapped=true)]
-    internal partial class DeleteExternalTranslationJobsResponse
+    public partial class DeleteExternalTranslationJobsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:TranslationJob:2.5", Order=0)]
@@ -1078,13 +1078,13 @@ namespace Trisoft.ISHRemote.TranslationJob25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface TranslationJob25SoapChannel : Trisoft.ISHRemote.TranslationJob25ServiceReference.TranslationJob25Soap, System.ServiceModel.IClientChannel
+    public interface TranslationJob25SoapChannel : Trisoft.ISHRemote.TranslationJob25ServiceReference.TranslationJob25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class TranslationJob25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.TranslationJob25ServiceReference.TranslationJob25Soap>, Trisoft.ISHRemote.TranslationJob25ServiceReference.TranslationJob25Soap
+    public partial class TranslationJob25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.TranslationJob25ServiceReference.TranslationJob25Soap>, Trisoft.ISHRemote.TranslationJob25ServiceReference.TranslationJob25Soap
     {
         
         /// <summary>

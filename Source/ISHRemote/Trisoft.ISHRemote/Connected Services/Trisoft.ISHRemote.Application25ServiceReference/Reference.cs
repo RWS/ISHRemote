@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", ConfigurationName="Trisoft.ISHRemote.Application25ServiceReference.Application25Soap")]
-    internal interface Application25Soap
+    public interface Application25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:Application:2.5/Login", ReplyAction="*")]
@@ -59,7 +59,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Login", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", IsWrapped=true)]
-    internal partial class LoginRequest
+    public partial class LoginRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", Order=0)]
@@ -90,7 +90,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="LoginResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", IsWrapped=true)]
-    internal partial class LoginResponse
+    public partial class LoginResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", Order=0)]
@@ -113,7 +113,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Authenticate", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", IsWrapped=true)]
-    internal partial class AuthenticateRequest
+    public partial class AuthenticateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", Order=0)]
@@ -136,7 +136,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="AuthenticateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", IsWrapped=true)]
-    internal partial class AuthenticateResponse
+    public partial class AuthenticateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", Order=0)]
@@ -159,7 +159,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetApplicationName", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", IsWrapped=true)]
-    internal partial class GetApplicationNameRequest
+    public partial class GetApplicationNameRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", Order=0)]
@@ -182,7 +182,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetApplicationNameResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", IsWrapped=true)]
-    internal partial class GetApplicationNameResponse
+    public partial class GetApplicationNameResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", Order=0)]
@@ -209,7 +209,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetUserRef", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", IsWrapped=true)]
-    internal partial class GetUserRefRequest
+    public partial class GetUserRefRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", Order=0)]
@@ -232,7 +232,7 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetUserRefResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", IsWrapped=true)]
-    internal partial class GetUserRefResponse
+    public partial class GetUserRefResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Application:2.5", Order=0)]
@@ -257,13 +257,13 @@ namespace Trisoft.ISHRemote.Application25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface Application25SoapChannel : Trisoft.ISHRemote.Application25ServiceReference.Application25Soap, System.ServiceModel.IClientChannel
+    public interface Application25SoapChannel : Trisoft.ISHRemote.Application25ServiceReference.Application25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class Application25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.Application25ServiceReference.Application25Soap>, Trisoft.ISHRemote.Application25ServiceReference.Application25Soap
+    public partial class Application25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.Application25ServiceReference.Application25Soap>, Trisoft.ISHRemote.Application25ServiceReference.Application25Soap
     {
         
         /// <summary>

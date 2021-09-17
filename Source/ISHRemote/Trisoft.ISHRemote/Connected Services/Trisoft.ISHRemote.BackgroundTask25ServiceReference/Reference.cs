@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", ConfigurationName="Trisoft.ISHRemote.BackgroundTask25ServiceReference.BackgroundTask25Soap")]
-    internal interface BackgroundTask25Soap
+    public interface BackgroundTask25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5/Find", ReplyAction="*")]
@@ -69,7 +69,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Find", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", IsWrapped=true)]
-    internal partial class FindRequest
+    public partial class FindRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", Order=0)]
@@ -108,7 +108,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FindResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", IsWrapped=true)]
-    internal partial class FindResponse
+    public partial class FindResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", Order=0)]
@@ -135,7 +135,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveDataObjectByIshDataRefs", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", IsWrapped=true)]
-    internal partial class RetrieveDataObjectByIshDataRefsRequest
+    public partial class RetrieveDataObjectByIshDataRefsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", Order=0)]
@@ -162,7 +162,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveDataObjectByIshDataRefsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", IsWrapped=true)]
-    internal partial class RetrieveDataObjectByIshDataRefsResponse
+    public partial class RetrieveDataObjectByIshDataRefsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", Order=0)]
@@ -189,7 +189,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateBackgroundTaskWithStartAfter", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", IsWrapped=true)]
-    internal partial class CreateBackgroundTaskWithStartAfterRequest
+    public partial class CreateBackgroundTaskWithStartAfterRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", Order=0)]
@@ -233,7 +233,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateBackgroundTaskWithStartAfterResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", IsWrapped=true)]
-    internal partial class CreateBackgroundTaskWithStartAfterResponse
+    public partial class CreateBackgroundTaskWithStartAfterResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", Order=0)]
@@ -264,7 +264,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateBackgroundTask", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", IsWrapped=true)]
-    internal partial class CreateBackgroundTaskRequest
+    public partial class CreateBackgroundTaskRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", Order=0)]
@@ -304,7 +304,7 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateBackgroundTaskResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", IsWrapped=true)]
-    internal partial class CreateBackgroundTaskResponse
+    public partial class CreateBackgroundTaskResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BackgroundTask:2.5", Order=0)]
@@ -333,13 +333,13 @@ namespace Trisoft.ISHRemote.BackgroundTask25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface BackgroundTask25SoapChannel : Trisoft.ISHRemote.BackgroundTask25ServiceReference.BackgroundTask25Soap, System.ServiceModel.IClientChannel
+    public interface BackgroundTask25SoapChannel : Trisoft.ISHRemote.BackgroundTask25ServiceReference.BackgroundTask25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class BackgroundTask25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.BackgroundTask25ServiceReference.BackgroundTask25Soap>, Trisoft.ISHRemote.BackgroundTask25ServiceReference.BackgroundTask25Soap
+    public partial class BackgroundTask25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.BackgroundTask25ServiceReference.BackgroundTask25Soap>, Trisoft.ISHRemote.BackgroundTask25ServiceReference.BackgroundTask25Soap
     {
         
         /// <summary>

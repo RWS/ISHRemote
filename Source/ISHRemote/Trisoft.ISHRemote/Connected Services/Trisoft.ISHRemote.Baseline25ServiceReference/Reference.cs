@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", ConfigurationName="Trisoft.ISHRemote.Baseline25ServiceReference.BaseLine25Soap")]
-    internal interface BaseLine25Soap
+    public interface BaseLine25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5/RetrieveMetaData", ReplyAction="*")]
@@ -232,7 +232,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetaData", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetaDataRequest
+    public partial class RetrieveMetaDataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -267,7 +267,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetaDataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetaDataResponse
+    public partial class RetrieveMetaDataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -310,7 +310,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetadata2", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetadata2Request
+    public partial class RetrieveMetadata2Request
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -349,7 +349,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetadata2Response", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetadata2Response
+    public partial class RetrieveMetadata2Response
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -376,7 +376,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Find", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class FindRequest
+    public partial class FindRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -411,7 +411,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FindResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class FindResponse
+    public partial class FindResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -438,7 +438,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetaData", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetMetaDataRequest
+    public partial class GetMetaDataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -469,7 +469,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetaDataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetMetaDataResponse
+    public partial class GetMetaDataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -496,7 +496,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetList", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetListRequest
+    public partial class GetListRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -527,7 +527,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetListResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetListResponse
+    public partial class GetListResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -554,7 +554,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetBaselineName", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetBaselineNameRequest
+    public partial class GetBaselineNameRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -581,7 +581,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetBaselineNameResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetBaselineNameResponse
+    public partial class GetBaselineNameResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -608,7 +608,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetBaselineId", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetBaselineIdRequest
+    public partial class GetBaselineIdRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -635,7 +635,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetBaselineIdResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetBaselineIdResponse
+    public partial class GetBaselineIdResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -662,7 +662,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Containing", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ContainingRequest
+    public partial class ContainingRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -697,7 +697,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ContainingResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ContainingResponse
+    public partial class ContainingResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -724,7 +724,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetBaseline", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetBaselineRequest
+    public partial class GetBaselineRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -759,7 +759,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetBaselineResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetBaselineResponse
+    public partial class GetBaselineResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -790,7 +790,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetReport", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetReportRequest
+    public partial class GetReportRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -837,7 +837,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetReportResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class GetReportResponse
+    public partial class GetReportResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -864,7 +864,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExpandBaseline", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ExpandBaselineRequest
+    public partial class ExpandBaselineRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -915,7 +915,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExpandBaselineResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ExpandBaselineResponse
+    public partial class ExpandBaselineResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -942,7 +942,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExpandReport", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ExpandReportRequest
+    public partial class ExpandReportRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -993,7 +993,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExpandReportResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ExpandReportResponse
+    public partial class ExpandReportResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1039,7 +1039,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CompleteBaselineByMode", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CompleteBaselineByModeRequest
+    public partial class CompleteBaselineByModeRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1094,7 +1094,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CompleteBaselineByModeResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CompleteBaselineByModeResponse
+    public partial class CompleteBaselineByModeResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1121,7 +1121,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CompleteReportByMode", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CompleteReportByModeRequest
+    public partial class CompleteReportByModeRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1176,7 +1176,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CompleteReportByModeResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CompleteReportByModeResponse
+    public partial class CompleteReportByModeResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1203,7 +1203,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CompleteBaselineByCandidateAndMode", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CompleteBaselineByCandidateAndModeRequest
+    public partial class CompleteBaselineByCandidateAndModeRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1262,7 +1262,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CompleteBaselineByCandidateAndModeResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CompleteBaselineByCandidateAndModeResponse
+    public partial class CompleteBaselineByCandidateAndModeResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1289,7 +1289,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CompleteReportByCandidateAndMode", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CompleteReportByCandidateAndModeRequest
+    public partial class CompleteReportByCandidateAndModeRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1348,7 +1348,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CompleteReportByCandidateAndModeResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CompleteReportByCandidateAndModeResponse
+    public partial class CompleteReportByCandidateAndModeResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1375,7 +1375,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExtendReportByBaseline", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ExtendReportByBaselineRequest
+    public partial class ExtendReportByBaselineRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1430,7 +1430,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExtendReportByBaselineResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ExtendReportByBaselineResponse
+    public partial class ExtendReportByBaselineResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1457,7 +1457,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExtendReportByCandidate", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ExtendReportByCandidateRequest
+    public partial class ExtendReportByCandidateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1512,7 +1512,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ExtendReportByCandidateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class ExtendReportByCandidateResponse
+    public partial class ExtendReportByCandidateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1539,7 +1539,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CreateRequest
+    public partial class CreateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1570,7 +1570,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CreateResponse
+    public partial class CreateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1597,7 +1597,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class DeleteRequest
+    public partial class DeleteRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1620,7 +1620,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class DeleteResponse
+    public partial class DeleteResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1643,7 +1643,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class UpdateRequest
+    public partial class UpdateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1670,7 +1670,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class UpdateResponse
+    public partial class UpdateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1693,7 +1693,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="SetMetaData", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class SetMetaDataRequest
+    public partial class SetMetaDataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1720,7 +1720,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="SetMetaDataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class SetMetaDataResponse
+    public partial class SetMetaDataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1743,7 +1743,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Freeze", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class FreezeRequest
+    public partial class FreezeRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1774,7 +1774,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FreezeResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class FreezeResponse
+    public partial class FreezeResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1805,7 +1805,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CanBeFrozen", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CanBeFrozenRequest
+    public partial class CanBeFrozenRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1836,7 +1836,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CanBeFrozenResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CanBeFrozenResponse
+    public partial class CanBeFrozenResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1867,7 +1867,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CleanUp", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CleanUpRequest
+    public partial class CleanUpRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1890,7 +1890,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CleanUpResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CleanUpResponse
+    public partial class CleanUpResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1913,7 +1913,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Copy", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CopyRequest
+    public partial class CopyRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1948,7 +1948,7 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CopyResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", IsWrapped=true)]
-    internal partial class CopyResponse
+    public partial class CopyResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:BaseLine:2.5", Order=0)]
@@ -1973,13 +1973,13 @@ namespace Trisoft.ISHRemote.Baseline25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface BaseLine25SoapChannel : Trisoft.ISHRemote.Baseline25ServiceReference.BaseLine25Soap, System.ServiceModel.IClientChannel
+    public interface BaseLine25SoapChannel : Trisoft.ISHRemote.Baseline25ServiceReference.BaseLine25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class BaseLine25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.Baseline25ServiceReference.BaseLine25Soap>, Trisoft.ISHRemote.Baseline25ServiceReference.BaseLine25Soap
+    public partial class BaseLine25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.Baseline25ServiceReference.BaseLine25Soap>, Trisoft.ISHRemote.Baseline25ServiceReference.BaseLine25Soap
     {
         
         /// <summary>

@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", ConfigurationName="Trisoft.ISHRemote.EventMonitor25ServiceReference.EventMonitor25Soap")]
-    internal interface EventMonitor25Soap
+    public interface EventMonitor25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5/GetProgressId", ReplyAction="*")]
@@ -114,7 +114,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetProgressId", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class GetProgressIdRequest
+    public partial class GetProgressIdRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -141,7 +141,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetProgressIdResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class GetProgressIdResponse
+    public partial class GetProgressIdResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -168,7 +168,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetEventDetail", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class GetEventDetailRequest
+    public partial class GetEventDetailRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -203,7 +203,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetEventDetailResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class GetEventDetailResponse
+    public partial class GetEventDetailResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -230,7 +230,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetNextEventDetailDataChunk", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class GetNextEventDetailDataChunkRequest
+    public partial class GetNextEventDetailDataChunkRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -266,7 +266,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetNextEventDetailDataChunkResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class GetNextEventDetailDataChunkResponse
+    public partial class GetNextEventDetailDataChunkResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -327,7 +327,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveEventsByProgressIds", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class RetrieveEventsByProgressIdsRequest
+    public partial class RetrieveEventsByProgressIdsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -370,7 +370,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveEventsByProgressIdsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class RetrieveEventsByProgressIdsResponse
+    public partial class RetrieveEventsByProgressIdsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -397,7 +397,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveEventsByParentProgressIds", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class RetrieveEventsByParentProgressIdsRequest
+    public partial class RetrieveEventsByParentProgressIdsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -440,7 +440,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveEventsByParentProgressIdsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class RetrieveEventsByParentProgressIdsResponse
+    public partial class RetrieveEventsByParentProgressIdsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -503,7 +503,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveEventOverview", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class RetrieveEventOverviewRequest
+    public partial class RetrieveEventOverviewRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -546,7 +546,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveEventOverviewResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class RetrieveEventOverviewResponse
+    public partial class RetrieveEventOverviewResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -573,7 +573,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="StartEvent", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class StartEventRequest
+    public partial class StartEventRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -616,7 +616,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="StartEventResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class StartEventResponse
+    public partial class StartEventResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -669,7 +669,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="EndEvent", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class EndEventRequest
+    public partial class EndEventRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -704,7 +704,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="EndEventResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class EndEventResponse
+    public partial class EndEventResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -777,7 +777,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="AddEventDetail", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class AddEventDetailRequest
+    public partial class AddEventDetailRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -829,7 +829,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="AddEventDetailResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class AddEventDetailResponse
+    public partial class AddEventDetailResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -856,7 +856,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="AddEventDetailWithProgress", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class AddEventDetailWithProgressRequest
+    public partial class AddEventDetailWithProgressRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -916,7 +916,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="AddEventDetailWithProgressResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class AddEventDetailWithProgressResponse
+    public partial class AddEventDetailWithProgressResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -943,7 +943,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteByProgressId", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class DeleteByProgressIdRequest
+    public partial class DeleteByProgressIdRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -974,7 +974,7 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteByProgressIdResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", IsWrapped=true)]
-    internal partial class DeleteByProgressIdResponse
+    public partial class DeleteByProgressIdResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:EventMonitor:2.5", Order=0)]
@@ -995,13 +995,13 @@ namespace Trisoft.ISHRemote.EventMonitor25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface EventMonitor25SoapChannel : Trisoft.ISHRemote.EventMonitor25ServiceReference.EventMonitor25Soap, System.ServiceModel.IClientChannel
+    public interface EventMonitor25SoapChannel : Trisoft.ISHRemote.EventMonitor25ServiceReference.EventMonitor25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class EventMonitor25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.EventMonitor25ServiceReference.EventMonitor25Soap>, Trisoft.ISHRemote.EventMonitor25ServiceReference.EventMonitor25Soap
+    public partial class EventMonitor25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.EventMonitor25ServiceReference.EventMonitor25Soap>, Trisoft.ISHRemote.EventMonitor25ServiceReference.EventMonitor25Soap
     {
         
         /// <summary>

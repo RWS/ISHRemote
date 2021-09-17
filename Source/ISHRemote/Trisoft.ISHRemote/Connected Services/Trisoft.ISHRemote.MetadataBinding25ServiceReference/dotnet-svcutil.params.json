@@ -5,7 +5,6 @@
     "inputs": [
       "https://ish.example.com/ISHWS/metadatabinding25.asmx"
     ],
-    "internalTypeAccess": true,
     "namespaceMappings": [
       "*, Trisoft.ISHRemote.MetadataBinding25ServiceReference"
     ],

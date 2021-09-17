@@ -5,7 +5,6 @@
     "inputs": [
       "https://ish.example.com/ISHWS/outputformat25.asmx"
     ],
-    "internalTypeAccess": true,
     "namespaceMappings": [
       "*, Trisoft.ISHRemote.OutputFormat25ServiceReference"
     ],

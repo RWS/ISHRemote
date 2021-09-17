@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", ConfigurationName="Trisoft.ISHRemote.MetadataBinding25ServiceReference.MetadataBinding25Soap")]
-    internal interface MetadataBinding25Soap
+    public interface MetadataBinding25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5/ResolveIds", ReplyAction="*")]
@@ -52,7 +52,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ResolveIds", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", IsWrapped=true)]
-    internal partial class ResolveIdsRequest
+    public partial class ResolveIdsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", Order=0)]
@@ -79,7 +79,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ResolveIdsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", IsWrapped=true)]
-    internal partial class ResolveIdsResponse
+    public partial class ResolveIdsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", Order=0)]
@@ -106,7 +106,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveTags", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", IsWrapped=true)]
-    internal partial class RetrieveTagsRequest
+    public partial class RetrieveTagsRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", Order=0)]
@@ -149,7 +149,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveTagsResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", IsWrapped=true)]
-    internal partial class RetrieveTagsResponse
+    public partial class RetrieveTagsResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", Order=0)]
@@ -176,7 +176,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveTagStructure", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", IsWrapped=true)]
-    internal partial class RetrieveTagStructureRequest
+    public partial class RetrieveTagStructureRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", Order=0)]
@@ -211,7 +211,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveTagStructureResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", IsWrapped=true)]
-    internal partial class RetrieveTagStructureResponse
+    public partial class RetrieveTagStructureResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", Order=0)]
@@ -238,7 +238,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="SmartTag", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", IsWrapped=true)]
-    internal partial class SmartTagRequest
+    public partial class SmartTagRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", Order=0)]
@@ -278,7 +278,7 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="SmartTagResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", IsWrapped=true)]
-    internal partial class SmartTagResponse
+    public partial class SmartTagResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:MetadataBinding:2.5", Order=0)]
@@ -303,13 +303,13 @@ namespace Trisoft.ISHRemote.MetadataBinding25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface MetadataBinding25SoapChannel : Trisoft.ISHRemote.MetadataBinding25ServiceReference.MetadataBinding25Soap, System.ServiceModel.IClientChannel
+    public interface MetadataBinding25SoapChannel : Trisoft.ISHRemote.MetadataBinding25ServiceReference.MetadataBinding25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class MetadataBinding25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.MetadataBinding25ServiceReference.MetadataBinding25Soap>, Trisoft.ISHRemote.MetadataBinding25ServiceReference.MetadataBinding25Soap
+    public partial class MetadataBinding25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.MetadataBinding25ServiceReference.MetadataBinding25Soap>, Trisoft.ISHRemote.MetadataBinding25ServiceReference.MetadataBinding25Soap
     {
         
         /// <summary>

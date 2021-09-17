@@ -5,7 +5,6 @@
     "inputs": [
       "https://ish.example.com/ISHWS/baseline25.asmx"
     ],
-    "internalTypeAccess": true,
     "namespaceMappings": [
       "*, Trisoft.ISHRemote.Baseline25ServiceReference"
     ],

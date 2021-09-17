@@ -5,7 +5,6 @@
     "inputs": [
       "https://ish.example.com/ISHWS/folder25.asmx"
     ],
-    "internalTypeAccess": true,
     "namespaceMappings": [
       "*, Trisoft.ISHRemote.Folder25ServiceReference"
     ],

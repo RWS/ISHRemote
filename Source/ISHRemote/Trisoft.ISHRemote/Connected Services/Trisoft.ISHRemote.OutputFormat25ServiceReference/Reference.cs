@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", ConfigurationName="Trisoft.ISHRemote.OutputFormat25ServiceReference.OutputFormat25Soap")]
-    internal interface OutputFormat25Soap
+    public interface OutputFormat25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5/GetMetaData", ReplyAction="*")]
@@ -84,7 +84,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetaData", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class GetMetaDataRequest
+    public partial class GetMetaDataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -119,7 +119,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetaDataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class GetMetaDataResponse
+    public partial class GetMetaDataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -166,7 +166,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetaData", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetaDataRequest
+    public partial class RetrieveMetaDataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -205,7 +205,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveMetaDataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class RetrieveMetaDataResponse
+    public partial class RetrieveMetaDataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -232,7 +232,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetOutputFormatId", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class GetOutputFormatIdRequest
+    public partial class GetOutputFormatIdRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -259,7 +259,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetOutputFormatIdResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class GetOutputFormatIdResponse
+    public partial class GetOutputFormatIdResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -286,7 +286,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetOutputFormatName", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class GetOutputFormatNameRequest
+    public partial class GetOutputFormatNameRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -313,7 +313,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetOutputFormatNameResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class GetOutputFormatNameResponse
+    public partial class GetOutputFormatNameResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -340,7 +340,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Find", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class FindRequest
+    public partial class FindRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -375,7 +375,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FindResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class FindResponse
+    public partial class FindResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -402,7 +402,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class CreateRequest
+    public partial class CreateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -437,7 +437,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class CreateResponse
+    public partial class CreateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -464,7 +464,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class UpdateRequest
+    public partial class UpdateRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -495,7 +495,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class UpdateResponse
+    public partial class UpdateResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -518,7 +518,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class DeleteRequest
+    public partial class DeleteRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -541,7 +541,7 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="DeleteResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", IsWrapped=true)]
-    internal partial class DeleteResponse
+    public partial class DeleteResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:OutputFormat:2.5", Order=0)]
@@ -562,13 +562,13 @@ namespace Trisoft.ISHRemote.OutputFormat25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface OutputFormat25SoapChannel : Trisoft.ISHRemote.OutputFormat25ServiceReference.OutputFormat25Soap, System.ServiceModel.IClientChannel
+    public interface OutputFormat25SoapChannel : Trisoft.ISHRemote.OutputFormat25ServiceReference.OutputFormat25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class OutputFormat25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.OutputFormat25ServiceReference.OutputFormat25Soap>, Trisoft.ISHRemote.OutputFormat25ServiceReference.OutputFormat25Soap
+    public partial class OutputFormat25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.OutputFormat25ServiceReference.OutputFormat25Soap>, Trisoft.ISHRemote.OutputFormat25ServiceReference.OutputFormat25Soap
     {
         
         /// <summary>

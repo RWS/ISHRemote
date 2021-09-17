@@ -371,6 +371,10 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 return _authenticationContext;
             }
+            internal set
+            {
+                _authenticationContext = value;
+            }
         }
 
         public string Separator
@@ -453,7 +457,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         #region Web Services Getters
 
-        internal Annotation25ServiceReference.Annotation25Soap Annotation25
+        public Annotation25ServiceReference.Annotation25Soap Annotation25
         {
             get
             {
@@ -486,7 +490,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal Application25ServiceReference.Application25Soap Application25
+        public Application25ServiceReference.Application25Soap Application25
         {
             get
             {
@@ -519,7 +523,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal DocumentObj25ServiceReference.DocumentObj25Soap DocumentObj25
+        public DocumentObj25ServiceReference.DocumentObj25Soap DocumentObj25
         {
             get
             {
@@ -552,7 +556,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal BackgroundTask25ServiceReference.BackgroundTask25Soap BackgroundTask25
+        public BackgroundTask25ServiceReference.BackgroundTask25Soap BackgroundTask25
         {
             get
             {
@@ -585,7 +589,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal Baseline25ServiceReference.BaseLine25Soap Baseline25
+        public Baseline25ServiceReference.BaseLine25Soap Baseline25
         {
             get
             {
@@ -618,7 +622,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal EDT25ServiceReference.EDT25Soap EDT25
+        public EDT25ServiceReference.EDT25Soap EDT25
         {
             get
             {
@@ -651,7 +655,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal EventMonitor25ServiceReference.EventMonitor25Soap EventMonitor25
+        public EventMonitor25ServiceReference.EventMonitor25Soap EventMonitor25
         {
             get
             {
@@ -684,7 +688,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal Folder25ServiceReference.Folder25Soap Folder25
+        public Folder25ServiceReference.Folder25Soap Folder25
         {
             get
             {
@@ -717,7 +721,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal MetadataBinding25ServiceReference.MetadataBinding25Soap MetadataBinding25
+        public MetadataBinding25ServiceReference.MetadataBinding25Soap MetadataBinding25
         {
             get
             {
@@ -750,9 +754,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-
-
-        internal ListOfValues25ServiceReference.ListOfValues25Soap ListOfValues25
+        public ListOfValues25ServiceReference.ListOfValues25Soap ListOfValues25
         {
             get
             {
@@ -785,7 +787,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal OutputFormat25ServiceReference.OutputFormat25Soap OutputFormat25
+        public OutputFormat25ServiceReference.OutputFormat25Soap OutputFormat25
         {
             get
             {
@@ -818,7 +820,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal PublicationOutput25ServiceReference.PublicationOutput25Soap PublicationOutput25
+        public PublicationOutput25ServiceReference.PublicationOutput25Soap PublicationOutput25
         {
             get
             {
@@ -851,7 +853,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal TranslationJob25ServiceReference.TranslationJob25Soap TranslationJob25
+        public TranslationJob25ServiceReference.TranslationJob25Soap TranslationJob25
         {
             get
             {
@@ -884,7 +886,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal TranslationTemplate25ServiceReference.TranslationTemplate25Soap TranslationTemplate25
+        public TranslationTemplate25ServiceReference.TranslationTemplate25Soap TranslationTemplate25
         {
             get
             {
@@ -917,7 +919,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal Search25ServiceReference.Search25Soap Search25
+        public Search25ServiceReference.Search25Soap Search25
         {
             get
             {
@@ -950,7 +952,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal Settings25ServiceReference.Settings25Soap Settings25
+        public Settings25ServiceReference.Settings25Soap Settings25
         {
             get
             {
@@ -983,7 +985,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal User25ServiceReference.User25Soap User25
+        public User25ServiceReference.User25Soap User25
         {
             get
             {
@@ -1016,7 +1018,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal UserRole25ServiceReference.UserRole25Soap UserRole25
+        public UserRole25ServiceReference.UserRole25Soap UserRole25
         {
             get
             {
@@ -1049,7 +1051,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal UserGroup25ServiceReference.UserGroup25Soap UserGroup25
+        public UserGroup25ServiceReference.UserGroup25Soap UserGroup25
         {
             get
             {

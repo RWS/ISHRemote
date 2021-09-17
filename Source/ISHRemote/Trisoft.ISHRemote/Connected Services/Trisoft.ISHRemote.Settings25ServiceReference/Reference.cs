@@ -13,7 +13,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", ConfigurationName="Trisoft.ISHRemote.Settings25ServiceReference.Settings25Soap")]
-    internal interface Settings25Soap
+    public interface Settings25Soap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:trisoft.be:WebServices:InfoShare:Settings:2.5/GetTimeZone", ReplyAction="*")]
@@ -68,7 +68,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetTimeZone", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class GetTimeZoneRequest
+    public partial class GetTimeZoneRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -91,7 +91,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetTimeZoneResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class GetTimeZoneResponse
+    public partial class GetTimeZoneResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -134,7 +134,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetPossibleTargetStatuses", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class GetPossibleTargetStatusesRequest
+    public partial class GetPossibleTargetStatusesRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -169,7 +169,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetPossibleTargetStatusesResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class GetPossibleTargetStatusesResponse
+    public partial class GetPossibleTargetStatusesResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -196,7 +196,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetaData", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class GetMetaDataRequest
+    public partial class GetMetaDataRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -223,7 +223,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetMetaDataResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class GetMetaDataResponse
+    public partial class GetMetaDataResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -250,7 +250,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="SetMetaData3", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class SetMetaData3Request
+    public partial class SetMetaData3Request
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -277,7 +277,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="SetMetaData3Response", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class SetMetaData3Response
+    public partial class SetMetaData3Response
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -300,7 +300,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveFieldSetupByIshType", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class RetrieveFieldSetupByIshTypeRequest
+    public partial class RetrieveFieldSetupByIshTypeRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -323,7 +323,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="RetrieveFieldSetupByIshTypeResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class RetrieveFieldSetupByIshTypeResponse
+    public partial class RetrieveFieldSetupByIshTypeResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -350,7 +350,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetTranslationStatuses", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class GetTranslationStatusesRequest
+    public partial class GetTranslationStatusesRequest
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -373,7 +373,7 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetTranslationStatusesResponse", WrapperNamespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", IsWrapped=true)]
-    internal partial class GetTranslationStatusesResponse
+    public partial class GetTranslationStatusesResponse
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:trisoft.be:WebServices:InfoShare:Settings:2.5", Order=0)]
@@ -398,13 +398,13 @@ namespace Trisoft.ISHRemote.Settings25ServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal interface Settings25SoapChannel : Trisoft.ISHRemote.Settings25ServiceReference.Settings25Soap, System.ServiceModel.IClientChannel
+    public interface Settings25SoapChannel : Trisoft.ISHRemote.Settings25ServiceReference.Settings25Soap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    internal partial class Settings25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.Settings25ServiceReference.Settings25Soap>, Trisoft.ISHRemote.Settings25ServiceReference.Settings25Soap
+    public partial class Settings25SoapClient : System.ServiceModel.ClientBase<Trisoft.ISHRemote.Settings25ServiceReference.Settings25Soap>, Trisoft.ISHRemote.Settings25ServiceReference.Settings25Soap
     {
         
         /// <summary>
