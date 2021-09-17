@@ -26,10 +26,25 @@ using System.ServiceModel;
 
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Interfaces;
+using Trisoft.ISHRemote.Annotation25ServiceReference;
 using Trisoft.ISHRemote.Application25ServiceReference;
+using Trisoft.ISHRemote.BackgroundTask25ServiceReference;
+using Trisoft.ISHRemote.Baseline25ServiceReference;
+using Trisoft.ISHRemote.DocumentObj25ServiceReference;
+using Trisoft.ISHRemote.EDT25ServiceReference;
+using Trisoft.ISHRemote.EventMonitor25ServiceReference;
 using Trisoft.ISHRemote.Folder25ServiceReference;
+using Trisoft.ISHRemote.ListOfValues25ServiceReference;
+using Trisoft.ISHRemote.MetadataBinding25ServiceReference;
+using Trisoft.ISHRemote.OutputFormat25ServiceReference;
+using Trisoft.ISHRemote.PublicationOutput25ServiceReference;
+using Trisoft.ISHRemote.TranslationJob25ServiceReference;
+using Trisoft.ISHRemote.TranslationTemplate25ServiceReference;
+using Trisoft.ISHRemote.Search25ServiceReference;
 using Trisoft.ISHRemote.Settings25ServiceReference;
 using Trisoft.ISHRemote.User25ServiceReference;
+using Trisoft.ISHRemote.UserRole25ServiceReference;
+using Trisoft.ISHRemote.UserGroup25ServiceReference;
 
 namespace Trisoft.ISHRemote.Objects.Public
 {
@@ -79,25 +94,25 @@ namespace Trisoft.ISHRemote.Objects.Public
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
 
-        //private Annotation25ServiceReference.Annotation _annotation25;
+        private Annotation25ServiceReference.Annotation25Soap _annotation25;
         private Application25ServiceReference.Application25Soap _application25;
-        //private DocumentObj25ServiceReference.DocumentObj _documentObj25;
+        private BackgroundTask25ServiceReference.BackgroundTask25Soap _backgroundTask25;
+        private Baseline25ServiceReference.BaseLine25Soap _baseline25;
+        private DocumentObj25ServiceReference.DocumentObj25Soap _documentObj25;
+        private EDT25ServiceReference.EDT25Soap _EDT25;
+        private EventMonitor25ServiceReference.EventMonitor25Soap _eventMonitor25;
         private Folder25ServiceReference.Folder25Soap _folder25;
-        private User25ServiceReference.User25Soap _user25;
-        //private UserRole25ServiceReference.UserRole _userRole25;
-        //private UserGroup25ServiceReference.UserGroup _userGroup25;
-        //private ListOfValues25ServiceReference.ListOfValues _listOfValues25;
-        //private PublicationOutput25ServiceReference.PublicationOutput _publicationOutput25;
-        //private OutputFormat25ServiceReference.OutputFormat _outputFormat25;
+        private ListOfValues25ServiceReference.ListOfValues25Soap _listOfValues25;
+        private MetadataBinding25ServiceReference.MetadataBinding25Soap _metadataBinding25;
+        private OutputFormat25ServiceReference.OutputFormat25Soap _outputFormat25;
+        private PublicationOutput25ServiceReference.PublicationOutput25Soap _publicationOutput25;
+        private TranslationJob25ServiceReference.TranslationJob25Soap _translationJob25;
+        private TranslationTemplate25ServiceReference.TranslationTemplate25Soap _translationTemplate25;
+        private Search25ServiceReference.Search25Soap _search25;
         private Settings25ServiceReference.Settings25Soap _settings25;
-        //private EDT25ServiceReference.EDT _EDT25;
-        //private EventMonitor25ServiceReference.EventMonitor _eventMonitor25;
-        //private Baseline25ServiceReference.Baseline _baseline25;
-        //private MetadataBinding25ServiceReference.MetadataBinding _metadataBinding25;
-        //private Search25ServiceReference.Search _search25;
-        //private TranslationJob25ServiceReference.TranslationJob _translationJob25;
-        //private TranslationTemplate25ServiceReference.TranslationTemplate _translationTemplate25;
-        //private BackgroundTask25ServiceReference.BackgroundTask _backgroundTask25;
+        private User25ServiceReference.User25Soap _user25;
+        private UserRole25ServiceReference.UserRole25Soap _userRole25;
+        private UserGroup25ServiceReference.UserGroup25Soap _userGroup25;
 
         /// <summary>
         /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
@@ -114,6 +129,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
             HttpClientHandler handler = new HttpClientHandler();
+            _timeout = timeout;
             _logger.WriteDebug($"Enabling Tls, Tls11, Tls12 and Tls13 security protocols Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
             if (_ignoreSslPolicyErrors)
             {
@@ -132,7 +148,6 @@ namespace Trisoft.ISHRemote.Objects.Public
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
             _ishPassword = ishPassword;
-            _timeout = timeout;
             LoadConnectionConfiguration();
             CreateConnection();
         }
@@ -436,28 +451,46 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _chunkSize = value; }
         }
 
-         #region Web Services Getters
+        #region Web Services Getters
 
-        //public Annotation25ServiceReference.Annotation Annotation25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
-
-        //        if (_annotation25 == null)
-        //        {
-        //            _annotation25 = _connection.GetAnnotation25Channel();
-        //        }
-        //        return _annotation25;
-        //    }
-        //}
+        internal Annotation25ServiceReference.Annotation25Soap Annotation25
+        {
+            get
+            {
+                //TODO [Should] ISHRemotev7+ Cleanup// VerifyTokenValidity();
+                if (_annotation25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "annotation25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<Annotation25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _annotation25 = factory.CreateChannel();
+                }
+                return _annotation25;
+            }
+        }
 
         internal Application25ServiceReference.Application25Soap Application25
         {
             get
             {
-                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
-
+                //TODO [Should] ISHRemotev7+ Cleanup// VerifyTokenValidity();
                 if (_application25 == null)
                 {
                     // Create HTTP Binding Objects
@@ -486,13 +519,12 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        internal User25ServiceReference.User25Soap User25
+        internal DocumentObj25ServiceReference.DocumentObj25Soap DocumentObj25
         {
             get
             {
-                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
-
-                if (_user25 == null)
+                //TODO [Should] ISHRemotev7+ Cleanup// VerifyTokenValidity();
+                if (_documentObj25 == null)
                 {
                     // Create HTTP Binding Objects
                     BasicHttpBinding binding = new BasicHttpBinding();
@@ -502,9 +534,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                     binding.AllowCookies = true;
                     binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
                     // Building Terminal Point Objects Based on Web Service URLs
-                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "user25.asmx").AbsoluteUri);
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "documentobj25.asmx").AbsoluteUri);
                     // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
-                    var factory = new ChannelFactory<User25Soap>(binding, endpoint);
+                    var factory = new ChannelFactory<DocumentObj25Soap>(binding, endpoint);
                     // Get specific invocation instances from the factory
                     if (_ignoreSslPolicyErrors)
                     {
@@ -514,75 +546,18 @@ namespace Trisoft.ISHRemote.Objects.Public
                             RevocationMode = X509RevocationMode.NoCheck
                         };
                     }
-                    _user25 = factory.CreateChannel();
+                    _documentObj25 = factory.CreateChannel();
                 }
-                return _user25;
+                return _documentObj25;
             }
         }
 
-        //public UserRole25ServiceReference.UserRole UserRole25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
-
-        //        if (_userRole25 == null)
-        //        {
-        //            _userRole25 = _connection.GetUserRole25Channel();
-        //        }
-        //        return _userRole25;
-        //    }
-        //}
-
-        //public UserGroup25ServiceReference.UserGroup UserGroup25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
-
-        //        if (_userGroup25 == null)
-        //        {
-        //            _userGroup25 = _connection.GetUserGroup25Channel();
-        //        }
-        //        return _userGroup25;
-        //    }
-        //}
-
-        //public DocumentObj25ServiceReference.DocumentObj DocumentObj25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
-
-        //        if (_documentObj25 == null)
-        //        {
-        //            _documentObj25 = _connection.GetDocumentObj25Channel();
-        //        }
-        //        return _documentObj25;
-        //    }
-        //}
-
-        //public PublicationOutput25ServiceReference.PublicationOutput PublicationOutput25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
-
-        //        if (_publicationOutput25 == null)
-        //        {
-        //            _publicationOutput25 = _connection.GetPublicationOutput25Channel();
-        //        }
-        //        return _publicationOutput25;
-        //    }
-        //}
-
-        internal Settings25ServiceReference.Settings25Soap Settings25
+        internal BackgroundTask25ServiceReference.BackgroundTask25Soap BackgroundTask25
         {
             get
             {
-                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
-
-                if (_settings25 == null)
+                //TODO [Should] ISHRemotev7+ Cleanup// VerifyTokenValidity();
+                if (_backgroundTask25 == null)
                 {
                     // Create HTTP Binding Objects
                     BasicHttpBinding binding = new BasicHttpBinding();
@@ -592,9 +567,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                     binding.AllowCookies = true;
                     binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
                     // Building Terminal Point Objects Based on Web Service URLs
-                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "settings25.asmx").AbsoluteUri);
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "backgroundtask25.asmx").AbsoluteUri);
                     // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
-                    var factory = new ChannelFactory<Settings25Soap>(binding, endpoint);
+                    var factory = new ChannelFactory<BackgroundTask25Soap>(binding, endpoint);
                     // Get specific invocation instances from the factory
                     if (_ignoreSslPolicyErrors)
                     {
@@ -604,60 +579,116 @@ namespace Trisoft.ISHRemote.Objects.Public
                             RevocationMode = X509RevocationMode.NoCheck
                         };
                     }
-                    _settings25 = factory.CreateChannel();
+                    _backgroundTask25 = factory.CreateChannel();
                 }
-                return _settings25;
+                return _backgroundTask25;
             }
         }
 
-        //public EventMonitor25ServiceReference.EventMonitor EventMonitor25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
+        internal Baseline25ServiceReference.BaseLine25Soap Baseline25
+        {
+            get
+            {
+                //TODO [Should] ISHRemotev7+ Cleanup// VerifyTokenValidity();
+                if (_baseline25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "baseline25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<BaseLine25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _baseline25 = factory.CreateChannel();
+                }
+                return _baseline25;
+            }
+        }
 
-        //        if (_eventMonitor25 == null)
-        //        {
-        //            _eventMonitor25 = _connection.GetEventMonitor25Channel();
-        //        }
-        //        return _eventMonitor25;
-        //    }
-        //}
+        internal EDT25ServiceReference.EDT25Soap EDT25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_EDT25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "edt25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<EDT25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _EDT25 = factory.CreateChannel();
+                }
+                return _EDT25;
+            }
+        }
 
-        //public Baseline25ServiceReference.Baseline Baseline25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
-
-        //        if (_baseline25 == null)
-        //        {
-        //            _baseline25 = _connection.GetBaseline25Channel();
-        //        }
-        //        return _baseline25;
-        //    }
-        //}
-
-        //public MetadataBinding25ServiceReference.MetadataBinding MetadataBinding25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
-
-        //        if (_metadataBinding25 == null)
-        //        {
-        //            _metadataBinding25 = _connection.GetMetadataBinding25Channel();
-        //        }
-        //        return _metadataBinding25;
-        //    }
-        //}
+        internal EventMonitor25ServiceReference.EventMonitor25Soap EventMonitor25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_eventMonitor25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "eventmonitor25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<EventMonitor25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _eventMonitor25 = factory.CreateChannel();
+                }
+                return _eventMonitor25;
+            }
+        }
 
         internal Folder25ServiceReference.Folder25Soap Folder25
         {
             get
             {
-                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
-
+                //TODO [Should] ISHRemotev7+ Cleanup// VerifyTokenValidity();
                 if (_folder25 == null)
                 {
                     // Create HTTP Binding Objects
@@ -686,135 +717,371 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        //public ListOfValues25ServiceReference.ListOfValues ListOfValues25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
+        internal MetadataBinding25ServiceReference.MetadataBinding25Soap MetadataBinding25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_metadataBinding25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "metadatabinding25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<MetadataBinding25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _metadataBinding25 = factory.CreateChannel();
+                }
+                return _metadataBinding25;
+            }
+        }
 
-        //        if (_listOfValues25 == null)
-        //        {
-        //            _listOfValues25 = _connection.GetListOfValues25Channel();
-        //        }
-        //        return _listOfValues25;
-        //    }
-        //}
 
-        //public OutputFormat25ServiceReference.OutputFormat OutputFormat25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
 
-        //        if (_outputFormat25 == null)
-        //        {
-        //            _outputFormat25 = _connection.GetOutputFormat25Channel();
-        //        }
-        //        return _outputFormat25;
-        //    }
-        //}
+        internal ListOfValues25ServiceReference.ListOfValues25Soap ListOfValues25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_listOfValues25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "listofvalues25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<ListOfValues25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _listOfValues25 = factory.CreateChannel();
+                }
+                return _listOfValues25;
+            }
+        }
 
-        //public EDT25ServiceReference.EDT EDT25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
+        internal OutputFormat25ServiceReference.OutputFormat25Soap OutputFormat25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_outputFormat25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "outputformat25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<OutputFormat25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _outputFormat25 = factory.CreateChannel();
+                }
+                return _outputFormat25;
+            }
+        }
 
-        //        if (_EDT25 == null)
-        //        {
-        //            _EDT25 = _connection.GetEDT25Channel();
-        //        }
-        //        return _EDT25;
-        //    }
-        //}
+        internal PublicationOutput25ServiceReference.PublicationOutput25Soap PublicationOutput25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_publicationOutput25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "publicationoutput25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<PublicationOutput25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _publicationOutput25 = factory.CreateChannel();
+                }
+                return _publicationOutput25;
+            }
+        }
 
-        //public TranslationJob25ServiceReference.TranslationJob TranslationJob25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
+        internal TranslationJob25ServiceReference.TranslationJob25Soap TranslationJob25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_translationJob25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "translationjob25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<TranslationJob25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _translationJob25 = factory.CreateChannel();
+                }
+                return _translationJob25;
+            }
+        }
 
-        //        if (_translationJob25 == null)
-        //        {
-        //            _translationJob25 = _connection.GetTranslationJob25Channel();
-        //        }
-        //        return _translationJob25;
-        //    }
-        //}
+        internal TranslationTemplate25ServiceReference.TranslationTemplate25Soap TranslationTemplate25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_translationTemplate25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "translationtemplate25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<TranslationTemplate25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _translationTemplate25 = factory.CreateChannel();
+                }
+                return _translationTemplate25;
+            }
+        }
 
-        //public TranslationTemplate25ServiceReference.TranslationTemplate TranslationTemplate25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
+        internal Search25ServiceReference.Search25Soap Search25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_search25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "search25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<Search25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _search25 = factory.CreateChannel();
+                }
+                return _search25;
+            }
+        }
 
-        //        if (_translationTemplate25 == null)
-        //        {
-        //            _translationTemplate25 = _connection.GetTranslationTemplate25Channel();
-        //        }
-        //        return _translationTemplate25;
-        //    }
-        //}
+        internal Settings25ServiceReference.Settings25Soap Settings25
+        {
+            get
+            {
+                //TODO [Should] ISHRemotev7+ Cleanup// VerifyTokenValidity();
+                if (_settings25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "settings25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<Settings25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _settings25 = factory.CreateChannel();
+                }
+                return _settings25;
+            }
+        }
 
-        //public Search25ServiceReference.Search Search25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
+        internal User25ServiceReference.User25Soap User25
+        {
+            get
+            {
+                //TODO [Must] ISHRemotev7+ Cleanup// VerifyTokenValidity();
+                if (_user25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "user25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<User25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _user25 = factory.CreateChannel();
+                }
+                return _user25;
+            }
+        }
 
-        //        if (_search25 == null)
-        //        {
-        //            _search25 = _connection.GetSearch25Channel();
-        //        }
-        //        return _search25;
-        //    }
-        //}
+        internal UserRole25ServiceReference.UserRole25Soap UserRole25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_userRole25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "userrole25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<UserRole25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _userRole25 = factory.CreateChannel();
+                }
+                return _userRole25;
+            }
+        }
 
-        //public BackgroundTask25ServiceReference.BackgroundTask BackgroundTask25
-        //{
-        //    get
-        //    {
-        //        VerifyTokenValidity();
-
-        //        if (_backgroundTask25 == null)
-        //        {
-        //            _backgroundTask25 = _connection.GetBackgroundTask25Channel();
-        //        }
-        //        return _backgroundTask25;
-        //    }
-        //}
-
+        internal UserGroup25ServiceReference.UserGroup25Soap UserGroup25
+        {
+            get
+            {
+                // TODO[Should] ISHRemotev7 + Cleanup// VerifyTokenValidity();
+                if (_userGroup25 == null)
+                {
+                    // Create HTTP Binding Objects
+                    BasicHttpBinding binding = new BasicHttpBinding();
+                    binding.MaxBufferSize = int.MaxValue;
+                    binding.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
+                    binding.MaxReceivedMessageSize = int.MaxValue;
+                    binding.AllowCookies = true;
+                    binding.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
+                    // Building Terminal Point Objects Based on Web Service URLs
+                    EndpointAddress endpoint = new EndpointAddress(new Uri(_webServicesBaseUri, "usergroup25.asmx").AbsoluteUri);
+                    // Create a factory that calls interfaces. Note that generics can only pass in interfaces here
+                    var factory = new ChannelFactory<UserGroup25Soap>(binding, endpoint);
+                    // Get specific invocation instances from the factory
+                    if (_ignoreSslPolicyErrors)
+                    {
+                        factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                        {
+                            CertificateValidationMode = X509CertificateValidationMode.None,
+                            RevocationMode = X509RevocationMode.NoCheck
+                        };
+                    }
+                    _userGroup25 = factory.CreateChannel();
+                }
+                return _userGroup25;
+            }
+        }
         #endregion
-
-        //TODO [Must] ISHRemotev7+ Cleanup
-        //private void VerifyTokenValidity()
-        //{
-        //    if (_connection.IsValid) return;
-
-        //    // Not valid...
-        //    // ...dispose connection
-        //    _connection.Dispose();
-        //    // ...discard all channels
-        //    _application25 = null;
-        //    _baseline25 = null;
-        //    _documentObj25 = null;
-        //    _EDT25 = null;
-        //    _eventMonitor25 = null;
-        //    _folder25 = null;
-        //    _listOfValues25 = null;
-        //    _metadataBinding25 = null;
-        //    _outputFormat25 = null;
-        //    _publicationOutput25 = null;
-        //    _search25 = null;
-        //    _settings25 = null;
-        //    _translationJob25 = null;
-        //    _translationTemplate25 = null;
-        //    _user25 = null;
-        //    _userGroup25 = null;
-        //    _userRole25 = null;
-        //    // ...and re-create connection
-        //    CreateConnection();
-        //}
 
         public void Dispose()
         {

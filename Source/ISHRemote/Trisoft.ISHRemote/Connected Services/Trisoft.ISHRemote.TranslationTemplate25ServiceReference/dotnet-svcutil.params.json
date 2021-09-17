@@ -3,11 +3,11 @@
   "version": "2.0.2",
   "options": {
     "inputs": [
-      "https://ish.example.com/ISHWS/settings25.asmx"
+      "https://ish.example.com/ISHWS/translationtemplate25.asmx"
     ],
     "internalTypeAccess": true,
     "namespaceMappings": [
-      "*, Trisoft.ISHRemote.Settings25ServiceReference"
+      "*, Trisoft.ISHRemote.TranslationTemplate25ServiceReference"
     ],
     "outputFile": "Reference.cs",
     "serializerMode": "XmlSerializer",

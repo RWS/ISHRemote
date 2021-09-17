@@ -3,7 +3,7 @@
   "version": "2.0.2",
   "options": {
     "inputs": [
-      "https://medevddemeyer10.global.sdl.corp/InfoShareWSDITA/user25.asmx"
+      "https://ish.example.com/ISHWS/user25.asmx"
     ],
     "internalTypeAccess": true,
     "namespaceMappings": [
