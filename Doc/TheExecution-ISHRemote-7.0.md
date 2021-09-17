@@ -124,15 +124,26 @@ $ishSession # as admin to mecdev12qa01/ORA19 as a constant in the equation as it
 }).TotalMilliseconds
 ```
 
-The below information was collected via `$PSVersionTable`
+The below information was collected via `$PSVersionTable` from laptop over VPN to 15.0.0 ORA19 server
 
 | Test Runs | WCF (0.13.8112.2) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Core 7.1.4    | OpenAPI (7.0...) on Desktop 5.1.19041.1151 | OpenAPI (7.0...) on Core 7.1.4        | 
 | :---      | ---:                   | ---:                   | ---:          | ---:                   | ---:              |
-| Run 1     |                50494ms |                        |               |                        |                   |
-| Run 2     |                50478ms |                        |               |                        |                   |
-| Run 3     |                52067ms |                        |               |                        |                   |
-| Run 4     |                50494ms |                        |               |                        |                   |
-| Run 5     |                48050ms |                        |               |                        |                   |
+| Run 1     |                50494ms |                 9803ms |       37937ms |                        |                   |
+| Run 2     |                50478ms |                23960ms |       35549ms |                        |                   |
+| Run 3     |                52067ms |                74001ms |       35308ms |                        |                   |
+| Run 4     |                50494ms |                90219ms |       36089ms |                        |                   |
+| Run 5     |                48050ms |                94405ms |       34740ms |                        |                   |
+
+The below information was collected via `$PSVersionTable` from laptop as client to 14.0.4 laptop as SQL19 server, so localhost
+
+| Test Runs | WCF (0.13.8112.2) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Core 7.1.4    | OpenAPI (7.0...) on Desktop 5.1.19041.1151 | OpenAPI (7.0...) on Core 7.1.4        | 
+| :---      | ---:                   | ---:                   | ---:          | ---:                   | ---:              |
+| Run 1     |               103896ms |                 9011ms |       10362ms |                        |                   |
+| Run 2     |                86946ms |                12159ms |       10848ms |                        |                   |
+| Run 3     |                93095ms |                37332ms |       11210ms |                        |                   |
+| Run 4     |                11142ms |                10923ms |        9636ms |                        |                   |
+| Run 5     |                10530ms |               100021ms |       99683ms |                        |                   |
+
 
 
 # Backlog
