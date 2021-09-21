@@ -229,13 +229,13 @@ namespace Trisoft.ISHRemote.Cmdlets
             // The baseFolder is wrong
             // EL: DIRTY WORKAROUND BELOW TO THROW AN EXCEPTION WITH ERROR CODE 102001
             // Use faulty folder path with quotes added, so we can throw the expected exception with errorcode=102001
-            string xmlIshFolder = ""; 
-            var response = ishSession.Folder25.GetMetaData(new GetMetaDataRequest() { 
+            var response = ishSession.Folder25.GetMetaData(new GetMetaDataRequest()
+            { 
                 psAuthContext = ishSession._authenticationContext, 
                 peBaseFolder = eBaseFolder.System,
                 pasFolderPath= new string[] { "'" + baseFolderLabel + "'" }, 
-                psXMLRequestedMetaData = "",
-                psOutXMLFolderList = xmlIshFolder });
+                psXMLRequestedMetaData = ""
+            });
             return eBaseFolder.Data;
         }
 
@@ -249,15 +249,15 @@ namespace Trisoft.ISHRemote.Cmdlets
         {
             IshFields requestedMetadata = new IshFields();
             requestedMetadata.AddField(new IshRequestedMetadataField("FNAME", Enumerations.Level.None, Enumerations.ValueType.All));
-            string xmlIshFolder = "";
             // Use empty folder path so we can just get the basefolder name
-            var response = ishSession.Folder25.GetMetaData(new GetMetaDataRequest() { 
+            var response = ishSession.Folder25.GetMetaData(new GetMetaDataRequest()
+            { 
                 psAuthContext = ishSession._authenticationContext, 
                 peBaseFolder = baseFolder, 
                 pasFolderPath = new string[] { }, 
-                psXMLRequestedMetaData = requestedMetadata.ToXml(), 
-                psOutXMLFolderList = xmlIshFolder });
-            xmlIshFolder = response.psOutXMLFolderList;
+                psXMLRequestedMetaData = requestedMetadata.ToXml()
+            });
+            string xmlIshFolder = response.psOutXMLFolderList;
             XmlDocument result = new XmlDocument();
             result.LoadXml(xmlIshFolder);
             XmlElement xmlIshFolderElement = (XmlElement)result.SelectSingleNode("ishfolder");
@@ -286,5 +286,36 @@ namespace Trisoft.ISHRemote.Cmdlets
             return outList;
         }
 
+        /// <summary>
+        /// Groups IshObjects list by LogicalIds and divides into multiple lists by batchsize so that objects with the same LogicalIds are never split between batches.
+        /// </summary>
+        /// <param name="list">List to devide</param>
+        /// <param name="batchSize"></param>
+        /// <returns>Multiple lists grouped by LogicalIds and having maximally batchsize elements, but the same LogicalId is never split between batches</returns>
+        internal List<List<IshObject>>DevideListInBatchesByLogicalId(List<IshObject> list, int batchSize)
+        {
+            var outList = new List<List<IshObject>>();
+
+            if (list != null)
+            {
+                var ishObjectsGroupedByIshRef = list.GroupBy(ishObject => ishObject.IshRef);
+                var tempList = new List<IshObject>(ishObjectsGroupedByIshRef.First().ToList());
+                foreach (var ishObjectsIshRefGroup in ishObjectsGroupedByIshRef.Skip(1))
+                {
+                    if (tempList.Count + ishObjectsIshRefGroup.Count() <= batchSize)
+                    {
+                        tempList.AddRange(ishObjectsIshRefGroup.ToList());
+                    }
+                    else
+                    {
+                        outList.Add(tempList);
+                        tempList = ishObjectsIshRefGroup.ToList();
+                    }
+                }
+                outList.Add(tempList);
+            }
+
+            return outList;
+        }
     }
 }

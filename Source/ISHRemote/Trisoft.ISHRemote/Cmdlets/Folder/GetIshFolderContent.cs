@@ -229,34 +229,30 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         Array.Copy(folderPathElements, 1, folderPathTrisoft, 0, folderPathElements.Length - 1);
 
                         WriteDebug($"FolderPath[{folderPath}]");
-                        string xmlIshFolder = "";
                         var responseFolderPath = IshSession.Folder25.GetMetaData(new Folder25ServiceReference.GetMetaDataRequest()
                         {
                             psAuthContext = IshSession.AuthenticationContext,
                             peBaseFolder = BaseFolderLabelToEnum(IshSession, baseFolderLabel),
                             pasFolderPath = folderPathTrisoft,
-                            psXMLRequestedMetaData = "",
-                            psOutXMLFolderList = xmlIshFolder
+                            psXMLRequestedMetaData = ""
                         });
                         IshSession.AuthenticationContext = responseFolderPath.psAuthContext;
-                        xmlIshFolder = responseFolderPath.psOutXMLFolderList;
+                        string xmlIshFolder = responseFolderPath.psOutXMLFolderList;
                         IshFolders ishFolders = new IshFolders(xmlIshFolder, "ishfolder");
                         returnFolderIds.Add(ishFolders.Folders[0].IshFolderRef);
                         break;
 
                     case "BaseFolderGroup":
                         var baseFolder = EnumConverter.ToBaseFolder<Folder25ServiceReference.eBaseFolder>(BaseFolder);
-                        string xmlIshFolders = "";
                         var responseBaseFolder = IshSession.Folder25.GetMetaData(new Folder25ServiceReference.GetMetaDataRequest()
                         {
                             psAuthContext = IshSession.AuthenticationContext,
                             peBaseFolder = baseFolder,
                             pasFolderPath = new string[0],
-                            psXMLRequestedMetaData = "",
-                            psOutXMLFolderList = xmlIshFolders
+                            psXMLRequestedMetaData = ""
                         });
                         IshSession.AuthenticationContext = responseBaseFolder.psAuthContext;
-                        xmlIshFolders = responseBaseFolder.psOutXMLFolderList;
+                        string xmlIshFolders = responseBaseFolder.psOutXMLFolderList;
                         IshFolders retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder");
                         returnFolderIds.Add(retrievedFolders.Folders[0].IshFolderRef);
                         break;
@@ -292,15 +288,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 {
                     // 2. Doing Retrieve
                     WriteDebug($"Looping folderId[{returnFolderId}] {++current}/{returnFolderIds.Count}");
-                    string xmlIshObjects = "";
                     var responseGetContents = IshSession.Folder25.GetContents(new Folder25ServiceReference.GetContentsRequest()
                     { 
                         psAuthContext = IshSession.AuthenticationContext,
-                        plFolderRef = returnFolderId,
-                        psOutXMLObjList = xmlIshObjects
+                        plFolderRef = returnFolderId
                     });
                     IshSession.AuthenticationContext = responseGetContents.psAuthContext;
-                    xmlIshObjects = responseGetContents.psOutXMLObjList;
+                    string xmlIshObjects = responseGetContents.psOutXMLObjList;
                     var ishObjects = new IshObjects(xmlIshObjects);
 
                     if (ishObjects.Ids.Length > 0)
@@ -333,8 +327,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         psAuthContext = IshSession.AuthenticationContext,
                                         pasLogicalIds = logicalIdBatch.ToArray(),
                                         psVersion = VersionFilter,
-                                        psXMLRequestedMetadata = "",
-                                        psOutXMLObjList = xmlIshObjects
+                                        psXMLRequestedMetadata = ""
                                     });
                                     IshSession.AuthenticationContext = responseRetrieveVersion.psAuthContext;
                                     xmlIshObjects = responseRetrieveVersion.psOutXMLObjList;
@@ -352,8 +345,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                             palVersionRefs = versionRefs.ToArray(),
                                             peStatusFilter = DocumentObj25ServiceReference.eISHStatusgroup.ISHNoStatusFilter,
                                             psXMLMetadataFilter = metadataFilterFields.ToXml(),
-                                            psXMLRequestedMetadata = requestedMetadata.ToXml(),
-                                            psOutXMLObjList = xmlIshObjects
+                                            psXMLRequestedMetadata = requestedMetadata.ToXml()
                                         });
                                         IshSession.AuthenticationContext = responseRetrieve.psAuthContext;
                                         xmlIshObjects = responseRetrieve.psOutXMLObjList;
@@ -371,8 +363,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         pasLogicalIds = logicalIdBatch.ToArray(),
                                         peStatusFilter = DocumentObj25ServiceReference.eISHStatusgroup.ISHNoStatusFilter,
                                         psXMLMetadataFilter = metadataFilterFields.ToXml(),
-                                        psXMLRequestedMetadata = requestedMetadata.ToXml(),
-                                        psOutXMLObjList = xmlIshObjects
+                                        psXMLRequestedMetadata = requestedMetadata.ToXml()
                                     });
                                     IshSession.AuthenticationContext = response.psAuthContext;
                                     xmlIshObjects = response.psOutXMLObjList;
@@ -410,8 +401,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         psAuthContext = IshSession.AuthenticationContext,
                                         pasLogicalIds = logicalIdBatch.ToArray(),
                                         psVersion = VersionFilter,
-                                        psXMLRequestedMetadata = "",
-                                        psOutXMLObjList = xmlIshObjects
+                                        psXMLRequestedMetadata = ""
                                     });
                                     IshSession.AuthenticationContext = response.psAuthContext;
                                     xmlIshObjects = response.psOutXMLObjList;
@@ -430,8 +420,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                             palVersionRefs = versionRefs.ToArray(),
                                             peStatusFilter = PublicationOutput25ServiceReference.eISHStatusgroup.ISHNoStatusFilter,
                                             psXMLMetadataFilter = metadataFilterFields.ToXml(),
-                                            psXMLRequestedMetadata = requestedMetadata.ToXml(),
-                                            psOutXMLObjList = xmlIshObjects
+                                            psXMLRequestedMetadata = requestedMetadata.ToXml()
                                         });
                                         IshSession.AuthenticationContext = responseRetrieve.psAuthContext;
                                         xmlIshObjects = responseRetrieve.psOutXMLObjList;
@@ -449,8 +438,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         pasLogicalIds = logicalIdBatch.ToArray(),
                                         peStatusFilter = PublicationOutput25ServiceReference.eISHStatusgroup.ISHNoStatusFilter,
                                         psXMLMetadataFilter = metadataFilterFields.ToXml(),
-                                        psXMLRequestedMetadata = requestedMetadata.ToXml(),
-                                        psOutXMLObjList = xmlIshObjects
+                                        psXMLRequestedMetadata = requestedMetadata.ToXml()
                                     });
                                     IshSession.AuthenticationContext = responseRetrieve.psAuthContext;
                                     xmlIshObjects = responseRetrieve.psOutXMLObjList;

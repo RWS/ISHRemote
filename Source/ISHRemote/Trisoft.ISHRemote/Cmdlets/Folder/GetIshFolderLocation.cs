@@ -128,17 +128,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     Array.Copy(folderPathElements, 1, folderPathTrisoft, 0, folderPathElements.Length - 1);
 
                     WriteDebug($"FolderPath[{folderPath}]");
-                    string xmlIshFolder = "";
                     var response = IshSession.Folder25.GetMetaData(new Folder25ServiceReference.GetMetaDataRequest()
                     { 
                         psAuthContext = IshSession.AuthenticationContext,
                         peBaseFolder = BaseFolderLabelToEnum(IshSession, baseFolderLabel),
                         pasFolderPath = folderPathTrisoft,
-                        psXMLRequestedMetaData = "",
-                        psOutXMLFolderList = xmlIshFolder
+                        psXMLRequestedMetaData = ""
                     });
                     IshSession.AuthenticationContext = response.psAuthContext;
-                    xmlIshFolder = response.psOutXMLFolderList;
+                    string xmlIshFolder = response.psOutXMLFolderList;
                     IshFolders ishFolder = new IshFolders(xmlIshFolder, "ishfolder");
                     returnFolderIds.Add(ishFolder.Folders[0].IshFolderRef);
                 }
@@ -147,17 +145,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 {
                     // 1d. Retrieve subfolder(s) from the specified root folder using BaseFolder string (enumeration)
                     var baseFolder = EnumConverter.ToBaseFolder<Folder25ServiceReference.eBaseFolder>(BaseFolder);
-                    string xmlIshFolders = "";
                     var response = IshSession.Folder25.GetMetaData(new Folder25ServiceReference.GetMetaDataRequest()
                     { 
                         psAuthContext = IshSession.AuthenticationContext,
                         peBaseFolder = baseFolder,
                         pasFolderPath = new string[0],
-                        psXMLRequestedMetaData = "",
-                        psOutXMLFolderList = xmlIshFolders
+                        psXMLRequestedMetaData = ""
                     });
                     IshSession.AuthenticationContext = response.psAuthContext;
-                    xmlIshFolders = response.psOutXMLFolderList;
+                    string xmlIshFolders = response.psOutXMLFolderList;
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder");
                     returnFolderIds.Add(retrievedFolders.Folders[0].IshFolderRef);
                 }

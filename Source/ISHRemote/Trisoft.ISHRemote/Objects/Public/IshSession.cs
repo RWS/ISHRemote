@@ -225,8 +225,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         var response = Settings25.GetMetaData(new Settings25ServiceReference.GetMetaDataRequest()
                         {
                             psAuthContext = _authenticationContext,
-                            psXMLRequestedMetaData = metadata.ToXml(),
-                            psOutXMLObjList = xmlIshObjects
+                            psXMLRequestedMetaData = metadata.ToXml()
                         });
                         _authenticationContext = response.psAuthContext;
                         xmlIshObjects = response.psOutXMLObjList;
@@ -282,13 +281,13 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
                     string requestedMetadata = "<ishfields><ishfield name='USERNAME' level='none'/></ishfields>";
-                    string xmlIshObjects = "";
-                    var response = User25.GetMyMetaData(new GetMyMetaDataRequest() { 
+                    var response = User25.GetMyMetaData(new GetMyMetaDataRequest()
+                    { 
                         psAuthContext = _authenticationContext, 
-                        psXMLRequestedMetaData= requestedMetadata, 
-                        psOutXMLObjList = xmlIshObjects });
+                        psXMLRequestedMetaData= requestedMetadata
+                    });
                     _authenticationContext = response.psAuthContext;
-                    xmlIshObjects = response.psOutXMLObjList;
+                    string xmlIshObjects = response.psOutXMLObjList;
                     Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
                     IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
                     _userName = ishObjects.Objects[0].IshFields.GetFieldValue("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
@@ -308,13 +307,13 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
                     string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
-                    string xmlIshObjects = "";
-                    var response = User25.GetMyMetaData(new GetMyMetaDataRequest() { 
+                    var response = User25.GetMyMetaData(new GetMyMetaDataRequest()
+                    { 
                         psAuthContext = _authenticationContext, 
-                        psXMLRequestedMetaData = requestedMetadata,
-                        psOutXMLObjList = xmlIshObjects });
+                        psXMLRequestedMetaData = requestedMetadata
+                    });
                     _authenticationContext = response.psAuthContext;
-                    xmlIshObjects = response.psOutXMLObjList;
+                    string xmlIshObjects = response.psOutXMLObjList;
                     Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
                     IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
                     _userLanguage = ishObjects.Objects[0].IshFields.GetFieldValue("FISHUSERLANGUAGE", Enumerations.Level.None, Enumerations.ValueType.Value);

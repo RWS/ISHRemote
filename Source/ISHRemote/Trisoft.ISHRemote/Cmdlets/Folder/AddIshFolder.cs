@@ -206,16 +206,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 
                     // Add the required fields (needed for pipe operations)
                     IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
-                    string xmlIshFolders = "";
                     var response = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
                     {
                         psAuthContext = IshSession.AuthenticationContext,
                         palFolderRefs = foldersToRetrieve.ToArray(),
-                        psXMLRequestedMetaData = requestedMetadata.ToXml(),
-                        psOutXMLFolderList = xmlIshFolders
+                        psXMLRequestedMetaData = requestedMetadata.ToXml()
                     });
                     IshSession.AuthenticationContext = response.psAuthContext;
-                    xmlIshFolders = response.psOutXMLFolderList;
+                    string xmlIshFolders = response.psOutXMLFolderList;
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
                     returnedFolders.AddRange(retrievedFolders.Folders);
                 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,29 +15,18 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+using System.Management.Automation;
+using Trisoft.ISHRemote.Objects;
+using Trisoft.ISHRemote.Objects.Public;
+using Trisoft.ISHRemote.Exceptions;
 
-namespace Trisoft.ISHRemote.Objects.Public
+namespace Trisoft.ISHRemote.Cmdlets.User
 {
-    /// <summary>
-    /// <para type="description">A container to allow *.Format.ps1xml do magic, in essence the same as the pipeline object IshObject</para>
-    /// </summary>
-    public class IshUser : IshObject
+    public abstract class UserCmdlet : TrisoftCmdlet
     {
-        public IshUser(XmlElement xmlIshObject)
-            : base(xmlIshObject)
-        { }
-
-        /// <summary>
-        /// Returns the card_id
-        /// </summary>
-        public new string ObjectRef
+        public Enumerations.ISHType[] ISHType
         {
-            get { return _objectRef[Enumerations.ReferenceType.User]; }
+            get { return new Enumerations.ISHType[] { Enumerations.ISHType.ISHUser }; }
         }
     }
 }

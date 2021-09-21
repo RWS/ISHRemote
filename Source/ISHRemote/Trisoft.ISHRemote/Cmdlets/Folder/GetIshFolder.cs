@@ -238,16 +238,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     foreach (List<long> folderCardIdBatch in devidedFolderCardIdsList)
                     {
                         // Process card ids in batches
-                        string xmlIshFolders = "";
                         var response = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
                         {
                             psAuthContext = IshSession.AuthenticationContext,
                             palFolderRefs = folderCardIdBatch.ToArray(),
-                            psXMLRequestedMetaData = _requestedMetadata.ToXml(),
-                            psOutXMLFolderList = xmlIshFolders
+                            psXMLRequestedMetaData = _requestedMetadata.ToXml()
                         });
                         IshSession.AuthenticationContext = response.psAuthContext;
-                        xmlIshFolders = response.psOutXMLFolderList;
+                        string xmlIshFolders = response.psOutXMLFolderList;
                         IshFolders retrievedObjects = new IshFolders(xmlIshFolders);
                         returnIshFolders.AddRange(retrievedObjects.Folders);
                         currentFolderCardIdCount += folderCardIdBatch.Count;
@@ -263,16 +261,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     foreach (List<long> folderCardIdBatch in devidedFolderCardIdsList)
                     {
                         // Process card ids in batches
-                        string xmlIshFolders = "";
                         var response = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
                         {
                             psAuthContext = IshSession.AuthenticationContext,
                             palFolderRefs = folderCardIdBatch.ToArray(),
-                            psXMLRequestedMetaData = _requestedMetadata.ToXml(),
-                            psOutXMLFolderList = xmlIshFolders
+                            psXMLRequestedMetaData = _requestedMetadata.ToXml()
                         });
                         IshSession.AuthenticationContext = response.psAuthContext;
-                        xmlIshFolders = response.psOutXMLFolderList;
+                        string xmlIshFolders = response.psOutXMLFolderList;
                         IshFolders retrievedObjects = new IshFolders(xmlIshFolders);
                         returnIshFolders.AddRange(retrievedObjects.Folders);
                         currentFolderCardIdCount += folderCardIdBatch.Count;
@@ -293,17 +289,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     Array.Copy(folderPathElements, 1, folderPathTrisoft, 0, folderPathElements.Length - 1);
 
                     WriteDebug($"FolderPath[{ folderPath}]");
-                    string xmlIshFolder = "";
                     var response = IshSession.Folder25.GetMetaData(new Folder25ServiceReference.GetMetaDataRequest() 
                     {
                         psAuthContext = IshSession.AuthenticationContext,
                         peBaseFolder = BaseFolderLabelToEnum(IshSession, baseFolderLabel),
                         pasFolderPath = folderPathTrisoft,
-                        psXMLRequestedMetaData = _requestedMetadata.ToXml(),
-                        psOutXMLFolderList = xmlIshFolder
+                        psXMLRequestedMetaData = _requestedMetadata.ToXml()
                     });
                     IshSession.AuthenticationContext = response.psAuthContext;
-                    xmlIshFolder = response.psOutXMLFolderList;
+                    string xmlIshFolder = response.psOutXMLFolderList;
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolder, "ishfolder");
                     returnIshFolders.AddRange(retrievedFolders.Folders);
                 }
@@ -312,17 +306,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     // Retrieve using BaseFolder string (enumeration)
                     var baseFolder = EnumConverter.ToBaseFolder<Folder25ServiceReference.eBaseFolder>(BaseFolder);
                     WriteDebug($"BaseFolder[{baseFolder}]");
-                    string xmlIshFolders = "";
                     var response = IshSession.Folder25.GetMetaData(new Folder25ServiceReference.GetMetaDataRequest()
                     {
                         psAuthContext = IshSession.AuthenticationContext,
                         peBaseFolder = baseFolder,
                         pasFolderPath = new string[0],
-                        psXMLRequestedMetaData = _requestedMetadata.ToXml(),
-                        psOutXMLFolderList = xmlIshFolders
+                        psXMLRequestedMetaData = _requestedMetadata.ToXml()
                     });
                     IshSession.AuthenticationContext = response.psAuthContext;
-                    xmlIshFolders = response.psOutXMLFolderList;
+                    string xmlIshFolders = response.psOutXMLFolderList;
                     IshFolders retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder");
                     returnIshFolders.AddRange(retrievedFolders.Folders);
                 }
@@ -410,15 +402,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             if (currentDepth < (maxDepth - 1))
             {
                 WriteDebug($"RetrieveRecursive IshFolderRef[{ishFolder.IshFolderRef}] folderName[{folderName}] ({currentDepth}<{maxDepth})");
-                string xmlIshFolders = "";
                 var responseSubFolders = IshSession.Folder25.GetSubFoldersByIshFolderRef(new Folder25ServiceReference.GetSubFoldersByIshFolderRefRequest()
                 {
                     psAuthContext = IshSession.AuthenticationContext,
-                    plFolderRef = ishFolder.IshFolderRef,
-                    psOutXMLFolderList = xmlIshFolders
+                    plFolderRef = ishFolder.IshFolderRef
                 });
                 IshSession.AuthenticationContext = responseSubFolders.psAuthContext;
-                xmlIshFolders = responseSubFolders.psOutXMLFolderList;
+                string xmlIshFolders = responseSubFolders.psOutXMLFolderList;
                 // GetSubFolders contains ishfolder for the parent folder + ishfolder inside for the subfolders
                 IshFolders retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder/ishfolder");
                 if (retrievedFolders.Ids.Length > 0)
@@ -429,8 +419,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     {
                         psAuthContext = IshSession.AuthenticationContext,
                         palFolderRefs = retrievedFolders.Ids,
-                        psXMLRequestedMetaData = _requestedMetadata.ToXml(),
-                        psOutXMLFolderList = xmlIshFolders
+                        psXMLRequestedMetaData = _requestedMetadata.ToXml()
                     });
                     IshSession.AuthenticationContext = responseRetrieve.psAuthContext;
                     xmlIshFolders = responseRetrieve.psOutXMLFolderList;
