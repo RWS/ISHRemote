@@ -58,6 +58,7 @@ jobs:
 
     - name: Pester Test Preparation (...products.com) on Windows using PowerShell 7.x
       shell: pwsh
+      env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
         ISH_USER_NAME: ${{ secrets.ISH_USER_NAME }}
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
