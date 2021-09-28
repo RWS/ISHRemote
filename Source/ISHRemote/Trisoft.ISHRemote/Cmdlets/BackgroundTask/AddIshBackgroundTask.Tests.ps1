@@ -4,58 +4,6 @@ BeforeAll {
 	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
 
 	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
-
-	#
-	# Script-file scope auxiliary function
-	# Gets BackgroundTasks InputData to parse out the language cardids passed to the BackgroundTask event
-	#
-	function script:GetLngRefsByInputDataId([long]$inputDataId)
-	{
-		[xml]$xmlBTDataObject = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($inputDataId)
-		[byte[]]$data = [Convert]::FromBase64String($xmlBTDataObject.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject."#cdata-section")
-		
-		#find where xml really starts
-		$position = 0
-		foreach($byte in $data)
-		{
-			if($byte -eq "60"){
-				break;
-			}
-			$position ++
-		}
-		
-		#convert to xml
-		[xml]$xmlContent = [System.Text.Encoding]::Unicode.GetString($data, $position, $data.Length - $position)
-		$retrievedLngRefsArray = @()
-		foreach($ishObject in $xmlContent.ishobjects.ishobject) 
-		{
-			$retrievedLngRefsArray += $ishObject.ishlngRef
-		}
-		
-		return $retrievedLngRefsArray
-	}
-
-
-	#
-	# Script-file scope auxiliary function
-	# For every incoming IshBackgroundTask, retrieve InputData (that holds language cardids of the BackgroundTask event) and return as an array
-	#
-	function script:GetLngRefsByBackgroundTasksArray($arrBackgroundTasks)
-	{
-		if ($arrBackgroundTasks.Count -eq 0)
-		{
-			return $null
-		}
-		
-		$retrievedLngRefs = @()
-		foreach($ishBackgroundTask in $arrBackgroundTasks)
-		{
-			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID 
-			$ishBackgroundTask = $ishBackgroundTask | Get-IshBackgroundTask -RequestedMetadata $requestedMetadata
-			$retrievedLngRefs += GetLngRefsByInputDataId -inputDataId $ishBackgroundTask.inputdataid
-		}
-		return $retrievedLngRefs
-	}
 }
 
 Describe "Add-IshBackgroundTask" -Tags "Create" {
@@ -132,18 +80,6 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				$ishBackgroundTaskIshObjectsPipeline.userid | Should -BeExactly $ishSession.UserName
 			}
 		}
-		It "Add-IshBackgroundTask returns IshBackgroundTask that launched with correct card ids" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID 
-				$ishBackgroundTaskIshObjectsPipeline = $ishBackgroundTaskIshObjectsPipeline | Get-IshBackgroundTask -RequestedMetadata $requestedMetadata
-				$retrievedLngRefs = GetLngRefsByInputDataId -inputDataId $ishBackgroundTaskIshObjectsPipeline.inputdataid
-				$retrievedLngRefs.Count | Should -BeExactly $createdLngRefs.Count
-				foreach($lngRef in $retrievedLngRefs)
-				{
-					$createdLngRefs -contains $lngRef | Should -BeExactly $true
-				}
-			}
-		}
 		It "Pipeline IshObject Single" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishBackgroundTaskIshObjectsPipeline = $ishObjectTopic1_1 | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
@@ -159,12 +95,6 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				$ishSession.MetadataBatchSize = 2
 				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 				$ishBackgroundTasks.Count | Should -BeExactly 3
-				$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
-				$retrievedLngRefs.Count | Should -BeExactly $createdLngRefs.Count
-				foreach($lngRef in $retrievedLngRefs)
-				{
-					$createdLngRefs -contains $lngRef | Should -BeExactly $true
-				}
 			}
 		}
 		It "Pipeline IshObject MetadataBatchSize[4] with LogicalId grouping" {
@@ -172,12 +102,6 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				$ishSession.MetadataBatchSize = 4
 				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 				$ishBackgroundTasks.Count | Should -BeExactly 3
-				$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
-				$retrievedLngRefs.Count | Should -BeExactly $createdLngRefs.Count
-				foreach($lngRef in $retrievedLngRefs)
-				{
-					$createdLngRefs -contains $lngRef | Should -BeExactly $true
-				}
 			}
 		}
 		It "Pipeline IshObject MetadataBatchSize[6] with LogicalId grouping" {
@@ -185,12 +109,6 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				$ishSession.MetadataBatchSize = 6
 				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 				$ishBackgroundTasks.Count | Should -BeExactly 2
-				$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
-				$retrievedLngRefs.Count | Should -BeExactly $createdLngRefs.Count
-				foreach($lngRef in $retrievedLngRefs)
-				{
-					$createdLngRefs -contains $lngRef | Should -BeExactly $true
-				}
 			}
 		}
 		It "Pipeline IshObject MetadataBatchSize[10] with LogicalId grouping" {
@@ -198,12 +116,6 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				$ishSession.MetadataBatchSize = 10
 				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
 				$ishBackgroundTasks.Count | Should -BeExactly 1
-				$retrievedLngRefs = GetLngRefsByBackgroundTasksArray -arrBackgroundTasks $ishBackgroundTasks
-				$retrievedLngRefs.Count | Should -BeExactly $createdLngRefs.Count
-				foreach($lngRef in $retrievedLngRefs)
-				{
-					$createdLngRefs -contains $lngRef | Should -BeExactly $true
-				}
 			}
 		}
 		AfterAll {

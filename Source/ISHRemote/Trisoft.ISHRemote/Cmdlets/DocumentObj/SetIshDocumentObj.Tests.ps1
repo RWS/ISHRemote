@@ -304,14 +304,14 @@ Describe "Set-IshDocumentObj" -Tags "Create" {
 		It "Provide both FileContent and FilePath" {
 			$tempFilePath = (New-TemporaryFile).FullName
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value "Updated title"
-			{Set-IshDocumentObj -IshSession $ishSession `
+			$exception = { Set-IshDocumentObj -IshSession $ishSession `
 								 -LogicalId $ishObjectToUpdate.IshRef `
 								 -Version $ishObjectToUpdate.version_version_value `
 								 -Lng $ishObjectToUpdate.doclanguage `
 								 -Metadata $ishMetadataFieldsSet `
 								 -FileContent $ditaTopicFileContent `
-								 -FilePath $tempFilePath} | 
-			Should -Throw "Parameter set cannot be resolved using the specified named parameters."
+								 -FilePath $tempFilePath } | Should -Throw -PassThru
+			$exception -like "*Parameter set cannot be resolved using the specified named parameters.*" | Should -Be $true
 		}
 		It "Topic - update blob only" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Set All Parameters Topic $timestamp" |
@@ -604,7 +604,7 @@ Describe "Set-IshDocumentObj" -Tags "Create" {
 			$updatedTitle = $ishObjectToUpdate.ftitle_logical_value + "...updated"
 			$updatedContent = $ishObjectToUpdateContent.Replace("(optional)", "(optional-updated)")
 			$tempFilePathUpdated = (New-TemporaryFile).FullName
-			$updatedContent | Out-File -FilePath $tempFilePathUpdated -Force
+			$updatedContent | Out-File -Encoding Unicode -FilePath $tempFilePathUpdated -Force
 			$ishMetadataFieldsSet = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level "Logical" -Value $updatedTitle
 			$ishRequiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusReleased
 			$exception = { Set-IshDocumentObj -IshSession $ishSession `
@@ -615,6 +615,8 @@ Describe "Set-IshDocumentObj" -Tags "Create" {
 								-RequiredCurrentMetadata $ishRequiredCurrentMetadata `
 								-FilePath $tempFilePathUpdated } | Should -Throw -PassThru
 			# 14.0.4 message is:  [-106011] The supplied expected metadata value "Released" does not match the current database value "In progress" so we rolled back your operation. To make the operation work you should make sure your value matches the latest database value. [f:158 fe:FSTATUS ft:LOV] [106011;InvalidCurrentMetadata]
+			# 14.0.4 message with pretranslation enabled is:  [-106021] The target xml file handler "PreTranslation" returned the following error: "There is no Unicode byte order mark. Cannot switch to Unicode." [106021;TargetXmlFileHandlerExecutionFailure]
+			# 14.0.4 message is:  There is no Unicode byte order mark. Cannot switch to Unicode.
 			$exception -like "*106011*" | Should -Be $true 
 			$exception -like "*InvalidCurrentMetadata*" | Should -Be $true
 		}	

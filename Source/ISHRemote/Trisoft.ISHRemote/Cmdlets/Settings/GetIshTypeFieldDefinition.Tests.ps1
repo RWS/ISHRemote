@@ -111,8 +111,9 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 		}
     }
     Context "IshTypeFieldDefinition - check properties" {
-        $typeDefinitions = Get-IshTypeFieldDefinition -IshSession $ishSession
-        
+        BeforeAll {
+			$typeDefinitions = Get-IshTypeFieldDefinition -IshSession $ishSession
+		}
         It "Check CRUST, MM and SDB length"{
             if ($typeDefinitions.Length -gt 0)
 			{
