@@ -111,7 +111,7 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			{ Get-IshBackgroundTask -IShSession $ishSession -RequestedMetadata "INVALIDMETADATA" -MetadataFilter "INVALIDFILTER"  } | Should -Throw
 		}
 		It "Parameter IshSession/UserFilter/MetadataFilter are optional" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -ModifiedSince ((Get-Date).AddSeconds(-10)) -RequestedMetadata $allTaskMetadata)[0]
+			$ishBackgroundTask = (Get-IshBackgroundTask -RequestedMetadata $allTaskMetadata)[0]
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element).StartsWith('VUSER') | Should -Be $true
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element).StartsWith('VBACKGROUNDTASK') | Should -Be $true
 		}
@@ -134,7 +134,7 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(1)) -UserFilter All).Count | Should -Be 0
 		}
 		It "Parameter RequestedMetadata only all of Task level" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
 			$ishBackgroundTask.TaskRef -gt 0 | Should -Be $true
 			$ishBackgroundTask.IshField.Count -ge 16 | Should -Be $true
 		}
