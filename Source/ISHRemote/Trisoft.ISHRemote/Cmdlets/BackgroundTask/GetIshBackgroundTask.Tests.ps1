@@ -151,6 +151,7 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			[bool]($ishBackgroundTask.PSobject.Properties.name -match "status_task_element") | Should -Be $true
 			[bool]($ishBackgroundTask.PSobject.Properties.name -match "userid_task_element") | Should -Be $true
 			[bool]($ishBackgroundTask.PSobject.Properties.name -match "modificationdate") | Should -Be $true
+			Write-Host ("TODO [Must] REMOVE ishBackgroundTask.modificationdate[" + $ishBackgroundTask.modificationdate + "]")
 			$ishBackgroundTask.modificationdate -like "*/*" | Should -Be $false  # It should be sortable date format: yyyy-MM-ddTHH:mm:ss
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=Off" {

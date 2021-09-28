@@ -87,11 +87,18 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
 1. Next is add all SoapClient proxies
-9.  Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
+2. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
+   1. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGAUGES over Get-IshLovValues
+   2. You should have initial state Draft by element name
+   3. You should have a direct Draft to Released status transition for your user
+   4. You should have system management user role to allow renaming System folder test
+   5. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
+   6. Should Solr be running to do Search-IshDocumentObj
+3.  Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
     1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
-10. Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
-11. ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
-12. ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version
+4.  Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
+5.  ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
+6.  ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version
 
 
 # Debugging

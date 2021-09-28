@@ -157,6 +157,7 @@ Describe "Get-IshEvent" -Tags "Create" {
 			[bool]($ishEvent.PSobject.Properties.name -match "userid") | Should -Be $true
 			[bool]($ishEvent.PSobject.Properties.name -match "modificationdate") | Should -Be $true
 			[bool]($ishEvent.PSobject.Properties.name -match "status_detail_value") | Should -Be $true
+			Write-Host ("TODO [Must] REMOVE ishEvent.modificationdate[" + $ishEvent.modificationdate + "]")
 			$ishEvent.modificationdate -like "*/*" | Should -Be $false  # It should be sortable date format: yyyy-MM-ddTHH:mm:ss
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=Off" {
