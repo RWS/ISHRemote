@@ -5,7 +5,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 * 
-*     http://www.apache.org/licenses/LICENSE-2.0
+*	 http://www.apache.org/licenses/LICENSE-2.0
 * 
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,6 @@ using System.Reflection;
 
 namespace Trisoft.ISHRemote.HelperClasses
 {
-
 	#region Class StringEnum
 
 	/// <summary>
@@ -30,8 +29,9 @@ namespace Trisoft.ISHRemote.HelperClasses
 	{
 		#region Instance implementation
 
-		private Type _enumType;
-		private static Hashtable _stringValues = new Hashtable();
+		private readonly Type _enumType;
+		private static readonly Hashtable _stringValues = new Hashtable();
+		private static readonly object _stringValuesLock = new object();
 
 		/// <summary>
 		/// Creates a new <see cref="StringEnum"/> instance.
@@ -56,10 +56,13 @@ namespace Trisoft.ISHRemote.HelperClasses
 			string stringValue = null;
 			try
 			{
-				enumType = (Enum) Enum.Parse(_enumType, valueName);
+				enumType = (Enum)Enum.Parse(_enumType, valueName);
 				stringValue = GetStringValue(enumType);
 			}
-			catch (Exception) { }//Swallow!
+			catch
+			{
+				//Swallow!
+			}
 
 			return stringValue;
 		}
@@ -75,10 +78,9 @@ namespace Trisoft.ISHRemote.HelperClasses
 			foreach (FieldInfo fi in _enumType.GetFields())
 			{
 				//Check for our custom attribute
-				StringValueAttribute[] attrs = fi.GetCustomAttributes(typeof (StringValueAttribute), false) as StringValueAttribute[];
+				StringValueAttribute[] attrs = fi.GetCustomAttributes(typeof(StringValueAttribute), false) as StringValueAttribute[];
 				if (attrs.Length > 0)
 					values.Add(attrs[0].Value);
-
 			}
 
 			return values.ToArray();
@@ -96,7 +98,7 @@ namespace Trisoft.ISHRemote.HelperClasses
 			foreach (FieldInfo fi in _enumType.GetFields())
 			{
 				//Check for our custom attribute
-				StringValueAttribute[] attrs = fi.GetCustomAttributes(typeof (StringValueAttribute), false) as StringValueAttribute[];
+				StringValueAttribute[] attrs = fi.GetCustomAttributes(typeof(StringValueAttribute), false) as StringValueAttribute[];
 				if (attrs.Length > 0)
 					values.Add(new DictionaryEntry(Convert.ChangeType(Enum.Parse(_enumType, fi.Name), underlyingType), attrs[0].Value));
 
@@ -148,24 +150,26 @@ namespace Trisoft.ISHRemote.HelperClasses
 		public static string GetStringValue(Enum value)
 		{
 			string output = null;
-			Type type = value.GetType();
+			var type = value.GetType();
 
-			if (_stringValues.ContainsKey(value))
-				output = (_stringValues[value] as StringValueAttribute).Value;
-			else 
+			lock (_stringValuesLock)
 			{
-				//Look for our 'StringValueAttribute' in the field's custom attributes
-				FieldInfo fi = type.GetField(value.ToString());
-				StringValueAttribute[] attrs = fi.GetCustomAttributes(typeof (StringValueAttribute), false) as StringValueAttribute[];
-				if (attrs.Length > 0)
+				if (_stringValues.ContainsKey(value))
+					output = ((StringValueAttribute)_stringValues[value]).Value;
+				else
 				{
-					_stringValues.Add(value, attrs[0]);
-					output = attrs[0].Value;
+					//Look for our 'StringValueAttribute' in the field's custom attributes
+					var fi = type.GetField(value.ToString());
+					var attrs = fi.GetCustomAttributes(typeof(StringValueAttribute), false) as StringValueAttribute[];
+					if (attrs.Length > 0)
+					{
+						_stringValues.Add(value, attrs[0]);
+						output = attrs[0].Value;
+					}
 				}
-					
 			}
-			return output;
 
+			return output;
 		}
 
 		/// <summary>
@@ -198,7 +202,7 @@ namespace Trisoft.ISHRemote.HelperClasses
 			foreach (FieldInfo fi in type.GetFields())
 			{
 				//Check for our custom attribute
-				StringValueAttribute[] attrs = fi.GetCustomAttributes(typeof (StringValueAttribute), false) as StringValueAttribute[];
+				StringValueAttribute[] attrs = fi.GetCustomAttributes(typeof(StringValueAttribute), false) as StringValueAttribute[];
 				if (attrs.Length > 0)
 					enumStringValue = attrs[0].Value;
 
