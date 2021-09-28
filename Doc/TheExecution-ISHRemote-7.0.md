@@ -76,6 +76,7 @@ Publishing problem perhaps, as copying %USER%\.nuget\packages\system.servicemode
 4. Is `CertificateValidationHelper.cs` and `ServicePointManagerHelper.cs` still the way to do certificate bypass?  Not according to https://github.com/dotnet/runtime/issues/26048 perhaps needs platform-pragma between Windows PowerShell and PowerShell (Core). Nope solved it via `#115 Enabling Tls13 and IshSession based IgnoreSslPolicyErrors overwrite by switching to ChannelFactor instead of SoapClient. Crosslinking #102 on Tls13 and #22 as IshSession control Ssl-overwrite instead of AppDomain`
     > In .NET Core, ServicePointManager affects only HttpWebRequest. It does not affect HttpClient. You should be able to use HttpClientHandler.ServerCertificateValidationCallback to achieve the same.
 In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, therefore ServicePointManager settings will apply to it.
+1. Next is add all SoapClient proxies
 
 ## Next
 1. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code
@@ -86,7 +87,6 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
    4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
-1. Next is add all SoapClient proxies
 2. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
    1. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGAUGES over Get-IshLovValues
    2. You should have initial state Draft by element name

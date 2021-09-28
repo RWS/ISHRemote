@@ -31,6 +31,7 @@ namespace Trisoft.ISHRemote.HelperClasses
     // . https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.psvariable?view=powershellsdk-1.1.0
     internal class NameHelper
     {
+        private readonly CultureInfo _cultureInfoEnUs = new CultureInfo("en-US");
         private readonly IshSession _ishSession;
         private readonly string _levelNameValueTypeSeparator = "_";  // Not that many special characters allowed in Properties, e.g. '=' is assignment
         // TODO [Could] NameHelper PSNoteProperty generator could benefit of fast-lookup dictionary to store DataType and PropertyName as almost all IshObjects start from the same requested metadata request...
@@ -102,6 +103,11 @@ namespace Trisoft.ISHRemote.HelperClasses
                         //var formatStrings = new string[] { "dd/MM/yyy HH:mm:ss", "yyyy-MM-dd hh:mm:ss", "dd/MM/yyy" };
                         DateTime dateTime;
                         if (DateTime.TryParse(ishField.Value, out dateTime))
+                        {
+                            propertyValue = dateTime.ToString("s");
+                        }
+                        //seemingly Github Actions CI/CD is running a CultureInfo which makes the above generic TryParse fail, so trying an explicit one
+                        else if (DateTime.TryParseExact(ishField.Value, "dd/MM/yyy HH:mm:ss", _cultureInfoEnUs, DateTimeStyles.None, out dateTime))
                         {
                             propertyValue = dateTime.ToString("s");
                         }
