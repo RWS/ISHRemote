@@ -16,17 +16,17 @@ This page will try to track work in progress. And because I work on it in free t
 
 A table that describes what works, where cmdlets have been rewired, where tests have been adapted (potentially indicating compatibility issues).
 
-1. Runtime compatibility, currently aiming for
-    * PowerShell 5.1 and NET Framework 4.7.2
-    * PowerShell 7.1+ and NET (Core) 3.1+
+1. Runtime compatibility, currently aiming for the below to enable TLS 1.3
+    * PowerShell 5.1 and NET Framework 4.8.0
+    * PowerShell 7.1+ and NET (Core) 5.0+
 1. Public class `IshSession`
-    1. Removed WCF proxies, for now the ASMX-SOAP client are internal only
+    1. Removed WCF proxies, added ASMX-SOAP clients named similar to `UserGroup25Soap`
     1. The logic of 'Internal' (or 'SDL') as provided by ISHDeploy's cmdlet `Enable-ISHIntegrationSTSInternalAuthentication` enabling `https://ish.example.com/ISHWS/Internal/` is removed as that is about WCF-SOAP home realm discovery.
 1. Cmdlet `New-IshSession`
     1. Removed parameter sets `ActiveDirectory`, `ActiveDirectory-ExplicitIssuer`, `UserNamePassword-ExplicitIssuer` and `PSCredential-ExplicitIssuer` are removed as that is about WCF-SOAP home realm discovery or Windows Authentication.
     1. Parameters `-WsTrustIssuerUrl` and `-WsTrustIssuerMexUrl` are removed as that is about WCF-SOAP home realm discovery.
     1. Parameter `-IshUserName` can no longer be empty, the default of empty to force `NetworkCredentials` for Windows Authentication doesn't make sense on ASMX-SOAP.
-    1. Parameters `-TimeoutIssue` and `-TimeoutService` are removed as they belong to WCF-SOAP.
+    1. Parameters `-TimeoutIssue` and `-TimeoutService` are removed as they belong to WCF-SOAP. Note that `-Timeout` is still there which defaults to 30 minutes.
     2. Added parameter `-Protocol` which defaults to `AsmxAuthenticationContext`, on route for future options `OpenApiBasicAuthentication` (temporary combination to enable performance/compatibility testing) and `OpenApiOpenConnectId` for proper releasing.
 
 # Project Creation
@@ -76,7 +76,10 @@ Publishing problem perhaps, as copying %USER%\.nuget\packages\system.servicemode
 4. Is `CertificateValidationHelper.cs` and `ServicePointManagerHelper.cs` still the way to do certificate bypass?  Not according to https://github.com/dotnet/runtime/issues/26048 perhaps needs platform-pragma between Windows PowerShell and PowerShell (Core). Nope solved it via `#115 Enabling Tls13 and IshSession based IgnoreSslPolicyErrors overwrite by switching to ChannelFactor instead of SoapClient. Crosslinking #102 on Tls13 and #22 as IshSession control Ssl-overwrite instead of AppDomain`
     > In .NET Core, ServicePointManager affects only HttpWebRequest. It does not affect HttpClient. You should be able to use HttpClientHandler.ServerCertificateValidationCallback to achieve the same.
 In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, therefore ServicePointManager settings will apply to it.
-1. Next is add all SoapClient proxies
+1. Added all SoapClient proxies. Rewired around 30% of cmdlets, resulting full working Pester tests.
+2. Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
+    1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
+    2. This problem was when using standard library, later switched to dedicated compilation per platform. SecureString exists although on Linux it is implicitly is not encrypted... still the obscurity on the cmdline is an asset. So restored that.
 
 ## Next
 1. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code
@@ -88,14 +91,13 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
 2. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
-   1. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGAUGES over Get-IshLovValues
+   1. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
    2. You should have initial state Draft by element name
    3. You should have a direct Draft to Released status transition for your user
    4. You should have system management user role to allow renaming System folder test
    5. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
    6. Should Solr be running to do Search-IshDocumentObj
-3.  Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
-    1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
+3. Port and rewire more cmdlets to AsmxAuthenticationContext to achieve Milestone of the plan.
 4.  Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
 5.  ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
 6.  ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version

@@ -31,6 +31,26 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 	}
 
+	Context "New-IshSession PSCredential" {
+		It "Parameter WsBaseUrl invalid" {
+			{ 
+				$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
+				$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
+				New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -PSCredential $mycredentials
+			} | Should -Throw "Invalid URI: The hostname could not be parsed."
+		}
+		It "Parameter PSCredential invalid" {
+			$securePassword = ConvertTo-SecureString "INVALIDPASSWORD" -AsPlainText -Force
+			$mycredentials = New-Object System.Management.Automation.PSCredential ("INVALIDISHUSERNAME", $securePassword)
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should -Throw
+		}
+		It "Parameter PSCredential" {
+			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
+			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should -Not -Throw
+		}
+	}
+
 	Context "New-IshSession returns IshSession object" {
 		BeforeAll {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword

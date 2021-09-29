@@ -28,6 +28,24 @@ Describe "Test-IshSession" -Tags "Read" {
 		}
 	}
 
+	Context "Test-IshSession PSCredential" {
+		It "Parameter WsBaseUrl invalid" {
+			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
+			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
+			Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -PSCredential $mycredentials | Should -Be $false
+		}
+		It "Parameter PSCredential invalid" {
+			$securePassword = ConvertTo-SecureString "INVALIDPASSWORD" -AsPlainText -Force
+			$mycredentials = New-Object System.Management.Automation.PSCredential ("INVALIDISHUSERNAME", $securePassword)
+			Test-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $false
+		}
+		It "Parameter PSCredential" {
+			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
+			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
+			Test-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $true
+		}
+	}
+
 	Context "Test-IshSession returns bool" {
 		BeforeAll {
 			$ishSessionResult = Test-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword

@@ -48,6 +48,19 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>Building a session for the chosen service based on username/password authentication. The Timeout parameter, expressed as TimeSpan object, controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -TimeoutIssue (New-TimeSpan -Seconds 120) -TimeoutService (New-TimeSpan -Seconds 600)
+    /// </code>
+    /// <para>Building a session for the chosen service based on username/password authentication. The Timeout parameters, expressed as TimeSpan objects, control Send/Receive timeouts of WCF when issuing a token or working with proxies.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $securePassword = ConvertTo-SecureString "MYPASSWORD" -AsPlainText -Force
+    /// $mycredentials = New-Object System.Management.Automation.PSCredential("MYISHUSERNAME", $securePassword)
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential $mycredentials
+    /// </code>
+    /// </example>
     [Cmdlet(VerbsCommon.New, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(IshSession))]
     public sealed class NewIshSession : SessionCmdlet
@@ -56,9 +69,18 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <para type="description">Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: "https://example.com/ISHWS/"</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         [ValidateNotNullOrEmpty]
         public string WsBaseUrl { get; set; }
 
+        /// <summary>
+        /// <para type="description">Standard PowerShell Credential class</para>
+        /// </summary>
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
+        [ValidateNotNullOrEmpty]
+        [Credential]
+        public PSCredential PSCredential { get; set; }
+        
         /// <summary>
         /// <para type="description">Username to login into Tridion Docs Content Manager. When left empty, fall back to ActiveDirectory.</para>
         /// </summary>
@@ -104,6 +126,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         #region Private fields 
         private string _ishUserName = null;
         private string _ishPassword = null;
+        private SecureString _ishSecurePassword = null;
         private TimeSpan _timeout = new TimeSpan(0, 30, 0);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private bool _ignoreSslPolicyErrors = false;
 
@@ -113,9 +136,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
             try
             {
                 int ishPasswordLength = _ishPassword == null ? 0 : _ishPassword.Length;
+                if (PSCredential != null)
+                {
+                    _ishUserName = PSCredential.UserName;
+                    _ishSecurePassword = PSCredential.Password;
+                }
+                else if (!String.IsNullOrWhiteSpace(_ishPassword))
+                {
+                    _ishSecurePassword = SecureStringConversions.StringToSecureString(_ishPassword);
+                }
+                else
+                {
+                    _ishSecurePassword = null;
+                }
                 WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + "]");
                 WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
-                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishPassword, _timeout, _ignoreSslPolicyErrors);
+                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _ignoreSslPolicyErrors);
 
                 // Do early load of IshTypeFieldSetup (either <13-TriDKXmlSetup-based or >=13-RetrieveFieldSetupByIshType-API-based) for
                 // usage by ToIshMetadataFields/.../ToIshRequestedMetadataFields and Expand-ISHParameter.ps1 parameter autocompletion
