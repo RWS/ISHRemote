@@ -156,11 +156,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 			$ishBackgroundTaskStartsAfter.userid | Should -BeExactly $ishSession.UserName
 			# Verify returned submitted IshBackgroundTask.StartsAfter date matches provided tomorrow StartsAfter
 			$retrievedExecuteAfter = New-Object DateTime
-			Write-Host ("TODO [Must] REMOVE TryParseExact on dateTomorrow[" + $dateTomorrow + "]")
-			Write-Host ("TODO [Must] REMOVE TryParseExact on dateTomorrow.ToString(dd/MM/yyyy)[" + $dateTomorrow.ToString("dd/MM/yyyy") + "]")
-			Write-Host ("TODO [Must] REMOVE TryParseExact on ishBackgroundTaskStartsAfter.executeafterdate[" + $ishBackgroundTaskStartsAfter.executeafterdate + "]")
 			$conversionResult = [DateTime]::TryParseExact($ishBackgroundTaskStartsAfter.executeafterdate, "yyyy-MM-ddTHH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref]$retrievedExecuteAfter)
-			Write-Host ("TODO [Must] REMOVE TryParseExact raw result retrievedExecuteAfter[" + $retrievedExecuteAfter + "]")
 			$conversionResult | Should -BeExactly $true
 			$retrievedExecuteAfter.ToString("dd/MM/yyyy") | Should -BeExactly $dateTomorrow.ToString("dd/MM/yyyy")	
 		}
