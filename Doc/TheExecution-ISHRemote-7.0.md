@@ -80,6 +80,16 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
 2. Parameter `-PSCredential` doesn't work because of `SecureString` being Windows cryptography only according to https://github.com/PowerShell/PowerShell/issues/1654 ... what is next? Needs alignment with https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-release-candidate-2/
     1. Also a `New-IshSession` scheduled task code sample like in the past using Windows-only `ConvertTo-SecureString` is required, perhaps over Secret Management.
     2. This problem was when using standard library, later switched to dedicated compilation per platform. SecureString exists although on Linux it is implicitly is not encrypted... still the obscurity on the cmdline is an asset. So restored that.
+1. OpenAPI here we go
+   1. Downloaded `https://mecdev12qa01.../...ORA19/api/api-docs/index.html` into `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\Connected Services\openapi.json`. Obfuscated to http://ish.example.com url.
+   2. `Create-OpenApiClients--dotnet-openapi.ps1` on the downloaded json. This resulted in a NewtonSoft.Json version downgrade from 12.0.3 to 12.0.2, so forcefully upgraded to 12.0.3 again.
+   3. Then did a project Add > Connected Service using the downloaded json file with namespace `Trisoft.ISHRemote.OpenApi` and class name `OpenApi30Client` (or to avoid conflicts use `OpenApi30{controller}Service` and let the template engine do its thing). Which resulted in adding `Microsoft.Extensions.ApiDescription.Client` version 3.0
+2. OpenAPI here we go again
+   1. Added Net Standard 2.0 library project `Trisoft.ISHRemote.OpenApi`
+   2. Downloaded `https://mecdev12qa01.../...ORA19/api/api-docs/index.html` into `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote.OpenApi\OpenApi30.json`.
+   3. Then did a project Add > Connected Service using the downloaded json file with namespace `Trisoft.ISHRemote.OpenApi` and class name `OpenApi30{controller}Service` (let the template engine do its thing). 
+   4. Added `System.ComponentModel.Annotations` v5.0 over NuGet package manager
+   5. And it compiles, yeah.
 
 ## Next
 1. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code
@@ -133,7 +143,7 @@ $ishSession # as admin to mecdev12qa01/ORA19 as a constant in the equation as it
 }).TotalMilliseconds
 ```
 
-The below information was collected via `$PSVersionTable` from laptop over VPN to 15.0.0 ORA19 server
+The below information was collected via `$PSVersionTable` from laptop over VPN to 15.0.0 ORA19 server with Crawler(s) disabled
 
 | Test Runs | WCF (0.13.8112.2) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Core 7.1.4    | OpenAPI (7.0...) on Desktop 5.1.19041.1151 | OpenAPI (7.0...) on Core 7.1.4        | 
 | :---      | ---:                   | ---:                   | ---:          | ---:                   | ---:              |
