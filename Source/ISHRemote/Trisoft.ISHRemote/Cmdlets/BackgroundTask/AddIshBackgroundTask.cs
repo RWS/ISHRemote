@@ -210,6 +210,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (ParameterSetName == "ParameterGroup")
                 {
                     // Start event 
+                    WriteDebug($"Create StartEvent EventType[{EventType}] EventDescription[{EventDescription}]");
                     var responseStartEvent = IshSession.EventMonitor25.StartEvent(new StartEventRequest()
                     {
                         psAuthContext = IshSession.AuthenticationContext,
@@ -221,8 +222,9 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 }
 
                 if (ParameterSetName == "ParameterGroup" && StartAfter.HasValue)
-                { 
+                {
                     // Create BackgroundTask
+                    WriteDebug($"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}] StartAfter[{StartAfter}]");
                     var responseStartAfterEvent = IshSession.BackgroundTask25.CreateBackgroundTaskWithStartAfter(new CreateBackgroundTaskWithStartAfterRequest()
                     {
                         psAuthContext = IshSession.AuthenticationContext,
@@ -238,6 +240,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (ParameterSetName == "ParameterGroup" && !StartAfter.HasValue)
                 {
                     // Create BackgroundTask 
+                    WriteDebug($"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}]");
                     var responseCreate = IshSession.BackgroundTask25.CreateBackgroundTask(new CreateBackgroundTaskRequest()
                     {
                         psAuthContext = IshSession.AuthenticationContext,

@@ -148,16 +148,29 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 		}
 		It "Parameter StartAfter Tommorrow" {
 			$dateTomorrow = (Get-Date).AddDays(1)
-			$ishBackgroundTaskStartsAfter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription ($eventDescription + " StartAfter") -RawInputData $rawData -StartAfter $dateTomorrow
+			$eventDescription = $eventDescription `
+			                  +" StartAfter["+$dateTomorrow+"]" `
+							  +" CultureInfo.LCID["+([System.Globalization.CultureInfo]::CurrentCulture).LCID+"]" `
+							  +" CultureInfo.Name["+([System.Globalization.CultureInfo]::CurrentCulture).Name+"]" `
+							  +" CultureInfo...ShortDatePattern["+([System.Globalization.CultureInfo]::CurrentCulture).DateTimeFormat.ShortDatePattern+"]"
+			$ishBackgroundTaskStartsAfter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $rawData -StartAfter $dateTomorrow
 			$ishBackgroundTaskStartsAfter.Count | Should -BeExactly 1
 			($ishBackgroundTaskStartsAfter.executeafterdate -eq $ishBackgroundTaskStartsAfter.creationdate) | Should -Be $false
 			$ishBackgroundTaskStartsAfter.GetType().Name | Should -BeExactly "IshBackgroundTask"
 			$ishBackgroundTaskStartsAfter.EventType | Should -BeExactly $ishEventTypeToPurge
 			$ishBackgroundTaskStartsAfter.userid | Should -BeExactly $ishSession.UserName
 			# Verify returned submitted IshBackgroundTask.StartsAfter date matches provided tomorrow StartsAfter
+			$ishBackgroundTaskStartsAfter.executeafterdate -like "*-*-*T*:*:*" | Should -Be $true
+			$ishBackgroundTaskStartsAfter.executeafterdate.Substring(0, 11) | Should -Be ($dateTomorrow.ToString("yyyy-MM-ddT"))
 			$retrievedExecuteAfter = New-Object DateTime
 			$conversionResult = [DateTime]::TryParseExact($ishBackgroundTaskStartsAfter.executeafterdate, "yyyy-MM-ddTHH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref]$retrievedExecuteAfter)
 			$conversionResult | Should -BeExactly $true
+			$retrievedExecuteAfter.Year | Should -Be $dateTomorrow.Year
+			$retrievedExecuteAfter.Month | Should -Be $dateTomorrow.Month
+			$retrievedExecuteAfter.Day | Should -Be $dateTomorrow.Day
+			$retrievedExecuteAfter.Hour | Should -Be $dateTomorrow.Hour
+			$retrievedExecuteAfter.Minute | Should -Be $dateTomorrow.Minute
+			$retrievedExecuteAfter.Second | Should -Be $dateTomorrow.Second
 			$retrievedExecuteAfter.ToString("dd/MM/yyyy") | Should -BeExactly $dateTomorrow.ToString("dd/MM/yyyy")	
 		}
 	}
