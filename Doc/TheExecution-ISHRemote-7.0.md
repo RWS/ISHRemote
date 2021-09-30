@@ -90,9 +90,23 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
    3. Then did a project Add > Connected Service using the downloaded json file with namespace `Trisoft.ISHRemote.OpenApi` and class name `OpenApi30{controller}Service` (let the template engine do its thing). 
    4. Added `System.ComponentModel.Annotations` v5.0 over NuGet package manager
    5. And it compiles, yeah.
+   6. It crashes because the generated OpenApi30Client does not know the response type and always parses it as Json. An [NSwag bug](https://github.com/RicoSuter/NSwag/issues/2384)
+        ```DEBUG: NewIshSession 20210930.091609.192 CreateConnection openApi30Service.GetApplicationVersionAsync
+        WARNING: NewIshSession  Newtonsoft.Json.JsonReaderException: Input string '15.0.2130.0' is not a valid number. Path '', line 1, position 11.
+        at Newtonsoft.Json.JsonTextReader.ParseReadNumber(ReadType readType, Char firstChar, Int32 initialPosition)
+        at Newtonsoft.Json.JsonTextReader.ParseNumber(ReadType readType)
+        at Newtonsoft.Json.JsonTextReader.ReadStringValue(ReadType readType)
+        at Newtonsoft.Json.JsonTextReader.ReadAsString()
+        at Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+        at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+        at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+        at Newtonsoft.Json.JsonSerializer.Deserialize[T](JsonReader reader)
+        at Trisoft.ISHRemote.OpenApi.OpenApi30Service.ReadObjectResponseAsync[T](HttpResponseMessage response, IReadOnlyDictionary`2 headers) in C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote.OpenApi\obj\OpenApi30Client.cs:line 2838```
+    Discussed, and the plain/text version for the version-less /Application/Version endpoint is intentional. Solved the problem by 'Manage NuGet Packages' and upgrading `NSwag.ApiDescription.Client` from 13.0.5 to 13.13.2. Remember to force a client build by tampering with your OpenApi30Client.json file.
+3. PowerShell is synchronous by nature, the pipeline is and as indicated on the [Github Powershell - Async cmdlets](https://github.com/PowerShell/PowerShell/issues/7690) request for 5+ years without native async. Using `await` will kill the pipeline, and crash your PowerShell process! This means that any async code should be made sync by waiting for it. I reviewed [Stackoverflow - How to call asynchronous method from synchronous method in C#](https://stackoverflow.com/questions/9343594/how-to-call-asynchronous-method-from-synchronous-method-in-c#:~:text=A%20synchronous%20method%20calls%20an%20async%20method,%20obtaining,on%20the%20Task.%20The%20asyncmethod%20uses%20awaitwithout%20ConfigureAwait) and [Task Extensions](https://github.com/StephenCleary/AsyncEx/blob/edb2c6b66d41471008a56e4098f9670b5143617e/src/Nito.AsyncEx.Tasks/SynchronousTaskExtensions.cs#L17-L22). Eventually using `task.GetAwaiter().GetResult();` which avoids the `AggregatedException`.
 
 ## Next
-1. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code
+1. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code. Using clientconfiguration a version check can be done to force the protocol switch to AsmxAuthenticationContext.
 7. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
    1. Folder25.Create -> API30.Create (ready)
    2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (NotImplemented planned for PI20.4)
@@ -116,6 +130,7 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
 # Debugging
 ```powershell
 Import-Module "C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote"
+New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -IgnoreSslPolicyErrors -Debug
 New-IshSession -WsBaseUrl https://192.168.1.160/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -IgnoreSslPolicyErrors -Verbose -Debug
 ```
 

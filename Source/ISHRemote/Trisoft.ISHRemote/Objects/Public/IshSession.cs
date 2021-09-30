@@ -46,6 +46,7 @@ using Trisoft.ISHRemote.User25ServiceReference;
 using Trisoft.ISHRemote.UserRole25ServiceReference;
 using Trisoft.ISHRemote.UserGroup25ServiceReference;
 using System.Security;
+using System.Text;
 
 namespace Trisoft.ISHRemote.Objects.Public
 {
@@ -184,6 +185,16 @@ namespace Trisoft.ISHRemote.Objects.Public
             _authenticationContext = response.psOutAuthContext;
             _logger.WriteDebug("CreateConnection Application25.GetVersion");
             _serverVersion = new IshVersion(Application25.GetVersion());
+
+            // TODO [MUST] OpenAPI, working code, but first the protocol switch
+            //if protocol OpenApiBasicAuthentication
+            //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+            //    "Basic",
+            //    Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
+            //var openApi30Service = new Trisoft.ISHRemote.OpenApi.OpenApi30Service(_httpClient);
+            //openApi30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
+            //_logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
+            //_serverVersion = new IshVersion(openApi30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
