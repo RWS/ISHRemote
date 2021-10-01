@@ -101,12 +101,19 @@ namespace Trisoft.ISHRemote.HelperClasses
                     case Enumerations.DataType.DateTime:
                         //var formatStrings = new string[] { "dd/MM/yyyy HH:mm:ss", "yyyy-MM-dd hh:mm:ss", "dd/MM/yyy" };
                         DateTime dateTime;
-                        if (DateTime.TryParse(ishField.Value, out dateTime))
+                        if (DateTime.TryParseExact(ishField.Value, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
                         {
                             propertyValue = dateTime.ToString("s");
                         }
-                        //seemingly Github Actions CI/CD is running a CultureInfo which makes the above generic TryParse fail, so trying an explicit one
-                        else if (DateTime.TryParseExact(ishField.Value, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        else if (DateTime.TryParseExact(ishField.Value, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            propertyValue = dateTime.ToString("s");
+                        }
+                        else if (DateTime.TryParseExact(ishField.Value, "yyyy - MM - ddTHH:mm: ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            propertyValue = dateTime.ToString("s");
+                        }
+                        else if (DateTime.TryParse(ishField.Value, out dateTime))
                         {
                             propertyValue = dateTime.ToString("s");
                         }
