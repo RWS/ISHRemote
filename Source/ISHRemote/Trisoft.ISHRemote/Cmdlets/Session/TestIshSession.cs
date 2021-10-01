@@ -34,9 +34,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// <code>
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin"
     /// </code>
-    /// <para>Building a session for the chosen service based on username/password authentication. The username/password will be used to build a NetworkCredential object to pass for authentication to the service.</para>
+    /// <para>Building a session for the chosen service based on username/password authentication.</para>
     /// </example>
-
     /// <example>
     /// <code>
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
@@ -70,6 +69,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
     /// <para>These lines of code activate and hence test the WebServices (ISHWS-activation) and validates the credentials in the 'InfoShare' database (ConnectionString-activation). The extra .ASP line triggers WebClient (ISHCM-activation) and the COM+ application (Trisoft-InfoShare-Author).</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Protocol AsmxAuthenticationContext
+    /// </code>
+    /// <para>Building a session for the chosen service based on username/password authentication. Parameter Protocol indicates the preferred communication/authentication route.</para>
     /// </example>
     [Cmdlet(VerbsDiagnostic.Test, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(bool))]
@@ -118,6 +123,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of HttpClient when processing ASMX services or downloading content like connectionconfiguration.xml Defaults to 30 minutes.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         public TimeSpan Timeout
         {
             get { return _timeout; }
@@ -128,10 +134,23 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <para type="description">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         public SwitchParameter IgnoreSslPolicyErrors
         {
             get { return _ignoreSslPolicyErrors; }
             set { _ignoreSslPolicyErrors = value; }
+        }
+
+        /// <summary>
+        /// <para type="description">IshSession Protocol tries to connect the communication protocol like ASMX (Soap11), WCF (Soap12), OpenAPI (rest) with the authentication protocol like WS-Trust (WCF-only), AuthenticationContext (Asxm-only), etc. Offering shorthand for working combinations. See also <see cref="Protocol"/>.</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
+        [ValidateNotNullOrEmpty]
+        public Enumerations.Protocol Protocol
+        {
+            get { return _protocol; }
+            set { _protocol = value; }
         }
 
         #region Private fields 
@@ -140,6 +159,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         private SecureString _ishSecurePassword = null;
         private TimeSpan _timeout = new TimeSpan(0, 30, 0);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private bool _ignoreSslPolicyErrors = false;
+        private Enumerations.Protocol _protocol = Enumerations.Protocol.AsmxAuthenticationContext;
 
         #endregion
         protected override void ProcessRecord()
@@ -161,8 +181,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                     _ishSecurePassword = null;
                 }
                 WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + "]");
-                WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
-                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _ignoreSslPolicyErrors);
+                WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}] Protocol[{_protocol}]");
+                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _ignoreSslPolicyErrors, _protocol);
 
                 // Keep the IshSession initialization as minimal as possible
                 // Do early load of IshTypeFieldSetup (either <13-TriDKXmlSetup-based or >=13-RetrieveFieldSetupByIshType-API-based) for

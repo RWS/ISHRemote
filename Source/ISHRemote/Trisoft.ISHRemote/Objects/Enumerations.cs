@@ -29,6 +29,25 @@ namespace Trisoft.ISHRemote.Objects
     public class Enumerations
     {
         /// <summary>
+        /// <para type="description">IshSession Protocol tries to connect the communication protocol like ASMX (Soap11), WCF (Soap12), OpenAPI (rest) with the authentication protocol like WS-Trust (WCF-only), AuthenticationContext (Asxm-only), etc. Offering shorthand for working combinations.</para>
+        /// </summary>
+        public enum Protocol
+        {
+            /// <summary>
+            /// <para type="description">Asmx (Soap11) endpoints exist since InfoShare 2.7, always authenticated through first parameter AuthenticationContext which only works for internal user profiles (so holding a password in the CMS).</para>
+            /// </summary>
+            AsmxAuthenticationContext = 2070,
+            /// <summary>
+            /// <para type="description">OpenApi (rest) endpoints exist since InfoShare 15.0.0 as private Api, always authenticated over Basic Authentication http header which only works for internal user profiles (so holding a password in the CMS).</para>
+            /// </summary>
+            OpenApiBasicAuthentication = 1500
+            // <summary>
+            // <para type="description">OpenApi (rest) endpoints exist since InfoShare 16.0.0 as public Api, always authenticated over OpenIDConnect/OAuth20 which only works for internal and external user profiles.</para>
+            // </summary>
+            //OpenApiOpenConnectId = 1600
+        }
+
+        /// <summary>
         /// <para type="description">Which card or table level should the field be present on. The int assignment allows sorting so Logical before Version before Language.</para>
         /// </summary>
         public enum Level

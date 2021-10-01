@@ -92,6 +92,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private int _blobBatchSize = 50;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private readonly bool _ignoreSslPolicyErrors = false;
+        private Enumerations.Protocol _protocol;
 
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
@@ -125,11 +126,12 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
         /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
         /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
+        /// <param name="protocol">Protocol indicates the preferred communication/authentication route.</param>
+        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors, Enumerations.Protocol protocol)
         {
             _logger = logger;
-            
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
+            _protocol = protocol;
             HttpClientHandler handler = new HttpClientHandler();
             _timeout = timeout;
             _logger.WriteDebug($"Enabling Tls, Tls11, Tls12 and Tls13 security protocols Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
@@ -166,6 +168,10 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _webServicesBaseUri[{_webServicesBaseUri}] differs from _ishConnectionConfiguration.InfoShareWSUrl[{_ishConnectionConfiguration.InfoShareWSUrl}]. Using _webServicesBaseUri.");
             }
+            if (new IshVersion(_ishConnectionConfiguration.SoftwareVersion).MajorVersion >= 15)
+            {
+                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _protocol[{_protocol}] differs from suggested Protocol[{Enumerations.Protocol.AsmxAuthenticationContext}]. Using _protocol.");
+            }
         }
 
         private void CreateConnection()
@@ -173,28 +179,34 @@ namespace Trisoft.ISHRemote.Objects.Public
             // Before ISHRemotev7+ there was username/password and Active Directory authentication, where the logic came down to:
             // Credential = _ishPassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishPassword)),
 
-            // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
-            _logger.WriteDebug("CreateConnection Application25.Login");
-            var response = Application25.Login(new LoginRequest()
+            switch (Protocol)
             {
-                psApplication = _ishConnectionConfiguration.ApplicationName,
-                psUserName = _ishUserName,
-                psPassword = SecureStringConversions.SecureStringToString(_ishSecurePassword),
-                psOutAuthContext = _authenticationContext
-            });
-            _authenticationContext = response.psOutAuthContext;
-            _logger.WriteDebug("CreateConnection Application25.GetVersion");
-            _serverVersion = new IshVersion(Application25.GetVersion());
-
-            // TODO [MUST] OpenAPI, working code, but first the protocol switch
-            //if protocol OpenApiBasicAuthentication
-            //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
-            //    "Basic",
-            //    Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
-            //var openApi30Service = new Trisoft.ISHRemote.OpenApi.OpenApi30Service(_httpClient);
-            //openApi30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
-            //_logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
-            //_serverVersion = new IshVersion(openApi30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+                case Enumerations.Protocol.AsmxAuthenticationContext:
+                    // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
+                    _logger.WriteDebug("CreateConnection Application25.Login");
+                    var response = Application25.Login(new LoginRequest()
+                    {
+                        psApplication = _ishConnectionConfiguration.ApplicationName,
+                        psUserName = _ishUserName,
+                        psPassword = SecureStringConversions.SecureStringToString(_ishSecurePassword),
+                        psOutAuthContext = _authenticationContext
+                    });
+                    _authenticationContext = response.psOutAuthContext;
+                    _logger.WriteDebug("CreateConnection Application25.GetVersion");
+                    _serverVersion = new IshVersion(Application25.GetVersion());
+                    break;
+                case Enumerations.Protocol.OpenApiBasicAuthentication:
+                    _logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
+                    _authenticationContext = "Not-Available-Over-OpenApiBasicAuthentication";
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Basic",
+                        Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
+                    var openApi30Service = new Trisoft.ISHRemote.OpenApi.OpenApi30Service(_httpClient);
+                    openApi30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
+                    _serverVersion = new IshVersion(openApi30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+                    // if GetApplicationVersionAsync doesnot force authentication we should for a initialize IshUser at this location for both protocols
+                    break;
+            }
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -205,15 +217,22 @@ namespace Trisoft.ISHRemote.Objects.Public
                 {
                     if (_serverVersion.MajorVersion >= 13) 
                     {
-                        _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
-                        string xmlTypeFieldSetup;
-                        var response = Settings25.RetrieveFieldSetupByIshType(new RetrieveFieldSetupByIshTypeRequest() {
-                            psAuthContext = _authenticationContext,
-                            pasIshTypes = null
-                        });
-                        _authenticationContext = response.psAuthContext;
-                        xmlTypeFieldSetup = response.psOutXMLFieldSetup;
-                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, xmlTypeFieldSetup);
+                        switch (Protocol)
+                        {
+                            case Enumerations.Protocol.AsmxAuthenticationContext:
+                            case Enumerations.Protocol.OpenApiBasicAuthentication:
+                                // TODO [Must] Add OpenApi implementation
+                                _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
+                                var response = Settings25.RetrieveFieldSetupByIshType(new RetrieveFieldSetupByIshTypeRequest()
+                                {
+                                    psAuthContext = _authenticationContext,
+                                    pasIshTypes = null
+                                });
+                                _authenticationContext = response.psAuthContext;
+                                string xmlTypeFieldSetup = response.psOutXMLFieldSetup;
+                                _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, xmlTypeFieldSetup);
+                                break;
+                        }
                         _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
                     }
                     else
@@ -267,6 +286,18 @@ namespace Trisoft.ISHRemote.Objects.Public
             get { return _webServicesBaseUri.ToString(); }
         }
 
+        public Enumerations.Protocol Protocol
+        {
+            get
+            {
+                return _protocol;
+            }
+            set
+            {
+                _protocol = value;
+            }
+        }
+
         /// <summary>
         /// The user name used to authenticate to the service, is initialized to Environment.UserName in case of Windows Authentication through NetworkCredential()
         /// </summary>
@@ -291,17 +322,24 @@ namespace Trisoft.ISHRemote.Objects.Public
                 if (_userName == null)
                 {
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
-                    string requestedMetadata = "<ishfields><ishfield name='USERNAME' level='none'/></ishfields>";
-                    var response = User25.GetMyMetaData(new GetMyMetaDataRequest()
-                    { 
-                        psAuthContext = _authenticationContext, 
-                        psXMLRequestedMetaData= requestedMetadata
-                    });
-                    _authenticationContext = response.psAuthContext;
-                    string xmlIshObjects = response.psOutXMLObjList;
-                    Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
-                    IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
-                    _userName = ishObjects.Objects[0].IshFields.GetFieldValue("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
+                    switch (Protocol)
+                    {
+                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                            // TODO [Must] Add OpenApi implementation
+                            string requestedMetadata = "<ishfields><ishfield name='USERNAME' level='none'/></ishfields>";
+                            var response = User25.GetMyMetaData(new GetMyMetaDataRequest()
+                            {
+                                psAuthContext = _authenticationContext,
+                                psXMLRequestedMetaData = requestedMetadata
+                            });
+                            _authenticationContext = response.psAuthContext;
+                            string xmlIshObjects = response.psOutXMLObjList;
+                            Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
+                            IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
+                            _userName = ishObjects.Objects[0].IshFields.GetFieldValue("USERNAME", Enumerations.Level.None, Enumerations.ValueType.Value);
+                            break;
+                    }
                 }
                 return _userName;
             }
@@ -317,17 +355,24 @@ namespace Trisoft.ISHRemote.Objects.Public
                 if (_userLanguage == null)
                 {
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
-                    string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
-                    var response = User25.GetMyMetaData(new GetMyMetaDataRequest()
-                    { 
-                        psAuthContext = _authenticationContext, 
-                        psXMLRequestedMetaData = requestedMetadata
-                    });
-                    _authenticationContext = response.psAuthContext;
-                    string xmlIshObjects = response.psOutXMLObjList;
-                    Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
-                    IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
-                    _userLanguage = ishObjects.Objects[0].IshFields.GetFieldValue("FISHUSERLANGUAGE", Enumerations.Level.None, Enumerations.ValueType.Value);
+                    switch (Protocol)
+                    {
+                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                            // TODO [Must] Add OpenApi implementation
+                            string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
+                            var response = User25.GetMyMetaData(new GetMyMetaDataRequest()
+                            {
+                                psAuthContext = _authenticationContext,
+                                psXMLRequestedMetaData = requestedMetadata
+                            });
+                            _authenticationContext = response.psAuthContext;
+                            string xmlIshObjects = response.psOutXMLObjList;
+                            Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
+                            IshObjects ishObjects = new IshObjects(ISHType, xmlIshObjects);
+                            _userLanguage = ishObjects.Objects[0].IshFields.GetFieldValue("FISHUSERLANGUAGE", Enumerations.Level.None, Enumerations.ValueType.Value);
+                            break;
+                    }
                 }
                 return _userLanguage;
             }
