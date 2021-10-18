@@ -117,7 +117,6 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <exception cref="Exception"></exception>
         protected override void ProcessRecord()
         {
-
             try
             {
                 // 1. Validating the input
@@ -128,7 +127,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 
                 IshFields requiredCurrentMetadata = new IshFields(RequiredCurrentMetadata);               
 
-                if (IshObject != null)
+                if (ParameterSetName == "IshObjectsGroup")
                 {                    
                     long lngRef = Convert.ToInt64(IshObject.ObjectRef[Enumerations.ReferenceType.Lng]);
                     WriteDebug($"Removing lngCardId[{lngRef}]");
@@ -144,7 +143,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     string lng = Lng ?? "";
                     if (lng.Length > 0)
                     {
-                        // only delete when you have a lanuage, lower the version delete (so empty lng) is handled
+                        // only delete when you have a language, lower the version delete (so empty lng) is handled
                         WriteDebug($"Removing LogicalId[{LogicalId}] Version[{Version}] Lng[{lng}] Resolution[{resolution}]");
                         if (ShouldProcess(LogicalId + "=" + Version + "=" + lng + "=" + resolution))
                         {
@@ -159,7 +158,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     logicalIdsVersionsCollection.Add(LogicalId, Version);
                 }
 
-                if (Force.IsPresent && logicalIdsVersionsCollection.Count > 0)
+                if (Force.IsPresent && logicalIdsVersionsCollection.Count > 0 && IshSession.ServerIshVersion.MajorVersion < 15)
                 {
                     var xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdsVersionsCollection.AllKeys.ToArray(),
                         StatusFilter.ISHNoStatusFilter, "", "<ishfields><ishfield name='VERSION' level='version'/><ishfield name='DOC-LANGUAGE' level='lng'/></ishfields>");
@@ -168,19 +167,12 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 
                     // Delete versions which do not have any language card anymore
                     foreach (string logicalId in logicalIdsVersionsCollection.AllKeys)
-                    {                            
+                    {
                         var versions = logicalIdsVersionsCollection.GetValues(logicalId).Distinct();
                         foreach (var version in versions)
                         {
-                            bool versionWithLanguagesFound = false;
-                            foreach (var retrievedObject in retrievedObjects)
-                            {
-                                if (retrievedObject.IshRef == logicalId && retrievedObject.IshFields.GetFieldValue("VERSION", Enumerations.Level.Version, Enumerations.ValueType.Value) == version)
-                                {
-                                    versionWithLanguagesFound = true;
-                                }
-                            }
-                            if (!versionWithLanguagesFound)
+                            var versionWithLanguageObjects = retrievedObjects.FindAll(o => (o.IshFields.GetFieldValue("VERSION", Enumerations.Level.Version, Enumerations.ValueType.Value) == version) && o.IshRef == logicalId);
+                            if (versionWithLanguageObjects.Count == 0)
                             {
                                 if (ShouldProcess(LogicalId + "=" + version + "=" + "="))
                                 {
@@ -193,15 +185,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                     // Delete logical cards which do not have any languages anymore
                     foreach (string logicalId in logicalIdsVersionsCollection.AllKeys)
                     {
-                        bool logicalIdFound = false;
-                        foreach (var retrievedObject in retrievedObjects)
-                        {
-                            if (retrievedObject.IshRef == logicalId)
-                            {
-                                logicalIdFound = true;
-                            }
-                        }
-                        if (!logicalIdFound)
+                        var logicalObjectsWithLanguages = retrievedObjects.FindAll(o => o.IshRef == logicalId);
+                        if (logicalObjectsWithLanguages.Count == 0)
                         {
                             if (ShouldProcess(LogicalId + "=" + "=" + "="))
                             {
