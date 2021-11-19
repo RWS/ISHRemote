@@ -158,19 +158,33 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             if (ShouldProcess(folderName))
                             {
                                 long folderId = 0;
-                                var responseCreate = IshSession.Folder25.Create(new Folder25ServiceReference.CreateRequest()
+                                switch (IshSession.Protocol)
                                 {
-                                    psAuthContext = IshSession.AuthenticationContext,
-                                    plParentFolderRef = ParentFolderId,
-                                    psFolderName = folderName,
-                                    psOwnedBy = ownedBy,
-                                    pasReadAccess = readAccess,
-                                    peISHFolderType = EnumConverter.ToFolderType<Folder25ServiceReference.eISHFolderType>(folderType),
-                                    plOutNewFolderRef = folderId
-                                });
-                                IshSession.AuthenticationContext = responseCreate.psAuthContext;
-                                folderId = responseCreate.plOutNewFolderRef;
-                                foldersToRetrieve.Add(folderId);
+                                    case Enumerations.Protocol.OpenApiBasicAuthentication:
+                                        var setFieldValueCollection = new List<OpenApi.SetFieldValue>();
+                                        setFieldValueCollection.Add(new OpenApi.SetCardFieldValue());
+                                        IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
+                                        {
+                                            ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model?
+                                            Fields = setFieldValueCollection
+                                        });
+                                        break;
+                                    case Enumerations.Protocol.AsmxAuthenticationContext:
+                                        var responseCreate = IshSession.Folder25.Create(new Folder25ServiceReference.CreateRequest()
+                                        {
+                                            psAuthContext = IshSession.AuthenticationContext,
+                                            plParentFolderRef = ParentFolderId,
+                                            psFolderName = folderName,
+                                            psOwnedBy = ownedBy,
+                                            pasReadAccess = readAccess,
+                                            peISHFolderType = EnumConverter.ToFolderType<Folder25ServiceReference.eISHFolderType>(folderType),
+                                            plOutNewFolderRef = folderId
+                                        });
+                                        IshSession.AuthenticationContext = responseCreate.psAuthContext;
+                                        folderId = responseCreate.plOutNewFolderRef;
+                                        foldersToRetrieve.Add(folderId);
+                                        break;
+                                }
                             }
                         }
                         returnFields = (IshFolder[0] == null) ? new IshFields() : IshFolder[0].IshFields;
@@ -184,19 +198,26 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         if (ShouldProcess(FolderName))
                         {
                             long folderId = 0;
-                            var responseCreate = IshSession.Folder25.Create(new Folder25ServiceReference.CreateRequest()
+                            switch (IshSession.Protocol)
                             {
-                                psAuthContext = IshSession.AuthenticationContext,
-                                plParentFolderRef = ParentFolderId,
-                                psFolderName = FolderName,
-                                psOwnedBy = ownedBy,
-                                pasReadAccess = readAccess,
-                                peISHFolderType = EnumConverter.ToFolderType<Folder25ServiceReference.eISHFolderType>(FolderType),
-                                plOutNewFolderRef = folderId
-                            });
-                            IshSession.AuthenticationContext = responseCreate.psAuthContext;
-                            folderId = responseCreate.plOutNewFolderRef;
-                            foldersToRetrieve.Add(folderId);
+                                case Enumerations.Protocol.OpenApiBasicAuthentication:
+                                // TODO [Must] Add OpenApi implementation
+                                case Enumerations.Protocol.AsmxAuthenticationContext:
+                                    var responseCreate = IshSession.Folder25.Create(new Folder25ServiceReference.CreateRequest()
+                                    {
+                                        psAuthContext = IshSession.AuthenticationContext,
+                                        plParentFolderRef = ParentFolderId,
+                                        psFolderName = FolderName,
+                                        psOwnedBy = ownedBy,
+                                        pasReadAccess = readAccess,
+                                        peISHFolderType = EnumConverter.ToFolderType<Folder25ServiceReference.eISHFolderType>(FolderType),
+                                        plOutNewFolderRef = folderId
+                                    });
+                                    IshSession.AuthenticationContext = responseCreate.psAuthContext;
+                                    folderId = responseCreate.plOutNewFolderRef;
+                                    foldersToRetrieve.Add(folderId);
+                                    break;
+                            }
                         }
                         returnFields = new IshFields();
                     }
@@ -206,16 +227,23 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 
                     // Add the required fields (needed for pipe operations)
                     IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
-                    var response = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
+                    switch (IshSession.Protocol)
                     {
-                        psAuthContext = IshSession.AuthenticationContext,
-                        palFolderRefs = foldersToRetrieve.ToArray(),
-                        psXMLRequestedMetaData = requestedMetadata.ToXml()
-                    });
-                    IshSession.AuthenticationContext = response.psAuthContext;
-                    string xmlIshFolders = response.psOutXMLFolderList;
-                    IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
-                    returnedFolders.AddRange(retrievedFolders.Folders);
+                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        // TODO [Must] Add OpenApi implementation
+                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                            var response = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
+                            {
+                                psAuthContext = IshSession.AuthenticationContext,
+                                palFolderRefs = foldersToRetrieve.ToArray(),
+                                psXMLRequestedMetaData = requestedMetadata.ToXml()
+                            });
+                            IshSession.AuthenticationContext = response.psAuthContext;
+                            string xmlIshFolders = response.psOutXMLFolderList;
+                            IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
+                            returnedFolders.AddRange(retrievedFolders.Folders);
+                            break;
+                    }
                 }
 
                 // 3b. Write it

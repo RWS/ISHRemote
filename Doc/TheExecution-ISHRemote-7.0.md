@@ -104,25 +104,27 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
         at Trisoft.ISHRemote.OpenApi.OpenApi30Service.ReadObjectResponseAsync[T](HttpResponseMessage response, IReadOnlyDictionary`2 headers) in C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote.OpenApi\obj\OpenApi30Client.cs:line 2838```
     Discussed, and the plain/text version for the version-less /Application/Version endpoint is intentional. Solved the problem by 'Manage NuGet Packages' and upgrading `NSwag.ApiDescription.Client` from 13.0.5 to 13.13.2. Remember to force a client build by tampering with your OpenApi30Client.json file.
 3. PowerShell is synchronous by nature, the pipeline is and as indicated on the [Github Powershell - Async cmdlets](https://github.com/PowerShell/PowerShell/issues/7690) request for 5+ years without native async. Using `await` will kill the pipeline, and crash your PowerShell process! This means that any async code should be made sync by waiting for it. I reviewed [Stackoverflow - How to call asynchronous method from synchronous method in C#](https://stackoverflow.com/questions/9343594/how-to-call-asynchronous-method-from-synchronous-method-in-c#:~:text=A%20synchronous%20method%20calls%20an%20async%20method,%20obtaining,on%20the%20Task.%20The%20asyncmethod%20uses%20awaitwithout%20ConfigureAwait) and [Task Extensions](https://github.com/StephenCleary/AsyncEx/blob/edb2c6b66d41471008a56e4098f9670b5143617e/src/Nito.AsyncEx.Tasks/SynchronousTaskExtensions.cs#L17-L22). Eventually using `task.GetAwaiter().GetResult();` which avoids the `AggregatedException`.
-
-## Next
-1. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code. Using clientconfiguration a version check can be done to force the protocol switch to AsmxAuthenticationContext.
+4. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code. Using clientconfiguration a version check can be done to force the protocol switch to AsmxAuthenticationContext.
     ```csharp
-    switch (Protocol)
+    switch (IshSession.Protocol)
     {
-        case Enumerations.Protocol.AsmxAuthenticationContext:
         case Enumerations.Protocol.OpenApiBasicAuthentication:
             // TODO [Must] Add OpenApi implementation
+        case Enumerations.Protocol.AsmxAuthenticationContext:
             break;
     }
     ```
-2. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
+
+## Next
+1. v0->v7 Cherrypick #138 Fix Remove-IshDocumentObj cmdlet due to the improved Delete beh... Remember starting 15/Alf the `-Force` flag is always on server-side, add that in a verbose message
+1. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
    1. Folder25.Create -> API30.Create (ready)
-   2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (NotImplemented planned for PI20.4)
+   2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (ready)
    3. Folder25.Delete -> API30.DeleteFolder (ready)
    4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
+2. .NET 6 for ISHRemote (Visual Studio 2022), build adaptions
 3. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
    1. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
    2. You should have initial state Draft by element name
@@ -169,23 +171,23 @@ $ishSession # as admin to mecdev12qa01/ORA19 as a constant in the equation as it
 
 The below information was collected via `$PSVersionTable` from laptop over VPN to 15.0.0 ORA19 server with Crawler(s) disabled
 
-| Test Runs | WCF (0.13.8112.2) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Core 7.1.4    | OpenAPI (7.0...) on Desktop 5.1.19041.1151 | OpenAPI (7.0...) on Core 7.1.4        | 
-| :---      | ---:                   | ---:                   | ---:          | ---:                   | ---:              |
-| Run 1     |                50494ms |                 9803ms |       37937ms |                        |                   |
-| Run 2     |                50478ms |                23960ms |       35549ms |                        |                   |
-| Run 3     |                52067ms |                74001ms |       35308ms |                        |                   |
-| Run 4     |                50494ms |                90219ms |       36089ms |                        |                   |
-| Run 5     |                48050ms |                94405ms |       34740ms |                        |                   |
+| Test Runs | WCF (0.13.8112.2) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Core 7.1.4 | OpenAPI (7.0...) on Desktop 5.1.19041.1151 | OpenAPI (7.0...) on Core 7.1.4 |
+| :-------- | ------------------------------------------: | --------------------------------------: | --------------------------: | -----------------------------------------: | -----------------------------: |
+| Run 1     |                                     50494ms |                                  9803ms |                     37937ms |                                            |                                |
+| Run 2     |                                     50478ms |                                 23960ms |                     35549ms |                                            |                                |
+| Run 3     |                                     52067ms |                                 74001ms |                     35308ms |                                            |                                |
+| Run 4     |                                     50494ms |                                 90219ms |                     36089ms |                                            |                                |
+| Run 5     |                                     48050ms |                                 94405ms |                     34740ms |                                            |                                |
 
 The below information was collected via `$PSVersionTable` from laptop as client to 14.0.4 laptop as SQL19 server, so localhost
 
-| Test Runs | WCF (0.13.8112.2) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Core 7.1.4    | OpenAPI (7.0...) on Desktop 5.1.19041.1151 | OpenAPI (7.0...) on Core 7.1.4        | 
-| :---      | ---:                   | ---:                   | ---:          | ---:                   | ---:              |
-| Run 1     |               103896ms |                 9011ms |       10362ms |                        |                   |
-| Run 2     |                86946ms |                12159ms |       10848ms |                        |                   |
-| Run 3     |                93095ms |                37332ms |       11210ms |                        |                   |
-| Run 4     |                11142ms |                10923ms |        9636ms |                        |                   |
-| Run 5     |                10530ms |               100021ms |       99683ms |                        |                   |
+| Test Runs | WCF (0.13.8112.2) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Desktop 5.1.19041.1151 | ASMX (7.0...) on Core 7.1.4 | OpenAPI (7.0...) on Desktop 5.1.19041.1151 | OpenAPI (7.0...) on Core 7.1.4 |
+| :-------- | ------------------------------------------: | --------------------------------------: | --------------------------: | -----------------------------------------: | -----------------------------: |
+| Run 1     |                                    103896ms |                                  9011ms |                     10362ms |                                            |                                |
+| Run 2     |                                     86946ms |                                 12159ms |                     10848ms |                                            |                                |
+| Run 3     |                                     93095ms |                                 37332ms |                     11210ms |                                            |                                |
+| Run 4     |                                     11142ms |                                 10923ms |                      9636ms |                                            |                                |
+| Run 5     |                                     10530ms |                                100021ms |                     99683ms |                                            |                                |
 
 
 

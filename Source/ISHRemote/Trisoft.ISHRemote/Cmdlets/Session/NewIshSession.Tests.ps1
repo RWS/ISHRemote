@@ -203,7 +203,7 @@ Describe "New-IshSession" -Tags "Read" {
 		} #>
 	}
 
-	Context "New-IshSession returns IshSession ServiceReferences" {
+	Context "New-IshSession returns IshSession Asmx ServiceReferences" {
 		BeforeAll {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		}
@@ -267,6 +267,17 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 		It "IshSession.UserRole25" {
 			$ishSession.UserRole25 -ne $null | Should -Not -BeNullOrEmpty
+		}
+	}
+
+	Context "New-IshSession returns IshSession OpenApi ServiceReference" {
+		BeforeAll {
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		}
+		It "IshSession.OpenApi30Service" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				 $ishSession.OpenApi30Service -ne $null | Should -Not -BeNullOrEmpty
+			}
 		}
 	}
 }

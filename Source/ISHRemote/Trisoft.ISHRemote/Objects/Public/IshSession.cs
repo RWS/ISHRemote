@@ -26,6 +26,7 @@ using System.ServiceModel;
 
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Interfaces;
+using Trisoft.ISHRemote.OpenApi;
 using Trisoft.ISHRemote.Annotation25ServiceReference;
 using Trisoft.ISHRemote.Application25ServiceReference;
 using Trisoft.ISHRemote.BackgroundTask25ServiceReference;
@@ -96,6 +97,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
+        private OpenApi30Service _openApi30Service;
 
         private Annotation25ServiceReference.Annotation25Soap _annotation25;
         private Application25ServiceReference.Application25Soap _application25;
@@ -201,9 +203,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                     _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
                         "Basic",
                         Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
-                    var openApi30Service = new Trisoft.ISHRemote.OpenApi.OpenApi30Service(_httpClient);
-                    openApi30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
-                    _serverVersion = new IshVersion(openApi30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+                    _openApi30Service = new Trisoft.ISHRemote.OpenApi.OpenApi30Service(_httpClient);
+                    _openApi30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
+                    _serverVersion = new IshVersion(_openApi30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
                     // if GetApplicationVersionAsync doesnot force authentication we should for a initialize IshUser at this location for both protocols
                     break;
             }
@@ -510,7 +512,18 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _chunkSize = value; }
         }
 
-        #region Web Services Getters
+        #region OpenApi internal/3.0 Services
+        public OpenApi30Service OpenApi30Service
+        {
+            get
+            {
+                // should always be initialized by CreateConnection
+                return _openApi30Service;
+            }
+        }
+        #endregion
+
+        #region Soap Api 2.0/2.5 Services
 
         public Annotation25ServiceReference.Annotation25Soap Annotation25
         {

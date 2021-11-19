@@ -598,6 +598,122 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Deletes a document object by its language card identifier.",
+        "operationId": "DeleteDocumentObjectByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "description": "Language card identifier of the document object to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The parameters that will be used for delete operation.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLanguageCardId"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLanguageCardId"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLanguageCardId"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v3/DocumentObjects/ByLanguageCardId/{languageCardId}/Content": {
@@ -982,25 +1098,44 @@
         }
       }
     },
-    "/v3/DocumentObjects/{languageCardId}": {
+    "/v3/DocumentObjects/ByLogicalId/{logicalId}": {
       "delete": {
         "tags": [
           "DocumentObjects"
         ],
-        "summary": "Deletes a document object. - NOT IMPLEMENTED",
-        "operationId": "DeleteDocumentObjectByLanguageCardId",
+        "summary": "Deletes a document object by its logical identifier.",
+        "operationId": "DeleteDocumentObjectByLogicalId",
         "parameters": [
           {
-            "name": "languageCardId",
+            "name": "logicalId",
             "in": "path",
-            "description": "Language card identifier of the document object to delete.",
+            "description": "Logical identifier of the document object to delete.",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
+        "requestBody": {
+          "description": "The parameters that will be used for delete operation.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLogicalId"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLogicalId"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLogicalId"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -1704,6 +1839,88 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/Get": {
+      "post": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Gets all folders in the Repository that match the criteria given in the parameters.",
+        "operationId": "GetFolderList",
+        "requestBody": {
+          "description": "Request folders with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetFolderList"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetFolderList"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetFolderList"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
                 }
               }
             }
@@ -2495,6 +2712,558 @@
         }
       }
     },
+    "/v3/Publications": {
+      "post": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Creates publication. - NOT IMPLEMENTED.",
+        "operationId": "CreatePublication",
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Publication"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Publication"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications/ByLanguageCardId/{languageCardId}": {
+      "put": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Updates publication. - NOT IMPLEMENTED.",
+        "operationId": "UpdatePublicationByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Deletes publication. - NOT IMPLEMENTED.",
+        "operationId": "DeletePublicationByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications/ByLanguageCardId/{logicalId}": {
+      "put": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Updates publication. - NOT IMPLEMENTED.",
+        "operationId": "UpdatePublicationByLogicalId",
+        "parameters": [
+          {
+            "name": "logicalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications/ByLogicalId/{logicalId}": {
+      "delete": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Deletes publication. - NOT IMPLEMENTED.",
+        "operationId": "DeletePublicationByLogicalId",
+        "parameters": [
+          {
+            "name": "logicalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications/ByLogicalId/Get": {
+      "post": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Gets all publications in the Repository that match the criteria given in the parameters.",
+        "description": "Depending on which status filter is specified, the objects with following status types can be returned:\r\n<table class=\"table\"><thead><tr><th>Status filter</th><th>Returned status types</th></tr></thead><tbody><tr><td>All</td><td>All status types</td></tr><tr><td>LatestReleased</td><td>Latest released excluding out-of-date</td></tr><tr><td>DraftOrLatestReleased</td><td>Draft and latest released excluding out-of-date</td></tr><tr><td>AllReleased</td><td>All released including out-of-date</td></tr></tbody></table>",
+        "operationId": "GetPublicationListByLogicalId",
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPublicationListByLogicalId"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPublicationListByLogicalId"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPublicationListByLogicalId"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Publication"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Publication"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v3/UserGroups/Get": {
       "post": {
         "tags": [
@@ -2988,6 +3757,7 @@
           "mapping": {
             "User": "#/components/schemas/User",
             "UserGroup": "#/components/schemas/UserGroup",
+            "Publication": "#/components/schemas/Publication",
             "BaseObject": "#/components/schemas/BaseObject",
             "LovValue": "#/components/schemas/LovValue",
             "RevisionInfo": "#/components/schemas/RevisionInfo",
@@ -3064,6 +3834,7 @@
           "mapping": {
             "User": "#/components/schemas/User",
             "UserGroup": "#/components/schemas/UserGroup",
+            "Publication": "#/components/schemas/Publication",
             "RevisionInfo": "#/components/schemas/RevisionInfo",
             "Folder": "#/components/schemas/Folder",
             "ElectronicDocumentType": "#/components/schemas/ElectronicDocumentType",
@@ -3185,6 +3956,51 @@
           }
         ],
         "additionalProperties": false
+      },
+      "DeleteDocumentObjectByLanguageCardId": {
+        "type": "object",
+        "properties": {
+          "requiredCurrentFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "The fields that will be used in concurrency check.\r\nEach individual field in this collection should have the same exact value in the database in order to delete the Trisoft.InfoShare.WebApi.V30.DocumentObjects.Models.DocumentObject",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to delete document object."
+      },
+      "DeleteDocumentObjectByLogicalId": {
+        "type": "object",
+        "properties": {
+          "requiredCurrentFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "The fields that will be used in concurrency check.\r\nEach individual field in this collection should have the same exact value in the database in order to delete the Trisoft.InfoShare.WebApi.V30.DocumentObjects.Models.DocumentObject",
+            "nullable": true
+          },
+          "version": {
+            "type": "string",
+            "description": "The version.",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "description": "The Language.",
+            "nullable": true
+          },
+          "resolution": {
+            "type": "string",
+            "description": "The resolution.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to delete document object."
       },
       "DocumentObject": {
         "type": "object",
@@ -3818,10 +4634,52 @@
             "type": "boolean",
             "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
             "default": false
+          },
+          "includePartialItems": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include partial items when the version or language is missing; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
           }
         },
         "additionalProperties": false,
         "description": "Request object to get all objects in the repository that match the criteria given in the properties."
+      },
+      "GetFolderList": {
+        "required": [
+          "ids"
+        ],
+        "type": "object",
+        "properties": {
+          "ids": {
+            "minLength": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List with folderIds which can be used to limit the result to folders within this list that match the other filters."
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          },
+          "selectedProperties": {
+            "$ref": "#/components/schemas/SelectedProperties"
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request folder to get all folders in the repository that match the criteria given in the properties."
       },
       "GetMetadataBindingTagList": {
         "type": "object",
@@ -3865,6 +4723,59 @@
         },
         "additionalProperties": false,
         "description": "Request object to get metadata bound tags structure that match the criteria given in the properties."
+      },
+      "GetPublicationListByLogicalId": {
+        "required": [
+          "logicalIds"
+        ],
+        "type": "object",
+        "properties": {
+          "logicalIds": {
+            "minLength": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Logical ids of the objects."
+          },
+          "statusFilter": {
+            "$ref": "#/components/schemas/StatusFilter"
+          },
+          "filterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterFieldValue"
+            },
+            "description": "The filter fields that contain information to access a field, and the value associated with the field.",
+            "nullable": true
+          },
+          "selectedProperties": {
+            "$ref": "#/components/schemas/SelectedProperties"
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          },
+          "includePartialItems": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the partial items; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get all publications in the repository that match the criteria given in the properties."
       },
       "GetUserGroupList": {
         "type": "object",
@@ -4004,7 +4915,7 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
       },
       "IshField": {
         "required": [
@@ -4402,6 +5313,56 @@
         ],
         "additionalProperties": false
       },
+      "Publication": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "versionCardId": {
+                "type": "integer",
+                "description": "The version card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "languageCardId": {
+                "type": "integer",
+                "description": "The language card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "logicalId": {
+                "type": "string",
+                "description": "The logical identifier.",
+                "readOnly": true
+              },
+              "version": {
+                "type": "string",
+                "description": "The version.",
+                "nullable": true
+              },
+              "outputFormat": {
+                "type": "string",
+                "description": "The output format identifier.",
+                "nullable": true
+              },
+              "languageCombination": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The language combination.",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a publication."
+      },
       "RelatedInfo": {
         "required": [
           "type"
@@ -4419,6 +5380,7 @@
           "mapping": {
             "User": "#/components/schemas/User",
             "UserGroup": "#/components/schemas/UserGroup",
+            "Publication": "#/components/schemas/Publication",
             "BaseItem": "#/components/schemas/BaseItem",
             "BaseObject": "#/components/schemas/BaseObject",
             "LovValue": "#/components/schemas/LovValue",
@@ -4553,6 +5515,7 @@
           "mapping": {
             "SetUser": "#/components/schemas/SetUser",
             "SetUserGroup": "#/components/schemas/SetUserGroup",
+            "SetPublication": "#/components/schemas/SetPublication",
             "SetFolder": "#/components/schemas/SetFolder",
             "SetElectronicDocumentType": "#/components/schemas/SetElectronicDocumentType",
             "SetDocumentObject": "#/components/schemas/SetDocumentObject",
@@ -4916,6 +5879,37 @@
           }
         ],
         "additionalProperties": false
+      },
+      "SetPublication": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetBaseObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "versionCardId": {
+                "type": "integer",
+                "description": "The version card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "languageCardId": {
+                "type": "integer",
+                "description": "The language card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "logicalId": {
+                "type": "string",
+                "description": "The logical identifier."
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a publication."
       },
       "SetStringFieldValue": {
         "type": "object",
