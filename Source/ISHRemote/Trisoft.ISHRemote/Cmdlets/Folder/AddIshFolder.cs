@@ -21,6 +21,7 @@ using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
+using Trisoft.ISHRemote.ExtensionMehods;
 
 namespace Trisoft.ISHRemote.Cmdlets.Folder
 {
@@ -161,12 +162,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 switch (IshSession.Protocol)
                                 {
                                     case Enumerations.Protocol.OpenApiBasicAuthentication:
-                                        var setFieldValueCollection = new List<OpenApi.SetFieldValue>();
-                                        setFieldValueCollection.Add(new OpenApi.SetCardFieldValue());
+                                        // var setFieldValueCollection = new List<OpenApi.SetFieldValue>();
+                                        // setFieldValueCollection.Add(new OpenApi.SetCardFieldValue());
                                         IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
                                         {
                                             ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model?
-                                            Fields = setFieldValueCollection
+                                            Fields = ishFolder.IshFields.ToSetFieldValues(IshSession)
                                         });
                                         break;
                                     case Enumerations.Protocol.AsmxAuthenticationContext:
