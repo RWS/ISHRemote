@@ -34,7 +34,7 @@ Out-GridView
 
 ```powershell
 New-IshSession -WsBaseUrl https://example.com/ISHWS/ -PSCredential Admin
-Get-IshTypeFieldDefinition | Out-GridView
+Find-IshAnnotation
 ```
 results in 
 
