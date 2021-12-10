@@ -42,7 +42,7 @@ else
 {
     if ($PSVersionTable.PSVersion -gt [Version]'7.1')
     {
-        $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net5.0'
+        $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net6.0'
     }
 }
 
