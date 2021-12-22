@@ -333,7 +333,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     switch (IshSession.Protocol)
                     {
                         case Enumerations.Protocol.OpenApiBasicAuthentication:
-                        // TODO [Must] Add OpenApi implementation
+                            /*
+                            // convert IshSession.DefaultRequestedMetadata to FieldGroup, and retrieve from IshSession property
+                            retrievedFolders = new IshFolders(IshSession.OpenApi30Service.GetRootFolderListAsync(
+                                OpenApi.SelectedProperties.Id, 
+                                OpenApi.FieldGroup.All,
+                                _requestedMetadata.ToJson30Model(TypeFieldDefinition), false).GetAwaiter().GetResult());
+                            // returns all base/root folders, then select the right one
+                            break;
+                            */
                         case Enumerations.Protocol.AsmxAuthenticationContext:
                             var response = IshSession.Folder25.GetMetaData(new Folder25ServiceReference.GetMetaDataRequest()
                             {

@@ -161,14 +161,24 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 switch (IshSession.Protocol)
                                 {
                                     case Enumerations.Protocol.OpenApiBasicAuthentication:
+                                        /*
                                         var setFieldValueCollection = new List<OpenApi.SetFieldValue>();
-                                        setFieldValueCollection.Add(new OpenApi.SetCardFieldValue());
+                                        setFieldValueCollection.Add(new OpenApi.SetMultiCardFieldValue()
+                                        {
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(IshField) },
+                                            Value = new List<OpenApi.SetBaseObject>() {
+                                                // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                                new OpenApi.SetUserGroup() { Id = "VUSERGROUPADMINISTRATOR" },
+                                                new OpenApi.SetUserGroup() { Id = "VUSERGROUPGUEST" }
+                                                }
+                                        });
                                         IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
                                         {
-                                            ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model?
+                                            ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
                                             Fields = setFieldValueCollection
                                         });
                                         break;
+                                        */
                                     case Enumerations.Protocol.AsmxAuthenticationContext:
                                         var responseCreate = IshSession.Folder25.Create(new Folder25ServiceReference.CreateRequest()
                                         {
