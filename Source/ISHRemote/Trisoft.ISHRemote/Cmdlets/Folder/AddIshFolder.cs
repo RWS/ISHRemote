@@ -21,6 +21,7 @@ using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
+using Trisoft.ISHRemote.ExtensionMehods;
 
 namespace Trisoft.ISHRemote.Cmdlets.Folder
 {
@@ -175,8 +176,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
                                         {
                                             ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
-                                            Fields = setFieldValueCollection
-                                        });
+                                            //Fields = setFieldValueCollection
+                                            Fields = ishFolder.IshFields.ToSetFieldValues(IshSession)
                                         break;
                                         */
                                     case Enumerations.Protocol.AsmxAuthenticationContext:

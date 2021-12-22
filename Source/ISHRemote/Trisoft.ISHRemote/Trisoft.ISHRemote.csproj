@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net48;net5.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net48;net6.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies Condition="'$(TargetFramework)' == 'netcoreapp3.1'">true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PowerShellStandard.Library" Version="5.1.0" Condition="'$(TargetFramework)' != 'net5.0'" />
-    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.1.3" Condition="'$(TargetFramework)' == 'net5.0'" />
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.0" Condition="'$(TargetFramework)' != 'net6.0'" />
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.2.0" Condition="'$(TargetFramework)' == 'net6.0'" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
@@ -69,7 +69,7 @@
   </Target>
 
   <!-- Generating Module Manifest only once -->
-  <Target Name="ModuleManifest" AfterTargets="CopyCmdletDoc" Condition="'$(TargetFramework)' == 'net5.0'">
+  <Target Name="ModuleManifest" AfterTargets="CopyCmdletDoc" Condition="'$(TargetFramework)' == 'net6.0'">
     <PropertyGroup>
       <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">pwsh</PowerShellExe>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
@@ -101,7 +101,7 @@
     <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
   </Target>
 
-  <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' AND '$(TargetFramework)' == 'net5.0'">
+  <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' AND '$(TargetFramework)' == 'net6.0'">
     <PropertyGroup>
       <LocalPSRepo>$(ProjectDir)bin\$(Configuration)</LocalPSRepo>
       <ISHRemoteModulePath>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteModulePath>
