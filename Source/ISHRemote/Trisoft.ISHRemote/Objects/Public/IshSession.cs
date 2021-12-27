@@ -184,28 +184,43 @@ namespace Trisoft.ISHRemote.Objects.Public
             switch (Protocol)
             {
                 case Enumerations.Protocol.AsmxAuthenticationContext:
-                    // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
-                    _logger.WriteDebug("CreateConnection Application25.Login");
-                    var response = Application25.Login(new LoginRequest()
-                    {
-                        psApplication = _ishConnectionConfiguration.ApplicationName,
-                        psUserName = _ishUserName,
-                        psPassword = SecureStringConversions.SecureStringToString(_ishSecurePassword),
-                        psOutAuthContext = _authenticationContext
-                    });
-                    _authenticationContext = response.psOutAuthContext;
-                    _logger.WriteDebug("CreateConnection Application25.GetVersion");
-                    _serverVersion = new IshVersion(Application25.GetVersion());
+                    { 
+                        // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
+                        _logger.WriteDebug("CreateConnection Application25.Login");
+                        var response = Application25.Login(new LoginRequest()
+                        {
+                            psApplication = _ishConnectionConfiguration.ApplicationName,
+                            psUserName = _ishUserName,
+                            psPassword = SecureStringConversions.SecureStringToString(_ishSecurePassword),
+                            psOutAuthContext = _authenticationContext
+                        });
+                        _authenticationContext = response.psOutAuthContext;
+                        _logger.WriteDebug("CreateConnection Application25.GetVersion");
+                        _serverVersion = new IshVersion(Application25.GetVersion());
+                    }
                     break;
                 case Enumerations.Protocol.OpenApiBasicAuthentication:
-                    _logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
-                    _authenticationContext = "Not-Available-Over-OpenApiBasicAuthentication";
-                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
-                        "Basic",
-                        Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
-                    _openApi30Service = new Trisoft.ISHRemote.OpenApi.OpenApi30Service(_httpClient);
-                    _openApi30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
-                    _serverVersion = new IshVersion(_openApi30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+                    { 
+                        _logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
+                        _authenticationContext = "Not-Available-Over-OpenApiBasicAuthentication";
+                        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                            "Basic",
+                            Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
+                        _openApi30Service = new Trisoft.ISHRemote.OpenApi.OpenApi30Service(_httpClient);
+                        _openApi30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
+                        _serverVersion = new IshVersion(_openApi30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+                        
+                        //TODO [Should] Remove fall through AuthenticationContext initialization on OpenApiBasicAuthentication to allowed running mixed code
+                        _logger.WriteVerbose("CreateConnection Application25.Login to allow mixed OpenApiBasicAuthentication/AsmxAuthenticationContext code");
+                        var response = Application25.Login(new LoginRequest()
+                        {
+                            psApplication = _ishConnectionConfiguration.ApplicationName,
+                            psUserName = _ishUserName,
+                            psPassword = SecureStringConversions.SecureStringToString(_ishSecurePassword),
+                            psOutAuthContext = _authenticationContext
+                        });
+                        _authenticationContext = response.psOutAuthContext;
+                    }
                     // if GetApplicationVersionAsync doesnot force authentication we should for a initialize IshUser at this location for both protocols
                     break;
             }

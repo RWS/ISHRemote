@@ -162,24 +162,66 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 switch (IshSession.Protocol)
                                 {
                                     case Enumerations.Protocol.OpenApiBasicAuthentication:
-                                        //var setFieldValueCollection = new List<OpenApi.SetFieldValue>();
-                                        //setFieldValueCollection.Add(new OpenApi.SetMultiCardFieldValue()
-                                        //{
-                                        //    IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(IshField) },
-                                        //    Value = new List<OpenApi.SetBaseObject>() {
-                                        //        // Convert multi-value fields of ISHRemote models via IshSession.Separator
-                                        //        new OpenApi.SetUserGroup() { Id = "VUSERGROUPADMINISTRATOR" },
-                                        //        new OpenApi.SetUserGroup() { Id = "VUSERGROUPGUEST" }
-                                        //        }
-                                        //});
+                                        ICollection<OpenApi.SetFieldValue> fieldValues = new List<OpenApi.SetFieldValue>();
 
-                                        // Ivo's pitch, but worried about ValueType, so testing a manual collection first.
-                                        IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
+                                        //FNAME
+                                        var fieldFolderName = new OpenApi.SetStringFieldValue()
+                                        {
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FNAME", Type = nameof(OpenApi.IshField) },
+                                            Value = folderName
+                                        };
+                                        fieldValues.Add(fieldFolderName);
+
+                                        //FDOCUMENTTYPE (aka Folder Type)
+                                        var fieldFolderType = new OpenApi.SetLovFieldValue()
+                                        {
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApi.IshField) },
+                                            Value = new OpenApi.SetLovValue() { Id = "VDOCTYPEILLUSTRATION" }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                        };
+                                        fieldValues.Add(fieldFolderType);
+
+                                        //READ-ACCESS
+                                        var fieldReadAccess = new OpenApi.SetMultiCardFieldValue()
+                                        {
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApi.IshField) },
+                                            Value = new List<OpenApi.SetBaseObject>()
+                                        };
+                                        // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                        foreach (string readaccessItem in readAccessString.Split(IshSession.Separator.ToCharArray()))
+                                        { 
+                                            fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = readaccessItem });
+                                        }
+                                        fieldValues.Add(fieldReadAccess);
+
+                                        //FUSERGROUP (aka Owned by)
+                                        var fieldWriteAccess = new OpenApi.SetMultiCardFieldValue()
+                                        {
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApi.IshField) },
+                                            Value = new List<OpenApi.SetBaseObject>()
+                                        };
+                                        // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                        foreach (string writeaccessItem in ownedBy.Split(IshSession.Separator.ToCharArray()))
+                                        {
+                                            fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = writeaccessItem });
+                                        }
+                                        fieldValues.Add(fieldWriteAccess);
+
+                                        var response = IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
                                         {
                                             ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
-                                            //Fields = setFieldValueCollection
-                                            Fields = ishFolder.IshFields.ToSetFieldValues(IshSession)
-                                        });
+                                            Fields = fieldValues
+                                        }).GetAwaiter().GetResult();
+                                        folderId = Convert.ToInt64(response.Id);  // TODO [Question] Why is folder id a string and not typed as long in the FolderDescriptor model?
+
+                                        // Ivo's pitch, but worried about ValueType, so testing a manual collection first.
+                                        //IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
+                                        //{
+                                        //    ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
+                                        //    //Fields = setFieldValueCollection
+                                        //    Fields = ishFolder.IshFields.ToSetFieldValues(IshSession)
+                                        //});
+
+                                        foldersToRetrieve.Add(folderId);
                                         break;
                                     case Enumerations.Protocol.AsmxAuthenticationContext:
                                         var responseCreate = IshSession.Folder25.Create(new Folder25ServiceReference.CreateRequest()
@@ -213,7 +255,58 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             switch (IshSession.Protocol)
                             {
                                 case Enumerations.Protocol.OpenApiBasicAuthentication:
-                                // TODO [Must] Add OpenApi implementation
+                                    ICollection<OpenApi.SetFieldValue> fieldValues = new List<OpenApi.SetFieldValue>();
+
+                                    //FNAME
+                                    var fieldFolderName = new OpenApi.SetStringFieldValue()
+                                    {
+                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FNAME", Type = nameof(OpenApi.IshField) },
+                                        Value = FolderName
+                                    };
+                                    fieldValues.Add(fieldFolderName);
+
+                                    //FDOCUMENTTYPE (aka Folder Type)
+                                    var fieldFolderType = new OpenApi.SetLovFieldValue()
+                                    {
+                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApi.IshField) },
+                                        Value = new OpenApi.SetLovValue() { Id = "VDOCTYPEILLUSTRATION" }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                    };
+                                    fieldValues.Add(fieldFolderType);
+
+                                    //READ-ACCESS
+                                    var fieldReadAccess = new OpenApi.SetMultiCardFieldValue()
+                                    {
+                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApi.IshField) },
+                                        Value = new List<OpenApi.SetBaseObject>()
+                                    };
+                                    // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                    foreach (string readaccessItem in readAccess)
+                                    {
+                                        fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = readaccessItem });
+                                    }
+                                    fieldValues.Add(fieldReadAccess);
+
+                                    //FUSERGROUP (aka Owned by)
+                                    var fieldWriteAccess = new OpenApi.SetMultiCardFieldValue()
+                                    {
+                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApi.IshField) },
+                                        Value = new List<OpenApi.SetBaseObject>()
+                                    };
+                                    // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                    foreach (string writeaccessItem in ownedBy.Split(IshSession.Separator.ToCharArray()))
+                                    {
+                                        fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = writeaccessItem });
+                                    }
+                                    fieldValues.Add(fieldWriteAccess);
+
+                                    var response = IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
+                                    {
+                                        ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
+                                        Fields = fieldValues
+                                    }).GetAwaiter().GetResult();
+                                    folderId = Convert.ToInt64(response.Id);  // TODO [Question] Why is folder id a string and not typed as long in the FolderDescriptor model?
+                                    foldersToRetrieve.Add(folderId);
+                                    break;
                                 case Enumerations.Protocol.AsmxAuthenticationContext:
                                     var responseCreate = IshSession.Folder25.Create(new Folder25ServiceReference.CreateRequest()
                                     {

@@ -114,6 +114,11 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
             break;
     }
     ```
+5. Got F5 debugging to work again, hat tip to https://www.donovanbrown.com/post/Setting-up-Visual-Studio-to-debug-a-binary-PowerShell-module
+    ```powershell
+    -NoExit -Command "& Import-Module "\ISHRemote\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev14qa01.global.sdl.corp/ISHWSSQL2019/ -IshUserName admin -IshPassword admin -Protocol OpenApiBasicAuthentication; Add-IshFolder -ParentFolderId (Get-IshFolder -BaseFolder Data).IshFolderRef -FolderType ISHIllustration -FolderName '__ISHRemotev7'"
+    ```
+    Later `Remove-IshFolder -FolderPath '\General\__ISHRemotev7'`
 
 ## Next
 1. v0->v7 Cherrypick #138 Fix Remove-IshDocumentObj cmdlet due to the improved Delete beh... Remember starting 15/Alf the `-Force` flag is always on server-side, add that in a verbose message
@@ -135,9 +140,10 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
    6. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
    7. Should Solr be running to do Search-IshDocumentObj
 5. Port and rewire more cmdlets to AsmxAuthenticationContext to achieve Milestone of the plan.
-6.  Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
-7.  ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
-8.  ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version
+6. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
+7.  Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
+8.  ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
+9.  ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version
 
 
 # Debugging
