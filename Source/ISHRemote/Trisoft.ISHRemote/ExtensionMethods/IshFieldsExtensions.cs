@@ -5,7 +5,7 @@ using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.OpenApi;
 
-namespace Trisoft.ISHRemote.ExtensionMehods
+namespace Trisoft.ISHRemote.ExtensionMethods
 {
     internal static class IshFieldsExtensionMethods
     {
@@ -100,7 +100,7 @@ namespace Trisoft.ISHRemote.ExtensionMehods
                         setFieldValue = ishTypeFieldDefinition.IsMultiValue ? (SetFieldValue)new SetMultiLovFieldValue()
                         {
                             IshField = openApiIshField,
-                            Value = multiFieldValues.Select(v => new SetLovValue(){ Id = v, Type = nameof(SetLovValue) }).ToList()
+                            Value = multiFieldValues.Select(v => new SetLovValue() { Id = v, Type = nameof(SetLovValue) }).ToList()
                         }
                         : new SetLovFieldValue()
                         {

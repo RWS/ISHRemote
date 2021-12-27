@@ -55,6 +55,7 @@
   </ItemGroup>
 
   <!-- Hack to get XmlDoc2CmdletDoc to work -->
+  <!-- Seemingly XmlDoc2CmdletDoc does not run under .NET 5/6, meaning it needs an explicit 3.1 runtime. Download from https://dotnet.microsoft.com/en-us/download/dotnet/3.1 -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <XmlDoc2CmdletDocToolPath>netcoreapp3.1\XmlDoc2CmdletDoc.dll</XmlDoc2CmdletDocToolPath>
     <XmlDocToolsPath>netcoreapp3.1\XmlDoc2CmdletDoc.dll</XmlDocToolsPath>
@@ -94,8 +95,8 @@
 
     <RemoveDir Directories="$(ISHRemoteFrameworkDir)" Condition="Exists('$(ISHRemoteFrameworkDir)')" />
     <MakeDir Directories="$(ISHRemoteFrameworkDir)" />
-    <Copy SourceFiles="@(ISHRemoteFiles)" DestinationFiles="@(ISHRemoteFiles-&gt;'$(ISHRemoteFrameworkDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(ISHRemoteScriptFiles)" DestinationFiles="@(ISHRemoteScriptFiles-&gt;'$(LocalPSRepoDir)\ISHRemote\Scripts\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(ISHRemoteFiles)" DestinationFiles="@(ISHRemoteFiles->'$(ISHRemoteFrameworkDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(ISHRemoteScriptFiles)" DestinationFiles="@(ISHRemoteScriptFiles->'$(LocalPSRepoDir)\ISHRemote\Scripts\%(RecursiveDir)%(Filename)%(Extension)')" />
 
     <Copy SourceFiles="$(ProjectDir)ISHRemote.psm1" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
     <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />

@@ -127,12 +127,13 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
 2. .NET 6 for ISHRemote (Visual Studio 2022), build adaptions
 3. Adapt build to scan for https://www.trojansource.codes
 4. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
-   1. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
-   2. You should have initial state Draft by element name
-   3. You should have a direct Draft to Released status transition for your user
-   4. You should have system management user role to allow renaming System folder test
-   5. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
-   6. Should Solr be running to do Search-IshDocumentObj
+   1. When the root `__ISHRemote` folder is missing after a database restore. Or simply invalid username/password combinations.
+   2. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
+   3. You should have initial state Draft by element name
+   4. You should have a direct Draft to Released status transition for your user
+   5. You should have system management user role to allow renaming System folder test
+   6. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
+   7. Should Solr be running to do Search-IshDocumentObj
 5. Port and rewire more cmdlets to AsmxAuthenticationContext to achieve Milestone of the plan.
 6.  Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
 7.  ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1

@@ -21,7 +21,7 @@ using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
-using Trisoft.ISHRemote.ExtensionMehods;
+using Trisoft.ISHRemote.ExtensionMethods;
 
 namespace Trisoft.ISHRemote.Cmdlets.Folder
 {
@@ -162,24 +162,25 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 switch (IshSession.Protocol)
                                 {
                                     case Enumerations.Protocol.OpenApiBasicAuthentication:
-                                        /*
-                                        var setFieldValueCollection = new List<OpenApi.SetFieldValue>();
-                                        setFieldValueCollection.Add(new OpenApi.SetMultiCardFieldValue()
-                                        {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(IshField) },
-                                            Value = new List<OpenApi.SetBaseObject>() {
-                                                // Convert multi-value fields of ISHRemote models via IshSession.Separator
-                                                new OpenApi.SetUserGroup() { Id = "VUSERGROUPADMINISTRATOR" },
-                                                new OpenApi.SetUserGroup() { Id = "VUSERGROUPGUEST" }
-                                                }
-                                        });
+                                        //var setFieldValueCollection = new List<OpenApi.SetFieldValue>();
+                                        //setFieldValueCollection.Add(new OpenApi.SetMultiCardFieldValue()
+                                        //{
+                                        //    IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(IshField) },
+                                        //    Value = new List<OpenApi.SetBaseObject>() {
+                                        //        // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                        //        new OpenApi.SetUserGroup() { Id = "VUSERGROUPADMINISTRATOR" },
+                                        //        new OpenApi.SetUserGroup() { Id = "VUSERGROUPGUEST" }
+                                        //        }
+                                        //});
+
+                                        // Ivo's pitch, but worried about ValueType, so testing a manual collection first.
                                         IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
                                         {
                                             ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
                                             //Fields = setFieldValueCollection
                                             Fields = ishFolder.IshFields.ToSetFieldValues(IshSession)
+                                        });
                                         break;
-                                        */
                                     case Enumerations.Protocol.AsmxAuthenticationContext:
                                         var responseCreate = IshSession.Folder25.Create(new Folder25ServiceReference.CreateRequest()
                                         {
