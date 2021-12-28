@@ -24,7 +24,7 @@ else {
 Write-Host ("Running ISHRemote.PesterSetup.ps1 Import Module folder["+$moduleFolder+"] ...")
 Import-Module ($moduleFolder) -DisableNameChecking
 
-Write-Host "Running ISHRemote.PesterSetup.ps1 Global Test Data and Variables initialization"
+Write-Host ("Running ISHRemote.PesterSetup.ps1 Global Test Data and Variables initialization on "+(Get-Date -UFormat "%Y-%m-%dT%H-%M-%S%Z"))
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
 Write-Verbose "Running ISHRemote.PesterSetup.ps1 OASIS DITA File Contents initialization"
 $ditaTopicFileContent = @"
