@@ -3,7 +3,7 @@
     "Trisoft.ISHRemote": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev14qa01.global.sdl.corp/ISHWSSQL2019/ -IshUserName admin -IshPassword admin -Protocol OpenApiBasicAuthentication #15.0.0\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev14qa01.global.sdl.corp/ISHWSSQL2019/ -IshUserName admin -IshPassword admin -IgnoreSslPolicyErrors -Protocol OpenApiBasicAuthentication #15.0.0\"",
       "nativeDebugging": true
     }
   }

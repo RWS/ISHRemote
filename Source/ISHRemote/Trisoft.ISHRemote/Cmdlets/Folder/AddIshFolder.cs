@@ -188,7 +188,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         };
                                         // Convert multi-value fields of ISHRemote models via IshSession.Separator
                                         foreach (string readaccessItem in readAccessString.Split(IshSession.Separator.ToCharArray()))
-                                        { 
+                                        {
                                             fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = readaccessItem });
                                         }
                                         fieldValues.Add(fieldReadAccess);
@@ -269,34 +269,30 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     var fieldFolderType = new OpenApi.SetLovFieldValue()
                                     {
                                         IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApi.IshField) },
-                                        Value = new OpenApi.SetLovValue() { Id = "VDOCTYPEILLUSTRATION" }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                        Value = new OpenApi.SetLovValue() { Id = Enumerations.ToDDOCTYPEValue(FolderType), Type = nameof(OpenApi.SetLovValue) }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
                                     };
                                     fieldValues.Add(fieldFolderType);
 
                                     //READ-ACCESS
-                                    var fieldReadAccess = new OpenApi.SetMultiCardFieldValue()
+                                    var fieldReadAccess = new OpenApi.SetMultiLovFieldValue()
                                     {
                                         IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApi.IshField) },
-                                        Value = new List<OpenApi.SetBaseObject>()
+                                        Value = new List<OpenApi.SetLovValue>()
                                     };
                                     // Convert multi-value fields of ISHRemote models via IshSession.Separator
                                     foreach (string readaccessItem in readAccess)
                                     {
-                                        fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = readaccessItem });
+                                        fieldReadAccess.Value.Add(new OpenApi.SetLovValue() { Id = readaccessItem, Type = nameof(OpenApi.SetLovValue) });
                                     }
                                     fieldValues.Add(fieldReadAccess);
 
                                     //FUSERGROUP (aka Owned by)
-                                    var fieldWriteAccess = new OpenApi.SetMultiCardFieldValue()
+                                    var ownedByValue = String.IsNullOrEmpty(ownedBy) ? null : new OpenApi.SetUserGroup() { Id = ownedBy };
+                                    var fieldWriteAccess = new OpenApi.SetCardFieldValue()
                                     {
                                         IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApi.IshField) },
-                                        Value = new List<OpenApi.SetBaseObject>()
+                                        Value = ownedByValue
                                     };
-                                    // Convert multi-value fields of ISHRemote models via IshSession.Separator
-                                    foreach (string writeaccessItem in ownedBy.Split(IshSession.Separator.ToCharArray()))
-                                    {
-                                        fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = writeaccessItem });
-                                    }
                                     fieldValues.Add(fieldWriteAccess);
 
                                     var response = IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
@@ -356,12 +352,44 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 WriteObject(IshSession, ISHType, returnedFolders.ConvertAll(x => (IshBaseObject)x), true);
             }
 
+            catch (NotSupportedException notSupportedException)
+            {
+                WriteError(new ErrorRecord(notSupportedException, "-1", ErrorCategory.NotImplemented, null));
+            }
             catch (TrisoftAutomationException trisoftAutomationException)
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
             }
+            catch (OpenApi.ApiException<OpenApi.InfoShareProblemDetails> exception)
+            {
+                if (exception.Result != null)
+                {
+                    WriteWarning($"Status[{exception.Result.Status}] Title[{exception.Result.Title}] EventName[{exception.Result.EventName}] Detail[{exception.Result.Detail}]");
+                    foreach (var error in exception.Result.Errors)
+                    {
+                        string warning = $"ErrorEventName[{error.EventName}] ErrorDetail[{error.Detail}]";
+                        foreach (var relatedInfo in error.RelatedInfo)
+                        {
+                            var schemaValidationError = relatedInfo as OpenApi.SchemaValidationError;
+                            warning += $" on ErrorPath[{schemaValidationError.Path}]";
+                        }
+                        WriteWarning(warning);
+                    }
+                }
+                ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (AggregateException aggregateException)
+            {
+                var flattenedAggregateException = aggregateException.Flatten();
+                WriteWarning(flattenedAggregateException.ToString());
+                ThrowTerminatingError(new ErrorRecord(flattenedAggregateException, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
             catch (Exception exception)
             {
+                if (exception.InnerException != null)
+                {
+                    WriteWarning(exception.InnerException.ToString());
+                }
                 ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
             }
         }

@@ -116,7 +116,7 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
     ```
 5. Got F5 debugging to work again, hat tip to https://www.donovanbrown.com/post/Setting-up-Visual-Studio-to-debug-a-binary-PowerShell-module
     ```powershell
-    -NoExit -Command "& Import-Module "\ISHRemote\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev14qa01.global.sdl.corp/ISHWSSQL2019/ -IshUserName admin -IshPassword admin -Protocol OpenApiBasicAuthentication; Add-IshFolder -ParentFolderId (Get-IshFolder -BaseFolder Data).IshFolderRef -FolderType ISHIllustration -FolderName '__ISHRemotev7'"
+    -NoExit -Command "& Import-Module "\ISHRemote\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev14qa01.global.sdl.corp/ISHWSSQL2019/ -IshUserName admin -IshPassword admin -IgnoreSslPolicyErrors -Protocol OpenApiBasicAuthentication; Add-IshFolder -ParentFolderId (Get-IshFolder -BaseFolder Data).IshFolderRef -FolderType ISHIllustration -FolderName '__ISHRemotev7'"
     ```
     Later `Remove-IshFolder -FolderPath '\General\__ISHRemotev7'`
 
