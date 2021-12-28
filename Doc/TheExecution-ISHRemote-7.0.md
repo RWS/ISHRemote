@@ -123,15 +123,16 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
 
 ## Next
 1. v0->v7 Cherrypick #138 Fix Remove-IshDocumentObj cmdlet due to the improved Delete beh... Remember starting 15/Alf the `-Force` flag is always on server-side, add that in a verbose message
-1. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
+2. v7->v0 Cherrypick the timezone improved `ISHRemote.PesterSetup.ps1` and `GetIshTimeZone.Tests.ps1`. Increased grace period of 1 minute to 10 minutes, seemingly because of slow CI/CD servers, for `GetIshBackgroundTask.Tests.ps1` and `GetIshEvent.Tests.ps1`.
+3. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
    1. Folder25.Create -> API30.Create (ready)
    2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (ready)
    3. Folder25.Delete -> API30.DeleteFolder (ready)
    4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
-3. Adapt build to scan for https://www.trojansource.codes
-4. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
+4. Adapt build to scan for https://www.trojansource.codes
+5. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
    1. When the root `__ISHRemote` folder is missing after a database restore. Or simply invalid username/password combinations.
    2. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
    3. You should have initial state Draft by element name
@@ -139,11 +140,11 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
    5. You should have system management user role to allow renaming System folder test
    6. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
    7. Should Solr be running to do Search-IshDocumentObj
-5. Port and rewire more cmdlets to AsmxAuthenticationContext to achieve Milestone of the plan.
-6. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
-7.  Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
-8.  ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
-9.  ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version
+6. Port and rewire more cmdlets to AsmxAuthenticationContext to achieve Milestone of the plan.
+7. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
+8.  Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
+9.  ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
+10. ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version
 
 
 # Debugging

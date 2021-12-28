@@ -116,7 +116,7 @@ Describe "Get-IshEvent" -Tags "Create" {
 			{ Get-IshEvent -IShSession $ishSession -RequestedMetadata "INVALIDMETADATA" -MetadataFilter "INVALIDFILTER"  } | Should -Throw
 		}
 		It "Parameter IshSession/UserFilter/MetadataFilter are optional" {
-			$ishEvent = (Get-IshEvent -ModifiedSince ((Get-Date).AddMinutes(-1)) -RequestedMetadata $allProgressMetadata)[0]
+			$ishEvent = (Get-IshEvent -ModifiedSince ((Get-Date).AddMinutes(-10)) -RequestedMetadata $allProgressMetadata)[0]
 			($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID -ValueType Value).Length -gt 0 | Should -Be $true
 			#($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name USERID -ValueType Element).StartsWith('VUSER') | Should -Be $false  # unexpected but ValueType Element is not returned by the API call
 		}
@@ -138,20 +138,20 @@ Describe "Get-IshEvent" -Tags "Create" {
 			(Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(1)) -UserFilter All).Count | Should -Be 0
 		}
 		It "Parameter RequestedMetadata only all of Progress level" {
-			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
 			$ishEvent.ProgressRef -gt 0 | Should -Be $true
 			#$ishEvent.DetailRef -gt 0 | Should -Be $true
 			$ishEvent.IshField.Count | Should -Be 10
 		}
 		It "Parameter RequestedMetadata only all of Detail level" {
-			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allDetailMetadata)[0]
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allDetailMetadata)[0]
 			$ishEvent.ProgressRef -gt 0 | Should -Be $true
 			$ishEvent.DetailRef -gt 0 | Should -Be $true
 			$ishEvent.IshField.Count -ge 20 | Should -Be $true  # Perhaps expected 10 Progress level fields, but Get-IshEvent currently always retrieves details as well
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=PSObjectNoteProperty" {
 			$ishSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
-			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allMetadata)[0]
 			$ishEvent.GetType().Name | Should -BeExactly "IshEvent"  # and not PSObject
 			[bool]($ishEvent.PSobject.Properties.name -match "status") | Should -Be $true
 			[bool]($ishEvent.PSobject.Properties.name -match "userid") | Should -Be $true
@@ -162,7 +162,7 @@ Describe "Get-IshEvent" -Tags "Create" {
 		It "Parameter RequestedMetadata PipelineObjectPreference=Off" {
 		    $pipelineObjectPreference = $ishSession.PipelineObjectPreference
 			$ishSession.PipelineObjectPreference = "Off"
-			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allMetadata)[0]
 			$ishEvent.GetType().Name | Should -BeExactly "IshEvent"
 			[bool]($ishEvent.PSobject.Properties.name -match "status") | Should -Be $false
 			[bool]($ishEvent.PSobject.Properties.name -match "userid") | Should -Be $false
@@ -171,7 +171,7 @@ Describe "Get-IshEvent" -Tags "Create" {
 			$ishSession.PipelineObjectPreference = $pipelineObjectPreference
 		}
 		It "Parameter MetadataFilter" {
-			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allMetadata)[0]
 			$filterMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Level Progress -Name EVENTID -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID)
 			                # | Set-IshMetadataFilterField -IshSession $ishSession -Level Progress -Name USERID -Value ($ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name USERID)  # Seems just like higher that USERID by valuetype retrieval and filtering are not working
 			$ishEventArray = Get-IshEvent -IshSession $ishSession -MetadataFilter $filterMetadata
@@ -182,7 +182,7 @@ Describe "Get-IshEvent" -Tags "Create" {
 			{ Get-IshEvent -IshSession $ishSession -IshEvent "INVALIDISHEVENT" } | Should -Throw
 		}
 		It "Parameter IshEvent Single" {
-			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter Current)[0]
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter Current)[0]
 			$eventId = $ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID
 			$ishEventArray = Get-IshEvent -IshSession $ishSession -IshEvent $ishEvent
 			$ishEventArray.Count -ge 1 | Should -Be $true
@@ -192,7 +192,7 @@ Describe "Get-IshEvent" -Tags "Create" {
 		}
 		#>
 		It "Pipeline IshEvent Single" {
-			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter Current)[0]
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter Current)[0]
 			$eventId = $ishEvent | Get-IshMetadataField -IshSession $ishSession -Level Progress -Name EVENTID
 			$ishEventArray = $ishEvent | Get-IshEvent -IshSession $ishSession
 			$ishEventArray.Count -ge 1 | Should -Be $true
