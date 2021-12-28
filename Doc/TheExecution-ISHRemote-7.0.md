@@ -114,7 +114,8 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
             break;
     }
     ```
-5. Got F5 debugging to work again, hat tip to https://www.donovanbrown.com/post/Setting-up-Visual-Studio-to-debug-a-binary-PowerShell-module
+5. .NET 6 for ISHRemote (Visual Studio 2022), build adaptions
+6. Got F5 debugging to work again, hat tip to https://www.donovanbrown.com/post/Setting-up-Visual-Studio-to-debug-a-binary-PowerShell-module
     ```powershell
     -NoExit -Command "& Import-Module "\ISHRemote\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev14qa01.global.sdl.corp/ISHWSSQL2019/ -IshUserName admin -IshPassword admin -IgnoreSslPolicyErrors -Protocol OpenApiBasicAuthentication; Add-IshFolder -ParentFolderId (Get-IshFolder -BaseFolder Data).IshFolderRef -FolderType ISHIllustration -FolderName '__ISHRemotev7'"
     ```
@@ -129,7 +130,6 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
    4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
-2. .NET 6 for ISHRemote (Visual Studio 2022), build adaptions
 3. Adapt build to scan for https://www.trojansource.codes
 4. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
    1. When the root `__ISHRemote` folder is missing after a database restore. Or simply invalid username/password combinations.
