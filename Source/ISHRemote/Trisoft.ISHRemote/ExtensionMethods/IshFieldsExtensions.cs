@@ -7,9 +7,9 @@ using Trisoft.ISHRemote.OpenApi;
 
 namespace Trisoft.ISHRemote.ExtensionMethods
 {
-    internal static class IshFieldsExtensionMethods
+    internal static class IshFieldsExtensions
     {
-        internal static ICollection<SetFieldValue> ToSetFieldValues(this IshFields ishFields, IshSession ishSession )
+        internal static ICollection<SetFieldValue> ToSetFieldValues(this IshFields ishFields, IshSession ishSession)
         {
             ICollection<SetFieldValue> fieldValues = new List<SetFieldValue>();
 
@@ -25,47 +25,69 @@ namespace Trisoft.ISHRemote.ExtensionMethods
             return fieldValues;
         }
 
-        internal static OpenApi.Level ToOpenApiLevel(this Enumerations.Level level)
+        internal static ICollection<RequestedField> ToOpenApiRequestedFields(this IshFields ishFields)
+        {
+            ICollection<RequestedField> requestedFields = new List<RequestedField>();
+
+            foreach(Objects.Public.IshField ishField in ishFields.Fields())
+            {
+                RequestedField requestedField = new RequestedField
+                {
+                    IshField = new OpenApi.IshField
+                    {
+                        Level = ishField.Level.ToOpenApiLevel(),
+                        Name = ishField.Name,
+                        Type = nameof(OpenApi.IshField)
+                    },
+                    Type = nameof(RequestedField)
+                };
+                requestedFields.Add(requestedField);
+            }
+
+            return requestedFields;
+        }
+
+        internal static Level ToOpenApiLevel(this Enumerations.Level level)
         {
             switch(level)
             {
                 case Enumerations.Level.Annotation:
-                    return OpenApi.Level.Annotation;
+                    return Level.Annotation;
 
                 case Enumerations.Level.Data:
-                    return OpenApi.Level.Data;
+                    return Level.Data;
 
                 case Enumerations.Level.Detail:
-                    return OpenApi.Level.Detail;
+                    return Level.Detail;
 
                 case Enumerations.Level.History:
                     // TODO
-                    return OpenApi.Level.None;
+                    return Level.None;
 
                 case Enumerations.Level.Lng:
-                    return OpenApi.Level.Language;
+                    return Level.Language;
 
                 case Enumerations.Level.Logical:
-                    return OpenApi.Level.Logical;
+                    return Level.Logical;
 
                 case Enumerations.Level.None:
-                    return OpenApi.Level.None;
+                    return Level.None;
 
                 case Enumerations.Level.Progress:
-                    return OpenApi.Level.None;
+                    return Level.None;
 
                 case Enumerations.Level.Reply:
-                    return OpenApi.Level.Reply;
+                    return Level.Reply;
 
                 case Enumerations.Level.Task:
                     // TODO
-                    return OpenApi.Level.None;
+                    return Level.None;
                 
                 case Enumerations.Level.Version:
-                    return OpenApi.Level.Version;
+                    return Level.Version;
             }
 
-            return OpenApi.Level.None;
+            return Level.None;
         }
 
         private static SetFieldValue IshFieldToSetFieldValue(Objects.Public.IshField ishField, IshSession ishSession, IshFields ishFields)
@@ -75,10 +97,10 @@ namespace Trisoft.ISHRemote.ExtensionMethods
 
             if (ishTypeFieldDefinition != null)
             {
-                OpenApi.IshField openApiIshField = new OpenApi.IshField() {  Level = ishField.Level.ToOpenApiLevel(), Name = ishField.Name, Type = nameof(OpenApi.IshField ) };
+                OpenApi.IshField openApiIshField = new OpenApi.IshField() {  Level = ishField.Level.ToOpenApiLevel(), Name = ishField.Name, Type = nameof(OpenApi.IshField) };
                 
                 string fieldValue = ishFields.GetFieldValue(ishField.Name, ishField.Level, ishField.ValueType);
-                // TODO why is the separator on IshSession a string?
+                // TODO ishSession default separator is comma space 
                 string[] multiFieldValues = fieldValue.Split(ishSession.Separator.ToCharArray(), StringSplitOptions.None);
 
                 switch (ishTypeFieldDefinition.DataType)

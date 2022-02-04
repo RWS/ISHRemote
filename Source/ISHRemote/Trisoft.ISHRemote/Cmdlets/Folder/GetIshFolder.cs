@@ -21,6 +21,7 @@ using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
+using Trisoft.ISHRemote.ExtensionMethods;
 using System.Linq;
 
 namespace Trisoft.ISHRemote.Cmdlets.Folder
@@ -241,7 +242,28 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         switch (IshSession.Protocol)
                         {
                             case Enumerations.Protocol.OpenApiBasicAuthentication:
-                            // TODO [Must] Add OpenApi implementation
+                                foreach (long folderId in folderCardIdBatch)
+                                {
+                                    IEnumerable<OpenApi.Folder> folders = (IEnumerable<OpenApi.Folder>)IshSession.OpenApi30Service.GetFolderObjectList(
+                                        folderId.ToString(),
+                                        OpenApi.FolderObjectType.Folders,
+                                        IshSession.UserLanguage,
+                                        string.Empty,
+                                        OpenApi.SelectedProperties.Descriptive,
+                                        OpenApi.FieldGroup.Basic,
+                                        _requestedMetadata.Fields().Select(f => f.Name),
+                                        false,
+                                        false
+                                    );
+
+                                    foreach (OpenApi.Folder folder in folders)
+                                    {
+                                        IshFolder ishFolder = new IshFolder(long.Parse(folder.Id), folder.FolderType.ToIshFolderType(), folder.Fields.ToIshFields());
+                                        returnIshFolders.Add(ishFolder);
+                                    }
+                                }
+                                break;
+
                             case Enumerations.Protocol.AsmxAuthenticationContext:
                                 var response = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
                                 {
@@ -272,7 +294,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         switch (IshSession.Protocol)
                         {
                             case Enumerations.Protocol.OpenApiBasicAuthentication:
-                            // TODO [Must] Add OpenApi implementation
+                                OpenApi.GetFolderList folderList = new OpenApi.GetFolderList() 
+                                { 
+                                    Ids = folderCardIdBatch.Select(f => f.ToString()).ToList(),
+                                    Fields = _requestedMetadata.ToOpenApiRequestedFields()
+                                };
+
+                                IEnumerable<OpenApi.Folder> openApiFolders = IshSession.OpenApi30Service.GetFolderList(folderList);
+                                IList<IshFolder> folders = new List<IshFolder>(openApiFolders.Count());
+                                foreach (OpenApi.Folder openApifolder in openApiFolders)
+                                {
+                                    IshFolder ishFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshFields());
+                                    folders.Add(ishFolder);
+                                }
+                                retrievedFolders = new IshFolders(folders.ToArray());
+                                break;
+
                             case Enumerations.Protocol.AsmxAuthenticationContext:
                                 var response = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
                                 {
@@ -333,15 +370,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     switch (IshSession.Protocol)
                     {
                         case Enumerations.Protocol.OpenApiBasicAuthentication:
-                            /*
-                            // convert IshSession.DefaultRequestedMetadata to FieldGroup, and retrieve from IshSession property
-                            retrievedFolders = new IshFolders(IshSession.OpenApi30Service.GetRootFolderListAsync(
-                                OpenApi.SelectedProperties.Id, 
-                                OpenApi.FieldGroup.All,
-                                _requestedMetadata.ToJson30Model(TypeFieldDefinition), false).GetAwaiter().GetResult());
-                            // returns all base/root folders, then select the right one
+                            IEnumerable<OpenApi.Folder> folders = IshSession.OpenApi30Service.GetRootFolderList(
+                                OpenApi.SelectedProperties.ListOfValues, 
+                                OpenApi.FieldGroup.None, 
+                                _requestedMetadata.Fields().Select(f => f.Name), 
+                                false);
+
+                            IList<IshFolder> basefolders = new List<IshFolder>();
+                            foreach (OpenApi.Folder openApifolder in folders.Where(f => f.BaseFolder == BaseFolder.ToIshBaseFolder()))
+                            {
+                                IshFolder ishFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshFields());
+                                basefolders.Add(ishFolder);
+                            }
+                            retrievedFolders = new IshFolders(basefolders.ToArray());
+
                             break;
-                            */
+
                         case Enumerations.Protocol.AsmxAuthenticationContext:
                             var response = IshSession.Folder25.GetMetaData(new Folder25ServiceReference.GetMetaDataRequest()
                             {
@@ -445,7 +489,27 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 switch (IshSession.Protocol)
                 {
                     case Enumerations.Protocol.OpenApiBasicAuthentication:
-                    // TODO [Must] Add OpenApi implementation
+                        IEnumerable<OpenApi.BaseObject> baseObjects = IshSession.OpenApi30Service.GetFolderObjectList(
+                            ishFolder.IshFolderRef.ToString(),
+                            OpenApi.FolderObjectType.Folders,
+                            string.Empty,
+                            string.Empty,
+                            OpenApi.SelectedProperties.ListOfValues,
+                            OpenApi.FieldGroup.None,
+                            new string [] { "FNAME" },
+                            false,
+                            false);
+
+                        IList<IshFolder> subfolders = new List<IshFolder>();
+                        foreach (OpenApi.Folder openApifolder in baseObjects)
+                        {
+                            IshFolder ishSubFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshFields());
+                            subfolders.Add(ishSubFolder);
+                        }
+                        retrievedFolders = new IshFolders(subfolders.ToArray());
+
+                        break;
+
                     case Enumerations.Protocol.AsmxAuthenticationContext:
                         var responseSubFolders = IshSession.Folder25.GetSubFoldersByIshFolderRef(new Folder25ServiceReference.GetSubFoldersByIshFolderRefRequest()
                         {
@@ -465,7 +529,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     switch (IshSession.Protocol)
                     {
                         case Enumerations.Protocol.OpenApiBasicAuthentication:
-                        // TODO [Must] Add OpenApi implementation
+                            OpenApi.GetFolderList folderList = new OpenApi.GetFolderList()
+                            {
+                                Ids = retrievedFolders.Ids.Select(f => f.ToString()).ToList(),
+                                Fields = _requestedMetadata.ToOpenApiRequestedFields()
+                            };
+
+                            IEnumerable<OpenApi.Folder> openApiFolders = IshSession.OpenApi30Service.GetFolderList(folderList);
+                            IList<IshFolder> folders = new List<IshFolder>(openApiFolders.Count());
+                            foreach (OpenApi.Folder openApifolder in openApiFolders)
+                            {
+                                IshFolder ishretrievedFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshFields());
+                                folders.Add(ishretrievedFolder);
+                            }
+                            retrievedFolders = new IshFolders(folders.ToArray());
+                            break;
+
                         case Enumerations.Protocol.AsmxAuthenticationContext:
                             var responseRetrieve = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
                             {
