@@ -36,10 +36,8 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                     IshField = new OpenApi.IshField
                     {
                         Level = ishField.Level.ToOpenApiLevel(),
-                        Name = ishField.Name,
-                        Type = nameof(OpenApi.IshField)
-                    },
-                    Type = nameof(RequestedField)
+                        Name = ishField.Name
+                    }
                 };
                 requestedFields.Add(requestedField);
             }
@@ -97,7 +95,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
 
             if (ishTypeFieldDefinition != null)
             {
-                OpenApi.IshField openApiIshField = new OpenApi.IshField() {  Level = ishField.Level.ToOpenApiLevel(), Name = ishField.Name, Type = nameof(OpenApi.IshField) };
+                OpenApi.IshField openApiIshField = new OpenApi.IshField() {  Level = ishField.Level.ToOpenApiLevel(), Name = ishField.Name };
                 
                 string fieldValue = ishFields.GetFieldValue(ishField.Name, ishField.Level, ishField.ValueType);
                 // TODO ishSession default separator is comma space 
@@ -122,12 +120,12 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                         setFieldValue = ishTypeFieldDefinition.IsMultiValue ? (SetFieldValue)new SetMultiLovFieldValue()
                         {
                             IshField = openApiIshField,
-                            Value = multiFieldValues.Select(v => new SetLovValue() { Id = v, Type = nameof(SetLovValue) }).ToList()
+                            Value = multiFieldValues.Select(v => new SetLovValue() { Id = v }).ToList()
                         }
                         : new SetLovFieldValue()
                         {
                             IshField = openApiIshField,
-                            Value = new SetLovValue() { Id = fieldValue, Type = nameof(SetLovValue) }
+                            Value = new SetLovValue() { Id = fieldValue }
                         };
                         break;
 

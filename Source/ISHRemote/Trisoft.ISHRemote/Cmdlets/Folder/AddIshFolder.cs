@@ -167,7 +167,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         //FNAME
                                         var fieldFolderName = new OpenApi.SetStringFieldValue()
                                         {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FNAME", Type = nameof(OpenApi.IshField) },
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FNAME" },
                                             Value = folderName
                                         };
                                         fieldValues.Add(fieldFolderName);
@@ -175,7 +175,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         //FDOCUMENTTYPE (aka Folder Type)
                                         var fieldFolderType = new OpenApi.SetLovFieldValue()
                                         {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApi.IshField) },
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE" },
                                             Value = new OpenApi.SetLovValue() { Id = "VDOCTYPEILLUSTRATION" }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
                                         };
                                         fieldValues.Add(fieldFolderType);
@@ -183,7 +183,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         //READ-ACCESS
                                         var fieldReadAccess = new OpenApi.SetMultiCardFieldValue()
                                         {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApi.IshField) },
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS" },
                                             Value = new List<OpenApi.SetBaseObject>()
                                         };
                                         // Convert multi-value fields of ISHRemote models via IshSession.Separator
@@ -196,7 +196,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         //FUSERGROUP (aka Owned by)
                                         var fieldWriteAccess = new OpenApi.SetMultiCardFieldValue()
                                         {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApi.IshField) },
+                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP" },
                                             Value = new List<OpenApi.SetBaseObject>()
                                         };
                                         // Convert multi-value fields of ISHRemote models via IshSession.Separator
@@ -260,7 +260,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     //FNAME
                                     var fieldFolderName = new OpenApi.SetStringFieldValue()
                                     {
-                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FNAME", Type = nameof(OpenApi.IshField) },
+                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FNAME" },
                                         Value = FolderName
                                     };
                                     fieldValues.Add(fieldFolderName);
@@ -268,21 +268,23 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     //FDOCUMENTTYPE (aka Folder Type)
                                     var fieldFolderType = new OpenApi.SetLovFieldValue()
                                     {
-                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApi.IshField) },
-                                        Value = new OpenApi.SetLovValue() { Id = Enumerations.ToDDOCTYPEValue(FolderType), Type = nameof(OpenApi.SetLovValue) }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE" },
+                                        // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                        Value = new OpenApi.SetLovValue() { Id = Enumerations.ToDDOCTYPEValue(FolderType) }
                                     };
                                     fieldValues.Add(fieldFolderType);
 
                                     //READ-ACCESS
                                     var fieldReadAccess = new OpenApi.SetMultiLovFieldValue()
                                     {
-                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApi.IshField) },
+                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS" },
                                         Value = new List<OpenApi.SetLovValue>()
                                     };
+                                    
                                     // Convert multi-value fields of ISHRemote models via IshSession.Separator
                                     foreach (string readaccessItem in readAccess)
                                     {
-                                        fieldReadAccess.Value.Add(new OpenApi.SetLovValue() { Id = readaccessItem, Type = nameof(OpenApi.SetLovValue) });
+                                        fieldReadAccess.Value.Add(new OpenApi.SetLovValue() { Id = readaccessItem });
                                     }
                                     fieldValues.Add(fieldReadAccess);
 
@@ -290,7 +292,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     var ownedByValue = String.IsNullOrEmpty(ownedBy) ? null : new OpenApi.SetUserGroup() { Id = ownedBy };
                                     var fieldWriteAccess = new OpenApi.SetCardFieldValue()
                                     {
-                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApi.IshField) },
+                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP" },
                                         Value = ownedByValue
                                     };
                                     fieldValues.Add(fieldWriteAccess);

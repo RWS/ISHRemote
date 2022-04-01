@@ -246,10 +246,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 {
                                     IEnumerable<OpenApi.Folder> folders = (IEnumerable<OpenApi.Folder>)IshSession.OpenApi30Service.GetFolderObjectList(
                                         folderId.ToString(),
-                                        OpenApi.FolderObjectType.Folders,
+                                        OpenApi.FolderObjectTypeFilter.Folders,
                                         IshSession.UserLanguage,
                                         string.Empty,
-                                        OpenApi.SelectedProperties.Descriptive,
+                                        OpenApi.SelectedProperties.TitleAndDescription,
                                         OpenApi.FieldGroup.Basic,
                                         _requestedMetadata.Fields().Select(f => f.Name),
                                         false,
@@ -371,7 +371,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     {
                         case Enumerations.Protocol.OpenApiBasicAuthentication:
                             IEnumerable<OpenApi.Folder> folders = IshSession.OpenApi30Service.GetRootFolderList(
-                                OpenApi.SelectedProperties.ListOfValues, 
+                                OpenApi.SelectedProperties.TitleAndDescription, 
                                 OpenApi.FieldGroup.None, 
                                 _requestedMetadata.Fields().Select(f => f.Name), 
                                 false);
@@ -491,10 +491,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     case Enumerations.Protocol.OpenApiBasicAuthentication:
                         IEnumerable<OpenApi.BaseObject> baseObjects = IshSession.OpenApi30Service.GetFolderObjectList(
                             ishFolder.IshFolderRef.ToString(),
-                            OpenApi.FolderObjectType.Folders,
+                            OpenApi.FolderObjectTypeFilter.Folders,
                             string.Empty,
                             string.Empty,
-                            OpenApi.SelectedProperties.ListOfValues,
+                            OpenApi.SelectedProperties.TitleAndDescription,
                             OpenApi.FieldGroup.None,
                             new string [] { "FNAME" },
                             false,
