@@ -258,7 +258,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 
                                     foreach (OpenApi.Folder folder in folders)
                                     {
-                                        IshFolder ishFolder = new IshFolder(long.Parse(folder.Id), folder.FolderType.ToIshFolderType(), folder.Fields.ToIshFields());
+                                        IshFolder ishFolder = new IshFolder(long.Parse(folder.Id), folder.FolderType.ToIshFolderType(), folder.Fields.ToIshMetadataFields());
                                         returnIshFolders.Add(ishFolder);
                                     }
                                 }
@@ -304,7 +304,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 IList<IshFolder> folders = new List<IshFolder>(openApiFolders.Count());
                                 foreach (OpenApi.Folder openApifolder in openApiFolders)
                                 {
-                                    IshFolder ishFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshFields());
+                                    IshFolder ishFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshMetadataFields());
                                     folders.Add(ishFolder);
                                 }
                                 retrievedFolders = new IshFolders(folders.ToArray());
@@ -379,7 +379,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             IList<IshFolder> basefolders = new List<IshFolder>();
                             foreach (OpenApi.Folder openApifolder in folders.Where(f => f.BaseFolder == BaseFolder.ToIshBaseFolder()))
                             {
-                                IshFolder ishFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshFields());
+                                IshFolder ishFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshMetadataFields());
                                 basefolders.Add(ishFolder);
                             }
                             retrievedFolders = new IshFolders(basefolders.ToArray());
@@ -503,7 +503,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         IList<IshFolder> subfolders = new List<IshFolder>();
                         foreach (OpenApi.Folder openApifolder in baseObjects)
                         {
-                            IshFolder ishSubFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshFields());
+                            IshFolder ishSubFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshMetadataFields());
                             subfolders.Add(ishSubFolder);
                         }
                         retrievedFolders = new IshFolders(subfolders.ToArray());
@@ -539,7 +539,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             IList<IshFolder> folders = new List<IshFolder>(openApiFolders.Count());
                             foreach (OpenApi.Folder openApifolder in openApiFolders)
                             {
-                                IshFolder ishretrievedFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshFields());
+                                IshFolder ishretrievedFolder = new IshFolder(long.Parse(openApifolder.Id), openApifolder.FolderType.ToIshFolderType(), openApifolder.Fields.ToIshMetadataFields());
                                 folders.Add(ishretrievedFolder);
                             }
                             retrievedFolders = new IshFolders(folders.ToArray());

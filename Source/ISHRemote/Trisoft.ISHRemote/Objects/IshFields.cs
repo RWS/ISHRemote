@@ -22,6 +22,7 @@ using System.Xml;
 using System.IO;
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Objects.Public;
+using Trisoft.ISHRemote.ExtensionMethods;
 
 namespace Trisoft.ISHRemote.Objects
 {
@@ -71,6 +72,17 @@ namespace Trisoft.ISHRemote.Objects
                     AddField(new IshMetadataField(xmlIshField));
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates a new instance based on the incoming OpenApi models. Any multi-value field are joined up by the separator (typically comma-space)
+        /// </summary>
+        /// <param name="oFieldValues">Incoming OpenApi Field Values</param>
+        /// <param name="separator">Any multi-value field are joined up by the separator (typically comma-space), mostly coming from IshSession.</param>
+        public IshFields(ICollection<OpenApi.FieldValue> oFieldValues, string separator)
+        {
+            _fields = new List<IshField>(); 
+            _fields = oFieldValues.ToIshMetadataFields().Fields().ToList();
         }
 
         /// <summary>

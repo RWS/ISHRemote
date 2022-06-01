@@ -88,6 +88,7 @@
       <RootModule>$(ModuleName).psm1</RootModule>
       <FormatsToProcessPath>$(ModuleName).Format.ps1xml</FormatsToProcessPath>
     </PropertyGroup>
+	<MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
     <Exec Command="$(PowerShellExe) -NonInteractive -command &quot;New-ModuleManifest -Path '$(ManifestPath)' -FormatsToProcess '$(FormatsToProcessPath)' -RootModule '$(RootModule)' -ModuleVersion '$(ModuleVersion)' -Prerelease '$(Prerelease)' -Guid '$(ModuleGuid)' -Author '$(Authors)' -CompanyName '$(CompanyName)' -Copyright '$(Copyright)' -Description '$(ModuleDescription)' -PowerShellVersion '$(MinPowerShellVersion)' -ClrVersion '$(MinCLRVersion)' -DotNetFrameworkVersion '$(MinDotNetVersion)' -LicenseUri '$(LicenseUri)' -ProjectUri '$(ProjectUri)'&quot;" />
   </Target>
 

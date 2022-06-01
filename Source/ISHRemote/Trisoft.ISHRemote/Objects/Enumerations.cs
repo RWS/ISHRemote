@@ -788,5 +788,55 @@ namespace Trisoft.ISHRemote.Objects
                     return "VDOCTYPENONE";
             }
         }
+
+        /// <summary>
+        /// OpenApi (dd 20211228) implements FieldGroup as derived from ISHRemote RequestedMetadataGroup, should be 1-1 conversion to server-side decide which fields to retrieve
+        /// </summary>
+        internal static OpenApi.FieldGroup ToOpenApiFieldGroup(RequestedMetadataGroup requestedMetadataGroup)
+        {
+            switch (requestedMetadataGroup)
+            {
+                case RequestedMetadataGroup.All:
+                    return OpenApi.FieldGroup.All;
+                case RequestedMetadataGroup.Basic:
+                    return OpenApi.FieldGroup.Basic;
+                case RequestedMetadataGroup.Descriptive:
+                default:
+                    return OpenApi.FieldGroup.Descriptive;
+            }
+
+        }
+
+        /// <summary>
+        /// OpenApi (dd 20211228) implements Field Level, needs mapping to ISHRemote levels
+        /// </summary>
+        internal static Level ToFieldLevel(OpenApi.Level oLevel)
+        {
+            switch (oLevel)
+            {
+                case OpenApi.Level.None:
+                    return Level.None;
+                case OpenApi.Level.Logical:
+                    return Level.Logical;
+                case OpenApi.Level.Version:
+                    return Level.Version;
+                case OpenApi.Level.Language:
+                    return Level.Lng;
+                case OpenApi.Level.Data:
+                    return Level.Data;
+                case OpenApi.Level.Annotation:
+                    return Level.Annotation;
+                case OpenApi.Level.Reply:
+                    return Level.Reply;
+                case OpenApi.Level.Progress:
+                    return Level.Progress;
+                case OpenApi.Level.Detail:
+                    return Level.Detail;
+                case OpenApi.Level.Object:
+                case OpenApi.Level.Compute:
+                default:
+                    throw new ArgumentException($"Enumerations.ToFieldLevel OpenApi.Level[{oLevel}] was unexpected.");
+            }
+        }
     }
 }

@@ -333,7 +333,36 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     switch (IshSession.Protocol)
                     {
                         case Enumerations.Protocol.OpenApiBasicAuthentication:
-                        // TODO [Must] Add OpenApi implementation
+                            ICollection<OpenApi.RequestedField> fieldValues = new List<OpenApi.RequestedField>();
+                            fieldValues.Add(new OpenApi.RequestedField()
+                            {
+                                IshField = new OpenApi.IshField()
+                                {
+                                    Name = "FITTLE",
+                                    Level = OpenApi.Level.Logical
+                                }
+                            });
+                            /*
+                            ICollection<OpenApi.FilterFieldValue> filterFieldValues = new List<OpenApi.FilterFieldValue>();
+                            fieldValues.Add(new OpenApi.CardFilterFieldValue()  // Looks a lot like SetFieldVAlue, so strongly typed
+                            {
+                                IshField = new OpenApi.IshField()
+                                {
+                                    Name = "FITTLE",
+                                    Level = OpenApi.Level.Logical,
+                                    Type = nameof(OpenApi.IshField)
+                                },
+                                Type = nameof(OpenApi.RequestedField)
+                            });
+                            */
+                            var responseGet = IshSession.OpenApi30Service.GetFolderListAsync(new OpenApi.GetFolderList()
+                            {
+                                Ids = foldersToRetrieve.ConvertAll<string>(x => x.ToString()),
+                                FieldGroup = Enumerations.ToOpenApiFieldGroup(IshSession.DefaultRequestedMetadata),
+                                
+                            }).GetAwaiter().GetResult();
+                            returnedFolders.AddRange(new IshFolders(responseGet, IshSession.Separator).Folders);
+                            break;
                         case Enumerations.Protocol.AsmxAuthenticationContext:
                             var response = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(new Folder25ServiceReference.RetrieveMetadataByIshFolderRefsRequest()
                             {

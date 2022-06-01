@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using Trisoft.ISHRemote.HelperClasses;
 using System.Xml;
+using Trisoft.ISHRemote.ExtensionMethods;
 
 namespace Trisoft.ISHRemote.Objects.Public
 {
@@ -71,6 +72,18 @@ namespace Trisoft.ISHRemote.Objects.Public
             long.TryParse(xmlIshFolder.Attributes["ishfolderref"].Value, out _ishFolderRef);
             _ishFolderType = (Enumerations.IshFolderType)Enum.Parse(typeof(Enumerations.IshFolderType), xmlIshFolder.Attributes["ishfoldertype"].Value);
             _ishFields = new IshFields((XmlElement)xmlIshFolder.SelectSingleNode("ishfields"));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="IshFolder"/> class.
+        /// </summary>
+        /// <param name="oFolder">OpenApi model</param>
+        /// <param name="separator">Any multi-value field are joined up by the separator (typically comma-space), mostly coming from IshSession.</param>
+        public IshFolder(OpenApi.Folder oFolder, string separator)
+        {
+            _ishFolderRef = Convert.ToInt64(oFolder.Id);
+            _ishFolderType = (Enumerations.IshFolderType)Enum.Parse(typeof(Enumerations.IshFolderType), oFolder.FolderType.ToString());
+            _ishFields = oFolder.Fields.ToIshMetadataFields();
         }
 
         /// <summary>

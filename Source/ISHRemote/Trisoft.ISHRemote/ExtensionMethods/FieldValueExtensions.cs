@@ -9,7 +9,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
 {
     internal static class FieldValueExtensions
     {
-        internal static IshFields ToIshFields(this IEnumerable<OpenApi.FieldValue> fieldValues)
+        internal static IshFields ToIshMetadataFields(this IEnumerable<OpenApi.FieldValue> fieldValues)
         {
             IshFields ishFields = new IshFields();
 
@@ -18,6 +18,8 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                 IshField ishField = FieldValueToIshMetadataField(fieldValue);
                 ishFields.AddField(ishField);
             }
+
+            // TODO [Must!] OpenApi FieldValues should retain Element values (especially for IMetadataBinding) ... consider GetFieldElementAsString addition
 
             return ishFields;
         }
@@ -28,11 +30,6 @@ namespace Trisoft.ISHRemote.ExtensionMethods
             {
                 case OpenApi.Level.Annotation:
                     return Enumerations.Level.Annotation;
-
-                case OpenApi.Level.Compute:
-                    // TODO missing compute
-                    return Enumerations.Level.None;
-
                 case OpenApi.Level.Data:
                     return Enumerations.Level.Data;
 
@@ -48,10 +45,6 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                 case OpenApi.Level.None:
                     return Enumerations.Level.None;
 
-                case OpenApi.Level.Object:
-                    // TODO missing object
-                    return Enumerations.Level.None;
-
                 case OpenApi.Level.Progress:
                     return Enumerations.Level.Progress;
 
@@ -60,11 +53,19 @@ namespace Trisoft.ISHRemote.ExtensionMethods
 
                 case OpenApi.Level.Version:
                     return Enumerations.Level.Version;
+                
+                case OpenApi.Level.Object:
+                case OpenApi.Level.Compute:
+                    throw new NotImplementedException($"FieldValueExtensions.ToEnumerationsLevel unexpectedly received level[{level}]");
             }
 
             return Enumerations.Level.None;
         }
 
+        /// <summary>
+        /// Returns the Value (not Id/Element) as IshMetadataField
+        /// </summary>
+        /// <remarks>Note that separator comma-space is hardcoded. And that only the Value, not Element and not Id is retained which could lead to IMetadataBinding issues.</remarks>
         private static IshMetadataField FieldValueToIshMetadataField(OpenApi.FieldValue fieldValue)
         {
             IshMetadataField ishMetadataField = new IshMetadataField(
@@ -75,6 +76,12 @@ namespace Trisoft.ISHRemote.ExtensionMethods
             return ishMetadataField;
         }
 
+        /// <summary>
+        /// Converts a type-aware OpenApi.FieldValue into a string-based value for IshMetadataField usage
+        /// </summary>
+        /// <remarks>Note that separator comma-space is hardcoded. And that only the Value, not Element and not Id is retained which could lead to IMetadataBinding issues.</remarks>
+        /// <param name="fieldValue">Type-aware OpenApi.FieldValue</param>
+        /// <returns>Field value as string, for multi-value entries concatenated using comma-space as separator.</returns>
         private static string GetFieldValueAsString(OpenApi.FieldValue fieldValue)
         {
             string result = string.Empty;

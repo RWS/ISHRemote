@@ -104,6 +104,7 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
         at Trisoft.ISHRemote.OpenApi.OpenApi30Service.ReadObjectResponseAsync[T](HttpResponseMessage response, IReadOnlyDictionary`2 headers) in C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote.OpenApi\obj\OpenApi30Client.cs:line 2838```
     Discussed, and the plain/text version for the version-less /Application/Version endpoint is intentional. Solved the problem by 'Manage NuGet Packages' and upgrading `NSwag.ApiDescription.Client` from 13.0.5 to 13.13.2. Remember to force a client build by tampering with your OpenApi30Client.json file.
 3. PowerShell is synchronous by nature, the pipeline is and as indicated on the [Github Powershell - Async cmdlets](https://github.com/PowerShell/PowerShell/issues/7690) request for 5+ years without native async. Using `await` will kill the pipeline, and crash your PowerShell process! This means that any async code should be made sync by waiting for it. I reviewed [Stackoverflow - How to call asynchronous method from synchronous method in C#](https://stackoverflow.com/questions/9343594/how-to-call-asynchronous-method-from-synchronous-method-in-c#:~:text=A%20synchronous%20method%20calls%20an%20async%20method,%20obtaining,on%20the%20Task.%20The%20asyncmethod%20uses%20awaitwithout%20ConfigureAwait) and [Task Extensions](https://github.com/StephenCleary/AsyncEx/blob/edb2c6b66d41471008a56e4098f9670b5143617e/src/Nito.AsyncEx.Tasks/SynchronousTaskExtensions.cs#L17-L22). Eventually using `task.GetAwaiter().GetResult();` which avoids the `AggregatedException`.
+   `.csproj` file was extended so that `OpenApiReference` received option `/GenerateSyncMethods:true`
 4. `New-IshSession -WsBaseUrl .../ISHWS/ -IshUserName ... -IshPassword -Protocol [AsmxAuthenticationContext (default) | OpenApiBasicAuthentication | OpenApiOpenConnectId]` so Protocol as a parameter to use in Switch-cases in every cmdlet on how to route the code. Using clientconfiguration a version check can be done to force the protocol switch to AsmxAuthenticationContext.
     ```csharp
     switch (IshSession.Protocol)
@@ -122,17 +123,20 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
     Later `Remove-IshFolder -FolderPath '\General\__ISHRemotev7'`
 
 ## Next
-1. v0->v7 Cherrypick #138 Fix Remove-IshDocumentObj cmdlet due to the improved Delete beh... Remember starting 15/Alf the `-Force` flag is always on server-side, add that in a verbose message
-2. v7->v0 Cherrypick the timezone improved `ISHRemote.PesterSetup.ps1` and `GetIshTimeZone.Tests.ps1`. Increased grace period of 1 minute to 10 minutes, seemingly because of slow CI/CD servers, for `GetIshBackgroundTask.Tests.ps1` and `GetIshEvent.Tests.ps1`.
-3. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
+1. Complete OpenApi implementation of `*-IshFolder` cmdlets, respecting value/id/element attributes
+2. Review all async usage to regular sync as the `OpenApiReference` client generator is now async thanks to option `/GenerateSyncMethods:true`
+3. v0->v7 Cherrypick #138 Fix Remove-IshDocumentObj cmdlet due to the improved Delete beh... Remember starting 15/Alf the `-Force` flag is always on server-side, add that in a verbose message
+4. v7->v0 Cherrypick the timezone improved `ISHRemote.PesterSetup.ps1` and `GetIshTimeZone.Tests.ps1`. Increased grace period of 1 minute to 10 minutes, seemingly because of slow CI/CD servers, for `GetIshBackgroundTask.Tests.ps1` and `GetIshEvent.Tests.ps1`.
+5. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
    1. Folder25.Create -> API30.Create (ready)
    2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (ready)
    3. Folder25.Delete -> API30.DeleteFolder (ready)
    4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
-4. Adapt build to scan for https://www.trojansource.codes
-5. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
+6. XmlCatalogResolver class was tweaked to mitigate Veracode scan results; needs to be done on v0 and V7
+7. Adapt build to scan for https://www.trojansource.codes
+8. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
    1. When the root `__ISHRemote` folder is missing after a database restore. Or simply invalid username/password combinations.
    2. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
    3. You should have initial state Draft by element name
@@ -140,11 +144,11 @@ In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, th
    5. You should have system management user role to allow renaming System folder test
    6. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
    7. Should Solr be running to do Search-IshDocumentObj
-6. Port and rewire more cmdlets to AsmxAuthenticationContext to achieve Milestone of the plan.
-7. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
-8.  Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
-9.  ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
-10. ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version
+9. Port and rewire more cmdlets to AsmxAuthenticationContext to achieve Milestone of the plan.
+10. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
+11. Upon WCF Proxy retrieval from IshSession object, there used to be a `VerifyTokenValidity` that would check the authentication, and potentially re-authenticate all proxies. For `AuthenticationContext` we only now it is valid for 7 days, so ISHRemote could track that or the script using ISHRemote should handle that for now. Actually if you pass `AuthenticationContext` by ref on every call it gets refreshed anyway, so only a problem if IshSession is not used for 7+ days.
+12. ISHRemote 0.x branch replace bad quote `“` with proper quote `"` in `*.Tests.ps1`, for example NewIshSession.Tests.ps1 and SetIshMetadataFilterField.Tests.ps1
+13. ISHRemote 0.x branch, commit of 20210917 could be applied to Windows Powershell only version
 
 
 # Debugging

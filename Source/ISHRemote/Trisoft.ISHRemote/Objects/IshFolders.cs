@@ -73,6 +73,20 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="IshFolders"/> class.
+        /// </summary>
+        /// <param name="oFolders">OpenApi model</param>
+        /// <param name="separator">Any multi-value field are joined up by the separator (typically comma-space), mostly coming from IshSession.</param>
+        public IshFolders(ICollection<OpenApi.Folder> oFolders, string separator)
+        {
+            _folders = new List<IshFolder>();
+            foreach (var ofolder in oFolders)
+            {
+                _folders.Add(new IshFolder(ofolder, separator));
+            }
+        }
+
+        /// <summary>
         /// Gets the current IshFolders.
         /// </summary>
         public IshFolder[] Folders
