@@ -19,7 +19,7 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context “New-IshSession UserNamePassword" {
+	Context "New-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
 			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" } | Should -Throw "Invalid URI: The hostname could not be parsed."
 		}
@@ -34,13 +34,13 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context “New-IshSession ActiveDirectory" {
+	Context "New-IshSession ActiveDirectory" {
 		It "Parameter WsBaseUrl invalid" {
 			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" } | Should -Throw "Invalid URI: The hostname could not be parsed."
 		}
 	}
 
-	Context “New-IshSession PSCredential" {
+	Context "New-IshSession PSCredential" {
 		It "Parameter WsBaseUrl invalid" {
 			{ 
 				$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
@@ -205,7 +205,24 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
-		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -Skip {
+		It "Parameter IgnoreSslPolicyErrors specified negative flow like host IPv4 address" {
+			# replace hostname like machinename.somedomain.com to ipaddress only as often certificates are valid for machinename/localhost as well
+			$slash1Position = $webServicesBaseUrl.IndexOf("/")
+			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
+			$slash3Position = $webServicesBaseUrl.IndexOf("/",$slash2Position+1)
+			$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position-1)
+			$ipv4Addresses = [System.Net.Dns]::GetHostAddresses($hostname) | 
+			                 Where-Object -Property IsIPv6LinkLocal -ne $true | 
+							 Select-Object -Property IPAddressToString  # returning @(192.168.1.160,10.100.139.126)
+			foreach ($ipv4Address in $ipv4Addresses)
+			{
+				$webServicesBaseUrlWithIpAddress = $webServicesBaseUrl.Replace($hostname,$ipv4Address.IPAddressToString)
+				$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+				$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
+				$ishSession.ServerVersion.Split(".").Length | Should -Be 4
+			}
+		}
+		It "Parameter IgnoreSslPolicyErrors specified negative flow like hostname (segment-one-url)" -Skip {
 			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
 			$slash1Position = $webServicesBaseUrl.IndexOf("/")
 			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
@@ -235,11 +252,6 @@ Describe "New-IshSession" -Tags "Read" {
 	Context "New-IshSession ExplicitIssuer" {
 		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using full hostname" {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
-		}
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" -Skip:($isISHRemoteWcf) {
-			$ishSession = New-IshSession -WsBaseUrl $localWebServicesBaseUrl -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore
 			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}

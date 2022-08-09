@@ -1,0 +1,64 @@
+<Project>
+
+  <PropertyGroup>
+    <ProductName>ISHRemote</ProductName>
+    <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
+    <RepositoryUrl>https://github.com/RWS/$(ProductName)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' == ''">preview-1.0</VersionSuffix>
+    <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' != ''">preview-1.$(GITHUB_RUN_NUMBER)</VersionSuffix>
+
+    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+    <FileVersion Condition=" '$(GITHUB_RUN_NUMBER)' == ''">$(VersionPrefix).0</FileVersion>
+  	<FileVersion Condition=" '$(GITHUB_RUN_NUMBER)' != ''">$(VersionPrefix).$(GITHUB_RUN_NUMBER)</FileVersion>
+    <InformationalVersion>$(VersionPrefix)</InformationalVersion>
+
+    <PackageVersionPrefix>$(VersionPrefix)</PackageVersionPrefix>
+    <PackageVersionSuffix>$(VersionSuffix)</PackageVersionSuffix>
+
+    <Authors>RWS Group for and on behalf of its affiliates and subsidiaries</Authors>
+    <Owners>RWS Group for and on behalf of its affiliates and subsidiaries</Owners>
+    <CompanyName>RWS Group for and on behalf of its affiliates and subsidiaries</CompanyName>
+    <Copyright>Copyright © $([System.DateTime]::Now.ToString('yyyy')) All Rights Reserved by the RWS Group for and on behalf of its affiliates and subsidiaries.</Copyright>
+  </PropertyGroup>
+
+  <!-- PowerShell Module properties -->
+  <PropertyGroup>
+    <Major>1</Major>
+    <Minor>0</Minor>
+    <Revision>0</Revision>
+    <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
+	  <ModuleVersion>$(Major).$(Minor).$(Revision)</ModuleVersion>
+    <ModuleBuildVersion>$(Major).$(Minor).$(Build).$(Revision)</ModuleBuildVersion>
+    <Prerelease Condition=" '$(GITHUB_RUN_NUMBER)' == ''">preview001</Prerelease>
+    <Prerelease Condition=" '$(GITHUB_RUN_NUMBER)' != ''">preview$([System.String]::Format('{0:D3}', $([System.UInt16]::Parse($(GITHUB_RUN_NUMBER)))))</Prerelease>
+    <ModuleName>$(ProductName)</ModuleName>
+    <ModuleTitle>Tridion Docs Content Manager $(ProductName)</ModuleTitle>
+    <ModuleDescription>Business automation module on top of Tridion Docs Content Manager (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare)</ModuleDescription>
+    <ModuleCompany>RWS Group for and on behalf of its affiliates and subsidiaries</ModuleCompany>
+    <ModuleProduct>Tridion Docs Content Manager $(ProductName)</ModuleProduct>
+    <ModuleGuid>0314ffdb-6083-4c4d-aa01-8bfaac51a7e4</ModuleGuid>
+    <MinPowerShellVersion>5.1</MinPowerShellVersion>
+    <MinCLRVersion>4.0</MinCLRVersion>
+    <MinDotNetVersion>4.8.0</MinDotNetVersion>
+    <DocPortalLink>https://rws.github.io/$(ProductName)/</DocPortalLink>
+    <LicenseUri>https://github.com/rws/$(ProductName)/blob/master/LICENSE.TXT</LicenseUri>
+    <ProjectUri>https://github.com/rws/$(ProductName)/</ProjectUri>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Default</AnalysisMode>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+  
+</Project>

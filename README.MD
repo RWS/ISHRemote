@@ -4,6 +4,8 @@
 * allow business logic automation ranging from triggering publishing into the continuous integration pipeline over legacy data correction up to provisioning
 * show case code examples and API best practices
 
+![build](https://github.com/rws/ishremote/actions/workflows/continuous-integration.yml/badge.svg?branch=release/v1)
+
 # Videos
 
 Have a look at the [Automating tasks in Tridion Docs using PowerShell](https://youtu.be/3ItM2LDwh20) webinar. Supporting material, so you can easily copy-paste is on 
