@@ -99,9 +99,21 @@ namespace Trisoft.ISHRemote.HelperClasses
                     // or ISO8601 (ToString('s', dt)) yyyy-MM-ddTHH:mm:ss (similar format 'u' add time zone which I consider non-scope for now)
                     // Note that TranslationJob's LEASEDON is returned by the API in Utc.
                     case Enumerations.DataType.DateTime:
-                        //var formatStrings = new string[] { "dd/MM/yyy HH:mm:ss", "yyyy-MM-dd hh:mm:ss", "dd/MM/yyy" };
+                        //var formatStrings = new string[] { "dd/MM/yyyy HH:mm:ss", "yyyy-MM-dd hh:mm:ss", "dd/MM/yyy" };
                         DateTime dateTime;
-                        if (DateTime.TryParse(ishField.Value, out dateTime))
+                        if (DateTime.TryParseExact(ishField.Value, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            propertyValue = dateTime.ToString("s");
+                        }
+                        else if (DateTime.TryParseExact(ishField.Value, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            propertyValue = dateTime.ToString("s");
+                        }
+                        else if (DateTime.TryParseExact(ishField.Value, "yyyy - MM - ddTHH:mm: ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                        {
+                            propertyValue = dateTime.ToString("s");
+                        }
+                        else if (DateTime.TryParse(ishField.Value, out dateTime))
                         {
                             propertyValue = dateTime.ToString("s");
                         }
