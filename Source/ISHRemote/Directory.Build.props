@@ -7,18 +7,22 @@
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
+  <!-- .NET Local and Continuous Integration Package and Assembly properties -->
   <PropertyGroup>
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' == ''">preview-1.0</VersionSuffix>
-    <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' != ''">preview-1.$(GITHUB_RUN_NUMBER)</VersionSuffix>
+    <VersionMajor>1</VersionMajor>
+    <VersionMinor>0</VersionMinor>
+    <VersionPatch>0</VersionPatch>
+    <VersionBuild>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</VersionBuild>
+    <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' == ''">localpreview-$(VersionMajor).0</VersionSuffix>
+    <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' != ''">cipreview-$(VersionMajor).$(GITHUB_RUN_NUMBER)</VersionSuffix>
 
-    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
-    <FileVersion Condition=" '$(GITHUB_RUN_NUMBER)' == ''">$(VersionPrefix).0</FileVersion>
-  	<FileVersion Condition=" '$(GITHUB_RUN_NUMBER)' != ''">$(VersionPrefix).$(GITHUB_RUN_NUMBER)</FileVersion>
-    <InformationalVersion>$(VersionPrefix)</InformationalVersion>
+    <AssemblyVersion>$(VersionMajor).0.0.0</AssemblyVersion>
+    <FileVersion Condition=" '$(GITHUB_RUN_NUMBER)' == ''">$(VersionMajor).$(VersionMinor).$(VersionBuild).0</FileVersion>
+  	<FileVersion Condition=" '$(GITHUB_RUN_NUMBER)' != ''">$(VersionMajor).$(VersionMinor).$(VersionBuild).$(GITHUB_RUN_NUMBER)</FileVersion>
+    <InformationalVersion>$(FileVersion)-$(VersionSuffix)</InformationalVersion>
 
-    <PackageVersionPrefix>$(VersionPrefix)</PackageVersionPrefix>
-    <PackageVersionSuffix>$(VersionSuffix)</PackageVersionSuffix>
+    <PackageVersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</PackageVersionPrefix>
+    <PackageVersionSuffix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</PackageVersionSuffix>
 
     <Authors>RWS Group for and on behalf of its affiliates and subsidiaries</Authors>
     <Owners>RWS Group for and on behalf of its affiliates and subsidiaries</Owners>
@@ -30,10 +34,10 @@
   <PropertyGroup>
     <Major>1</Major>
     <Minor>0</Minor>
-    <Revision>0</Revision>
+    <Patch>0</Patch>
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
-	  <ModuleVersion>$(Major).$(Minor).$(Revision)</ModuleVersion>
-    <ModuleBuildVersion>$(Major).$(Minor).$(Build).$(Revision)</ModuleBuildVersion>
+	  <ModuleVersion>$(Major).$(Minor).$(Patch)</ModuleVersion>
+    <ModuleBuildVersion>$(Major).$(Minor).$(Build).$(Patch)</ModuleBuildVersion>
     <Prerelease Condition=" '$(GITHUB_RUN_NUMBER)' == ''">preview001</Prerelease>
     <Prerelease Condition=" '$(GITHUB_RUN_NUMBER)' != ''">preview$([System.String]::Format('{0:D3}', $([System.UInt16]::Parse($(GITHUB_RUN_NUMBER)))))</Prerelease>
     <ModuleName>$(ProductName)</ModuleName>
