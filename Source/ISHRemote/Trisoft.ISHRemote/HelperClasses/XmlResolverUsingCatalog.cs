@@ -19,22 +19,21 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+using System.IO;
 using System.Net;
+using System.Xml;
 
 namespace Trisoft.ISHRemote.HelperClasses
 {
     /// <summary>
-    /// XmlResolver that uses the XMLOASISCatalog to resolve the location of DTD's
+    /// XmlResolver that uses the XMLOASISCatalog to resolve the location of DTDs.
     /// </summary>
     public class XmlResolverUsingCatalog : XmlUrlResolver
     {
         /// <summary>
-        /// The XmlOASISCatalog is used to resolve Public/System indentifiers to one Uri DTD path
+        /// The XmlOASISCatalog is used to resolve Public/System identifiers to one Uri DTD path
         /// </summary>
-        private XmlOASISCatalog _xmlOASISCatalog;
+        private readonly XmlOASISCatalog _xmlOASISCatalog;
 
         #region Constructors
         /// <summary>
@@ -51,7 +50,6 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// </summary>
         /// <param name="catalogUri">Filename (and path) of the XMLCatalogFile</param>
         public XmlResolverUsingCatalog(string catalogUri)
-            :base()
         {
             _xmlOASISCatalog = null;
             if (catalogUri != string.Empty)
@@ -62,6 +60,17 @@ namespace Trisoft.ISHRemote.HelperClasses
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        /// XmlUrlResolver overwrite triggered by Static Code Analysis
+        /// </summary>
+        /// <remarks>Commented out because it generates error: WARNING: NewIshDitaGeneralizedXml  Generalizing inputFile[C:\Users\ddemeyer\AppData\Local\Temp\New-IshDitaGeneralizedXml\input\bookmap==1=en.xml] to outputFile[C:\Users\ddemeyer\AppData\Local\Temp\New-IshDitaGeneralizedXml\output\bookmap==1=en.xml] failed: The URI 'file:///C:/Users/ddemeyer/AppData/Local/Temp/New-IshDitaGeneralizedXml/input/bookmap==1=en.xml' is not trusted.</remarks>
+        //public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
+        //{
+        //    _xmlOASISCatalog.ValidateUri(absoluteUri);
+        //    return base.GetEntity(absoluteUri, role, ofObjectToReturn);
+        //}
+
         /// <summary>
         /// This method overrides the ResolveUri of the XmlResolver. <seealso cref="System.Xml.XmlResolver.ResolveUri"/>
         /// The method uses the XmlOASISCatalog to resolve the absolute URI from the base and relative URIs.
@@ -112,6 +121,45 @@ namespace Trisoft.ISHRemote.HelperClasses
         {
             return _xmlOASISCatalog.TryResolveSystemId(systemId, out resolvedSystemId);
         }
+
+
+        /// <summary> 
+        /// This method will check the location to see that it exists
+        /// </summary> 
+        /// <param name="location">The path to check</param> 
+        /// <returns>True if the location is valid</returns> 
+        public static bool IsValidLocation(string location)
+        {
+            try
+            {
+                Uri uri = new Uri(location);
+                if (uri.IsFile)
+                {
+                    return File.Exists(uri.LocalPath);
+                }
+                else
+                {
+                    HttpWebRequest request = HttpWebRequest.Create(uri) as HttpWebRequest;
+                    request.Timeout = 5000; //set the timeout to 5 seconds to keep the user from waiting too long for the page to load         
+                    request.Method = "HEAD";  //Get only the header information -- no need to download any content          
+                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    int statusCode = (int)response.StatusCode;
+                    if (statusCode >= 100 && statusCode < 400) //Good requests         
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         #endregion
     }
