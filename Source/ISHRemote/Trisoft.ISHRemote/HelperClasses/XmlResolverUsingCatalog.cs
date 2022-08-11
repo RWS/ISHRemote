@@ -61,10 +61,10 @@ namespace Trisoft.ISHRemote.HelperClasses
 
         #region Public methods
 
-        /// <summary>
-        /// XmlUrlResolver overwrite triggered by Static Code Analysis
-        /// </summary>
-        /// <remarks>Commented out because it generates error: WARNING: NewIshDitaGeneralizedXml  Generalizing inputFile[C:\Users\ddemeyer\AppData\Local\Temp\New-IshDitaGeneralizedXml\input\bookmap==1=en.xml] to outputFile[C:\Users\ddemeyer\AppData\Local\Temp\New-IshDitaGeneralizedXml\output\bookmap==1=en.xml] failed: The URI 'file:///C:/Users/ddemeyer/AppData/Local/Temp/New-IshDitaGeneralizedXml/input/bookmap==1=en.xml' is not trusted.</remarks>
+        // <summary>
+        // XmlUrlResolver overwrite triggered by Static Code Analysis
+        // </summary>
+        // <remarks>Commented out because it generates error: WARNING: NewIshDitaGeneralizedXml  Generalizing inputFile[C:\Users\ddemeyer\AppData\Local\Temp\New-IshDitaGeneralizedXml\input\bookmap==1=en.xml] to outputFile[C:\Users\ddemeyer\AppData\Local\Temp\New-IshDitaGeneralizedXml\output\bookmap==1=en.xml] failed: The URI 'file:///C:/Users/ddemeyer/AppData/Local/Temp/New-IshDitaGeneralizedXml/input/bookmap==1=en.xml' is not trusted.</remarks>
         //public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
         //{
         //    _xmlOASISCatalog.ValidateUri(absoluteUri);
