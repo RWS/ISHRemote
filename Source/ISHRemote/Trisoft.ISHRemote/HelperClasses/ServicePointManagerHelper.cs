@@ -37,8 +37,8 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// </summary>
         public static void RestoreCertificateValidation()
         {
-            _logger.WriteDebug("Enabling Tls, Tls11 and Tls12 security protocols");
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            _logger.WriteDebug("Enabling Tls, Tls11, Tls12 and Tls13 security protocols");
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
         }
     }
 }

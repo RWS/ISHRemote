@@ -16,7 +16,7 @@ Describe "Test-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context “Test-IshSession UserNamePassword" {
+	Context "Test-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
 			Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" | Should -Be $false
 		}
@@ -37,7 +37,7 @@ Describe "Test-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context “Test-IshSession PSCredential" {
+	Context "Test-IshSession PSCredential" {
 		It "Parameter WsBaseUrl invalid" {
 			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
 			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)

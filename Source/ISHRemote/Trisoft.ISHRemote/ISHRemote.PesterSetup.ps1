@@ -15,11 +15,16 @@ $ProgressPreference= "SilentlyContinue"   # Continue or SilentlyContinue
 $project = (Split-Path -Parent $MyInvocation.MyCommand.Path).ToLower()
 $project = $project.Substring(0, $project.LastIndexOf("ishremote"))
 $project = ($project + "ishremote")
-$moduleFolder = Join-Path $project "\bin\debug\ISHRemote"
+if ($env:GITHUB_ACTIONS -eq "true") {
+	$moduleFolder = (Join-Path $project "\bin\release\ISHRemote")
+}
+else {
+	$moduleFolder = (Join-Path $project "\bin\debug\ISHRemote")
+}
 Write-Host ("Running ISHRemote.PesterSetup.ps1 Import Module folder["+$moduleFolder+"] ...")
 Import-Module ($moduleFolder) -DisableNameChecking
 
-Write-Host "Running ISHRemote.PesterSetup.ps1 Global Test Data and Variables initialization"
+Write-Host ("Running ISHRemote.PesterSetup.ps1 Global Test Data and Variables initialization on "+(Get-Date -UFormat "%Y-%m-%dT%H-%M-%S%Z"))
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
 Write-Verbose "Running ISHRemote.PesterSetup.ps1 OASIS DITA File Contents initialization"
 $ditaTopicFileContent = @"
@@ -41,12 +46,27 @@ $ditaMapWithTopicrefFileContent = @"
 "@
 
 Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for UserName/Password based tests, so ISHSTS-like...initialization"
-$baseUrl = 'https://ish.example.com'
+$baseUrl = $env:ISH_BASE_URL
+if ([string]::IsNullOrEmpty($baseUrl))
+{
+	$baseUrl = 'https://ish.example.com'
+}
+
+$ishUserName = $env:ISH_USER_NAME
+if ([string]::IsNullOrEmpty($ishUserName))
+{
+	$ishUserName = 'admin'
+}
+
+$ishPassword = $env:ISH_PASSWORD
+if ([string]::IsNullOrEmpty($ishPassword))
+{
+	$ishPassword = 'admin'
+}
 $webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
 $wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
 $wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
-$ishUserName = 'admin'
-$ishPassword = 'admin'
+
 Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for System Setup initialization"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed
 $ishLng = 'VLANGUAGEEN'
@@ -83,9 +103,6 @@ if (Test-Path -Path $debugPesterSetupFilePath -PathType Leaf)
 
 $webServicesBaseUrl -match "https://((?<hostname>.+))+/(.)+/" | Out-Null
 $hostname=$Matches['hostname']
-$localWebServicesBaseUrl = $webServicesBaseUrl.Replace($hostname,"localhost")
-$localWsTrustIssuerUrl =  $wsTrustIssuerUrl.Replace($hostname,"localhost")
-$localWsTrustIssuerMexUrl =  $wsTrustIssuerMexUrl.Replace($hostname,"localhost")
 
 #
 # Note

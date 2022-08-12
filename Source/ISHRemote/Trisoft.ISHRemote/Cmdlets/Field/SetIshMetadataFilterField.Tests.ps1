@@ -6,7 +6,7 @@ BeforeAll {
 	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
 }
 
-Describe “Set-IshMetadataFilterField" -Tags "Read" {
+Describe "Set-IshMetadataFilterField" -Tags "Read" {
 
 	Context "Set-IshMetadataFilterField -IshSession $ishSession returns IshMetadataFilterField" {
 		It "GetType().Name" {
@@ -14,7 +14,7 @@ Describe “Set-IshMetadataFilterField" -Tags "Read" {
 		}
 	}
 
-	Context “Set-IshMetadataFilterField" {
+	Context "Set-IshMetadataFilterField" {
 		It "Parameter IshSession/Name/Level invalid" {
 			{ Set-IshMetadataFilterField -IshSession "INVALIDISHSESSION" -Name "INVALIDFIELDNAME" -Level "INVALIDFIELDLEVEL" } | Should -Throw
 		}

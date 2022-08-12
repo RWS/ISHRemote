@@ -19,7 +19,7 @@ namespace Trisoft.ISHRemote.Properties.Resouces {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ISHTypeFieldSetup {
@@ -61,18 +61,16 @@ namespace Trisoft.ISHRemote.Properties.Resouces {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
-        ///&lt;?xml-stylesheet href=&quot;full.export.xsl&quot; type=&quot;text/xsl&quot;?&gt;
-        ///&lt;!-- InfoShare Author 3.5.0 --&gt;
-        ///&lt;tridk:setup xml:lang=&quot;EN&quot; xmlns:tridk=&quot;urn:trisoft.be:Tridk:Setup:1.0&quot; tridk:version=&quot;120.11.0.3215&quot;&gt;
-        ///	&lt;tridk:cardtypes&gt;
-        ///		&lt;!-- General cardtypes --&gt;
-        ///		&lt;tridk:cardtype tridk:exportmode=&quot;cascade&quot; tridk:element=&quot;USER&quot; tridk:metatype=&quot;usercard&quot;&gt;
-        ///			&lt;tridk:displaydefinition&gt;
-        ///				&lt;tridk:label&gt;User&lt;/tridk:label&gt;
-        ///				&lt;tridk:description/&gt;
-        ///			&lt;/tridk:displaydefinition&gt;
-        ///			&lt;tridk:fielddefinition [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &amp;lt;?xml version=&quot;1.0&quot;?&amp;gt;
+        ///&amp;lt;?xml-stylesheet href=&quot;full.export.xsl&quot; type=&quot;text/xsl&quot;?&amp;gt;
+        ///&amp;lt;!-- InfoShare Author 3.5.0 --&amp;gt;
+        ///&amp;lt;tridk:setup xml:lang=&quot;EN&quot; xmlns:tridk=&quot;urn:trisoft.be:Tridk:Setup:1.0&quot; tridk:version=&quot;120.11.0.3215&quot;&amp;gt;
+        ///	&amp;lt;tridk:cardtypes&amp;gt;
+        ///		&amp;lt;!-- General cardtypes --&amp;gt;
+        ///		&amp;lt;tridk:cardtype tridk:exportmode=&quot;cascade&quot; tridk:element=&quot;USER&quot; tridk:metatype=&quot;usercard&quot;&amp;gt;
+        ///			&amp;lt;tridk:displaydefinition&amp;gt;
+        ///				&amp;lt;tridk:label&amp;gt;User&amp;lt;/tridk:label&amp;gt;
+        ///				&amp;lt;tridk:descript [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TriDKXmlSetupFullExport_12_00_01 {
             get {

@@ -1,0 +1,137 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48</TargetFrameworks>
+	<!-- TargetFrameworks>netcoreapp3.1;net48;net6.0</TargetFrameworks -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CopyLocalLockFileAssemblies Condition="'$(TargetFramework)' == 'net48'">true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" Condition="'$(TargetFramework)' != 'net6.0'" />
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.2.0" Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.9.0" />
+    <PackageReference Include="System.Private.ServiceModel" Version="4.9.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="XmlDoc2CmdletDoc" Version="0.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+    
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ISHTypeFieldSetup.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ISHTypeFieldSetup.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resouces\ISHTypeFieldSetup.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ISHTypeFieldSetup.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ISHTypeFieldSetup.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ISHTypeFieldSetup.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resouces\ISHTypeFieldSetup.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ISHTypeFieldSetup.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- Hack to get XmlDoc2CmdletDoc to work -->
+  <!-- Seemingly XmlDoc2CmdletDoc does not run under .NET 5/6, meaning it needs an explicit 3.1 or older runtime. Download from https://dotnet.microsoft.com/en-us/download/dotnet/3.1 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+    <XmlDoc2CmdletDocToolPath>net48\XmlDoc2CmdletDoc.dll</XmlDoc2CmdletDocToolPath>
+    <XmlDocToolsPath>net48\XmlDoc2CmdletDoc.dll</XmlDocToolsPath>
+  </PropertyGroup>
+
+  <!-- Hack as Windows PowerShell complains about System.ComponentModel.Annotations 4.2.0 missing during exception handling. 
+       Similar to https://stackoverflow.com/questions/44257436/when-using-net-standard-1-4-in-a-library-and-net-framework-4-6-1-in-and-applic 
+	   And https://stackoverflow.com/questions/44053187/could-not-load-file-or-assembly-system-componentmodel-annotations-version-4-1 
+	   Solved as hinted on https://github.com/square/connect-csharp-sdk/issues/109 by referencing 4.4.1 (instead of latest-5.0.0) as that one offers file version 4.2.0
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+	</PropertyGroup>
+  -->
+
+  <Target Name="CopyCmdletDoc" AfterTargets="AfterBuild" Condition="'$(TargetFramework)' == 'net48'">
+    <PropertyGroup>
+      <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
+    <Move SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
+  </Target>
+
+  <!-- Generating Module Manifest only once -->
+  <Target Name="ModuleManifest" AfterTargets="CopyCmdletDoc" Condition="'$(TargetFramework)' == 'net48'">
+    <PropertyGroup>
+      <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">pwsh</PowerShellExe>
+      <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
+      <ManifestPath>$(ISHRemoteDir)/$(ModuleName).psd1</ManifestPath>
+      <RootModule>$(ModuleName).psm1</RootModule>
+      <FormatsToProcessPath>$(ModuleName).Format.ps1xml</FormatsToProcessPath>
+    </PropertyGroup>
+	<MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
+    <Exec Command="$(PowerShellExe) -NonInteractive -command &quot;New-ModuleManifest -Path '$(ManifestPath)' -FormatsToProcess '$(FormatsToProcessPath)' -RootModule '$(RootModule)' -ModuleVersion '$(ModuleVersion)' -Prerelease '$(Prerelease)' -Guid '$(ModuleGuid)' -Author '$(Authors)' -CompanyName '$(CompanyName)' -Copyright '$(Copyright)' -Description '$(ModuleDescription)' -PowerShellVersion '$(MinPowerShellVersion)' -ClrVersion '$(MinCLRVersion)' -DotNetFrameworkVersion '$(MinDotNetVersion)' -LicenseUri '$(LicenseUri)' -ProjectUri '$(ProjectUri)'&quot;" />
+  </Target>
+
+  <!-- Copy all the required files to folder named ISHRemote which is needed for packaging -->
+  <Target Name="CopyRequiredFilesToPowerShellModuleFolder" AfterTargets="ModuleManifest" Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
+    <PropertyGroup>
+      <LocalPSRepoDir>$(ProjectDir)bin/$(Configuration)</LocalPSRepoDir>
+      <ISHRemoteFrameworkDir>$(ProjectDir)bin/$(Configuration)/ISHRemote/$(TargetFramework)</ISHRemoteFrameworkDir>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ISHRemoteFiles Include="$(TargetDir)/**/*.*" />
+        <ISHRemoteScriptFiles Include="$(ProjectDir)/Scripts/**/*.*" />
+    </ItemGroup>
+
+    <RemoveDir Directories="$(ISHRemoteFrameworkDir)" Condition="Exists('$(ISHRemoteFrameworkDir)')" />
+    <MakeDir Directories="$(ISHRemoteFrameworkDir)" />
+    <Copy SourceFiles="@(ISHRemoteFiles)" DestinationFiles="@(ISHRemoteFiles->'$(ISHRemoteFrameworkDir)\%(RecursiveDir)%(Filename)%(Extension)')" /><!-- hyphen-gt arrow needs to remain entity gt -->	  
+    <Copy SourceFiles="@(ISHRemoteScriptFiles)" DestinationFiles="@(ISHRemoteScriptFiles->'$(LocalPSRepoDir)\ISHRemote\Scripts\%(RecursiveDir)%(Filename)%(Extension)')" /><!-- hyphen-gt arrow needs to remain entity gt -->
+    <Copy SourceFiles="$(ProjectDir)ISHRemote.psm1" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
+    <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
+  </Target>
+
+  <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' AND '$(TargetFramework)' == 'net48'">
+    <PropertyGroup>
+      <LocalPSRepo>$(ProjectDir)bin\$(Configuration)</LocalPSRepo>
+      <ISHRemoteModulePath>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteModulePath>
+      <ISHRemoteModuleFileName>$(ProjectDir)bin/$(Configuration)/ISHRemote.$(ModuleVersion)-$(Prerelease).nupkg</ISHRemoteModuleFileName>
+      <NuGetApiKey Condition=" '$(NuGetApiKey)' == ''">$(NUGET_API_KEY)</NuGetApiKey>
+      <NuGetApiKey Condition=" '$(NuGetApiKey)' == ''">AnyStringWillDo</NuGetApiKey>
+    </PropertyGroup>
+
+    <Delete Files="$(ISHRemoteModuleFileName)" Condition="Exists('$(ISHRemoteModuleFileName)')" />
+
+    <Exec Command="pwsh -NonInteractive -command &quot;Register-PSRepository -Name LocalPSRepo -SourceLocation '$(LocalPSRepo)' -ScriptSourceLocation '$(LocalPSRepo)' -InstallationPolicy Trusted&quot;" />
+    <Exec Command="pwsh -NonInteractive -command &quot;Publish-Module -Path '$(ISHRemoteModulePath)' -Repository LocalPsRepo -NuGetApiKey '$(NuGetApiKey)'&quot;" />
+    <Exec Command="pwsh -NonInteractive -command &quot;Unregister-PSRepository -Name LocalPSRepo&quot;" />
+  </Target>
+
+  <PropertyGroup>
+    <!-- Ignore warning CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member' -->
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+</Project>

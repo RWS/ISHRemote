@@ -139,14 +139,14 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			$ishBackgroundTask.IshField.Count -ge 16 | Should -Be $true
 		}
 		It "Parameter RequestedMetadata only all of History level" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allHistMetadata)[0]
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allHistMetadata)[0]
 			$ishBackgroundTask.TaskRef -gt 0 | Should -Be $true
 			#$ishBackgroundTask.HistoryRef -gt 0 | Should -Be $true
 			$ishBackgroundTask.IshField.Count -ge 1 | Should -Be $true  # At least 1 entries returned if BackgroundTask service is not running, otherwise more
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=PSObjectNoteProperty" {
 			$ishSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allMetadata)[0]
 			$ishBackgroundTask.GetType().Name | Should -BeExactly "IshBackgroundTask"  # and not PSObject
 			[bool]($ishBackgroundTask.PSobject.Properties.name -match "status_task_element") | Should -Be $true
 			[bool]($ishBackgroundTask.PSobject.Properties.name -match "userid_task_element") | Should -Be $true
@@ -156,7 +156,7 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 		It "Parameter RequestedMetadata PipelineObjectPreference=Off" {
 		    $pipelineObjectPreference = $ishSession.PipelineObjectPreference
 			$ishSession.PipelineObjectPreference = "Off"
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allMetadata)[0]
 			$ishBackgroundTask.GetType().Name | Should -BeExactly "IshBackgroundTask"
 			[bool]($ishBackgroundTask.PSobject.Properties.name -match "status_task_element") | Should -Be $false
 			[bool]($ishBackgroundTask.PSobject.Properties.name -match "userid_task_element") | Should -Be $false
@@ -164,7 +164,7 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			$ishSession.PipelineObjectPreference = $pipelineObjectPreference
 		}
 		It "Parameter MetadataFilter Filter to exactly one" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
 			$filterMetadata = Set-IshMetadataFilterField -IshSession $ishSession -Level Task -Name USERID -ValueType Element -Value ($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element) |
 			                  Set-IshMetadataFilterField -IshSession $ishSession -Level Task -Name TASKID -ValueType Element -Value ($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID)
 			$ishBackgroundTaskArray = Get-IshBackgroundTask -IshSession $ishSession -MetadataFilter $filterMetadata
@@ -175,7 +175,7 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			{ Get-IshBackgroundTask -IshSession $ishSession -IshBackgroundTask "INVALIDISHBACKGROUNDTASK" } | Should -Throw
 		}
 		It "Parameter IshBackgroundTask Single" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter Current)[0]
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter Current)[0]
 			$taskId = $ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID
 			$ishBackgroundTaskArray = Get-IshBackgroundTask -IshSession $ishSession -IshBackgroundTask $ishBackgroundTask
 			$ishBackgroundTaskArray.Count -ge 1 | Should -Be $true
@@ -185,7 +185,7 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 		}
 		#>
 		It "Pipeline IshBackgroundTask Single" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-1)) -UserFilter Current)[0]
+			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter Current)[0]
 			$taskId = $ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID
 			$ishBackgroundTaskArray = $ishBackgroundTask | Get-IshBackgroundTask -IshSession $ishSession
 			$ishBackgroundTaskArray.Count -ge 1 | Should -Be $true
