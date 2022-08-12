@@ -22,7 +22,6 @@ using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using Trisoft.ISHRemote.BackgroundTask25ServiceReference;
 using Trisoft.ISHRemote.EventMonitor25ServiceReference;
 using System.Text;

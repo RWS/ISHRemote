@@ -4,11 +4,12 @@
 * allow business logic automation ranging from triggering publishing into the continuous integration pipeline over legacy data correction up to provisioning
 * show case code examples and API best practices
 
+# Versions
 
-| Branch         | Status                 |
-|----------------|------------------------|
-| master         | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
-| release/v1     | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg?branch=release/v1)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
+| Name                     | Platform                                        | Branch         | Status                 |
+|--------------------------|-------------------------------------------------|----------------|------------------------|
+| [ISHRemote](https://www.powershellgallery.com/packages/ISHRemote/) latest         | PowerShell-5.1/NET-4.8 and PowerShell-7+/NET-6+ | master         | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg?branch=master)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
+| [ISHRemote](https://www.powershellgallery.com/packages/ISHRemote/) v1 and earlier | PowerShell-5.1/NET-4.8 | release/v1     | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg?branch=release/v1)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
 
 
 # Videos

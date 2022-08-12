@@ -162,6 +162,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             closed = true;
         }
 
+#if NET48
         /// <summary>
         /// Throws a NotSupportedException.
         /// </summary>
@@ -171,6 +172,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         {
             throw new NotSupportedException();
         }
+#endif 
 
         /// <summary>
         /// Waits for the pending asynchronous read to complete.
@@ -209,6 +211,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             stream.Flush();
         }
 
+#if NET48
         /// <summary>
         /// Throws a NotSupportedException.
         /// </summary>
@@ -217,6 +220,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         {
             throw new NotSupportedException();
         }
+#endif 
 
         /// <summary>
         /// Returns the length of the underlying stream.
@@ -340,6 +344,6 @@ namespace Trisoft.ISHRemote.HelperClasses
             CheckClosed();
             stream.WriteByte(value);
         }
-        #endregion
+#endregion
     }
 }
