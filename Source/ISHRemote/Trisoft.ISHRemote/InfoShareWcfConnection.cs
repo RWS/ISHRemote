@@ -324,6 +324,15 @@ namespace Trisoft.ISHRemote
             tokenParameters.MessageSecurityVersion = MessageSecurityVersion.WSSecurity11WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10;
 
             _commonBinding = new System.ServiceModel.Federation.WSFederationHttpBinding(tokenParameters);
+            _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
+            _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
+            _commonBinding.MaxReceivedMessageSize = Int32.MaxValue;
+            _commonBinding.MaxBufferPoolSize = Int32.MaxValue;
+            _commonBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
+            _commonBinding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
+            _commonBinding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
+            _commonBinding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
+            _commonBinding.ReaderQuotas.MaxDepth = 64;
 #endif
         }
 
@@ -410,12 +419,17 @@ namespace Trisoft.ISHRemote
         {
             get
             {
+#if NET48
                 bool result = IssuedToken.ValidTo.ToUniversalTime() >= DateTime.UtcNow;
                 //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
                 // Besides single-thread execution of New-IshSession, logging here will typically cause error:
                 // PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing methods, and they can only be called from within the same thread.Validate that the cmdlet makes these calls correctly, or contact Microsoft Customer Support Services.
                 //_logger.WriteDebug($"Token still valid? {result} ({IssuedToken.ValidTo.ToUniversalTime()} >= {DateTime.UtcNow})");
                 return result;
+#else
+                //TODO [Must] NET6_0_OR_GREATER has no token expire check, so does not refresh the connection
+                return true;
+#endif
             }
         }
 #endregion Properties
@@ -1247,7 +1261,7 @@ namespace Trisoft.ISHRemote
 
 #endregion
 
-        #region IDisposable Methods
+#region IDisposable Methods
         /// <summary>
         /// Disposes the object
         /// </summary>
