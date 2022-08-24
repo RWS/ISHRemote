@@ -37,7 +37,8 @@ using System.ServiceModel.Federation;
 namespace Trisoft.ISHRemote
 {
     /// <summary>
-    /// InfoShare Wcf connection.
+    /// Dynamic proxy (so without app.config) generation of Service References towards the InfoShare Web Services writen in Windows Communication Foundation (WCF) protected by WS-Trust (aka WS-Federation active) SOAP protocol.
+    /// On ISHRemote v1 and earlier, so in turn before InfoShare 15 and earlier, this class was your starting point for dynamic proxy (so without app.config) generation of Service References. The inital class was written in .NET Framework style. Inspired by https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/ this class has pragmas to illustrate .NET Framework and .NET 6.0+ style side-by-side.
     /// </summary>
     internal sealed class InfoShareWcfConnection : IDisposable
     {
@@ -129,10 +130,12 @@ namespace Trisoft.ISHRemote
         /// Set when the incoming web service url indicates a different connectionconfiguration.xml regarding security configuration like [InfoShareWSBaseUri]/Internal or [InfoShareWSBaseUri]/SDL
         /// </summary>
         private readonly bool _stsInternalAuthentication = false;
+#if NET48
         /// <summary>
         /// Set when the session must be created by using only local endpoints
         /// </summary>
         private readonly bool _explicitIssuer = false;
+#endif
         /// <summary>
         /// Parameters that configure the connection behavior.
         /// </summary>
@@ -158,19 +161,19 @@ namespace Trisoft.ISHRemote
         /// </summary>
         private readonly Lazy<Uri> _infoShareWSAppliesTo;
         /// <summary>
-		/// The token that is used to access the services.
-		/// </summary>
-		private readonly Lazy<GenericXmlSecurityToken> _issuedToken;
-        /// <summary>
         /// Service URIs by service.
         /// </summary>
         private readonly Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
 #if NET48
         /// <summary>
+		/// The token that is used to access the services.
+		/// </summary>
+		private readonly Lazy<GenericXmlSecurityToken> _issuedToken;
+        /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
         private Binding _commonBinding;
-#else 
+#else
         /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
@@ -253,9 +256,9 @@ namespace Trisoft.ISHRemote
         /// Proxy for background task
         /// </summary>
         private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
-        #endregion Private Members
+#endregion Private Members
 
-        #region Constructors
+#region Constructors
         /// <summary>
         /// Initializes a new instance of <c>InfoShareWcfConnection</c> class.
         /// </summary>
@@ -277,7 +280,7 @@ namespace Trisoft.ISHRemote
                 };
             }
 
-            #region Derive parameters from infoShareWSBaseUri and connectionconfiguration.xml
+#region Derive parameters from infoShareWSBaseUri and connectionconfiguration.xml
 
             if (infoShareWSBaseUri.AbsolutePath.Contains("/Internal") || infoShareWSBaseUri.AbsolutePath.Contains("/SDL"))
             {
@@ -299,7 +302,7 @@ namespace Trisoft.ISHRemote
             _issuerAuthenticationType = new Lazy<string>(InitializeIssuerAuthenticationType);
             _infoShareWSAppliesTo = new Lazy<Uri>(InitializeInfoShareWSAppliesTo);
 
-            #endregion
+#endregion
 
             _logger.WriteDebug($"Resolving Service Uris");
             ResolveServiceUris();
@@ -319,8 +322,11 @@ namespace Trisoft.ISHRemote
 
             EndpointAddress issuerAddress = new EndpointAddress(IssuerWSTrustEndpointUri);
 
-            WSTrustTokenParameters tokenParameters = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerBinding, issuerAddress);
+            WSTrustTokenParameters tokenParameters = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerBinding, issuerAddress); // WS-Trust 1.3 is 2007
             tokenParameters.KeyType = SecurityKeyType.SymmetricKey;
+            // CacheIssuedTokens, MaxIssuedCachingTime, and IssuedTokenRenewalThresholdPercentage These properties indicate whether tokens should be
+            // cached and for how long.In many cases, these properties don’t need to be set as the defaults(tokens are cached for 60 % of their lifetime) are sufficient.
+            tokenParameters.CacheIssuedTokens = true;
             tokenParameters.MessageSecurityVersion = MessageSecurityVersion.WSSecurity11WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10;
 
             _commonBinding = new System.ServiceModel.Federation.WSFederationHttpBinding(tokenParameters);
@@ -347,7 +353,9 @@ namespace Trisoft.ISHRemote
         public InfoShareWcfConnection(ILogger logger, Uri infoShareWSBaseUri, Uri wsTrustIssuerUri, Uri wsTrustIssuerMexUri, InfoShareWcfConnectionParameters parameters = null)
         {
             _logger = logger;
+#if NET48
             _explicitIssuer = true;
+#endif
 
             _logger.WriteDebug($"Incomming  infoShareWSBaseUri[{infoShareWSBaseUri}]");
             _logger.WriteDebug($"Incomming  wsTrustIssuerUri[{wsTrustIssuerUri}]");
@@ -420,14 +428,13 @@ namespace Trisoft.ISHRemote
             get
             {
 #if NET48
+                // In NET Framework we have the actual issued token which we can check for expiring
                 bool result = IssuedToken.ValidTo.ToUniversalTime() >= DateTime.UtcNow;
-                //TODO [Should] Make logging work everywhere avoiding PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing
-                // Besides single-thread execution of New-IshSession, logging here will typically cause error:
-                // PSInvalidOperationException: The WriteObject and WriteError methods cannot be called from outside the overrides of the BeginProcessing, ProcessRecord, and EndProcessing methods, and they can only be called from within the same thread.Validate that the cmdlet makes these calls correctly, or contact Microsoft Customer Support Services.
                 //_logger.WriteDebug($"Token still valid? {result} ({IssuedToken.ValidTo.ToUniversalTime()} >= {DateTime.UtcNow})");
                 return result;
 #else
-                //TODO [Must] NET6_0_OR_GREATER has no token expire check, so does not refresh the connection
+                // In NET6_0_OR_GREATER has no token, the client according to link below refreshes itself
+                // https://docs.microsoft.com/en-us/dotnet/api/system.servicemodel.security.issuedtokenclientcredential.cacheissuedtokens?view=netframework-4.8&viewFallbackFrom=net-6.0
                 return true;
 #endif
             }
@@ -462,18 +469,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public Application25ServiceReference.Application GetApplication25Channel()
         {
+#if NET48
             if (_applicationClient == null)
             {
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
             }
-#if NET48
             return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _applicationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _applicationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _applicationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_applicationClient == null)
+            {
+                _applicationClient = new Application25ServiceReference.ApplicationClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[Application25]));
+                _applicationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _applicationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _applicationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _applicationClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -484,18 +497,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public DocumentObj25ServiceReference.DocumentObj GetDocumentObj25Channel()
         {
+#if NET48
             if (_documentObjClient == null)
             {
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
             }
-#if NET48
             return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _documentObjClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _documentObjClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_documentObjClient == null)
+            {
+                _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
+                _documentObjClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _documentObjClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _documentObjClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -506,18 +525,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public Folder25ServiceReference.Folder GetFolder25Channel()
         {
+#if NET48
             if (_folderClient == null)
             {
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
             }
-#if NET48
             return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _folderClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _folderClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_folderClient == null)
+            {
+                _folderClient = new Folder25ServiceReference.FolderClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[Folder25]));
+                _folderClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _folderClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _folderClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -528,18 +553,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public User25ServiceReference.User GetUser25Channel()
         {
+#if NET48
             if (_userClient == null)
             {
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
             }
-#if NET48
             return _userClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _userClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _userClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_userClient == null)
+            {
+                _userClient = new User25ServiceReference.UserClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[User25]));
+                _userClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _userClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _userClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -550,18 +581,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public UserRole25ServiceReference.UserRole GetUserRole25Channel()
         {
+#if NET48
             if (_userRoleClient == null)
             {
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
             }
-#if NET48
             return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _userRoleClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _userRoleClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_userRoleClient == null)
+            {
+                _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[UserRole25]));
+                _userRoleClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _userRoleClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _userRoleClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -572,18 +609,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public UserGroup25ServiceReference.UserGroup GetUserGroup25Channel()
         {
+#if NET48
             if (_userGroupClient == null)
             {
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
             }
-#if NET48
             return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _userGroupClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _userGroupClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_userGroupClient == null)
+            {
+                _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
+                _userGroupClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _userGroupClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _userGroupClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -594,18 +637,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public ListOfValues25ServiceReference.ListOfValues GetListOfValues25Channel()
         {
+#if NET48
             if (_listOfValuesClient == null)
             {
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
             }
-#if NET48
             return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _listOfValuesClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _listOfValuesClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_listOfValuesClient == null)
+            {
+                _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
+                _listOfValuesClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _listOfValuesClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _listOfValuesClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -616,18 +665,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public PublicationOutput25ServiceReference.PublicationOutput GetPublicationOutput25Channel()
         {
+#if NET48
             if (_publicationOutputClient == null)
             {
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
             }
-#if NET48
             return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _publicationOutputClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _publicationOutputClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_publicationOutputClient == null)
+            {
+                _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
+                _publicationOutputClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _publicationOutputClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _publicationOutputClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -638,18 +693,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public OutputFormat25ServiceReference.OutputFormat GetOutputFormat25Channel()
         {
+#if NET48
             if (_outputFormatClient == null)
             {
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
             }
-#if NET48
             return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _outputFormatClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _outputFormatClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_outputFormatClient == null)
+            {
+                _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
+                _outputFormatClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _outputFormatClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _outputFormatClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -660,18 +721,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public Settings25ServiceReference.Settings GetSettings25Channel()
         {
+#if NET48
             if (_settingsClient == null)
             {
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
             }
-#if NET48
             return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _settingsClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _settingsClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_settingsClient == null)
+            {
+                _settingsClient = new Settings25ServiceReference.SettingsClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[Settings25]));
+                _settingsClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _settingsClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _settingsClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -682,18 +749,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public EDT25ServiceReference.EDT GetEDT25Channel()
         {
+#if NET48
             if (_EDTClient == null)
             {
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
             }
-#if NET48
             return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _EDTClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _EDTClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_EDTClient == null)
+            {
+                _EDTClient = new EDT25ServiceReference.EDTClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[EDT25]));
+                _EDTClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _EDTClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _EDTClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -704,18 +777,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public EventMonitor25ServiceReference.EventMonitor GetEventMonitor25Channel()
         {
+#if NET48
             if (_eventMonitorClient == null)
             {
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
             }
-#if NET48
             return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _eventMonitorClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _eventMonitorClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_eventMonitorClient == null)
+            {
+                _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
+                _eventMonitorClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _eventMonitorClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _eventMonitorClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -726,18 +805,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public Baseline25ServiceReference.Baseline GetBaseline25Channel()
         {
+#if NET48
             if (_baselineClient == null)
             {
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
             }
-#if NET48
             return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _baselineClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _baselineClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_baselineClient == null)
+            {
+                _baselineClient = new Baseline25ServiceReference.BaselineClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[Baseline25]));
+                _baselineClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _baselineClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _baselineClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -748,18 +833,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public MetadataBinding25ServiceReference.MetadataBinding GetMetadataBinding25Channel()
         {
+#if NET48
             if (_metadataBindingClient == null)
             {
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
             }
-#if NET48
             return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _metadataBindingClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _metadataBindingClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_metadataBindingClient == null)
+            {
+                _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
+                _metadataBindingClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _metadataBindingClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _metadataBindingClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -770,18 +861,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public Search25ServiceReference.Search GetSearch25Channel()
         {
+#if NET48
             if (_searchClient == null)
             {
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
             }
-#if NET48
             return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _searchClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _searchClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_searchClient == null)
+            {
+                _searchClient = new Search25ServiceReference.SearchClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[Search25]));
+                _searchClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _searchClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _searchClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -792,18 +889,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public TranslationJob25ServiceReference.TranslationJob GetTranslationJob25Channel()
         {
+#if NET48
             if (_translationJobClient == null)
             {
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
             }
-#if NET48
             return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _translationJobClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _translationJobClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_translationJobClient == null)
+            {
+                _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
+                _translationJobClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _translationJobClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _translationJobClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -814,18 +917,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public TranslationTemplate25ServiceReference.TranslationTemplate GetTranslationTemplate25Channel()
         {
+#if NET48
             if (_translationTemplateClient == null)
             {
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
             }
-#if NET48
             return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _translationTemplateClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _translationTemplateClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_translationTemplateClient == null)
+            {
+                _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
+                _translationTemplateClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _translationTemplateClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _translationTemplateClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -837,18 +946,24 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public BackgroundTask25ServiceReference.BackgroundTask GetBackgroundTask25Channel()
         {
+#if NET48
             if (_backgroundTaskClient == null)
             {
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
             }
-#if NET48
             return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            _backgroundTaskClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+            if (_backgroundTaskClient == null)
+            {
+                _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
+                _backgroundTaskClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
             _backgroundTaskClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
             _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            }
             return _backgroundTaskClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -887,7 +1002,7 @@ namespace Trisoft.ISHRemote
                 return _issuerWSTrustEndpointUri.Value;
             }
         }
-
+#if NET48
         /// <summary>
         /// Gets the token that is used to access the services.
         /// </summary>
@@ -898,6 +1013,7 @@ namespace Trisoft.ISHRemote
                 return _issuedToken.Value;
             }
         }
+#endif
 #endregion
 
 #region Private Methods
@@ -1138,6 +1254,12 @@ namespace Trisoft.ISHRemote
             {
                 throw new InvalidOperationException("Issuer url not found in the connection configuration.");
             }
+#if NET6_0_OR_GREATER
+            if (uriElement.Value.ToLower().EndsWith("windowsmixed"))
+            {
+                throw new PlatformNotSupportedException($"Only /wstrust/mixed/username is supported since NET6+/PowerShell7+, windowsmixed is not. IssuerUrl[{uriElement.Value}]");
+            }
+#endif
             _logger.WriteVerbose($"Connecting to IssuerWSTrustUrl[{uriElement.Value}]");
             _logger.WriteDebug($"InitializeIssuerWSTrustEndpointUri uri[{uriElement.Value}]");
             return new Uri(uriElement.Value);
