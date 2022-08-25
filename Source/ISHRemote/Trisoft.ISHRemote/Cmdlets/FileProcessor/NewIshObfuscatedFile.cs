@@ -203,8 +203,20 @@ namespace Trisoft.ISHRemote.Cmdlets.FileProcessor
                         }
                         else if (_imageFileExtensions.Contains(inputFile.Extension))
                         {
+#if NET48
                             IshObfuscator.ObfuscateImage(inputFile.FullName, outputFilePath);
                             WriteObject(new FileInfo(outputFilePath));
+#else
+                            if (OperatingSystem.IsWindows())
+                            { 
+                                IshObfuscator.ObfuscateImage(inputFile.FullName, outputFilePath);
+                                WriteObject(new FileInfo(outputFilePath));
+                            }
+                            else
+                            {
+                                WriteWarning($"Obfuscate Image is only supported on Windows platform (through NET6+ extension), obfuscating image inputFile[{inputFile.FullName}] is skipped. [OS:{Environment.OSVersion}]");
+                            }
+#endif
                         }
                         else
                         {

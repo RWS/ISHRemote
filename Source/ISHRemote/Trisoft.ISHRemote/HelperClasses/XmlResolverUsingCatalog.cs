@@ -123,42 +123,42 @@ namespace Trisoft.ISHRemote.HelperClasses
         }
 
 
-        /// <summary> 
-        /// This method will check the location to see that it exists
-        /// </summary> 
-        /// <param name="location">The path to check</param> 
-        /// <returns>True if the location is valid</returns> 
-        public static bool IsValidLocation(string location)
-        {
-            try
-            {
-                Uri uri = new Uri(location);
-                if (uri.IsFile)
-                {
-                    return File.Exists(uri.LocalPath);
-                }
-                else
-                {
-                    HttpWebRequest request = HttpWebRequest.Create(uri) as HttpWebRequest;
-                    request.Timeout = 5000; //set the timeout to 5 seconds to keep the user from waiting too long for the page to load         
-                    request.Method = "HEAD";  //Get only the header information -- no need to download any content          
-                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                    int statusCode = (int)response.StatusCode;
-                    if (statusCode >= 100 && statusCode < 400) //Good requests         
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        // <summary> 
+        // This method will check the location to see that it exists
+        // </summary> 
+        // <param name="location">The path to check</param> 
+        // <returns>True if the location is valid</returns> 
+        //public static bool IsValidLocation(string location)
+        //{
+        //    try
+        //    {
+        //        Uri uri = new Uri(location);
+        //        if (uri.IsFile)
+        //        {
+        //            return File.Exists(uri.LocalPath);
+        //        }
+        //        else
+        //        {
+        //            HttpWebRequest request = HttpWebRequest.Create(uri) as HttpWebRequest;
+        //            request.Timeout = 5000; //set the timeout to 5 seconds to keep the user from waiting too long for the page to load         
+        //            request.Method = "HEAD";  //Get only the header information -- no need to download any content          
+        //            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+        //            int statusCode = (int)response.StatusCode;
+        //            if (statusCode >= 100 && statusCode < 400) //Good requests         
+        //            {
+        //                return true;
+        //            }
+        //            else
+        //            {
+        //                return false;
+        //            }
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
 
         #endregion

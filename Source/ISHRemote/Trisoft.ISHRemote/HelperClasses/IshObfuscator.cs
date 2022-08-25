@@ -157,6 +157,12 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// <param name="outputFileLocation">The location for the output file</param>
         public static void ObfuscateImage(string inputFileLocation, string outputFileLocation)
         {
+#if NET6_0_OR_GREATER
+            if (!OperatingSystem.IsWindows())
+            {
+                throw new PlatformNotSupportedException($"Obfuscate Image is only supported on Windows platform (through NET6+ extension), obfuscating image inputFile[{inputFileLocation}] is skipped. [OS:{Environment.OSVersion}]");
+            }
+#endif
             int width;
             int height;
             ImageFormat format;
@@ -291,7 +297,13 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// <returns></returns>
         private static Image CreateImageWithText(String text, int width, int height)
         {
-            Font font = new Font("Arial", 8, FontStyle.Regular);
+#if NET6_0_OR_GREATER
+            if (!OperatingSystem.IsWindows())
+            {
+                throw new PlatformNotSupportedException($"Obfuscate Image With Text is only supported on Windows platform (through NET6+ extension). [OS:{Environment.OSVersion}]");
+            }
+#endif
+            Font font = new Font("Arial", 11, FontStyle.Regular);
             Color textColor = Color.Red;
             Color backColor = Color.Yellow;
 
