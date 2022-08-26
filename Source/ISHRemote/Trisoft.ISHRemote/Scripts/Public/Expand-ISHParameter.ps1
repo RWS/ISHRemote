@@ -15,11 +15,11 @@
     Create a global options to pass to [System.Management.Automation.CommandCompletion]::CompleteInput
     containing registered argument completers
 #>
-if (-not $global:options) { 
+if (-not $global:options) {
     $global:options = @{CustomArgumentCompleters = @{};NativeArgumentCompleters = @{}}
 }
 
-<# 
+<#
     Change the orignal TabExpansion2 function used for PS 3.0 completion
     to merge passed $options with $global:options
     The change will happen only once event if executed several times because
@@ -39,13 +39,12 @@ $starIshLovValueLovId = {
 	{
 		# Explicit -IshSession takes precedence over SessionState one
 		$ishSession = $fakeBoundParameter['IshSession']
-		
 	}
 	if ( $null -ne $ishSession)
 	{
-		$ishSession.IshTypeFieldDefinition | 
-		Where-Object { $_.ReferenceLov -like "$wordToComplete*" } | 
-		Sort-Object -Unique ReferenceLov | 
+		$ishSession.IshTypeFieldDefinition |
+		Where-Object { $_.ReferenceLov -like "$wordToComplete*" } |
+		Sort-Object -Unique ReferenceLov |
 		ForEach-Object { New-IshAuxCompletionResult $_.ReferenceLov }
 	}
 }
@@ -66,10 +65,10 @@ $fieldName = {
 	}
 	if ($ishSession -ne $null)
 	{
-		# TODO [Could] Expand parameter could take -Level into account to filter even more 
-		$ishSession.IshTypeFieldDefinition | 
-		Where-Object { $_.Name -like "$wordToComplete*" } | 
-		Sort-Object -Unique Name | 
+		# TODO [Could] Expand parameter could take -Level into account to filter even more
+		$ishSession.IshTypeFieldDefinition |
+		Where-Object { $_.Name -like "$wordToComplete*" } |
+		Sort-Object -Unique Name |
 		ForEach-Object { New-IshAuxCompletionResult $_.Name -ToolTip ($_.Name + " (" + $_.Type + ") - " + $_.Description ) }
 	}
 }

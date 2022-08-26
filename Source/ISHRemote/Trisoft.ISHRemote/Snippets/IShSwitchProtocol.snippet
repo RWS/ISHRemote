@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+   <CodeSnippet Format="1.0.0">
+      <Header>
+         <Title>Protocol switch Asmx and Basic Authentication (ISHRemote v7.x era)</Title>
+         <Shortcut>switchprot</Shortcut>
+         <Description>Snippet to insert OpenApi and Asmx template code.</Description>
+         <Author>ddemeyer</Author>
+      </Header>
+      <Snippet>
+         <Declarations>
+            <Literal>
+               <ID>response</ID>
+               <ToolTip>Asmx method return type</ToolTip>
+               <Default>response</Default>
+            </Literal>
+            <Literal>
+               <ID>Folder25</ID>
+               <ToolTip>Asmx class name</ToolTip>
+               <Default>Folder25</Default>
+            </Literal>
+            <Literal>
+               <ID>Create</ID>
+               <ToolTip>Asmx method name</ToolTip>
+               <Default>Create</Default>
+            </Literal>
+         </Declarations>
+         <Code Language="csharp"><![CDATA[switch (IshSession.Protocol)
+                            {
+                                case Enumerations.Protocol.OpenApiBasicAuthentication:
+                                // TODO [Must] Add OpenApi implementation
+                                case Enumerations.Protocol.AsmxAuthenticationContext:
+                                    var $response$ = IshSession.$Folder25$.$Create$(new $Folder25$ServiceReference.CreateRequest()
+                                    {
+                                        psAuthContext = IshSession.AuthenticationContext,
+                                    });
+                                    IshSession.AuthenticationContext = $response$.psAuthContext;
+                                    break;
+                            }$end$]]>
+         </Code>
+      </Snippet>
+   </CodeSnippet>
+</CodeSnippets>

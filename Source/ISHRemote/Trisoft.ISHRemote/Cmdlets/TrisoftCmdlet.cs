@@ -27,7 +27,6 @@ using Trisoft.ISHRemote.Interfaces;
 using Trisoft.ISHRemote.Folder25ServiceReference;
 using System.Runtime.InteropServices;
 
-[assembly: ComVisible(false)]
 namespace Trisoft.ISHRemote.Cmdlets
 {
     /// <summary>
