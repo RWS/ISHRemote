@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security;
 using Trisoft.ISHRemote.HelperClasses;
@@ -35,8 +36,6 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly ILogger _logger;
 
         private readonly Uri _webServicesBaseUri;
-        private readonly Uri _wsTrustIssuerUri;
-        private readonly Uri _wsTrustIssuerMexUri;
         private string _ishUserName;
         private string _userName;
         private string _userLanguage;
@@ -62,13 +61,11 @@ namespace Trisoft.ISHRemote.Objects.Public
         private int _metadataBatchSize = 999;
         private int _blobBatchSize = 50;
         private TimeSpan _timeout = new TimeSpan(0, 0, 20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
-        private TimeSpan _timeoutIssue = TimeSpan.MaxValue;
-        private readonly TimeSpan _timeoutService = TimeSpan.MaxValue;
         private readonly bool _ignoreSslPolicyErrors = false;
-        private readonly bool _explicitIssuer = false;
+        // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
+        private readonly HttpClient _httpClient;
 
         private InfoShareWcfConnection _connection;
-
         private Annotation25ServiceReference.Annotation _annotation25;
         private Application25ServiceReference.Application _application25;
         private DocumentObj25ServiceReference.DocumentObj _documentObj25;
@@ -97,62 +94,37 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
         /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
         /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
-        /// <param name="timeoutIssue">Timeout to control Send/Receive timeouts of WCF when issuing a token</param>
-        /// <param name="timeoutService">Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies</param>
         /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, TimeSpan timeoutIssue, TimeSpan timeoutService, bool ignoreSslPolicyErrors)
+        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors)
         {
             _logger = logger;
-            _explicitIssuer = false;
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
+            HttpClientHandler handler = new HttpClientHandler();
+            _timeout = timeout;
+#if NET48
+            _logger.WriteDebug($"Enabling Tls, Tls11, Tls12 and Tls13 security protocols on AppDomain. Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
             if (_ignoreSslPolicyErrors)
             {
                 CertificateValidationHelper.OverrideCertificateValidation();
             }
-            ServicePointManagerHelper.RestoreCertificateValidation();
-            // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
-            _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
-            _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
-            _ishSecurePassword = ishSecurePassword;
-            _timeout = timeout;
-            _timeoutIssue = timeoutIssue;
-            _timeoutService = timeoutService;
-            CreateConnection();
-        }
-
-        /// <summary>
-        /// Creates a session object holding contracts and proxies to the web services API. Takes care of username/password and 'Active Directory' authentication (NetworkCredential) to the Secure Token Service.
-        /// </summary>
-        /// <param name="logger">Instance of the ILogger interface to allow some logging although Write-* is not very thread-friendly.</param>
-        /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
-        /// <param name="wsTrustIssuerUrl">The url to the security token service wstrust endpoint. For example 'https://example.com/ISHSTS/issue/wstrust/mixed/username'</param>
-        /// <param name="wsTrustIssuerMexUrl">The binding for the wsTrustEndpoint url</param>
-        /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
-        /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
-        /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
-        /// <param name="timeoutIssue">Timeout to control Send/Receive timeouts of WCF when issuing a token</param>
-        /// <param name="timeoutService">Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies</param>
-        /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string wsTrustIssuerUrl, string wsTrustIssuerMexUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, TimeSpan timeoutIssue, TimeSpan timeoutService, bool ignoreSslPolicyErrors)
-        {
-            _logger = logger;
-            _explicitIssuer = true;
-            _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
+#endif
+            _logger.WriteDebug($"Enabling Tls, Tls11, Tls12 and Tls13 security protocols on HttpClientHandler. Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
             if (_ignoreSslPolicyErrors)
             {
-                CertificateValidationHelper.OverrideCertificateValidation();
+                // ISHRemote 0.x used CertificateValidationHelper.OverrideCertificateValidation which only works on net48 and overwrites the full AppDomain,
+                // below solution is cleaner for HttpHandler (so connectionconfiguration.xml and future OpenAPI) and SOAP proxies use factory.Credentials.ServiceCertificate.SslCertificateAuthentication
+                //CertificateValidationHelper.OverrideCertificateValidation();
+                // overwrite certificate handling for HttpClient requests
+                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             }
-            ServicePointManagerHelper.RestoreCertificateValidation();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+            handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
+            _httpClient = new HttpClient(handler);
+            _httpClient.Timeout = _timeout;
             // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
-            _wsTrustIssuerUri = new Uri(wsTrustIssuerUrl);
-            _wsTrustIssuerMexUri = new Uri(wsTrustIssuerMexUrl);
-
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
             _ishSecurePassword = ishSecurePassword;
-            _timeout = timeout;
-            _timeoutIssue = timeoutIssue;
-            _timeoutService = timeoutService;
             CreateConnection();
         }
 
@@ -163,25 +135,16 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
                 Timeout = _timeout,
-                IssueTimeout = _timeoutIssue,
-                ServiceTimeout = _timeoutService
+                IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
             };
 
-            if (_explicitIssuer)
-            {
-                _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, _wsTrustIssuerUri, _wsTrustIssuerMexUri, connectionParameters);
-            }
-            else
-            {
-                _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, connectionParameters);
-            }
+            _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, connectionParameters);
 
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel");
             var application25Proxy = _connection.GetApplication25Channel();
             _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel.GetVersion");
             _serverVersion = new IshVersion(application25Proxy.GetVersion());
-
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -367,24 +330,6 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         /// <summary>
-        /// Timeout to control Send/Receive timeouts of WCF when issuing a token
-        /// </summary>
-        public TimeSpan TimeoutIssue
-        {
-            get { return _timeoutIssue; }
-            set { _timeoutIssue = value; }
-        }
-
-        /// <summary>
-        /// Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies
-        /// </summary>
-        public TimeSpan TimeoutService
-        {
-            get { return _timeoutService; }
-            // set { _timeoutService = value; }  // requires reset of all proxies
-        }
-
-        /// <summary>
         /// Web Service Retrieve batch size, if implemented, expressed in number of Ids/Objects for usage in metadata calls
         /// </summary>
         public int MetadataBatchSize
@@ -443,7 +388,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _chunkSize = value; }
         }
 
-        #region Web Services Getters
+#region Web Services Getters
 
         public Annotation25ServiceReference.Annotation Annotation25
         {
@@ -711,7 +656,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        #endregion
+#endregion
 
         private void VerifyTokenValidity()
         {
@@ -745,10 +690,6 @@ namespace Trisoft.ISHRemote.Objects.Public
         public void Dispose()
         {
             _connection.Dispose();
-            if (_ignoreSslPolicyErrors)
-            {
-                CertificateValidationHelper.RestoreCertificateValidation();
-            }
         }
         public void Close()
         {

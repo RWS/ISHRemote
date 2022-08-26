@@ -24,11 +24,13 @@ using System.ServiceModel.Description;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Trisoft.ISHRemote.Interfaces;
+using System.ServiceModel.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Net;
 
 #if NET48
 using System.IdentityModel.Protocols.WSTrust;
 using System.ServiceModel.Channels;
-using System.ServiceModel.Security;
 using System.ServiceModel.Security.Tokens;
 #else
 using System.ServiceModel.Federation;
@@ -325,7 +327,7 @@ namespace Trisoft.ISHRemote
             WSTrustTokenParameters tokenParameters = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerBinding, issuerAddress); // WS-Trust 1.3 is 2007
             tokenParameters.KeyType = SecurityKeyType.SymmetricKey;
             // CacheIssuedTokens, MaxIssuedCachingTime, and IssuedTokenRenewalThresholdPercentage These properties indicate whether tokens should be
-            // cached and for how long.In many cases, these properties don’t need to be set as the defaults(tokens are cached for 60 % of their lifetime) are sufficient.
+            // cached and for how long.In many cases, these properties donï¿½t need to be set as the defaults(tokens are cached for 60 % of their lifetime) are sufficient.
             tokenParameters.CacheIssuedTokens = true;
             tokenParameters.MessageSecurityVersion = MessageSecurityVersion.WSSecurity11WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10;
 
@@ -341,78 +343,6 @@ namespace Trisoft.ISHRemote
             _commonBinding.ReaderQuotas.MaxDepth = 64;
 #endif
         }
-
-        /// <summary>
-        /// Initializes a new instance of <c>InfoShareWcfConnection</c> class.
-        /// </summary>
-        /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
-        /// <param name="infoShareWSBaseUri">Base URI for InfoShare WS.</param>
-        /// <param name="wsTrustIssuerUri">Authentication endpoint</param>
-        /// <param name="wsTrustIssuerMexUri">STS WS Trust metadata exchange endpoint</param>
-        /// <param name="parameters">Connection parameters.</param>
-        public InfoShareWcfConnection(ILogger logger, Uri infoShareWSBaseUri, Uri wsTrustIssuerUri, Uri wsTrustIssuerMexUri, InfoShareWcfConnectionParameters parameters = null)
-        {
-            _logger = logger;
-#if NET48
-            _explicitIssuer = true;
-#endif
-
-            _logger.WriteDebug($"Incomming  infoShareWSBaseUri[{infoShareWSBaseUri}]");
-            _logger.WriteDebug($"Incomming  wsTrustIssuerUri[{wsTrustIssuerUri}]");
-            _logger.WriteDebug($"Incomming  wsTrustIssuerMexUri[{wsTrustIssuerMexUri}]");
-
-            if (infoShareWSBaseUri == null)
-                throw new ArgumentNullException("infoShareWSBaseUri");
-            if (wsTrustIssuerUri == null)
-                throw new ArgumentNullException("wsTrustIssuerUri");
-            if (wsTrustIssuerMexUri == null)
-                throw new ArgumentNullException("wsTrustIssuerMexUri");
-
-            if (parameters == null)
-            {
-                parameters = new InfoShareWcfConnectionParameters()
-                {
-                    Credential = null,
-                };
-            }
-            
-            // Use provided parameters
-            this.InfoShareWSBaseUri = infoShareWSBaseUri;
-            _connectionParameters = parameters;
-            _connectionConfiguration = new Lazy<XDocument>(LoadConnectionConfiguration);
-            this.InfoShareWSBaseUri = infoShareWSBaseUri;
-            _issuerWSTrustEndpointUri = new Lazy<Uri>(() => { return wsTrustIssuerUri; });
-            _issuerWSTrustMexUri = new Lazy<Uri>(() => { return wsTrustIssuerMexUri; });
-            _issuerAuthenticationType = new Lazy<string>(() => { return parameters.Credential != null ? "UserNameMixed" : "WindowsMixed"; });
-            _infoShareWSAppliesTo = new Lazy<Uri>(InitializeInfoShareWSAppliesTo);
-
-
-            _logger.WriteDebug($"Resolving Service Uris");
-            ResolveServiceUris();
-
-#if NET48
-            // The lazy initialization depends on all the initialization above.
-            _issuedToken = new Lazy<GenericXmlSecurityToken>(IssueToken);
-
-            // Set the endpoints
-            ResolveEndpoints(_connectionParameters.AutoAuthenticate);
-#else
-            WS2007HttpBinding issuerBinding = new WS2007HttpBinding(SecurityMode.TransportWithMessageCredential);
-            issuerBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-            issuerBinding.Security.Message.EstablishSecurityContext = false;
-            issuerBinding.SendTimeout = _connectionParameters.IssueTimeout;
-            issuerBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
-
-            EndpointAddress issuerAddress = new EndpointAddress(IssuerWSTrustEndpointUri);
-
-            WSTrustTokenParameters tokenParameters = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerBinding, issuerAddress);
-            tokenParameters.KeyType = SecurityKeyType.SymmetricKey;
-            tokenParameters.MessageSecurityVersion = MessageSecurityVersion.WSSecurity11WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10;
-
-            _commonBinding = new System.ServiceModel.Federation.WSFederationHttpBinding(tokenParameters);
-#endif
-        }
-
 #endregion
 
 #region Public Properties
@@ -460,6 +390,14 @@ namespace Trisoft.ISHRemote
             _annotationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
             _annotationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
             _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+            if (_connectionParameters.IgnoreSslPolicyErrors)
+            {
+                _annotationClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                {
+                    CertificateValidationMode = X509CertificateValidationMode.None,
+                    RevocationMode = X509RevocationMode.NoCheck
+                };
+            }
             return _annotationClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -486,6 +424,14 @@ namespace Trisoft.ISHRemote
                 _applicationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _applicationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _applicationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _applicationClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _applicationClient.ChannelFactory.CreateChannel();
 #endif
@@ -514,6 +460,14 @@ namespace Trisoft.ISHRemote
                 _documentObjClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _documentObjClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _documentObjClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _documentObjClient.ChannelFactory.CreateChannel();
 #endif
@@ -542,6 +496,14 @@ namespace Trisoft.ISHRemote
                 _folderClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _folderClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _folderClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _folderClient.ChannelFactory.CreateChannel();
 #endif
@@ -570,6 +532,14 @@ namespace Trisoft.ISHRemote
                 _userClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _userClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _userClient.ChannelFactory.CreateChannel();
 #endif
@@ -598,6 +568,14 @@ namespace Trisoft.ISHRemote
                 _userRoleClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userRoleClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _userRoleClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _userRoleClient.ChannelFactory.CreateChannel();
 #endif
@@ -626,6 +604,14 @@ namespace Trisoft.ISHRemote
                 _userGroupClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userGroupClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _userGroupClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _userGroupClient.ChannelFactory.CreateChannel();
 #endif
@@ -654,6 +640,14 @@ namespace Trisoft.ISHRemote
                 _listOfValuesClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _listOfValuesClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _listOfValuesClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _listOfValuesClient.ChannelFactory.CreateChannel();
 #endif
@@ -682,6 +676,14 @@ namespace Trisoft.ISHRemote
                 _publicationOutputClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _publicationOutputClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _publicationOutputClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _publicationOutputClient.ChannelFactory.CreateChannel();
 #endif
@@ -710,6 +712,14 @@ namespace Trisoft.ISHRemote
                 _outputFormatClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _outputFormatClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _outputFormatClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _outputFormatClient.ChannelFactory.CreateChannel();
 #endif
@@ -738,6 +748,14 @@ namespace Trisoft.ISHRemote
                 _settingsClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _settingsClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _settingsClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _settingsClient.ChannelFactory.CreateChannel();
 #endif
@@ -766,6 +784,14 @@ namespace Trisoft.ISHRemote
                 _EDTClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _EDTClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _EDTClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _EDTClient.ChannelFactory.CreateChannel();
 #endif
@@ -794,6 +820,14 @@ namespace Trisoft.ISHRemote
                 _eventMonitorClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _eventMonitorClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _eventMonitorClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _eventMonitorClient.ChannelFactory.CreateChannel();
 #endif
@@ -822,6 +856,14 @@ namespace Trisoft.ISHRemote
                 _baselineClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _baselineClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _baselineClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _baselineClient.ChannelFactory.CreateChannel();
 #endif
@@ -850,6 +892,14 @@ namespace Trisoft.ISHRemote
                 _metadataBindingClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _metadataBindingClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _metadataBindingClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _metadataBindingClient.ChannelFactory.CreateChannel();
 #endif
@@ -878,6 +928,14 @@ namespace Trisoft.ISHRemote
                 _searchClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _searchClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _searchClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _searchClient.ChannelFactory.CreateChannel();
 #endif
@@ -906,6 +964,14 @@ namespace Trisoft.ISHRemote
                 _translationJobClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _translationJobClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _translationJobClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _translationJobClient.ChannelFactory.CreateChannel();
 #endif
@@ -934,6 +1000,14 @@ namespace Trisoft.ISHRemote
                 _translationTemplateClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _translationTemplateClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _translationTemplateClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _translationTemplateClient.ChannelFactory.CreateChannel();
 #endif
@@ -961,8 +1035,16 @@ namespace Trisoft.ISHRemote
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
                 _backgroundTaskClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _backgroundTaskClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                _backgroundTaskClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
+                {
+                    _backgroundTaskClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
             }
             return _backgroundTaskClient.ChannelFactory.CreateChannel();
 #endif
@@ -1202,11 +1284,17 @@ namespace Trisoft.ISHRemote
         /// <returns>The connection configuration.</returns>
         private XDocument LoadConnectionConfiguration()
         {
-            var client = new HttpClient();
-            client.Timeout = _connectionParameters.Timeout;
+            HttpClientHandler handler = new HttpClientHandler();
+            if (_connectionParameters.IgnoreSslPolicyErrors)
+            {
+                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            }
+            handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
+            var httpClient = new HttpClient(handler);
+            httpClient.Timeout = _connectionParameters.Timeout;
             var connectionConfigurationUri = new Uri(InfoShareWSBaseUri, "connectionconfiguration.xml");
-            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{client.Timeout}]");
-            var responseMessage = client.GetAsync(connectionConfigurationUri).Result;
+            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{httpClient.Timeout}]");
+            var responseMessage = httpClient.GetAsync(connectionConfigurationUri).Result;
             string response = responseMessage.Content.ReadAsStringAsync().Result;
 
             var connectionConfiguration = XDocument.Parse(response);
@@ -1257,7 +1345,7 @@ namespace Trisoft.ISHRemote
 #if NET6_0_OR_GREATER
             if (uriElement.Value.ToLower().EndsWith("windowsmixed"))
             {
-                throw new PlatformNotSupportedException($"Only /wstrust/mixed/username is supported since NET6+/PowerShell7+, windowsmixed is not. IssuerUrl[{uriElement.Value}]");
+                throw new PlatformNotSupportedException($"PowerShell7+/NET6+ only supports /wstrust/mixed/username. Windows PowerShell 5.1/NET4.8 supports /wstrust/mixed/username and windowsmixed (aka Windows Authentication). IssuerUrl[{uriElement.Value}] PlatformVersion[{Environment.Version}]");
             }
 #endif
             _logger.WriteVerbose($"Connecting to IssuerWSTrustUrl[{uriElement.Value}]");

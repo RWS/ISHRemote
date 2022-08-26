@@ -20,33 +20,25 @@ As `release/v1` exists to maintain the fielded releases, experimenting on `maste
 
 See [ReleaseNotes-ISHRemote-7.0.md](./ReleaseNotes-ISHRemote-7.0.md)
 
-## Project Creation
-
-Write some words on the build setup
-* `XmlDoc2CmdletDoc` run once on NET48 build, reused on NET6 build (no more NET3.1 build)
-* Side-by-side multiplatform decided at runtim in `psm1` file
-* CI
 
 ## Next
-1. Is `CertificateValidationHelper.cs` and `ServicePointManagerHelper.cs` still the way to do certificate bypass?  Not according to https://github.com/dotnet/runtime/issues/26048 perhaps needs platform-pragma between Windows PowerShell and PowerShell (Core). Nope solved it via `#115 Enabling Tls13 and IshSession based IgnoreSslPolicyErrors overwrite by switching to ChannelFactor instead of SoapClient. Crosslinking #102 on Tls13 and #22 as IshSession control Ssl-overwrite instead of AppDomain`
-    > In .NET Core, ServicePointManager affects only HttpWebRequest. It does not affect HttpClient. You should be able to use HttpClientHandler.ServerCertificateValidationCallback to achieve the same.
-In .NET Framework, the built-in HttpClient is built on top of HttpWebRequest, therefore ServicePointManager settings will apply to it.
-3. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
+1. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
    1. Folder25.Create -> API30.Create (ready)
    2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (ready)
    3. Folder25.Delete -> API30.DeleteFolder (ready)
    4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
-5. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
+2. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
    1. When the root `__ISHRemote` folder is missing after a database restore. Or simply invalid username/password combinations.
-   2. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
-   3. You should have initial state Draft by element name
-   4. You should have a direct Draft to Released status transition for your user
-   5. You should have system management user role to allow renaming System folder test
-   6. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
-   7. Should Solr be running to do Search-IshDocumentObj
-7. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
+   2. When the root `__ISHRemote` folder is not empty, suggest manual cleanup (or force cleanup?)
+   3. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
+   4. You should have initial state Draft by element name
+   5. You should have a direct Draft to Released status transition for your user
+   6. You should have system management user role to allow renaming System folder test
+   7. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
+   8. Should Solr be running to do Search-IshDocumentObj
+3. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
 
 
 # Attempt 1/2 - Branch 115 History below

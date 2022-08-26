@@ -38,14 +38,18 @@ namespace Trisoft.ISHRemote
         /// <summary>
         /// Timeout to control Send/Receive timeouts of WCF when issuing a token
         /// </summary>
-        public TimeSpan IssueTimeout { get; set; }
+        public TimeSpan IssueTimeout { get { return Timeout; } }
         /// <summary>
         /// Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies
         /// </summary>
-        public TimeSpan ServiceTimeout { get; set; }
+        public TimeSpan ServiceTimeout { get { return Timeout; } }
         /// <summary>
         /// If True, authenticate immediately; otherwise, authenticate on the first service request.
         /// </summary>
-        public bool AutoAuthenticate { get; set; }
+        public bool AutoAuthenticate { get; set; } = false;
+        /// <summary>
+        /// If True, certificate validation for HTTPS and the Service will be skipped
+        /// </summary>
+        public bool IgnoreSslPolicyErrors { get; set; } = false;
     }
 }

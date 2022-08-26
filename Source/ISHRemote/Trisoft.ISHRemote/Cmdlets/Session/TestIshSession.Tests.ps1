@@ -83,22 +83,6 @@ Describe "Test-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context "Test-IshSession TimeoutIssue" {
-		It "Parameter TimeoutIssue Invalid" {
-			{ Test-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue "INVALIDTimeoutIssue" } | Should -Throw
-		}
-		It "IshSession.TimeoutIssue set to 1ms execution" {
-			# The request channel timed out while waiting for a reply after 00:00:00.0000017. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.
-			Test-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue (New-Object TimeSpan(0,0,0,0,1)) | Should -Be $false
-		}
-	}
-	
-	Context "Test-IshSession TimeoutService" {
-		It "Parameter TimeoutService Invalid" {
-			{ Test-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService "INVALIDTIMEOUTSERVICE" } | Should -Throw
-		}
-	}
-
 	Context "Test-IshSession IgnoreSslPolicyErrors" {
 		It "Parameter IgnoreSslPolicyErrors specified negative flow (segment-one-url)" -Skip {
 			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
@@ -111,16 +95,6 @@ Describe "Test-IshSession" -Tags "Read" {
 			Test-IshSession -WsBaseUrl $webServicesBaseUrlToComputerName -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore | Should -Be $true
 		}
 	}
-
-	Context "New-IshSession ExplicitIssuer" {
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using full hostname" {
-			Test-IshSession -WsBaseUrl $webServicesBaseUrl -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword | Should -BeExactly $true
-		}
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using localhost" -Skip {
-			Test-IshSession -WsBaseUrl $localWebServicesBaseUrl -WsTrustIssuerUrl $localWsTrustIssuerUrl -WsTrustIssuerMexUrl $localWsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore | Should -BeExactly $true
-		}
-	}
-
 }
 
 AfterAll {

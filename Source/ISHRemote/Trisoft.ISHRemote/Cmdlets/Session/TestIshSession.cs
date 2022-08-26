@@ -62,9 +62,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </example>
     /// <example>
     /// <code>
-    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -TimeoutIssue (New-TimeSpan -Seconds 120) -TimeoutService (New-TimeSpan -Seconds 600)
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin"
     /// </code>
-    /// <para>Building a session for the chosen service based on username/password authentication. The Timeout parameters, expressed as TimeSpan objects, control Send/Receive timeouts of WCF when issuing a token or working with proxies.</para>
+    /// <para>Building a session for the chosen service based on username/password authentication. The Timeout parameter, expressed as TimeSpan object, controls Send/Receive timeouts of WCF when issuing a token or working with proxies.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -76,8 +76,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </example>
     /// <example>
     /// <code>
-    /// $DebugPreference   = "Continue"
-    /// $VerbosePreference = "Continue" 
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/Internal/" -IshUserName "admin" -IshPassword "admin"
     /// </code>
     /// <para>When ISHDeploy Enable-ISHIntegrationSTSInternalAuthentication was executed on the server, the web services are directed to a secondary Secure Token Service (STS). This happens through the '/Internal/' postfix which in essence points to a different connectionconfiguration.xml for initialization.</para>
@@ -93,19 +91,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -IgnoreSslPolicyErrors -Verbose
     /// Invoke-WebRequest -Uri "https://example.com/ISHCM/InfoShareAuthor.asp" -UseBasicParsing
     /// </code>
-    /// <para>These lines of code activate and hence test the WebServices (ISHWS-activation), SecureTokenServices (ISHSTS-activation) and validates the credentials in the 'InfoShare' database (ConnectionString-activation). The extra .ASP line triggers WebClient (ISHCM-activation) and the COM+ application (Trisoft-InfoShare-Author).</para>
-    /// </example>
-    /// <example>
-    /// <code>
-    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -WsTrustIssuerUrl "https://example.com/ISHSTS/issue/wstrust/mixed/username" -WsTrustIssuerMexUrl "https://example.com/ISHSTS/issue/wstrust/mex" -PSCredential "Admin"
-    /// </code>
-    /// <para>Test the creation of a session with explicit issuer. In this example, the issuer is the ISHSTS next to the ISHWS.</para>
-    /// </example>
-    /// <example>
-    /// <code>
-    /// Test-IshSession -WsBaseUrl "https://localhost/ISHWS/" -WsTrustIssuerUrl "https://localhost/ISHSTS/issue/wstrust/mixed/username" -WsTrustIssuerMexUrl "https://localhost/ISHSTS/issue/wstrust/mex" -PSCredential "Admin" -IgnoreSslPolicyErrors
-    /// </code>
-    /// <para>Test the creation of a session with explicit issuer while using only local endpoints.</para>
+    /// <para>These lines of code activate and hence test the WebServices (ISHWS-activation), SecureTokenServices (ISHSTS-activation) and validates the credentials in the 'InfoShare' database (ConnectionString-activation).</para>
     /// </example>
     [Cmdlet(VerbsDiagnostic.Test, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(bool))]
@@ -117,35 +103,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory-ExplicitIssuer")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential-ExplicitIssuer")]
         [ValidateNotNullOrEmpty]
         public string WsBaseUrl { get; set; }
-
-        /// <summary>
-        /// <para type="description">The Security Token Service WS-Trust issuer url! For example: "https://example.com/ISHSTS/issue/wstrust/mixed/username"</para>
-        /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory-ExplicitIssuer")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential-ExplicitIssuer")]
-        [ValidateNotNullOrEmpty]
-        public string WsTrustIssuerUrl { get; set; }
-
-        /// <summary>
-        /// <para type="description">The Security Token Service Metata Exchange Endpoint url! For example: "https://example.com/ISHSTS/issue/wstrust/mex"</para>
-        /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory-ExplicitIssuer")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential-ExplicitIssuer")]
-        [ValidateNotNullOrEmpty]
-        public string WsTrustIssuerMexUrl { get; set; }
-
+        
         /// <summary>
         /// <para type="description">Standard PowerShell Credential class</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential-ExplicitIssuer")]
         [ValidateNotNullOrEmpty]
         [Credential]
         public PSCredential PSCredential { get; set; }
@@ -154,7 +118,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <para type="description">Username to login into Tridion Docs Content Manager. When left empty, fall back to ActiveDirectory.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
         [AllowEmptyString]
         public string IshUserName
         {
@@ -166,7 +129,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <para type="description">Password to login into Tridion Docs Content Manager</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword-ExplicitIssuer")]
         [AllowEmptyString]
         public string IshPassword
         {
@@ -175,9 +137,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml Defaults to 20 seconds.</para>
+        /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml Defaults to 30 minutes.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         public TimeSpan Timeout
         {
             get { return _timeout; }
@@ -185,29 +148,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of WCF when issuing a token. Defaults to 30 minutes.</para>
-        /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
-        public TimeSpan TimeoutIssue
-        {
-            get { return _timeoutIssue; }
-            set { _timeoutIssue = value; }
-        }
-
-        /// <summary>
-        /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of WCF for ISHWS proxies. Defaults to 30 minutes.</para>
-        /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
-        public TimeSpan TimeoutService
-        {
-            get { return _timeoutService; }
-            set { _timeoutService = value; }
-        }
-
-        /// <summary>
         /// <para type="description">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false)]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         public SwitchParameter IgnoreSslPolicyErrors
         {
             get { return _ignoreSslPolicyErrors; }
@@ -219,9 +163,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         private string _ishUserName = null;
         private string _ishPassword = null;
         private SecureString _ishSecurePassword = null;
-        private TimeSpan _timeout = new TimeSpan(0,0,20);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
-        private TimeSpan _timeoutIssue = new TimeSpan(0, 30, 0);
-        private TimeSpan _timeoutService = new TimeSpan(0, 30, 0);
+        private TimeSpan _timeout = new TimeSpan(0, 30, 0);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private bool _ignoreSslPolicyErrors = false;
         #endregion
         protected override void ProcessRecord()
@@ -251,21 +193,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                     _ishSecurePassword = null;
                 }
                 WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + "]");
-                WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] TimeoutIssue[{_timeoutIssue}] TimeoutService[{_timeoutService}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
-
-                IshSession ishSession = null;
-                /* If the PSCmdlet is not accepted switch the condition to
-                 * if (!String.IsNullOrWhiteSpace(WsTrustIssuerMexUrl) && !String.IsNullOrWhiteSpace(WsTrustIssuerMexUrl))
-                 */
-                if (this.ParameterSetName.EndsWith("-ExplicitIssuer"))
-                {
-                    WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] WsTrustIssuerUrl[{WsTrustIssuerUrl}] WsTrustIssuerMexUrl[{WsTrustIssuerMexUrl}]");
-                    ishSession = new IshSession(Logger, WsBaseUrl, WsTrustIssuerUrl, WsTrustIssuerMexUrl, _ishUserName, _ishSecurePassword, _timeout, _timeoutIssue, _timeoutService, _ignoreSslPolicyErrors);
-                }
-                else
-                {
-                    ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _timeoutIssue, _timeoutService, _ignoreSslPolicyErrors);
-                }
+                WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
+                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _ignoreSslPolicyErrors);
 
                 // Keep the IshSession initialization as minimal as possible
                 // Do early load of IshTypeFieldSetup (either <13-TriDKXmlSetup-based or >=13-RetrieveFieldSetupByIshType-API-based) for

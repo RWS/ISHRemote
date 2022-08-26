@@ -119,14 +119,8 @@ Describe "New-IshSession" -Tags "Read" {
 		It "IshSession.ServerVersion contains 4 dot-seperated parts" {
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
-		It "IshSession.Timeout defaults to 20s" {
-			$ishSession.Timeout.TotalMilliseconds -eq 20000 | Should -Be $true
-		}
-		It "IshSession.TimeoutIssue defaults to 30m" {
-			$ishSession.TimeoutIssue.TotalMilliseconds -eq 1800000 | Should -Be $true
-		}
-		It "IshSession.TimeoutService defaults to 30m" {
-			$ishSession.TimeoutService.TotalMilliseconds -eq 1800000 | Should -Be $true
+		It "IshSession.Timeout defaults to 30m" {
+			$ishSession.Timeout.TotalMinutes -eq 30 | Should -Be $true
 		}
 		It "IshSession.StrictMetadataPreference" {
 			$ishSession.StrictMetadataPreference | Should -Be "Continue"
@@ -163,38 +157,6 @@ Describe "New-IshSession" -Tags "Read" {
 			{
 				$invalidWebServicesBaseUrl = $webServicesBaseUrl -replace "://", "://INVALID"
 				$ishSession = New-IshSession -WsBaseUrl $invalidWebServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-Object TimeSpan(0,0,0,0,1))
-			} | Should -Throw
-		}
-	}
-
-	Context "New-IshSession TimeoutIssue" {
-		It "Parameter TimeoutIssue Invalid" {
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue "INVALIDTimeoutIssue" } | Should -Throw
-		}
-		It "IshSession.TimeoutIssue set to 30s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue (New-TimeSpan -Seconds 30) -WarningAction Ignore -ErrorAction Ignore
-			$ishSession.TimeoutIssue.TotalMilliseconds  | Should -Be "30000"
-		}
-		It "IshSession.TimeoutIssue set to 1ms execution" {
-			# The request channel timed out while waiting for a reply after 00:00:00.0000017. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutIssue (New-Object TimeSpan(0,0,0,0,1)) } | Should -Throw
-		}
-	}
-	
-	Context "New-IshSession TimeoutService" {
-		It "Parameter TimeoutService Invalid" {
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService "INVALIDTIMEOUTSERVICE" } | Should -Throw
-		}
-		It "IshSession.TimeoutService set to 40s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService (New-TimeSpan -Seconds 40) -WarningAction Ignore -ErrorAction Ignore
-			$ishSession.TimeoutService.TotalMilliseconds  | Should -Be "40000"
-		}
-		It "IshSession.TimeoutService set to 1 tickout execution" {
-			# The request channel timed out attempting to send after 00:00:00.0010000. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout.
-			{ 
-				$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -TimeoutService (New-Object TimeSpan(1)) 
-				# Forcing a GetVersion web service call, probably needs a better call because GetVersion can be too fast, so nothing is thrown, perhaps IshTypeFieldDefinition
-				$ishTypeFieldDefinition = $ishSession.IshTypeFieldDefinition
 			} | Should -Throw
 		}
 	}
@@ -248,13 +210,6 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 			$ishSession.Dispose()
 		} #>
-	}
-	Context "New-IshSession ExplicitIssuer" {
-		It "Parameter WsTrustIssuerUrl and WsTrustIssuerMexUrl are using full hostname" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -WsTrustIssuerUrl $wsTrustIssuerUrl -WsTrustIssuerMexUrl $wsTrustIssuerMexUrl -IshUserName $ishUserName -IshPassword $ishPassword
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
-		}
 	}
 
 	Context "New-IshSession returns IshSession ServiceReferences" {
