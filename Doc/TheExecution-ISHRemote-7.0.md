@@ -22,14 +22,15 @@ See [ReleaseNotes-ISHRemote-7.0.md](./ReleaseNotes-ISHRemote-7.0.md)
 
 
 ## Next
-1. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
+1. (https://stackoverflow.com/questions/2763592/the-communication-object-system-servicemodel-channels-servicechannel-cannot-be?utm_medium=organic&amp) or (https://social.msdn.microsoft.com/Forums/vstudio/en-US/fc60cd6d-1df9-47ff-90a8-dd8d5de1f080/the-communication-object-cannot-be-used-because-it-is-in-the-faulted-state?forum=wcf) because of a server-side erorr on the customer dev boxes?
+2. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
    1. Folder25.Create -> API30.Create (ready)
    2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (ready)
    3. Folder25.Delete -> API30.DeleteFolder (ready)
    4. Folder25.GetMetadataByIshFolderRef -> API30.GetFolder (ready)
    5. Folder25.GetMetadata -> API30.GetFolderByFolderPath, perhaps GetRootFolderList (NotPlanned)
    6. Folder25.GetSubFoldersByIshFolderRef -> API30.GetFolderObjectList (ready)
-2. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
+3. Should we add a `\Cmdlets\_TestEnvironment\Prerequisites.Tests.ps1` that gives hints on what you did wrong, how to correct it
    1. When the root `__ISHRemote` folder is missing after a database restore. Or simply invalid username/password combinations.
    2. When the root `__ISHRemote` folder is not empty, suggest manual cleanup (or force cleanup?)
    3. You can use `...debug.ps1` to override languages if the current language or resolution does not exist in DLANGUAGES over Get-IshLovValues
@@ -38,7 +39,7 @@ See [ReleaseNotes-ISHRemote-7.0.md](./ReleaseNotes-ISHRemote-7.0.md)
    6. You should have system management user role to allow renaming System folder test
    7. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
    8. Should Solr be running to do Search-IshDocumentObj
-3. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
+4. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
 
 
 # Attempt 1/2 - Branch 115 History below
