@@ -331,6 +331,9 @@ namespace Trisoft.ISHRemote
             tokenParameters.CacheIssuedTokens = true;
             tokenParameters.MessageSecurityVersion = MessageSecurityVersion.WSSecurity11WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10;
 
+            // AppliesTo is currently implicitly set to full case-sensitive .../ISHWS/....svc urls, and not .../ISHWS/ using ISHSTS historic fallback mechanism
+            // https://github.com/dotnet/wcf/issues/4542 or https://dotnetfiddle.net/h3C2ZC samples go over CreateSecurityTokenProvider and allows setting AppliesTo but forces a completely different code base
+
             _commonBinding = new System.ServiceModel.Federation.WSFederationHttpBinding(tokenParameters);
             _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
             _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
@@ -378,15 +381,21 @@ namespace Trisoft.ISHRemote
         /// <returns>The proxy</returns>
         public Annotation25ServiceReference.Annotation GetAnnotation25Channel()
         {
+#if NET48
             if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
             }
-#if NET48
             return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
+            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            {
+                _annotationClient = new Annotation25ServiceReference.AnnotationClient(
+                    _commonBinding,
+                    new EndpointAddress(_serviceUriByServiceName[Annotation25]));
+            }
             _annotationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
             _annotationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
             _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -416,7 +425,7 @@ namespace Trisoft.ISHRemote
             }
             return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_applicationClient == null)
+            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
@@ -452,7 +461,7 @@ namespace Trisoft.ISHRemote
             }
             return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_documentObjClient == null)
+            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
@@ -488,7 +497,7 @@ namespace Trisoft.ISHRemote
             }
             return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_folderClient == null)
+            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
@@ -524,7 +533,7 @@ namespace Trisoft.ISHRemote
             }
             return _userClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_userClient == null)
+            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
@@ -560,7 +569,7 @@ namespace Trisoft.ISHRemote
             }
             return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_userRoleClient == null)
+            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
@@ -596,7 +605,7 @@ namespace Trisoft.ISHRemote
             }
             return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_userGroupClient == null)
+            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
@@ -632,7 +641,7 @@ namespace Trisoft.ISHRemote
             }
             return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_listOfValuesClient == null)
+            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
@@ -668,7 +677,7 @@ namespace Trisoft.ISHRemote
             }
             return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_publicationOutputClient == null)
+            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
@@ -704,7 +713,7 @@ namespace Trisoft.ISHRemote
             }
             return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_outputFormatClient == null)
+            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
@@ -740,7 +749,7 @@ namespace Trisoft.ISHRemote
             }
             return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_settingsClient == null)
+            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
@@ -776,7 +785,7 @@ namespace Trisoft.ISHRemote
             }
             return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_EDTClient == null)
+            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
@@ -812,7 +821,7 @@ namespace Trisoft.ISHRemote
             }
             return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_eventMonitorClient == null)
+            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
@@ -848,7 +857,7 @@ namespace Trisoft.ISHRemote
             }
             return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_baselineClient == null)
+            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
@@ -884,7 +893,7 @@ namespace Trisoft.ISHRemote
             }
             return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_metadataBindingClient == null)
+            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
@@ -920,7 +929,7 @@ namespace Trisoft.ISHRemote
             }
             return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_searchClient == null)
+            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
@@ -956,7 +965,7 @@ namespace Trisoft.ISHRemote
             }
             return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_translationJobClient == null)
+            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
@@ -992,7 +1001,7 @@ namespace Trisoft.ISHRemote
             }
             return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_translationTemplateClient == null)
+            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
@@ -1029,7 +1038,7 @@ namespace Trisoft.ISHRemote
             }
             return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
-            if (_backgroundTaskClient == null)
+            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
@@ -1049,9 +1058,9 @@ namespace Trisoft.ISHRemote
             return _backgroundTaskClient.ChannelFactory.CreateChannel();
 #endif
         }
-#endregion
+        #endregion
 
-#region Private Properties
+        #region Private Properties
         /// <summary>
         /// Gets the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
         /// </summary>
@@ -1113,7 +1122,7 @@ namespace Trisoft.ISHRemote
             _serviceUriByServiceName.Add(PublicationOutput25, new Uri(InfoShareWSBaseUri, "Wcf/API25/PublicationOutput.svc"));
             _serviceUriByServiceName.Add(OutputFormat25, new Uri(InfoShareWSBaseUri, "Wcf/API25/OutputFormat.svc"));
             _serviceUriByServiceName.Add(Settings25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Settings.svc"));
-            _serviceUriByServiceName.Add(EDT25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Edt.svc"));
+            _serviceUriByServiceName.Add(EDT25, new Uri(InfoShareWSBaseUri, "Wcf/API25/EDT.svc"));
             _serviceUriByServiceName.Add(EventMonitor25, new Uri(InfoShareWSBaseUri, "Wcf/API25/EventMonitor.svc"));
             _serviceUriByServiceName.Add(Baseline25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Baseline.svc"));
             _serviceUriByServiceName.Add(MetadataBinding25, new Uri(InfoShareWSBaseUri, "Wcf/API25/MetadataBinding.svc"));

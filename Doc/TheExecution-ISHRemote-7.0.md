@@ -23,6 +23,7 @@ See [ReleaseNotes-ISHRemote-7.0.md](./ReleaseNotes-ISHRemote-7.0.md)
 
 ## Next
 1. (https://stackoverflow.com/questions/2763592/the-communication-object-system-servicemodel-channels-servicechannel-cannot-be?utm_medium=organic&amp) or (https://social.msdn.microsoft.com/Forums/vstudio/en-US/fc60cd6d-1df9-47ff-90a8-dd8d5de1f080/the-communication-object-cannot-be-used-because-it-is-in-the-faulted-state?forum=wcf) because of a server-side erorr on the customer dev boxes?
+   1. Client side error message was `An error occurred when processing the security tokens in the message.`, which after enabling \ISHWS\web.config WCF diagnostics was more detailed to `ID1038: The AudienceRestrictionCondition was not valid because the specified Audience is not present in AudienceUris. Audience: 'https://lvndevdemeyer01.global.sdl.corp/ISHWSDITA/Wcf/API25/Edt.svc'`. NET6 code offers the full .svc url while NET48 ends with ISHWSDITA/ in this example. And this is all case-sensitive, ISHSTS contains `EDT.svc` while the code contained `Edt.svc`.
 2. Migrate `*-IshFolder` cmdlets as you need them for almost all tests anyway. Easy to do performance runs on Add-IshFolder and Remove-IshFolder. Later we have the following API25 to API30 mapping
    1. Folder25.Create -> API30.Create (ready)
    2. Folder25.RetrieveMetadataByIshFolderRefs -> API30.GetFolderList (ready)
