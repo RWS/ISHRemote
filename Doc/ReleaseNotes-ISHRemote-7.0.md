@@ -22,14 +22,14 @@ Encryption in flight - https - can now also go over Tls 1.3 while before release
 
 Again, most cmdlets and business logic are fully compatible, except the below:
 
-1. `New-IshSession` and `Test-IshSession` hosted by PowerShell (Core) 7+ can no longer do `windowsmixed` authentication, also known as Windows Authentication typically required for Microsoft ADFS. Note that these cmdlets hosted by Windows PowerShell 5.1 still suppored Windows Authenticationas before.
+1. `New-IshSession` and `Test-IshSession` hosted by PowerShell (Core) 7+ can no longer do `windowsmixed` authentication, also known as Windows Authentication typically required for Microsoft ADFS. Note that these cmdlets hosted by Windows PowerShell 5.1 still suppored Windows Authentication as before.
     1. Parameter sets ending with `ExplicitIssuer` offering explicit WS-Trust Issuer Url `-WsTrustIssuerUrl` and WS-Trust Issuer Metadata Exchange Url `-WsTrustIssuerMexUrl` are removed.
     2. Parameters `-TimeoutIssue` and `-TimeoutService` are removed. Any usage is replaced by `-Timeout`.
     3. Parameter `-IshUserName` can still be left empty on Windows PowerShell 5.1/NET4.8 but will throw an error on PowerShell7+/NET6+ as Microsoft's [WSFederationHttpBinding](https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/) library so far has no support for the `windowsmixed` WS-Trust protocol variation.
     4. Parameter `-IgnoreSslPolicyErrors` still works as before! 
-        * On .NET Framework 4.8, the built-in HttpClient is built on top of HttpWebRequest, therefore ServicePointManager settings for the .NET AppDomain will apply to it.
+        * On .NET Framework 4.8, HttpClient is built on top of HttpWebRequest, therefore ServicePointManager settings for the .NET AppDomain will apply to it.
         * On .NET 6+, we switched away from ServicePointManager which only affected HttpWebRequest and not HttpClient. We switched to HttpClientHandler.DangerousAcceptAnyServerCertificateValidator and Client.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication.
-2. `New-IshObfuscatedFile` works as before (v0.14 and earlier) on Windows platforms on Windows PowerShell and PowerShell (Core). The cmdlet will give a warning that images cannot be obfuscated on non-Windows system because of missing platform extensions.
+2. `New-IshObfuscatedFile` works as before (v0.14 and earlier) on Windows platforms on Windows PowerShell and PowerShell (Core). The cmdlet will give a warning that images cannot be obfuscated on non-Windows systems because of missing Microsoft Platform Extensions.
 
 ## Breaking Changes - Requirements
 
@@ -39,9 +39,14 @@ Again, most cmdlets and business logic are fully compatible, except the below:
 
 * .NET 6.0+ expects **PowerShell 7** or up.
 
+* .NET Framework 4.8 code still uses single `AppliesTo` realm url like `https://ish.example.com/ISHWS/` since Knowledge Center 2016/12.0.0. Before the product used full `AppliesTo` urls like `https://ish.example.com/ISHWS/Wcf/API25/Application.svc`, all these legacy entries still exist in ISHSTS (and Microsoft ADFS scripts) but are now required again. .NET 6.0+ expects full `AppliesTo` urls. Otherwise you might get errors like:
+    1. Client side error message was `An error occurred when processing the security tokens in the message.` ([1](https://stackoverflow.com/questions/2763592/the-communication-object-system-servicemodel-channels-servicechannel-cannot-be?utm_medium=organic&amp)/[2](https://social.msdn.microsoft.com/Forums/vstudio/en-US/fc60cd6d-1df9-47ff-90a8-dd8d5de1f080/the-communication-object-cannot-be-used-because-it-is-in-the-faulted-state?forum=wcf)), which after enabling diagnostics in \ISHWS\web.config WCF diagnostics was more detailed to `ID1038: The AudienceRestrictionCondition was not valid because the specified Audience is not present in AudienceUris. Audience: 'https://ish.example.com/ISHWS/Wcf/API25/Edt.svc'`. .NET 6.0+ code offers the full .svc url while .NET 4.8 ends with ISHWS/ in this example. And this is all case-sensitive, ISHSTS contains `EDT.svc` while the code contained `Edt.svc`. A temporary workaround was adding the correct casing in ISHWS\web.config under `<system.identityModel><identityConfiguration...><audienceUris>`.
+    2. Client side error message was `An error occurred when processing the security tokens in the message.`, which after enabling diagnostics in \ISHWS\web.config WCF diagnostics was more detailed to `ID4022: The key needed to decrypt the encrypted security token could not be resolved. Ensure that the SecurityTokenResolver is populated with the required key.` This error only occured on managed systems (like sdlproducts.com) where a token-signing certificate rollover in ISHSTS was not done for two more recently added endpoints `Wcf/API25/Annotation.svc` and `Wcf/API25/BackgroundTask.svc` where on the relying party they were still reading `Encrypting Certificate CN=tokensigning4.sdlproducts.com` instead of `Encrypting Certificate CN=tokensigning5.sdlproducts.com`.
+
 * An explicit or implicit `Import-Module` cmdlet will load file `ISHRemote.psm1` from the `ISHRemote` module that in turn based on `$PSVersionTable.PSEdition` will decide if the .NET 4.8 binary or the .NET 6.0+ binary should be loaded. Note that both variations share the help (`Get-Help`) of the .NET 4.8 variation build by the `XmlDoc2CmdletDoc` package.
 
 * The compiled library of cmdlets will no longer be strong named with an RWS/fSDL private key. This only affects you if you wrote an application (not PowerShell script) on top of this library and if you in turn also signed your compiled application. #80 
+
 
 ## Performance
 

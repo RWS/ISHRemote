@@ -666,8 +666,10 @@ namespace Trisoft.ISHRemote.Objects.Public
             // ...dispose connection
             _connection.Dispose();
             // ...discard all channels
+            _annotation25 = null; 
             _application25 = null;
-            _baseline25 = null;
+            _backgroundTask25 = null; 
+            _baseline25 = null;            
             _documentObj25 = null;
             _EDT25 = null;
             _eventMonitor25 = null;
