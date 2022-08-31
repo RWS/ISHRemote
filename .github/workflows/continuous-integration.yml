@@ -3,6 +3,10 @@ name: Continuous Integration
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'Source/**'
+      - '*.TXT'
+      - '*.MD'
   pull_request:
     branches: [ master ]
 

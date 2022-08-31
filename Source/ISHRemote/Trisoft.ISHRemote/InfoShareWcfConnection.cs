@@ -27,6 +27,7 @@ using Trisoft.ISHRemote.Interfaces;
 using System.ServiceModel.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
+using System.IdentityModel.Selectors;
 
 #if NET48
 using System.IdentityModel.Protocols.WSTrust;
@@ -166,11 +167,12 @@ namespace Trisoft.ISHRemote
         /// Service URIs by service.
         /// </summary>
         private readonly Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
-#if NET48
+
         /// <summary>
 		/// The token that is used to access the services.
 		/// </summary>
 		private readonly Lazy<GenericXmlSecurityToken> _issuedToken;
+#if NET48
         /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
@@ -309,10 +311,11 @@ namespace Trisoft.ISHRemote
             _logger.WriteDebug($"Resolving Service Uris");
             ResolveServiceUris();
 
-#if NET48
+
             // The lazy initialization depends on all the initialization above.
             _issuedToken = new Lazy<GenericXmlSecurityToken>(IssueToken);
 
+#if NET48
             // Set the endpoints
             ResolveEndpoints(_connectionParameters.AutoAuthenticate);
 #else
@@ -360,16 +363,10 @@ namespace Trisoft.ISHRemote
         {
             get
             {
-#if NET48
-                // In NET Framework we have the actual issued token which we can check for expiring
+                // we have the actual issued token which we can check for expiring
                 bool result = IssuedToken.ValidTo.ToUniversalTime() >= DateTime.UtcNow;
                 //_logger.WriteDebug($"Token still valid? {result} ({IssuedToken.ValidTo.ToUniversalTime()} >= {DateTime.UtcNow})");
                 return result;
-#else
-                // In NET6_0_OR_GREATER has no token, the client according to link below refreshes itself
-                // https://docs.microsoft.com/en-us/dotnet/api/system.servicemodel.security.issuedtokenclientcredential.cacheissuedtokens?view=netframework-4.8&viewFallbackFrom=net-6.0
-                return true;
-#endif
             }
         }
 #endregion Properties
@@ -1093,7 +1090,7 @@ namespace Trisoft.ISHRemote
                 return _issuerWSTrustEndpointUri.Value;
             }
         }
-#if NET48
+
         /// <summary>
         /// Gets the token that is used to access the services.
         /// </summary>
@@ -1104,7 +1101,6 @@ namespace Trisoft.ISHRemote
                 return _issuedToken.Value;
             }
         }
-#endif
 #endregion
 
 #region Private Methods
@@ -1156,6 +1152,7 @@ namespace Trisoft.ISHRemote
             }
             _logger.WriteDebug("Resolved endpoints");
         }
+#endif
 
         /// <summary>
         /// Issues the token
@@ -1163,7 +1160,8 @@ namespace Trisoft.ISHRemote
         /// </summary>
         private GenericXmlSecurityToken IssueToken()
         {
-            _logger.WriteDebug("Issue Token");
+#if NET48
+            _logger.WriteDebug("Issue Token (NET48)");
             var issuerEndpoint = FindIssuerEndpoint();
 
             var requestSecurityToken = new RequestSecurityToken
@@ -1186,7 +1184,9 @@ namespace Trisoft.ISHRemote
                     _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}]");
                     channel = (WSTrustChannel)factory.CreateChannel();
                     RequestSecurityTokenResponse requestSecurityTokenResponse;
-                    return channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
+                    var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
+                    _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                    return genericXmlToken;
                 }
                 catch
                 {
@@ -1194,7 +1194,9 @@ namespace Trisoft.ISHRemote
                     requestSecurityToken.AppliesTo = new EndpointReference(_serviceUriByServiceName[Application25].AbsoluteUri);
                     _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}] as fallback on 10.0.x/11.0.x");
                     RequestSecurityTokenResponse requestSecurityTokenResponse;
-                    return channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
+                    var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
+                    _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                    return genericXmlToken;
                 }
                 finally
                 {
@@ -1205,8 +1207,52 @@ namespace Trisoft.ISHRemote
                     factory.Abort();
                 }
             }
+#else
+            _logger.WriteDebug("Issue Token (NET6+)");
+            SecurityTokenProvider tokenProvider = null;
+            try
+            {
+                _logger.WriteDebug($"Issue Token for AppliesTo[{_infoShareWSAppliesTo.Value.AbsoluteUri}]");
+                var issuerWS2007HttpBinding = new WS2007HttpBinding();
+                // Originals of UserName Endpoint STS · Issue #4542 · dotnet/wcf https://github.com/dotnet/wcf/issues/4542
+                issuerWS2007HttpBinding.Security.Mode = SecurityMode.TransportWithMessageCredential;
+                issuerWS2007HttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+                issuerWS2007HttpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+                issuerWS2007HttpBinding.Security.Message.EstablishSecurityContext = false;
+                issuerWS2007HttpBinding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Default;
+
+                var tokenParams = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerWS2007HttpBinding, new EndpointAddress(IssuerWSTrustEndpointUri));
+                tokenParams.KeyType = SecurityKeyType.BearerKey; // "http://schemas.microsoft.com/idfx/keytype/bearer";
+
+                var clientCredentials = new ClientCredentials();
+                clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                var trustCredentials = new WSTrustChannelClientCredentials(clientCredentials);
+                var tokenManager = trustCredentials.CreateSecurityTokenManager();
+
+                var tokenRequirement = new SecurityTokenRequirement();
+                EndpointAddress appliesTo = new EndpointAddress(_infoShareWSAppliesTo.Value.AbsoluteUri); //Realm WITHOUT Application.svc!!
+                tokenRequirement.Properties["http://schemas.microsoft.com/ws/2006/05/servicemodel/securitytokenrequirement/IssuedSecurityTokenParameters"] = tokenParams;
+                tokenRequirement.Properties["http://schemas.microsoft.com/ws/2006/05/servicemodel/securitytokenrequirement/TargetAddress"] = appliesTo;
+
+                tokenProvider = tokenManager.CreateSecurityTokenProvider(tokenRequirement);
+                ((ICommunicationObject)tokenProvider).Open();
+                // tokenProvider.SupportsTokenRenewal = false currently??
+                var genericXmlToken = (GenericXmlSecurityToken)tokenProvider.GetToken(_connectionParameters.IssueTimeout);
+                _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                return genericXmlToken;
+            }
+            finally
+            {
+                if (tokenProvider != null)
+                {
+                    ((ICommunicationObject)tokenProvider).Close();
+                }
+            }
+#endif
         }
 
+#if NET48
         /// <summary>
         /// Extract the Issuer endpoint and configure the appropriate one
         /// </summary>
@@ -1287,11 +1333,11 @@ namespace Trisoft.ISHRemote
         }
 #endif
 
-        /// <summary>
-        /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
-        /// </summary>
-        /// <returns>The connection configuration.</returns>
-        private XDocument LoadConnectionConfiguration()
+            /// <summary>
+            /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
+            /// </summary>
+            /// <returns>The connection configuration.</returns>
+            private XDocument LoadConnectionConfiguration()
         {
             HttpClientHandler handler = new HttpClientHandler();
             if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1486,17 +1532,69 @@ namespace Trisoft.ISHRemote
         /// </summary>
         public void Dispose()
         {
+            if (_annotationClient != null)
+            {
+                ((IDisposable)_annotationClient).Dispose();
+            }
             if (_applicationClient != null)
             {
                 ((IDisposable)_applicationClient).Dispose();
+            }
+            if (_backgroundTaskClient != null)
+            {
+                ((IDisposable)_backgroundTaskClient).Dispose();
+            }
+            if (_baselineClient != null)
+            {
+                ((IDisposable)_baselineClient).Dispose();
             }
             if (_documentObjClient != null)
             {
                 ((IDisposable)_documentObjClient).Dispose();
             }
+            if (_EDTClient != null)
+            {
+                ((IDisposable)_EDTClient).Dispose();
+            }
+            if (_eventMonitorClient != null)
+            {
+                ((IDisposable)_eventMonitorClient).Dispose();
+            }
             if (_folderClient != null)
             {
                 ((IDisposable)_folderClient).Dispose();
+            }
+            if (_listOfValuesClient != null)
+            {
+                ((IDisposable)_listOfValuesClient).Dispose();
+            }
+            if (_metadataBindingClient != null)
+            {
+                ((IDisposable)_metadataBindingClient).Dispose();
+            }
+            if (_outputFormatClient != null)
+            {
+                ((IDisposable)_outputFormatClient).Dispose();
+            }
+            if (_publicationOutputClient != null)
+            {
+                ((IDisposable)_publicationOutputClient).Dispose();
+            }
+            if (_searchClient != null)
+            {
+                ((IDisposable)_searchClient).Dispose();
+            }
+            if (_settingsClient != null)
+            {
+                ((IDisposable)_settingsClient).Dispose();
+            }
+            if (_translationJobClient != null)
+            {
+                ((IDisposable)_translationJobClient).Dispose();
+            }
+            if (_translationTemplateClient != null)
+            {
+                ((IDisposable)_translationTemplateClient).Dispose();
             }
             if (_userClient != null)
             {
@@ -1509,26 +1607,6 @@ namespace Trisoft.ISHRemote
             if (_userGroupClient != null)
             {
                 ((IDisposable)_userGroupClient).Dispose();
-            }
-            if (_listOfValuesClient != null)
-            {
-                ((IDisposable)_listOfValuesClient).Dispose();
-            }
-            if (_publicationOutputClient != null)
-            {
-                ((IDisposable)_publicationOutputClient).Dispose();
-            }
-            if (_outputFormatClient != null)
-            {
-                ((IDisposable)_outputFormatClient).Dispose();
-            }
-            if (_settingsClient != null)
-            {
-                ((IDisposable)_settingsClient).Dispose();
-            }
-            if (_EDTClient != null)
-            {
-                ((IDisposable)_EDTClient).Dispose();
             }
         }
         /// <summary>
