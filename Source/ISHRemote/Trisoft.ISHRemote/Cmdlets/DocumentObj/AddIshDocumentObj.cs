@@ -50,7 +50,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     ///                      Set-IshMetadataField -Name "FAUTHOR" -Level "Lng" -Value "admin"
     /// # add object
     /// $ishObject = Add-IshDocumentObj `
-    ///              -FolderId "0" `
+    ///              -FolderId "0" ` #use valid FolderId
     ///              -IshType "ISHModule" `
     ///              -Lng "en" `
     ///              -Metadata $ishMetadataFields `

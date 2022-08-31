@@ -4,7 +4,13 @@
 * allow business logic automation ranging from triggering publishing into the continuous integration pipeline over legacy data correction up to provisioning
 * show case code examples and API best practices
 
-![build](https://github.com/rws/ishremote/actions/workflows/continuous-integration.yml/badge.svg?branch=release/v1)
+# Versions
+
+| Name                     | Platform                                        | Branch         | Status                 |
+|--------------------------|-------------------------------------------------|----------------|------------------------|
+| [ISHRemote](https://www.powershellgallery.com/packages/ISHRemote/) latest         | PowerShell-5.1/NET-4.8 and PowerShell-7+/NET-6+ | master         | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg?branch=master)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
+| [ISHRemote](https://www.powershellgallery.com/packages/ISHRemote/) v1 and earlier | PowerShell-5.1/NET-4.8 | release/v1     | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg?branch=release/v1)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
+
 
 # Videos
 
@@ -30,10 +36,7 @@ Have a look at the [Automating tasks in Tridion Docs using PowerShell](https://y
 
 ## Prerequisites
 
-When you have Windows PowerShell 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 5.0... and PackageManagement is there implicitly.
-When you have a Windows PowerShell version lower than 5 on your client machine, the PSVersion entry in `$PSVersionTable` reads 4.0 or even 3.0. Note that the latest Knowledge Center 2016SP4/12.0.4 release is only verified with Windows PowerShell 4, so don't upgrade your servers. While Tridion Docs 13/13.0.0 is verified for Windows PowerShell 5.
-
-So we prefer you to upgrade to [Windows Management Framework 5.0](https://www.microsoft.com/en-us/download/details.aspx?id=50395).
+Windows PowerShell 5.1 and .NET Framework 4.8
 
 Note that we rely on `Windows PowerShell` (FullCLR), and not `PowerShell Core` (CoreCLR) which relies on `.NET Core`. Main reason is that the Core edition doesn't offer all supporting libraries for `WS-Trust` based authentication like `System.IdentityModel` and `System.ServiceModel`.
 

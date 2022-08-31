@@ -46,6 +46,6 @@ namespace Trisoft.ISHRemote
         /// <summary>
         /// If True, authenticate immediately; otherwise, authenticate on the first service request.
         /// </summary>
-        public bool AutoAuthenticate { get; set; }
+        public bool AutoAuthenticate { get; set; } = false;
     }
 }

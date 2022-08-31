@@ -181,7 +181,6 @@ namespace Trisoft.ISHRemote.Objects.Public
             var application25Proxy = _connection.GetApplication25Channel();
             _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel.GetVersion");
             _serverVersion = new IshVersion(application25Proxy.GetVersion());
-
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -443,7 +442,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _chunkSize = value; }
         }
 
-        #region Web Services Getters
+#region Web Services Getters
 
         public Annotation25ServiceReference.Annotation Annotation25
         {
@@ -711,7 +710,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        #endregion
+#endregion
 
         private void VerifyTokenValidity()
         {
@@ -721,8 +720,10 @@ namespace Trisoft.ISHRemote.Objects.Public
             // ...dispose connection
             _connection.Dispose();
             // ...discard all channels
+            _annotation25 = null; 
             _application25 = null;
-            _baseline25 = null;
+            _backgroundTask25 = null; 
+            _baseline25 = null;            
             _documentObj25 = null;
             _EDT25 = null;
             _eventMonitor25 = null;

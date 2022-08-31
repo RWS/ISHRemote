@@ -63,7 +63,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Application
         protected override void ProcessRecord()
         {
             //Get the version of the application
+            WriteDebug($"Before IshSession.Application25.GetVersion()");
             string version = IshSession.Application25.GetVersion();
+            WriteDebug($"After IshSession.Application25.GetVersion()");
             IshVersion versionObject = new IshVersion(version);
             WriteObject(versionObject);
         }

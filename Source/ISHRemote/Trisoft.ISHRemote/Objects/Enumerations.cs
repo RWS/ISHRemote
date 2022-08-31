@@ -81,7 +81,7 @@ namespace Trisoft.ISHRemote.Objects
             /// All is used when the valuetype is irrelevant.
             /// For example when a field needs to be removed and you do not want to loop all different value types.
             /// </summary>
-            /// TODO [Must] IshTypeFieldSetup - Remove confuzing value 'All' for ValueType usage, can be done once IshSession.IshTypeFieldSetup is implemented (see [ISHREMOTE-017])
+            /// TODO [Should] IshTypeFieldSetup - Remove confuzing value 'All' for ValueType usage, can be done once IshSession.IshTypeFieldSetup is implemented (see [ISHREMOTE-017])
             [StringValue("")]
             All
         }

@@ -205,6 +205,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (ParameterSetName == "ParameterGroup")
                 {
                     // Start event 
+                    WriteDebug($"Create StartEvent EventType[{EventType}] EventDescription[{EventDescription}]");
                     var startEventRequest = new StartEventRequest
                     {
                         description = EventDescription,
@@ -216,7 +217,8 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
 
                 if (ParameterSetName == "ParameterGroup" && StartAfter.HasValue)
                 { 
-                    // Create BackgroundTask 
+                    // Create BackgroundTask
+                    WriteDebug($"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}] StartAfter[{StartAfter}]");
                     var newBackgroundTaskWithStartAfterRequest = new CreateBackgroundTaskWithStartAfterRequest
                     {
                         eventType = EventType,
@@ -233,6 +235,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (ParameterSetName == "ParameterGroup" && !StartAfter.HasValue)
                 {
                     // Create BackgroundTask 
+                    WriteDebug($"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}]");
                     var newBackgroundTaskRequest = new CreateBackgroundTaskRequest
                     {
                         eventType = EventType,
