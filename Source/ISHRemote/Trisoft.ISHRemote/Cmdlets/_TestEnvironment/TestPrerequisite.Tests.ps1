@@ -37,9 +37,13 @@ Describe "Test-Prerequisite" -Tags "Read" {
 			$ishFolder = Get-IshFolder -IshSession $ishSession -FolderPath $folderTestRootPath
 			$ishFolder.IshFolderRef -ge 0 | Should -Be $true
 		}
-		It "ISHRemote root folder is empty" {
+		It "ISHRemote root folder has no failed test folders" {
+			$commands = (Get-Command -Module ISHRemote).Name
 			$subIshFolders = Get-IshFolder -IshSession $ishSession -FolderPath $folderTestRootPath -Recurse -Depth 2
-			$subIshFolders.length | Should -Be "2"  # __ISHRemote + TestPrerequisite.Tests.ps1
+			foreach($subIshFolderName in $subIshFolders.name)
+			{
+				if ($commands -contains $subIshFolderName) { $subIshFolderName | Should -Be "" }				 
+			}
 		}
 	}
 
