@@ -55,10 +55,10 @@ jobs:
         }
     
     - name: Archive ISHRemote module
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with: 
-        name: ISHRemote-module
-        path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/*.nupkg
+        name: ISHRemote-MainCI-Module
+        path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/
 
     - name: Pester Test Preparation (...products.com) on Windows using PowerShell 7.x
       shell: pwsh
@@ -90,7 +90,7 @@ jobs:
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
-        name: Cmdlets pester test results
+        name: ISHRemote-MainCI-PesterOnPowerShellCore
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
 
@@ -124,6 +124,6 @@ jobs:
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
-        name: Cmdlets pester test results
+        name: ISHRemote-MainCI-PesterOnWindowsPowerShell
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}

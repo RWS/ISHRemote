@@ -10,6 +10,7 @@ AssemblyInfo.cs
 
 # My debug files
 ISHRemote.PesterSetup.Debug.ps1
+ISHRemote.SignAndPublish.ps1
 
 # User-specific files
 *.suo

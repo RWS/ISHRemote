@@ -22,7 +22,7 @@ Encryption in flight - https - can now also go over Tls 1.3 while before release
 
 Again, most cmdlets and business logic are fully compatible, except the below:
 
-1. `New-IshSession` and `Test-IshSession` hosted by PowerShell (Core) 7+ can no longer do `windowsmixed` authentication, also known as Windows Authentication typically required for Microsoft ADFS. Note that these cmdlets hosted by Windows PowerShell 5.1 still suppored Windows Authentication as before.
+1. `New-IshSession` and `Test-IshSession` hosted by PowerShell (Core) 7+ can no longer do `windowsmixed` authentication, also known as Windows Authentication typically required for Microsoft ADFS. Note that these cmdlets hosted by Windows PowerShell 5.1 still supported Windows Authentication as before.
     1. Parameter sets ending with `ExplicitIssuer` offering explicit WS-Trust Issuer Url `-WsTrustIssuerUrl` and WS-Trust Issuer Metadata Exchange Url `-WsTrustIssuerMexUrl` are removed.
     2. Parameters `-TimeoutIssue` and `-TimeoutService` are removed. Any usage is replaced by `-Timeout`.
     3. Parameter `-IshUserName` can still be left empty on Windows PowerShell 5.1/NET4.8 but will throw an error on PowerShell7+/NET6+ as Microsoft's [WSFederationHttpBinding](https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/) library so far has no support for the `windowsmixed` WS-Trust protocol variation.

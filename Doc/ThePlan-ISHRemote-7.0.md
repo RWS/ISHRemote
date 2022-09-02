@@ -5,6 +5,8 @@ This plan brings together input from several stakeholders and outlines where and
 ## TLDR (Too Long; Didn't Read)...
 The plan is to work on an ISHRemote v7+ that will work on PowerShell (Core) cross platform, so Windows/Linux/Mac. It will work on all existing Tridion Docs versions as it will use ASMX-SOAP with internal authentication - so Internal CMS User Profiles as the CMS owns the password. Later it can move to OpenAPI-REST with modern authentication. The below text shares the current way of thinking and provides a framework for upcoming GitHub source changes.
 
+_Update 20220902: Internal authentication is still true, but Microsoft released an WCF-SOAP that offers WS-Trust protocol support that matches ISHRemote's needs. The below text referencing ASMX-SOAP is outdated._
+
 ![ISHRemote-7.0--ThePlan 1024x512](./Images/ISHRemote-7.0--ThePlan.gif)
 
 
@@ -28,7 +30,7 @@ PowerShell (Core) 7.1+ and up relies on .NET (Core) 5+ as engine. Through variou
 The plan is to work on an ISHRemote v7 that will work on PowerShell (Core) v7 - notice the starting version alignment. This module should run cross platform, so Windows/Linux/Mac. It will work on all existing Tridion Docs versions as it will use ASMX-SOAP with internal authentication - so Internal CMS User Profiles as the CMS owns the password.
 
 
-## Milestone - Enable PowerShell (Core)...
+## Milestone - Enable PowerShell (Core)...DONE
 Branch within the ISHRemote project to a .NET Standard project (so [PowerShell Standard.Library 5.1](https://github.com/PowerShell/PowerShellStandard)). Thereby all .NET Framework artefacts will be dropped - most notably WCF-SOAP and WS-Trust, so in turn also the `IShSession.Application25` pre-authenticated WCF proxies.
 
 Compatibility of the cmdlets is top priority, so that your scripts would need no or minimal adjustment. So cmdlet definitions like parameter groups, help and samples remain the same.

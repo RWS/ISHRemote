@@ -43,6 +43,7 @@ See [ReleaseNotes-ISHRemote-7.0.md](./ReleaseNotes-ISHRemote-7.0.md)
    7. Event PUSHTRANSLATIONS used in BackgroundTask cmdlets should be there as an easy to purge event
    8. Should Solr be running to do Search-IshDocumentObj
 5. `Get-IshTypeFieldDefinition | Out-GridView` returns *C*RUST for Wcf-Soap and Asmx-Soap, starting with OpenApi the folder creation parameters are also explicit fields instead of api function parameters. So Api 3.0 TypeFieldDefinition should reflect that, and ISHRemote via Protocol flag should respect that.
+6. Better binary cmdlet debugging is explained on https://docs.microsoft.com/en-us/powershell/scripting/dev-cross-plat/vscode/using-vscode-for-debugging-compiled-cmdlets?view=powershell-7.2 
 
 
 # Attempt 1/2 - Branch 115 History below
