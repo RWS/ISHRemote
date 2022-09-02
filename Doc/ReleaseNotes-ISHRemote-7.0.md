@@ -18,6 +18,8 @@ This is execution of the plan as communicated and described on [ThePlan-ISHRemot
 
 Encryption in flight - https - can now also go over Tls 1.3 while before releases only had Tls 1.0, 1.1 or 1.2 as options. #102
 
+Added `\Cmdlets\_TestEnvironment\TestPrerequisite.Tests.ps1` that requires ISHRemote to test if the typical prerequisites for running Pester integration tests are present. Test descriptions give a hint on what services are expected or how to overwrite values in `ISHRemote.PesterSetup.Debug.ps1` (e.g. unexisting status) to comply with your test environment. #4
+
 ## Breaking Changes - Cmdlets
 
 Again, most cmdlets and business logic are fully compatible, except the below:
