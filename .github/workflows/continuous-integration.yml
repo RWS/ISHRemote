@@ -17,17 +17,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
-#    - name: Setup .NET 3.1.x
-#      uses: actions/setup-dotnet@v1
-#      with:
-#        dotnet-version: 3.1.x
-    
-#    - name: Setup .NET 6.0.x
-#      uses: actions/setup-dotnet@v1
-#      with:
-#        dotnet-version: 6.0.x
-    
+   
     - name: Restore project and dependencies
       run: dotnet restore Source/ISHRemote/ISHRemote.sln
     
@@ -55,10 +45,10 @@ jobs:
         }
     
     - name: Archive ISHRemote module
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with: 
-        name: ISHRemote-module
-        path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/*.nupkg
+        name: ISHRemote-ReleaseV1CI-Module
+        path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/
 
     - name: Pester Test Preparation (...products.com) using Windows PowerShell 5.1
       shell: powershell
@@ -90,40 +80,6 @@ jobs:
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
-        name: Cmdlets pester test results
+        name: ISHRemote-ReleaseV1CI-PesterOnWindowsPowerShell
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
-
-#    - name: Pester Test Preparation (...products.com) on Windows using PowerShell 7.x
-#      shell: pwsh
-#      env:
-#        ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
-#        ISH_USER_NAME: ${{ secrets.ISH_USER_NAME }}
-#        ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
-#      run: |
-#        $filePath = 'Source/ISHRemote/Trisoft.ISHRemote/ISHRemote.PesterSetup.Debug.ps1'
-#        Add-Content -Path $filePath -Value '# File[$filePath] is generated through continuous-integration.yml section PowerShell 7.x'
-#        Add-Content -Path $filePath -Value '$baseUrl = $env:ISH_BASE_URL'
-#        Add-Content -Path $filePath -Value 'if ($baseUrl -like "*.sdlproducts.com*")'
-#        Add-Content -Path $filePath -Value '{'
-#        Add-Content -Path $filePath -Value '  $ishLngLabel = ''en-us'''
-#        Add-Content -Path $filePath -Value '  $ishLngTarget1 = ''VLANGUAGEESES'''
-#        Add-Content -Path $filePath -Value '  $ishLngTarget1Label = ''es-es'''
-#        Add-Content -Path $filePath -Value '  $ishLngTarget2 = ''VLANGUAGEDEDE'''
-#        Add-Content -Path $filePath -Value '  $ishLngTarget2Label = ''de-de'''
-#        Add-Content -Path $filePath -Value '  $ishLngCombination = ''en-us'''
-#        Add-Content -Path $filePath -Value '}'
-
-#    - name: Pester Test Cmdlets on Windows using PowerShell 7.x
-#      shell: pwsh
-#      env:
-#        ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
-#        ISH_USER_NAME: ${{ secrets.ISH_USER_NAME }}
-#        ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
-#      run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/ -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
-#    - name: Upload test results
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: Cmdlets pester test results
-#        path: Cmdlets.Pester.Tests.xml
-#      if: ${{ always() }}
