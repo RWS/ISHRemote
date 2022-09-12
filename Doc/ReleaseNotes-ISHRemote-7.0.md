@@ -18,7 +18,11 @@ This is execution of the plan as communicated and described on [ThePlan-ISHRemot
 
 Encryption in flight - https - can now also go over Tls 1.3 while before releases only had Tls 1.0, 1.1 or 1.2 as options. #102
 
+## Implementation Details
+
 Added `\Cmdlets\_TestEnvironment\TestPrerequisite.Tests.ps1` that requires ISHRemote to test if the typical prerequisites for running Pester integration tests are present. Test descriptions give a hint on what services are expected or how to overwrite values in `ISHRemote.PesterSetup.Debug.ps1` (e.g. unexisting status) to comply with your test environment. #4
+
+This is the release where we switched from manifest file `ISHRemote.psd1` entry `NestedModules` to `CmdletsToExport` holding a hardcoded list of cmdlets. Inspiration for platform independent (net48, net6.0) loading of nested module `Trisoft.ISHRemote.dll` was missing. Remember to update `CmdletsToExport` if new cmdlets are added.
 
 ## Breaking Changes - Cmdlets
 

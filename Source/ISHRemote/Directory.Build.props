@@ -49,7 +49,7 @@
     <ModuleGuid>0314ffdb-6083-4c4d-aa01-8bfaac51a7e4</ModuleGuid>
     <MinPowerShellVersion>5.1</MinPowerShellVersion>
     <MinCLRVersion>4.0</MinCLRVersion>
-    <MinDotNetVersion>4.8.0</MinDotNetVersion>
+    <MinDotNetVersion>4.8</MinDotNetVersion>
     <DocPortalLink>https://rws.github.io/$(ProductName)/</DocPortalLink>
     <LicenseUri>https://github.com/rws/$(ProductName)/blob/master/LICENSE.TXT</LicenseUri>
     <ProjectUri>https://github.com/rws/$(ProductName)/</ProjectUri>
