@@ -102,7 +102,7 @@ Describe "Test-Prerequisite" -Tags "Read" {
 			# Event to be raised by BackgroundTasks tests that is automatically purged by the BackgroundTask service thanks to its Xml Settings configuration
 			# $ishEventTypeToPurge = "PUSHTRANSLATIONS"
 			[xml]$backgroundTaskConfiguration = Get-IshSetting -FieldName FISHBACKGROUNDTASKCONFIG
-			$backgroundTaskConfiguration.infoShareBackgroundTaskConfig.handlers.handler | Where-Object eventType -eq $ishEventTypeToPurge
+			$handler = $backgroundTaskConfiguration.infoShareBackgroundTaskConfig.handlers.handler | Where-Object eventType -eq $ishEventTypeToPurge
 			$handler.eventType | Should -Be $ishEventTypeToPurge
 		}
 	}
