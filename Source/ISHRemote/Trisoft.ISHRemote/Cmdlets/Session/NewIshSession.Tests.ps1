@@ -120,7 +120,7 @@ Describe "New-IshSession" -Tags "Read" {
 			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
 		It "IshSession.Timeout defaults to 30m" {
-			$ishSession.Timeout.TotalMinutes -eq 30 | Should -Be $true
+			$ishSession.Timeout.TotalMinutes | Should -Be 30
 		}
 		It "IshSession.StrictMetadataPreference" {
 			$ishSession.StrictMetadataPreference | Should -Be "Continue"

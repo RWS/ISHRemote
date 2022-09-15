@@ -74,9 +74,12 @@ Describe "Test-Prerequisite" -Tags "Read" {
 			$ishLovValue = Get-IshLovValue -IshSession $ishSession -LovId DSTATUS -LovValueId $ishStatusReleased
 			$ishLovValue.IshRef | Should -Be $ishStatusReleased
 		}
-		It "Status Transition from ishStatusDraft to exists ishStatusReleased" -Skip {
+		It "Status Transition from ishStatusDraft to exists ishStatusReleased" {
 			# Direct status transition from $ishStatusDraft (D) to $ishStatusReleased (R) is required by the executing user
-			# Test over xml settings
+			[xml]$stateConfiguration = Get-IshSetting -FieldName FSTATECONFIGURATION
+			$fromStatusDraft = $stateConfiguration.InfoShareStates.Transitions.FromStatus | Where-Object ref -eq $ishStatusDraft 
+			$toStatusReleased = $fromStatusDraft.ToStatus | Where-Object ref -eq $ishStatusReleased
+			$toStatusReleased | Should -Be $toStatusReleased
 		}
 	}
 
@@ -95,9 +98,12 @@ Describe "Test-Prerequisite" -Tags "Read" {
 	}
 
 	Context "BackgroundTask - Potential overwrite in ISHRemote.PesterSetup.Debug.ps1" {
-		It "EventType ishEventTypeToPurge for BackgroundTask - Configure purge in Xml Settings BackgroundTask" -Skip {
+		It "EventType ishEventTypeToPurge for BackgroundTask - Configure purge in Xml Settings BackgroundTask" {
 			# Event to be raised by BackgroundTasks tests that is automatically purged by the BackgroundTask service thanks to its Xml Settings configuration
 			# $ishEventTypeToPurge = "PUSHTRANSLATIONS"
+			[xml]$backgroundTaskConfiguration = Get-IshSetting -FieldName FISHBACKGROUNDTASKCONFIG
+			$backgroundTaskConfiguration.infoShareBackgroundTaskConfig.handlers.handler | Where-Object eventType -eq $ishEventTypeToPurge
+			$handler.eventType | Should -Be $ishEventTypeToPurge
 		}
 	}
 
