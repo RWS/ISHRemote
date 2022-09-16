@@ -37,7 +37,7 @@ Describe "Test-Prerequisite" -Tags "Read" {
 			$ishFolder = Get-IshFolder -IshSession $ishSession -FolderPath $folderTestRootPath
 			$ishFolder.IshFolderRef -ge 0 | Should -Be $true
 		}
-		It "ISHRemote root folder has no failed test folders" {
+		It "ISHRemote root folder should be empty, probably clean up failed test folders and data" {
 			$commands = (Get-Command -Module ISHRemote).Name
 			$subIshFolders = Get-IshFolder -IshSession $ishSession -FolderPath $folderTestRootPath -Recurse -Depth 2
 			foreach($subIshFolderName in $subIshFolders.name)
@@ -84,6 +84,17 @@ Describe "Test-Prerequisite" -Tags "Read" {
 	}
 
 	Context "User - Potential overwrite in ISHRemote.PesterSetup.Debug.ps1" {
+		BeforeAll {
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			$ishUser = Get-IshUser -RequestedMetadata (Set-IshRequestedMetadataField -Level None -Name FUSERGROUP)
+		}
+		It "Current User has UserRole Administrator access" {
+			$ishUser.fishuserroles_none_element -like '*VUSERROLEADMINISTRATOR*' | Should -Be $true
+		}
+		It "Current User has UserGroup System Management access" {
+			# Otherwise error [-102009] Unable to complete your request, you are not allowed to alter folder "System".
+			$ishUser.fusergroup_none_element -like '*VUSERGROUPSYSTEMMANAGEMENT*' | Should -Be $true
+		}
 		It "Parameter Author ishUserAuthor exist" {
 			$ishUser = Get-IshUser -IshSession $ishSession -Id $ishUserAuthor
 			$ishUser.IshRef | Should -Be $ishUserAuthor
