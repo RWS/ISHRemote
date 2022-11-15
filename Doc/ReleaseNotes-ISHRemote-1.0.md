@@ -14,7 +14,7 @@ Main reason for v1.0 is to prepare the trunk branch of source control for .NET (
 
 Encryption in flight - https - can now also go over Tls 1.3 while before releases only had Tls 1.0, 1.1 or 1.2 as options. #102
 
-Improvements on disposing and closing connections in `InfoShareWcfConnection.cs` to better recoved from communication faulted exceptions. Fixed casing of `Edt.svc` endpoint. #145
+Improvements on disposing and closing connections in `InfoShareWcfConnection.cs` to better recover from communication faulted exceptions. Fixed casing of `Edt.svc` endpoint. #145
 
 ## Breaking Changes
 

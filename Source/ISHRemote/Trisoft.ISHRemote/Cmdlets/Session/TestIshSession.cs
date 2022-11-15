@@ -76,8 +76,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </example>
     /// <example>
     /// <code>
-    /// $DebugPreference   = "Continue"
-    /// $VerbosePreference = "Continue" 
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/Internal/" -IshUserName "admin" -IshPassword "admin"
     /// </code>
     /// <para>When ISHDeploy Enable-ISHIntegrationSTSInternalAuthentication was executed on the server, the web services are directed to a secondary Secure Token Service (STS). This happens through the '/Internal/' postfix which in essence points to a different connectionconfiguration.xml for initialization.</para>

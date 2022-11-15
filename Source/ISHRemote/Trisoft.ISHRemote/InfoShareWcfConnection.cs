@@ -32,7 +32,8 @@ using Trisoft.ISHRemote.Interfaces;
 namespace Trisoft.ISHRemote
 {
     /// <summary>
-    /// InfoShare Wcf connection.
+    /// Dynamic proxy (so without app.config) generation of Service References towards the InfoShare Web Services writen in Windows Communication Foundation (WCF) protected by WS-Trust (aka WS-Federation active) SOAP protocol.
+    /// On ISHRemote v1 and earlier, so in turn before InfoShare 15 and earlier, this class was your starting point for dynamic proxy (so without app.config) generation of Service References. The inital class was written in .NET Framework style. Inspired by https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/ this class has pragmas to illustrate .NET Framework and .NET 6.0+ style side-by-side.
     /// </summary>
     internal sealed class InfoShareWcfConnection : IDisposable
     {
@@ -240,9 +241,9 @@ namespace Trisoft.ISHRemote
         /// Proxy for background task
         /// </summary>
         private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
-        #endregion Private Members
+#endregion Private Members
 
-        #region Constructors
+#region Constructors
         /// <summary>
         /// Initializes a new instance of <c>InfoShareWcfConnection</c> class.
         /// </summary>
@@ -762,7 +763,7 @@ namespace Trisoft.ISHRemote
         /// </summary>
         private GenericXmlSecurityToken IssueToken()
         {
-            _logger.WriteDebug("Issue Token");
+            _logger.WriteDebug("Issue Token (NET48)");
             var issuerEndpoint = FindIssuerEndpoint();
 
             var requestSecurityToken = new RequestSecurityToken
