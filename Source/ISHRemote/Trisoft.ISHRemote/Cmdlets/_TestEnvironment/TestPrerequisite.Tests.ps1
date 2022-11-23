@@ -79,7 +79,7 @@ Describe "Test-Prerequisite" -Tags "Read" {
 			[xml]$stateConfiguration = Get-IshSetting -FieldName FSTATECONFIGURATION
 			$fromStatusDraft = $stateConfiguration.InfoShareStates.Transitions.FromStatus | Where-Object ref -eq $ishStatusDraft 
 			$toStatusReleased = $fromStatusDraft.ToStatus | Where-Object ref -eq $ishStatusReleased
-			$toStatusReleased | Should -Be $toStatusReleased
+			$toStatusReleased.ref | Should -Be $ishStatusReleased
 		}
 	}
 
