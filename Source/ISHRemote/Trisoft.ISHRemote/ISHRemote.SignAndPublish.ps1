@@ -77,7 +77,7 @@ try
     Write-Host "Publishing module[$moduleName] to repository[$repositoryName]"
     if($RepositoryAPIKey)
     {
-        Publish-Module -Repository $repositoryName -NuGetApiKey $RepositoryAPIKey -Path "$modulePath"
+        Publish-Module -Repository $repositoryName -NuGetApiKey $RepositoryAPIKey -Path "$modulePath" #-SkipAutomaticTags 
         Write-Host "Publisheded module"
         Write-Host "Listing module[$moduleName] from repository[$repositoryName] (inc prerelease)"
         Find-Module -Name $moduleName -Repository $repositoryName -AllowPrerelease
