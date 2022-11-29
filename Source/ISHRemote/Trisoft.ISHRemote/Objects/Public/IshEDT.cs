@@ -24,7 +24,7 @@ using System.Xml;
 namespace Trisoft.ISHRemote.Objects.Public
 {
     /// <summary>
-    /// A container to allow *.Format.ps1xml do magic, in essence the same as the pipeline object IshObject
+    /// <para type="description">A container to allow *.Format.ps1xml do magic, in essence the same as the pipeline object IshObject</para>
     /// </summary>
     public class IshEDT : IshObject
     {
