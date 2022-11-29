@@ -1,6 +1,6 @@
 # Release Notes of ISHRemote v7.0
 
-Actual detailed release notes are on [Github](https://github.com/rws/ISHRemote/releases/tag/v7.0), below some code samples.
+High level release notes are on [Github](https://github.com/rws/ISHRemote/releases/tag/v7.0), below the most detailed release notes we have :)
 
 Remember
 * All C# source code of the ISHRemote library is online at [master](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of WS-Trust protocol ([InfoShareWcfConnection.cs](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/InfoShareWcfConnection.cs)) in a NET 4.8 and NET 6.0+ style.
@@ -12,11 +12,19 @@ The below text describes the delta compared to fielded release ISHRemote v0.14, 
 
 This release inherits the v0.1 to v0.14 and v1.0 development branch and features. By enabling PowerShell 7+ powered by NET 6+ next to existing Windows PowerShell 5.1 powered by NET Framework 4.8; we had to do some breaking changes forced by platform support. Most cmdlets and business logic are fully compatible except around authentication (`New-IshSession`, `Test-IshSession` and `New-IshObfuscatedFile`) as described below.
 
-Yes, this is the ISHRemote version that works on Windows PowerShell and PowerShell (Core)! However, regarding PowerShell (Core), only for username/password-based authentication and not for Windows Authentication (typically WS-Trust protocol over Microsoft ADFS using `windowsmixed`).
+Yes, this is the ISHRemote version that works on Windows PowerShell and PowerShell (Core)! However, regarding PowerShell (Core), only for username/password-based authentication and not for Windows Authentication (WS-Trust protocol over Microsoft ADFS using `windowsmixed`).
 
-This is execution of the plan as communicated and described on [ThePlan-ISHRemote-7.0.md](ThePlan-ISHRemote-7.0.md).
+| ISHRemote v7.x powered by ISHWS WCF-SOAP | On Windows PowerShell 5.1 powered by .NET Framework 4.8 | On PowerShell (Core) 7.2+ powered by .NET (Core) 6.0+ |
+|-|-|-|
+| With issuerwstrustbindingtype set to usernamemixed, typically known as ISHSTS | Supported, same as ISHRemote v1 and earlier | *New! Supported since ISHRemote v7!* |
+| With issuerwstrustbindingtype set to windowsmixed, typically known as ADFS with Windows Authentication | Supported, same as ISHRemote v1 and earlier | Platform Not Supported |
 
-Encryption in flight - https - can now also go over Tls 1.3 while before releases only had Tls 1.0, 1.1 or 1.2 as options. #102
+
+This is execution of the plan as communicated and described on [ThePlan-ISHRemote-7.0.md](ThePlan-ISHRemote-7.0.md). Furthermore some notable changes are
+
+* Encryption in flight - https - can now also go over Tls 1.3 while before releases only had Tls 1.0, 1.1 or 1.2 as options. #102
+* `Add-IshBackgroundTask` fix regarding date time parsing incoming dates incorrectly swapping month/day #137 Thanks @ddemeyer 
+* `New-IshObfuscatedFile`, `New-IshDitaGeneralizedXml` and `Test-IshValidXml` received updated xml catalog handling classes aligning with product 14SP4/14.0.4 code base. #146  Thanks @jlaridon
 
 ## Implementation Details
 
@@ -28,7 +36,7 @@ This is the release where we switched from manifest file `ISHRemote.psd1` entry 
 
 Again, most cmdlets and business logic are fully compatible, except the below:
 
-1. `New-IshSession` and `Test-IshSession` hosted by PowerShell (Core) 7+ can no longer do `windowsmixed` authentication, also known as Windows Authentication typically required for Microsoft ADFS. Note that these cmdlets hosted by Windows PowerShell 5.1 still support Windows Authentication as before.
+1. `New-IshSession` and `Test-IshSession` hosted by PowerShell (Core) 7+ can only do `usernamemixed`. The other variation called `windowsmixed` authentication, also known as Windows Authentication typically required for Microsoft ADFS, is not supported by the .NET 6.0 platform. Note that these cmdlets hosted by Windows PowerShell 5.1 still support `windowsmixed` as before.
     1. Parameter sets ending with `ExplicitIssuer` offering explicit WS-Trust Issuer Url `-WsTrustIssuerUrl` and WS-Trust Issuer Metadata Exchange Url `-WsTrustIssuerMexUrl` are removed.
     2. Parameters `-TimeoutIssue` and `-TimeoutService` are removed. Any usage is replaced by `-Timeout`.
     3. Parameter `-IshUserName` can still be left empty on Windows PowerShell 5.1/NET4.8 but will throw an error on PowerShell7+/NET6+ as Microsoft's [WSFederationHttpBinding](https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/) library so far has no support for the `windowsmixed` WS-Trust protocol variation.
@@ -55,13 +63,15 @@ Again, most cmdlets and business logic are fully compatible, except the below:
 * The compiled library of cmdlets will no longer be strong named with an RWS/fSDL private key. This only affects you if you wrote an application (not PowerShell script) on top of this library and if you in turn also signed your compiled application. #80 
 
 
-## Performance
+## Quality Assurance
 
-Below is not an official compare, but a recurring thing we noticed along the way. Using the same backend, same client machine, same ISHRemote build but different PowerShell host we noticed a considerable speed up of the Pester tests. These timing differences are caused by the host of the ISHRemote client library.
+Added more Invoke-Pester 5.3.0 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7+ hosts where
+* the skipped are about SslPolicyErrors testing
+* the failed are about IMetadata bound fields (issue #58)
 
-| Name                     | Platform                            | Branch         |
-|--------------------------|-------------------------------------|----------------|
-| ISHRemote 6.0.9226.0     | Windows PowerShell 5.1 on .NET 4.8  | Tests completed in 312.4s AND                                                                                Tests Passed: 897, Failed: 0, Skipped: 8 NotRun: 0 |
-| ISHRemote 6.0.9226.0     | PowerShell 7.2.6 on .NET 6.0.8      | Tests completed in 281.33s AND Tests Passed: 897, Failed: 0, Skipped: 8 NotRun: 0 |
-| ISHRemote 6.0.9523.0     | Windows PowerShell 5.1 on .NET 4.8  | Tests completed in 353.57s AND                                                                                Tests Passed: 917, Failed: 0, Skipped: 8 NotRun: 0 |
-| ISHRemote 6.0.9523.0     | PowerShell 7.3.0 on .NET 7.0.0      | Tests completed in 305.46s AND Tests Passed: 921, Failed: 0, Skipped: 8 NotRun: 0 |
+Below is not an official performance compare, but a recurring thing noticed along the way. Using the same client machine, same ISHRemote build and same backend but different PowerShell hosts we noticed a considerable speed up of the Pester tests.
+
+| Name                     | Client Platform                     | Server Platform       | Test Results         |
+|--------------------------|-------------------------------------|----------------------|----------------|
+| ISHRemote 6.0.9523.0     | Windows PowerShell 5.1 on .NET 4.8  | SOAP-WCF and WS-Trust | Tests completed in 353.57s AND                                                                                Tests Passed: 917, Failed: 0, Skipped: 8 NotRun: 0 |
+| ISHRemote 6.0.9523.0     | PowerShell 7.3.0 on .NET 7.0.0      | SOAP-WCF and WS-Trust | Tests completed in 305.46s AND Tests Passed: 921, Failed: 0, Skipped: 8 NotRun: 0 |

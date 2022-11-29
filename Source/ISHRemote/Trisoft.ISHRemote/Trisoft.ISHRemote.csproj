@@ -87,12 +87,13 @@
     <PropertyGroup>
       <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">pwsh</PowerShellExe>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
-      <ManifestPath>$(ISHRemoteDir)/$(ModuleName).psd1</ManifestPath>
-      <RootModule>$(ModuleName).psm1</RootModule>
-      <FormatsToProcessPath>$(ModuleName).Format.ps1xml</FormatsToProcessPath>
+	  <ISHRemote48DllFilePath>$(ISHRemoteDir)/net48/Trisoft.ISHRemote.dll</ISHRemote48DllFilePath>
+      <ManifestFilePath>$(ISHRemoteDir)/$(ModuleName).psd1</ManifestFilePath>
+      <RootModuleFileName>$(ModuleName).psm1</RootModuleFileName>
+      <FormatsToProcessFileName>$(ModuleName).Format.ps1xml</FormatsToProcessFileName>
     </PropertyGroup>
     <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
-	<Exec Command="$(PowerShellExe) -NonInteractive -command &quot;Import-Module $(ISHRemoteDir)\net48\Trisoft.ISHRemote.dll -Force;$cmdletsToExport=(Get-Module -Name Trisoft.ISHRemote).ExportedCommands.Keys;New-ModuleManifest -Path '$(ManifestPath)' -FormatsToProcess '$(FormatsToProcessPath)' -RootModule '$(RootModule)' -ModuleVersion '$(ModuleVersion)' -Prerelease '$(Prerelease)' -Guid '$(ModuleGuid)' -Author '$(Authors)' -CompanyName '$(CompanyName)' -Copyright '$(Copyright)' -Description '$(ModuleDescription)' -PowerShellVersion '$(MinPowerShellVersion)' -ClrVersion '$(MinCLRVersion)' -DotNetFrameworkVersion '$(MinDotNetVersion)' -LicenseUri '$(LicenseUri)' -ProjectUri '$(ProjectUri)' -CmdletsToExport @($cmdletsToExport)&quot;" />
+	<Exec Command="$(PowerShellExe) -NonInteractive -command &quot;Import-Module $(ISHRemote48DllFilePath) -Force;$cmdletsToExport=(Get-Module -Name Trisoft.ISHRemote).ExportedCommands.Keys;New-ModuleManifest -Path '$(ManifestFilePath)' -FormatsToProcess '$(FormatsToProcessFileName)' -RootModule '$(RootModuleFileName)' -ModuleVersion '$(ModuleVersion)' -Prerelease '$(Prerelease)' -Guid '$(ModuleGuid)' -Author '$(Authors)' -CompanyName '$(CompanyName)' -Copyright '$(Copyright)' -Description '$(ModuleDescription)' -PowerShellVersion '$(MinPowerShellVersion)' -ClrVersion '$(MinCLRVersion)' -DotNetFrameworkVersion '$(MinDotNetVersion)' -LicenseUri '$(LicenseUri)' -ProjectUri '$(ProjectUri)' -CmdletsToExport @($cmdletsToExport)&quot;" />
   </Target>
 
   <!-- Copy all the required files to folder named ISHRemote which is needed for packaging -->
