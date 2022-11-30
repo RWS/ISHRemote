@@ -87,7 +87,7 @@
     <PropertyGroup>
       <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">pwsh</PowerShellExe>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
-	  <ISHRemote48DllFilePath>$(ISHRemoteDir)/net48/Trisoft.ISHRemote.dll</ISHRemote48DllFilePath>
+	  <ISHRemote48DllFilePath>$(ProjectDir)bin/$(Configuration)/net48/Trisoft.ISHRemote.dll</ISHRemote48DllFilePath>
       <ManifestFilePath>$(ISHRemoteDir)/$(ModuleName).psd1</ManifestFilePath>
       <RootModuleFileName>$(ModuleName).psm1</RootModuleFileName>
       <FormatsToProcessFileName>$(ModuleName).Format.ps1xml</FormatsToProcessFileName>
