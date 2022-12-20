@@ -36,9 +36,9 @@ Have a look at the [Automating tasks in Tridion Docs using PowerShell](https://y
 
 ## Prerequisites
 
-Windows PowerShell 5.1 and .NET Framework 4.8
-
-Note that we rely on `Windows PowerShell` (FullCLR), and not `PowerShell Core` (CoreCLR) which relies on `.NET Core`. Main reason is that the Core edition doesn't offer all supporting libraries for `WS-Trust` based authentication like `System.IdentityModel` and `System.ServiceModel`.
+Either
+* Windows PowerShell 5.1 (FullCLR) and .NET Framework 4.8
+* PowerShell 7.2+ (CoreCLR) and .NET 6.0+
 
 ## Install
 Open a PowerShell, then you can find and install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator. The `-Force` will make you bypass some security/trust questions.
@@ -83,11 +83,6 @@ Any feedback is welcome. Please log a GitHub issue, make sure you submit your ve
 * ISHDeploy `Enable-ISHIntegrationSTSInternalAuthentication/Disable-ISHIntegrationSTSInternalAuthentication` adds a /ISHWS/Internal/connectionconfiguration.xml that a different issuer should be used. As ISHRemote doesn't have an app.config, all the artifacts are derived from the RelyingParty WSDL provided mex endpoint (e.g. /ISHSTS/issue/wstrust/mex).  
 If you get error `New-IshSession : The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.`, it probably means you initialized `-WsBaseUrl` without the `/Internal/` (or `/SDL/`) segment, meaning you are using the primary configured STS.
 
-## Documentation Known Issues
-* [XmlDoc2CmdletDoc bug 22](https://github.com/red-gate/XmlDoc2CmdletDoc/issues/22) `System.ArgumentException: Property Get method was not found.` at `XmlDoc2CmdletDoc.Core.Domain.Parameter.get_DefaultValue()`   means you are missing a Get'er on a Property like `public IshFolder IshFolder { set { _folderId = value.IshFolderRef; } }`
-* [XmlDoc2CmdletDoc bug 23](https://github.com/red-gate/XmlDoc2CmdletDoc/issues/23) `System.NullReferenceException: Object reference not set to an instance of an object.` at `XmlDoc2CmdletDoc.Core.Domain.Command.<>c.<get_OutputTypes>` `Retrieve-IshFolder` had `[OutputType(nameof(IshFolder))]`, which should have been `[OutputType(typeof(IshFolder))]`.
-
-
 # Standards To Respect
 
 ## Coding Standards 
@@ -107,12 +102,9 @@ If you get error `New-IshSession : The communication object, System.ServiceModel
 
 * Inline `*.cs` tripple-slash `///` documentation. Syntax options are explained on [simple-talk.com](https://www.simple-talk.com/dotnet/software-tools/documenting-your-powershell-binary-cmdlets/). [XmlDoc2CmdletDoc](https://github.com/red-gate/XmlDoc2CmdletDoc) generates the requisite MAML file for you using essentially standard C# doc-comments embedded directly in your code, just like  documenting any other C# library. Now you can document PowerShell simply and easily, and keep it synchronized with the code.
 * Document the container object class like `IshSession`, and not the using parameters like  `-IshSession` everywhere.
-
-### XmlDoc2CmdletDoc
-Inline `*.cs` tripple-slash `///` documentation. Syntax options are explained on [simple-talk.com](https://www.simple-talk.com/dotnet/software-tools/documenting-your-powershell-binary-cmdlets/). [XmlDoc2CmdletDoc](https://github.com/red-gate/XmlDoc2CmdletDoc) generates the requisite 
-MAML file for you using essentially standard C# doc-comments embedded directly in your code, just like 
-documenting any other C# library. Now you can document PowerShell simply and easily, and keep it 
-synchronized with the code.
+* Known issues
+    * [XmlDoc2CmdletDoc bug 22](https://github.com/red-gate/XmlDoc2CmdletDoc/issues/22) `System.ArgumentException: Property Get method was not found.` at `XmlDoc2CmdletDoc.Core.Domain.Parameter.get_DefaultValue()`   means you are missing a Get'er on a Property like `public IshFolder IshFolder { set { _folderId = value.IshFolderRef; } }`
+    * [XmlDoc2CmdletDoc bug 23](https://github.com/red-gate/XmlDoc2CmdletDoc/issues/23) `System.NullReferenceException: Object reference not set to an instance of an object.` at `XmlDoc2CmdletDoc.Core.Domain.Command.<>c.<get_OutputTypes>` `Retrieve-IshFolder` had `[OutputType(nameof(IshFolder))]`, which should have been `[OutputType(typeof(IshFolder))]`.
 
 ## Testing Standards
 

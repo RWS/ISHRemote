@@ -3,11 +3,12 @@
 # * https://github.com/thinkbeforecoding/PSCompletion
 # * http://www.powershellmagazine.com/2012/11/29/using-custom-argument-completers-in-powershell-3-0/
 # * http://www.powertheshell.com/dynamicargumentcompletion/
+# * https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-5.1
 #
 # Relies on
-#   Get-IshAuxParameterCompleter.ps1
+#   Get-IshAuxSessionState.ps1
 #   New-IshAuxCompletionResult.ps1
-#   New-IshAuxCompletionResult.ps1
+#   Register-IshAuxParameterCompleter.ps1
 #
 
 
@@ -45,7 +46,7 @@ $starIshLovValueLovId = {
 		$ishSession.IshTypeFieldDefinition |
 		Where-Object { $_.ReferenceLov -like "$wordToComplete*" } |
 		Sort-Object -Unique ReferenceLov |
-		ForEach-Object { New-IshAuxCompletionResult $_.ReferenceLov }
+		ForEach-Object { New-IshAuxCompletionResult -CompletionText $_.ReferenceLov }
 	}
 }
 Register-IshAuxParameterCompleter -CommandName 'Add-IshLovValue' -ParameterName 'LovId' -ScriptBlock $starIshLovValueLovId
@@ -69,7 +70,10 @@ $fieldName = {
 		$ishSession.IshTypeFieldDefinition |
 		Where-Object { $_.Name -like "$wordToComplete*" } |
 		Sort-Object -Unique Name |
-		ForEach-Object { New-IshAuxCompletionResult $_.Name -ToolTip ($_.Name + " (" + $_.Type + ") - " + $_.Description ) }
+		
+		# Creation with ToolTips is often too slow, causing Ctrl-Space actions to fall back to file system suggestion
+		# ForEach-Object { New-IshAuxCompletionResult -CompletionText $_.Name -ToolTip ($_.Name + " (" + $_.Type + ") - " + $_.Description ) }
+		ForEach-Object { New-IshAuxCompletionResult -CompletionText $_.Name }
 	}
 }
 Register-IshAuxParameterCompleter -CommandName 'Get-IshMetadataField' -ParameterName 'Name' -ScriptBlock $fieldName

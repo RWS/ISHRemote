@@ -2,6 +2,7 @@
 # Hat tip to
 # * https://github.com/thinkbeforecoding/PSCompletion
 # * http://www.powershellmagazine.com/2012/11/29/using-custom-argument-completers-in-powershell-3-0/
+# * https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-5.1
 #
 
 function Register-IshAuxParameterCompleter {
@@ -41,6 +42,9 @@ function Register-IshAuxParameterCompleter {
         )
 
     End {
-        $global:options['CustomArgumentCompleters']["$($CommandName):$ParameterName"] = $ScriptBlock
+        # PowerShell v3 style
+        # $global:options['CustomArgumentCompleters']["$($CommandName):$ParameterName"] = $ScriptBlock
+        # PowerShell v5.1+ style
+        Register-ArgumentCompleter -CommandName $CommandName -ParameterName $ParameterName -ScriptBlock $ScriptBlock
     }
 }

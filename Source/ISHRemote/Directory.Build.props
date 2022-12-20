@@ -28,7 +28,7 @@
     <Authors>RWS Group for and on behalf of its affiliates and subsidiaries</Authors>
     <Owners>RWS Group for and on behalf of its affiliates and subsidiaries</Owners>
     <CompanyName>RWS Group for and on behalf of its affiliates and subsidiaries</CompanyName>
-    <Copyright>Copyright © $([System.DateTime]::Now.ToString('yyyy')) All Rights Reserved by the RWS Group for and on behalf of its affiliates and subsidiaries.</Copyright>
+    <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) All Rights Reserved by the RWS Group for and on behalf of its affiliates and subsidiaries.</Copyright>
   </PropertyGroup>
 
   <!-- PowerShell Module properties -->
