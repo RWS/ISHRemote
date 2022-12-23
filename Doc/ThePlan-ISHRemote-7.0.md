@@ -5,7 +5,7 @@ This plan brings together input from several stakeholders and outlines where and
 ## TLDR (Too Long; Didn't Read)...
 The plan is to work on an ISHRemote v7+ that will work on PowerShell (Core) cross platform, so Windows/Linux/Mac. It will work on all existing Tridion Docs versions as it will use ASMX-SOAP with internal authentication - so Internal CMS User Profiles as the CMS owns the password. Later it can move to OpenAPI-REST with modern authentication. The below text shares the current way of thinking and provides a framework for upcoming GitHub source changes.
 
-_Update 20220902: Internal authentication is still true, but Microsoft released an WCF-SOAP that offers WS-Trust protocol support that matches ISHRemote's needs. The below text referencing ASMX-SOAP is outdated._
+_Update 20220902: Internal authentication is still true, but Microsoft released an WCF-SOAP that offers WS-Trust protocol support that matches ISHRemote's needs. The below text referencing ASMX-SOAP is outdated. See [ReleaseNotes-ISHRemote-7.0.md](ReleaseNotes-ISHRemote-7.0.md) for actual implementation details._
 
 ![ISHRemote-7.0--ThePlan 1024x512](./Images/ISHRemote-7.0--ThePlan.gif)
 

@@ -18,8 +18,7 @@ As `release/v1` exists to maintain the fielded releases, experimenting on `maste
 
 ## Cmdlet Progress and Compatilibity
 
-See [ReleaseNotes-ISHRemote-7.0.md](./ReleaseNotes-ISHRemote-7.0.md)
-
+See [ReleaseNotes-ISHRemote-7.0.md](ReleaseNotes-ISHRemote-7.0.md) for actual implementation details.
 
 ## Next
 2. Bumping `System.ServiceModel.Primitive` from 4.9.0 to 4.10.0 failed when hosted in PowerShell 7+ Is this because PowerShell is delivered with an 'older' version of this assembly?

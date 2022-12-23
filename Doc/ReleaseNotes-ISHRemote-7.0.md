@@ -12,6 +12,8 @@ The below text describes the delta compared to fielded release ISHRemote v0.14, 
 
 This release inherits the v0.1 to v0.14 and v1.0 development branch and features. By enabling PowerShell 7+ powered by NET 6+ next to existing Windows PowerShell 5.1 powered by NET Framework 4.8; we had to do some breaking changes forced by platform support. Most cmdlets and business logic are fully compatible except around authentication (`New-IshSession`, `Test-IshSession` and `New-IshObfuscatedFile`) as described below.
 
+![ISHRemote-7.0--NewIShSessionOnPowerShell731 1024x512](./Images/ISHRemote-7.0--NewIShSessionOnPowerShell731.png)
+
 Yes, this is the ISHRemote version that works on Windows PowerShell and PowerShell (Core)! However, regarding PowerShell (Core), only for username/password-based authentication and not for Windows Authentication (WS-Trust protocol over Microsoft ADFS using `windowsmixed`).
 
 | ISHRemote v7.x powered by ISHWS WCF-SOAP | On Windows PowerShell 5.1 powered by .NET Framework 4.8 | On PowerShell (Core) 7.2+ powered by .NET (Core) 6.0+ |
@@ -23,14 +25,15 @@ Yes, this is the ISHRemote version that works on Windows PowerShell and PowerShe
 This is execution of the plan as communicated and described on [ThePlan-ISHRemote-7.0.md](ThePlan-ISHRemote-7.0.md). Furthermore some notable changes are
 
 * Encryption in flight - https - can now also go over Tls 1.3 while before releases only had Tls 1.0, 1.1 or 1.2 as options. #102
-* `Add-IshBackgroundTask` fix regarding date time parsing incoming dates incorrectly swapping month/day #137 Thanks @ddemeyer 
+* Restored Parameter Completion in interactive mode. So with an active `IshSession`, you get `Ctrl-Space` parameter autocompletion on parameter `-LovId` or `-Name`. #149
+* `Add-IshBackgroundTask` fix regarding date time parsing incoming dates incorrectly swapping month/day #137 
 * `New-IshObfuscatedFile`, `New-IshDitaGeneralizedXml` and `Test-IshValidXml` received updated xml catalog handling classes aligning with product 14SP4/14.0.4 code base. #146  Thanks @jlaridon
 
 ## Implementation Details
 
 Added `\Cmdlets\_TestEnvironment\TestPrerequisite.Tests.ps1` that requires ISHRemote to test if the typical prerequisites for running Pester integration tests are present. Test descriptions give a hint on what services are expected or how to overwrite values in `ISHRemote.PesterSetup.Debug.ps1` (e.g. unexisting status) to comply with your test environment. #4
 
-This is the release where we switched from manifest file `ISHRemote.psd1` entry `NestedModules` (pointing to nested module `Trisoft.ISHRemote.dll`) to `CmdletsToExport` holding a list of cmdlets. Remember to review `CmdletsToExport` if new cmdlets are added.
+This is the release where we switched from manifest file `ISHRemote.psd1` entry `NestedModules` (pointing to nested module `Trisoft.ISHRemote.dll`) to `CmdletsToExport` holding a list of cmdlets. The `CmdletsToExport` is derived at build time from the compiled binary library. Do note, as a known-issue, that cmdlet completion shows two entries when using IntelliSense on PowerShell 5.1 #150
 
 ## Breaking Changes - Cmdlets
 
