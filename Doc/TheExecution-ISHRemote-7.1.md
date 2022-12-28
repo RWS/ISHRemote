@@ -39,21 +39,22 @@ Add `-Timeout` parameter to this parameter group.
 
 # Protocol and Parameter Group Scenarios
 1. Explicit parameter group `Protocol`
-    1. Use `WcfWsTrust`, so SOAP 1.2 end points protected by WS-Federation/WS-Trust
-    2. Use `WcfOpenIdConnect`, so SOAP 1.2 end points protected by Access Management
-    3. Use `OpenApiOpenIdConnect`, so OpenApi end points protected by Access Management
+    1. Use `WcfSoapWithWsTrust`, so SOAP 1.2 end points protected by WS-Federation/WS-Trust
+    2. Use `WcfSoapWithOpenIdConnect`, so SOAP 1.2 end points protected by Access Management
+    3. Use `OpenApiWithOpenIdConnect`, so OpenApi end points protected by Access Management
 2. Reading `/ISHWS/connectionconfiguration.xml`
 3. If `infosharesoftwareversion` <= 15.0.0
-    1. Set `Protocol` to `WcfWsTrust`
-    2. Allow parameter groups ActiveDirectory/PSCredential/UserNamePassword as before
+    1. Set `Protocol` to `WcfSoapWithWsTrust`
+    2. Note that `issuer/authenticationtype` should be `WindowsMixed` (only PowerShell 5.1) or `UserNameMixed` (both)
+    3. Allow parameter groups ActiveDirectory/PSCredential/UserNamePassword as before
 4. If `infosharesoftwareversion` >= 15.0.0 but < 16.0.0 (so only private OpenApi)
     1. Reading `/ISHWS/owcf/connectionconfiguration.xml`
-    2. If `authenticationtype` equals `AccessManagement`
-        1. Set `Protocol` to `WcfOpenIdConnect`
+    3. If `issuer/authenticationtype` equals `AccessManagement`
+        1. Set `Protocol` to `WcfSoapWithOpenIdConnect`
         2. Allow parameter groups ClientSecret, Interactive and PSCredential
 5. If `infosharesoftwareversion` >= 16.0.0 (so only public OpenApi)
     1. Reading _unknown_ configuration file, future will tell, for now you can only get here by explicit `Protocol` usage
-    2. Set `Protocol` to `OpenApiOpenIdConnect`
+    2. Set `Protocol` to `OpenApiWithOpenIdConnect`
     3. Allow parameter groups ClientSecret, Interactive and PSCredential
 
 

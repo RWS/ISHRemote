@@ -21,6 +21,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security;
+using Trisoft.ISHRemote.Connection;
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Interfaces;
 
@@ -65,7 +66,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
 
-        private InfoShareWcfConnection _connection;
+        private InfoShareWcfSoapWithWsTrustConnection _connection;
         private Annotation25ServiceReference.Annotation _annotation25;
         private Application25ServiceReference.Application _application25;
         private DocumentObj25ServiceReference.DocumentObj _documentObj25;
@@ -138,7 +139,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                 IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
             };
 
-            _connection = new InfoShareWcfConnection(_logger, _webServicesBaseUri, connectionParameters);
+            _connection = new InfoShareWcfSoapWithWsTrustConnection(_logger, _webServicesBaseUri, connectionParameters);
 
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel");

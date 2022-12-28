@@ -37,13 +37,13 @@ using System.ServiceModel.Security.Tokens;
 using System.ServiceModel.Federation;
 #endif
 
-namespace Trisoft.ISHRemote
+namespace Trisoft.ISHRemote.Connection
 {
     /// <summary>
     /// Dynamic proxy (so without app.config) generation of Service References towards the InfoShare Web Services writen in Windows Communication Foundation (WCF) protected by WS-Trust (aka WS-Federation active) SOAP protocol.
     /// On ISHRemote v1 and earlier, so in turn before InfoShare 15 and earlier, this class was your starting point for dynamic proxy (so without app.config) generation of Service References. The inital class was written in .NET Framework style. Inspired by https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/ this class has pragmas to illustrate .NET Framework and .NET 6.0+ style side-by-side.
     /// </summary>
-    internal sealed class InfoShareWcfConnection : IDisposable
+    internal sealed class InfoShareWcfSoapWithWsTrustConnection : IDisposable, IInfoShareWcfSoapConnection
     {
         #region Constants
         /// <summary>
@@ -260,16 +260,16 @@ namespace Trisoft.ISHRemote
         /// Proxy for background task
         /// </summary>
         private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
-#endregion Private Members
+        #endregion Private Members
 
-#region Constructors
+        #region Constructors
         /// <summary>
-        /// Initializes a new instance of <c>InfoShareWcfConnection</c> class.
+        /// Initializes a new instance of <c>InfoShareWcfSoapWithWsTrustConnection</c> class.
         /// </summary>
         /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
         /// <param name="infoShareWSBaseUri">Base URI for InfoShare WS.</param>
         /// <param name="parameters">Connection parameters.</param>
-        public InfoShareWcfConnection(ILogger logger, Uri infoShareWSBaseUri, InfoShareWcfConnectionParameters parameters = null)
+        public InfoShareWcfSoapWithWsTrustConnection(ILogger logger, Uri infoShareWSBaseUri, InfoShareWcfConnectionParameters parameters = null)
         {
             _logger = logger;
 
@@ -284,14 +284,14 @@ namespace Trisoft.ISHRemote
                 };
             }
 
-#region Derive parameters from infoShareWSBaseUri and connectionconfiguration.xml
+            #region Derive parameters from infoShareWSBaseUri and connectionconfiguration.xml
 
             if (infoShareWSBaseUri.AbsolutePath.Contains("/Internal") || infoShareWSBaseUri.AbsolutePath.Contains("/SDL"))
             {
                 _stsInternalAuthentication = true;
                 // Enable-ISHIntegrationSTSInternalAuthentication is used directing the web services to a different STS
                 // issuerMetadataAddress = new EndpointAddress(InitializeIssuerMetadataAddress);  // [Should] Once connectionconfiguration.xml/issuer/mex offers the metadata exchange address, the dirty derive code should be replaced
-                _logger.WriteDebug($"InfoShareWcfConnection stsInternalAuthentication[{_stsInternalAuthentication}]");
+                _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection stsInternalAuthentication[{_stsInternalAuthentication}]");
                 _logger.WriteVerbose($"Detected 'Internal/SDL' Authentication in incoming infoShareWSBaseUri[{infoShareWSBaseUri}]");
             }
 
@@ -306,7 +306,7 @@ namespace Trisoft.ISHRemote
             _issuerAuthenticationType = new Lazy<string>(InitializeIssuerAuthenticationType);
             _infoShareWSAppliesTo = new Lazy<Uri>(InitializeInfoShareWSAppliesTo);
 
-#endregion
+            #endregion
 
             _logger.WriteDebug($"Resolving Service Uris");
             ResolveServiceUris();
@@ -349,9 +349,9 @@ namespace Trisoft.ISHRemote
             _commonBinding.ReaderQuotas.MaxDepth = 64;
 #endif
         }
-#endregion
+        #endregion
 
-#region Public Properties
+        #region Public Properties
         /// <summary>
         /// Root uri for the Web Services
         /// </summary>
@@ -369,9 +369,9 @@ namespace Trisoft.ISHRemote
                 return result;
             }
         }
-#endregion Properties
+        #endregion Properties
 
-#region Public Methods
+        #region Public Methods
         /// <summary>
         /// Create a /Wcf/API25/Annotation.svc proxy
         /// </summary>
@@ -1101,9 +1101,9 @@ namespace Trisoft.ISHRemote
                 return _issuedToken.Value;
             }
         }
-#endregion
+        #endregion
 
-#region Private Methods
+        #region Private Methods
 
         private void ResolveServiceUris()
         {
@@ -1323,8 +1323,8 @@ namespace Trisoft.ISHRemote
             }
 
             //Update the original binding as if we would do this manually in the configuration
-            if(!_explicitIssuer)
-            { 
+            if (!_explicitIssuer)
+            {
                 protectionTokenParameters.IssuerBinding = issuerServiceEndpoint.Binding;
                 protectionTokenParameters.IssuerAddress = issuerServiceEndpoint.Address;
             }
@@ -1333,11 +1333,11 @@ namespace Trisoft.ISHRemote
         }
 #endif
 
-            /// <summary>
-            /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
-            /// </summary>
-            /// <returns>The connection configuration.</returns>
-            private XDocument LoadConnectionConfiguration()
+        /// <summary>
+        /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
+        /// </summary>
+        /// <returns>The connection configuration.</returns>
+        private XDocument LoadConnectionConfiguration()
         {
             HttpClientHandler handler = new HttpClientHandler();
             if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1480,7 +1480,7 @@ namespace Trisoft.ISHRemote
         {
             if (IssuerAuthenticationType == "UserNameMixed")
             {
-                if(_connectionParameters.Credential == null)
+                if (_connectionParameters.Credential == null)
                 {
                     throw new InvalidOperationException($"Authentication endpoint {_issuerWSTrustEndpointUri.Value} requires credentials");
                 }
@@ -1524,9 +1524,9 @@ namespace Trisoft.ISHRemote
         }
 #endif
 
-#endregion
+        #endregion
 
-#region IDisposable Methods
+        #region IDisposable Methods
         /// <summary>
         /// Disposes the object
         /// </summary>
@@ -1616,6 +1616,6 @@ namespace Trisoft.ISHRemote
         {
             Dispose();
         }
-#endregion
+        #endregion
     }
 }

@@ -20,7 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace Trisoft.ISHRemote
+namespace Trisoft.ISHRemote.Connection
 {
     /// <summary>
     /// Optional InfoShare Wcf connection parameters.
