@@ -33,6 +33,10 @@ namespace Trisoft.ISHRemote.Objects
         /// </summary>
         public enum Protocol
         {
+            /// <summary>
+            /// <para type="description">Will try to find the best match, most likely based on the target systems software version.</para>
+            /// </summary>
+            Autodetect = 0,
             // <summary>
             // <para type="description">Asmx (Soap11) endpoints exist since InfoShare 2.7.0, always authenticated through first parameter AuthenticationContext which only works for internal user profiles (so holding a password in the CMS).</para>
             // </summary>

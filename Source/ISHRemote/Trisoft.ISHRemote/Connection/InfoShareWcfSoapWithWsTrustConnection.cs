@@ -1403,7 +1403,7 @@ namespace Trisoft.ISHRemote.Connection
                 throw new PlatformNotSupportedException($"PowerShell7+/NET6+ only supports /wstrust/mixed/username. Windows PowerShell 5.1/NET4.8 supports /wstrust/mixed/username and windowsmixed (aka Windows Authentication). IssuerUrl[{uriElement.Value}] PlatformVersion[{Environment.Version}]");
             }
 #endif
-            _logger.WriteVerbose($"Connecting to IssuerWSTrustUrl[{uriElement.Value}]");
+            _logger.WriteDebug($"Connecting to IssuerWSTrustUrl[{uriElement.Value}]");
             _logger.WriteDebug($"InitializeIssuerWSTrustEndpointUri uri[{uriElement.Value}]");
             return new Uri(uriElement.Value);
         }

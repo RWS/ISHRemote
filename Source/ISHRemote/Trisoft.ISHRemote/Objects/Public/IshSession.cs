@@ -38,7 +38,6 @@ namespace Trisoft.ISHRemote.Objects.Public
         private readonly ILogger _logger;
 
         private readonly Uri _webServicesBaseUri;
-        private IshConnectionConfiguration _ishConnectionConfiguration;
         private string _ishUserName;
         private string _userName;
         private string _userLanguage;
@@ -121,7 +120,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 // ISHRemote 0.x used CertificateValidationHelper.OverrideCertificateValidation which only works on net48 and overwrites the full AppDomain,
                 // below solution is cleaner for HttpHandler (so connectionconfiguration.xml and future OpenAPI) and SOAP proxies use factory.Credentials.ServiceCertificate.SslCertificateAuthentication
-                //CertificateValidationHelper.OverrideCertificateValidation();
+                // CertificateValidationHelper.OverrideCertificateValidation();
                 // overwrite certificate handling for HttpClient requests
                 handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             }
@@ -133,63 +132,83 @@ namespace Trisoft.ISHRemote.Objects.Public
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
             _ishSecurePassword = ishSecurePassword;
-            LoadConnectionConfiguration();
-            CreateConnection();
-        }
 
-        private void LoadConnectionConfiguration()
-        {
-            var connectionConfigurationUri = new Uri(_webServicesBaseUri, "connectionconfiguration.xml");
-            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{_httpClient.Timeout}]");
-            var responseMessage = _httpClient.GetAsync(connectionConfigurationUri).GetAwaiter().GetResult();
-            string response = responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-            _ishConnectionConfiguration = new IshConnectionConfiguration(response);
-            _logger.WriteDebug($"LoadConnectionConfiguration found InfoShareWSUrl[{_ishConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{_ishConnectionConfiguration.ApplicationName}] SoftwareVersion[{_ishConnectionConfiguration.SoftwareVersion}]");
-            if (_ishConnectionConfiguration.InfoShareWSUrl != _webServicesBaseUri)
+            // Detecting or verifying protocol
+            var ishwsConnectionConfigurationUri = new Uri(_webServicesBaseUri, "connectionconfiguration.xml");
+            IshConnectionConfiguration ishwsConnectionConfiguration = LoadConnectionConfiguration(ishwsConnectionConfigurationUri);
+            _logger.WriteVerbose($"LoadConnectionConfiguration found InfoShareWSUrl[{ishwsConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{ishwsConnectionConfiguration.ApplicationName}] SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
+            if (ishwsConnectionConfiguration.InfoShareWSUrl != _webServicesBaseUri)
             {
-                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _webServicesBaseUri[{_webServicesBaseUri}] differs from _ishConnectionConfiguration.InfoShareWSUrl[{_ishConnectionConfiguration.InfoShareWSUrl}]. Using _webServicesBaseUri.");
+                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _webServicesBaseUri[{_webServicesBaseUri}] differs from ishwsConnectionConfiguration.InfoShareWSUrl[{ishwsConnectionConfiguration.InfoShareWSUrl}]. Using _webServicesBaseUri.");
             }
-            if (new IshVersion(_ishConnectionConfiguration.SoftwareVersion).MajorVersion >= 15)
+            if (new IshVersion(ishwsConnectionConfiguration.SoftwareVersion).MajorVersion >= 15)
             {
-                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _protocol[{_protocol}] differs from suggested Protocol[{Enumerations.Protocol.WcfSoapWithWsTrust}]. Using _protocol.");
+                var wcfConnectionConfigurationUri = new Uri(_webServicesBaseUri, "owcf/connectionconfiguration.xml");
+                IshConnectionConfiguration owcfConnectionConfiguration = LoadConnectionConfiguration(wcfConnectionConfigurationUri);
+                _logger.WriteVerbose($"LoadConnectionConfiguration found InfoShareWSUrl[{ishwsConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{ishwsConnectionConfiguration.ApplicationName}] SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
             }
-        }
-
-        private void CreateConnection()
-        {
-            _logger.WriteDebug($"CreateConnection protocol[{Protocol}]");
-            switch (Protocol)
+            switch (_protocol)
             {
-                case Enumerations.Protocol.WcfSoapWithWsTrust:
-                    { 
-                        //prepare connection for authentication/authorization
-                        var connectionParameters = new InfoShareWcfConnectionParameters
-                        {
-                            Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
-                            Timeout = _timeout,
-                            IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
-                        };
-                        _connection = new InfoShareWcfSoapWithWsTrustConnection(_logger, _webServicesBaseUri, connectionParameters);
-                        // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
-                        _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel");
-                        var application25Proxy = _connection.GetApplication25Channel();
-                        _logger.WriteDebug("CreateConnection _serverVersion GetApplication25Channel.GetVersion");
-                        _serverVersion = new IshVersion(application25Proxy.GetVersion());
-                    }
+                case Enumerations.Protocol.Autodetect:
+                    _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
+                    _logger.WriteVerbose($"LoadConnectionConfiguration selected protocol[{_protocol}]");
+                    CreateInfoShareWcfSoapWithWsTrustConnection();
                     break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                    { 
-                        _logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
-                        //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
-                        //    "Basic",
-                        //    Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
-                        _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
-                        _openApiISH30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
-                        _serverVersion = new IshVersion(_openApiISH30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
-                    }
-                    // if GetApplicationVersionAsync doesnot force authentication we should for a initialize IshUser at this location for both protocols
+                    _logger.WriteDebug($"LoadConnectionConfiguration selected protocol[{_protocol}]");
+                    CreateOpenApiWithOpenIdConnectConnection();
+                    // explictly initializing WcfSoapWithWsTrust as well, as many cmdlets in turn OpenAPI calls are still missing
+                    CreateInfoShareWcfSoapWithWsTrustConnection();
                     break;
+                case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    _logger.WriteDebug($"LoadConnectionConfiguration selected protocol[{_protocol}]");
+                    CreateInfoShareWcfSoapWithWsTrustConnection();
+                    break;
+                default:
+                    throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
             }
+        }
+
+        private IshConnectionConfiguration LoadConnectionConfiguration(Uri connectionConfigurationUri)
+        {
+            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{_httpClient.Timeout}]");
+            var responseMessage = _httpClient.GetAsync(connectionConfigurationUri).GetAwaiter().GetResult();
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                throw new ArgumentException($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{_httpClient.Timeout}] failed with StatusCode[{responseMessage.StatusCode}]");
+            }
+            string response = responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            //_logger.WriteDebug($"LoadConnectionConfiguration response[{response}]");
+            return new IshConnectionConfiguration(response);
+        }
+
+        private void CreateInfoShareWcfSoapWithWsTrustConnection()
+        {
+            _logger.WriteDebug($"CreateInfoShareWcfSoapWithWsTrustConnection");
+            //prepare connection for authentication/authorization
+            var connectionParameters = new InfoShareWcfConnectionParameters
+            {
+                Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
+                Timeout = _timeout,
+                IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
+            };
+            _connection = new InfoShareWcfSoapWithWsTrustConnection(_logger, _webServicesBaseUri, connectionParameters);
+            // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
+            _logger.WriteDebug("CreateInfoShareWcfSoapWithWsTrustConnection _serverVersion GetApplication25Channel");
+            var application25Proxy = _connection.GetApplication25Channel();
+            _logger.WriteDebug("CreateInfoShareWcfSoapWithWsTrustConnection _serverVersion GetApplication25Channel.GetVersion");
+            _serverVersion = new IshVersion(application25Proxy.GetVersion());
+        }
+        private void CreateOpenApiWithOpenIdConnectConnection()
+        {
+            _logger.WriteDebug($"CreateOpenApiWithOpenIdConnectConnection");
+            _logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
+            //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+            //    "Basic",
+            //    Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
+            _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
+            _openApiISH30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
+            _serverVersion = new IshVersion(_openApiISH30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -782,7 +801,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _userGroup25 = null;
             _userRole25 = null;
             // ...and re-create connection
-            CreateConnection();
+            CreateInfoShareWcfSoapWithWsTrustConnection();
         }
 
         public void Dispose()
