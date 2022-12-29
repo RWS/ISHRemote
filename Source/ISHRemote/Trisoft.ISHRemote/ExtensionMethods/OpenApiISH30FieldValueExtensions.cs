@@ -24,6 +24,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
 {
     internal static class OpenApiISH30FieldValueExtensions
     {
+        /* #115 attempt to convertincoming fieldvalues to IShFields, not linked/used to my knowledge
         internal static IshFields ToIshFields(this ICollection<OpenApiISH30.FieldValue> fieldValues, IshSession ishSession)
         {
             var ishFields = new IshFields();
@@ -124,5 +125,6 @@ namespace Trisoft.ISHRemote.ExtensionMethods
             }
             return ishFields;
         }
+        */
     }
 }

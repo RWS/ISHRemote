@@ -91,7 +91,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
 
             if (ishTypeFieldDefinition != null)
             {
-                OpenApiISH30.IshField openApiIshField = new OpenApiISH30.IshField() {  Level = ishField.Level.ToOpenApiISH30Level(), Name = ishField.Name, Type = nameof(OpenApiISH30.IshField ) };
+                OpenApiISH30.IshField openApiIshField = new OpenApiISH30.IshField() {  Level = ishField.Level.ToOpenApiISH30Level(), Name = ishField.Name };
                 
                 string fieldValue = ishFields.GetFieldValue(ishField.Name, ishField.Level, ishField.ValueType);
                 // TODO why is the separator on IshSession a string?
@@ -116,12 +116,12 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                         setFieldValue = ishTypeFieldDefinition.IsMultiValue ? (SetFieldValue)new SetMultiLovFieldValue()
                         {
                             IshField = openApiIshField,
-                            Value = multiFieldValues.Select(v => new SetLovValue() { Id = v, Type = nameof(SetLovValue) }).ToList()
+                            Value = multiFieldValues.Select(v => new SetLovValue() { Id = v }).ToList()
                         }
                         : new SetLovFieldValue()
                         {
                             IshField = openApiIshField,
-                            Value = new SetLovValue() { Id = fieldValue, Type = nameof(SetLovValue) }
+                            Value = new SetLovValue() { Id = fieldValue }
                         };
                         break;
 

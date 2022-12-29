@@ -81,6 +81,7 @@ namespace Trisoft.ISHRemote.Objects
         /// <param name="separator">Any multi-value field are joined up by the separator (typically comma-space), mostly coming from IshSession.</param>
         public IshFields(ICollection<OpenApiISH30.FieldValue> oFieldValues, string separator)
         {
+            /*
             _fields = new List<IshField>();
             foreach (var oFieldValue in oFieldValues)
             {
@@ -108,13 +109,12 @@ namespace Trisoft.ISHRemote.Objects
                         
                         break;
                 }
-                /*
-                var o = new OpenApi.NumberFieldValue();
-                var t = oFieldValue.Type; // the type to use to cast to the right NumberFieldValue or whatever type?
-                oFieldValue.IshField
-                AddField(new IshMetadataField())
-                */
+                // var o = new OpenApi.NumberFieldValue();
+                // var t = oFieldValue.Type; // the type to use to cast to the right NumberFieldValue or whatever type?
+                // oFieldValue.IshField
+                // AddField(new IshMetadataField())
             }
+            */
         }
 
         /// <summary>

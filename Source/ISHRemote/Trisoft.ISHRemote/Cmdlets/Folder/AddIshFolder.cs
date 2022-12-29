@@ -167,7 +167,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         //FNAME
                                         var fieldFolderName = new OpenApiISH30.SetStringFieldValue()
                                         {
-                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FNAME", Type = nameof(OpenApiISH30.IshField) },
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FNAME" },
                                             Value = folderName
                                         };
                                         fieldValues.Add(fieldFolderName);
@@ -175,7 +175,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         //FDOCUMENTTYPE (aka Folder Type)
                                         var fieldFolderType = new OpenApiISH30.SetLovFieldValue()
                                         {
-                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApiISH30.IshField) },
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FDOCUMENTTYPE" },
                                             Value = new OpenApiISH30.SetLovValue() { Id = "VDOCTYPEILLUSTRATION" }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
                                         };
                                         fieldValues.Add(fieldFolderType);
@@ -183,7 +183,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         //READ-ACCESS
                                         var fieldReadAccess = new OpenApiISH30.SetMultiCardFieldValue()
                                         {
-                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApiISH30.IshField) },
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "READ-ACCESS" },
                                             Value = new List<OpenApiISH30.SetBaseObject>()
                                         };
                                         // Convert multi-value fields of ISHRemote models via IshSession.Separator
@@ -196,7 +196,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         //FUSERGROUP (aka Owned by)
                                         var fieldWriteAccess = new OpenApiISH30.SetMultiCardFieldValue()
                                         {
-                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApiISH30.IshField) },
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FUSERGROUP" },
                                             Value = new List<OpenApiISH30.SetBaseObject>()
                                         };
                                         // Convert multi-value fields of ISHRemote models via IshSession.Separator
@@ -249,12 +249,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             switch (IshSession.Protocol)
                             {
                                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                                    /*
                                     ICollection<OpenApiISH30.SetFieldValue> fieldValues = new List<OpenApiISH30.SetFieldValue>();
 
                                     //FNAME
                                     var fieldFolderName = new OpenApiISH30.SetStringFieldValue()
                                     {
-                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FNAME", Type = nameof(OpenApiISH30.IshField) },
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FNAME" },
                                         Value = FolderName
                                     };
                                     fieldValues.Add(fieldFolderName);
@@ -262,21 +263,21 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     //FDOCUMENTTYPE (aka Folder Type)
                                     var fieldFolderType = new OpenApiISH30.SetLovFieldValue()
                                     {
-                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApiISH30.IshField) },
-                                        Value = new OpenApiISH30.SetLovValue() { Id = Enumerations.ToDDOCTYPEValue(FolderType), Type = nameof(OpenApiISH30.SetLovValue) }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FDOCUMENTTYPE" },
+                                        Value = new OpenApiISH30.SetLovValue() { Id = Enumerations.ToDDOCTYPEValue(FolderType) }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
                                     };
                                     fieldValues.Add(fieldFolderType);
 
                                     //READ-ACCESS
                                     var fieldReadAccess = new OpenApiISH30.SetMultiLovFieldValue()
                                     {
-                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApiISH30.IshField) },
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "READ-ACCESS" },
                                         Value = new List<OpenApiISH30.SetLovValue>()
                                     };
                                     // Convert multi-value fields of ISHRemote models via IshSession.Separator
                                     foreach (string readaccessItem in readAccess)
                                     {
-                                        fieldReadAccess.Value.Add(new OpenApiISH30.SetLovValue() { Id = readaccessItem, Type = nameof(OpenApiISH30.SetLovValue) });
+                                        fieldReadAccess.Value.Add(new OpenApiISH30.SetLovValue() { Id = readaccessItem });
                                     }
                                     fieldValues.Add(fieldReadAccess);
 
@@ -284,7 +285,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     var ownedByValue = String.IsNullOrEmpty(ownedBy) ? null : new OpenApiISH30.SetUserGroup() { Id = ownedBy };
                                     var fieldWriteAccess = new OpenApiISH30.SetCardFieldValue()
                                     {
-                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApiISH30.IshField) },
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FUSERGROUP" },
                                         Value = ownedByValue
                                     };
                                     fieldValues.Add(fieldWriteAccess);
@@ -297,6 +298,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     folderId = Convert.ToInt64(response.Id);  // TODO [Question] Why is folder id a string and not typed as long in the FolderDescriptor model?
                                     foldersToRetrieve.Add(folderId);
                                     break;
+                                    */
                                 case Enumerations.Protocol.WcfSoapWithWsTrust:
                                     folderId = IshSession.Folder25.Create(
                                         ParentFolderId,
@@ -319,30 +321,27 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     switch (IshSession.Protocol)
                     {
                         case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                            /*
                             ICollection<OpenApiISH30.RequestedField> fieldValues = new List<OpenApiISH30.RequestedField>();
                             fieldValues.Add(new OpenApiISH30.RequestedField()
                             {
                                 IshField = new OpenApiISH30.IshField()
                                 {
                                     Name = "FITTLE",
-                                    Level = OpenApiISH30.Level.Logical,
-                                    Type = nameof(OpenApiISH30.IshField)
-                                },
-                                Type = nameof(OpenApiISH30.RequestedField)
+                                    Level = OpenApiISH30.Level.Logical
+                                }
                             });
-                            /*
-                            ICollection<OpenApiISH30.FilterFieldValue> filterFieldValues = new List<OpenApiISH30.FilterFieldValue>();
-                            fieldValues.Add(new OpenApiISH30.CardFilterFieldValue()  // Looks a lot like SetFieldVAlue, so strongly typed
-                            {
-                                IshField = new OpenApiISH30.IshField()
-                                {
-                                    Name = "FITTLE",
-                                    Level = OpenApiISH30.Level.Logical,
-                                    Type = nameof(OpenApiISH30.IshField)
-                                },
-                                Type = nameof(OpenApiISH30.RequestedField)
-                            });
-                            */
+                            //ICollection<OpenApiISH30.FilterFieldValue> filterFieldValues = new List<OpenApiISH30.FilterFieldValue>();
+                            //fieldValues.Add(new OpenApiISH30.CardFilterFieldValue()  // Looks a lot like SetFieldVAlue, so strongly typed
+                            //{
+                            //    IshField = new OpenApiISH30.IshField()
+                            //    {
+                            //        Name = "FITTLE",
+                            //        Level = OpenApiISH30.Level.Logical,
+                            //        Type = nameof(OpenApiISH30.IshField)
+                            //    },
+                            //    Type = nameof(OpenApiISH30.RequestedField)
+                            //});
                             var responseGet = IshSession.OpenApiISH30Service.GetFolderListAsync(new OpenApiISH30.GetFolderList()
                             {
                                 Ids = foldersToRetrieve.ConvertAll<string>(x => x.ToString()),
@@ -351,6 +350,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             }).GetAwaiter().GetResult();
                             returnedFolders.AddRange(new IshFolders(responseGet, IshSession.Separator).Folders);
                             break;
+                            */
                         case Enumerations.Protocol.WcfSoapWithWsTrust:
                             string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(foldersToRetrieve.ToArray(), requestedMetadata.ToXml());
                             IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
