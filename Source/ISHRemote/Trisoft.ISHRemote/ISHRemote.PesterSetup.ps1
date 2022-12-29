@@ -64,8 +64,8 @@ if ([string]::IsNullOrEmpty($ishPassword))
 	$ishPassword = 'admin'
 }
 $webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
-$wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
-$wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
+#$wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"  # Removed since v7.0
+#$wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"  # Removed since v7.0
 
 Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for System Setup initialization"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed

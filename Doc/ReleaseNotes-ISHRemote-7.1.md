@@ -16,7 +16,7 @@ This release inherits the v0.1 to v0.14 up to v7.0 development branch and featur
 
 ## Implementation Details
 
-work-in-progress
+* Help of cmdlet `New-IshSession` was still suggesting obsolete parameter `-WsTrustIssuerUrl` in examples
 
 ## Breaking Changes - Cmdlets
 

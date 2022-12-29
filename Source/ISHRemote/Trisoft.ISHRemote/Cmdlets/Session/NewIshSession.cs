@@ -86,18 +86,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
     /// </example>
-    /// <example>
-    /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -WsTrustIssuerUrl "https://example.com/ISHSTS/issue/wstrust/mixed/username" -WsTrustIssuerMexUrl "https://example.com/ISHSTS/issue/wstrust/mex" -PSCredential "Admin"
-    /// </code>
-    /// <para>Create a new session with explicit issuer. In this example, the issuer is the ISHSTS next to the ISHWS.</para>
-    /// </example>
-    /// <example>
-    /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://localhost/ISHWS/" -WsTrustIssuerUrl "https://localhost/ISHSTS/issue/wstrust/mixed/username" -WsTrustIssuerMexUrl "https://localhost/ISHSTS/issue/wstrust/mex" -PSCredential "Admin" -IgnoreSslPolicyErrors
-    /// </code>
-    /// <para>Create a new session with explicit issuer while using only local endpoints.</para>
-    /// </example>
     [Cmdlet(VerbsCommon.New, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(IshSession))]
     public sealed class NewIshSession : SessionCmdlet
