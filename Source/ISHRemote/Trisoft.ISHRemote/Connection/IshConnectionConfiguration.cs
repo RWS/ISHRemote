@@ -20,7 +20,7 @@ using System.Text;
 using System.Xml;
 using Trisoft.ISHRemote.Exceptions;
 
-namespace Trisoft.ISHRemote.Objects
+namespace Trisoft.ISHRemote.Connection
 {
     /// <summary>
     /// The connectionconfiguration.xml file is a discovery file that teels you how the web services are configured.
