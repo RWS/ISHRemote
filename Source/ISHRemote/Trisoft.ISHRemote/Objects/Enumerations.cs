@@ -33,18 +33,22 @@ namespace Trisoft.ISHRemote.Objects
         /// </summary>
         public enum Protocol
         {
-            /// <summary>
-            /// <para type="description">Asmx (Soap11) endpoints exist since InfoShare 2.7, always authenticated through first parameter AuthenticationContext which only works for internal user profiles (so holding a password in the CMS).</para>
-            /// </summary>
-            AsmxAuthenticationContext = 2070,
-            /// <summary>
-            /// <para type="description">OpenApi (rest) endpoints exist since InfoShare 15.0.0 as private Api, always authenticated over Basic Authentication http header which only works for internal user profiles (so holding a password in the CMS).</para>
-            /// </summary>
-            OpenApiBasicAuthentication = 1500
             // <summary>
-            // <para type="description">OpenApi (rest) endpoints exist since InfoShare 16.0.0 as public Api, always authenticated over OpenIDConnect/OAuth20 which only works for internal and external user profiles.</para>
+            // <para type="description">Asmx (Soap11) endpoints exist since InfoShare 2.7.0, always authenticated through first parameter AuthenticationContext which only works for internal user profiles (so holding a password in the CMS).</para>
             // </summary>
-            //OpenApiOpenConnectId = 1600
+            //AsmxSoapWithAuthenticationContext = 270,
+            /// <summary>
+            /// <para type="description">Wcf (Soap12) endpoints exist since InfoShare 10.0.0, always authenticated over WS-Federation/WS-Trust which works for internal and external user profiles.</para>
+            /// </summary>
+            WcfSoapWithWsTrust = 1000,
+            // <summary>
+            // <para type="description">Wcf (Soap12) endpoints exist since InfoShare 15.0.0 as public Api, always authenticated over OpenIDConnect/OAuth20 which works for internal and external user profiles.</para>
+            // </summary>
+            //WcfSoapWithOpenIdConnect = 1500,
+            /// <summary>
+            /// <para type="description">OpenApi (rest) endpoints exist since InfoShare 15.0.0 as private Api, always authenticated over OpenIDConnect/OAuth20 which works for internal and external user profiles.</para>
+            /// </summary>
+            OpenApiWithOpenIdConnect = 1600
         }
 
         /// <summary>

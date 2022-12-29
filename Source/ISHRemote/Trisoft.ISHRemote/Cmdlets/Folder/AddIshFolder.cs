@@ -161,7 +161,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 long folderId = 0;
                                 switch (IshSession.Protocol)
                                 {
-                                    case Enumerations.Protocol.OpenApiBasicAuthentication:
+                                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                                         ICollection<OpenApiISH30.SetFieldValue> fieldValues = new List<OpenApiISH30.SetFieldValue>();
 
                                         //FNAME
@@ -223,7 +223,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 
                                         foldersToRetrieve.Add(folderId);
                                         break;
-                                    case Enumerations.Protocol.AsmxAuthenticationContext:
+                                    case Enumerations.Protocol.WcfSoapWithWsTrust:
                                         folderId = IshSession.Folder25.Create(
                                             ParentFolderId,
                                             folderName,
@@ -248,7 +248,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             long folderId = 0;
                             switch (IshSession.Protocol)
                             {
-                                case Enumerations.Protocol.OpenApiBasicAuthentication:
+                                case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                                     ICollection<OpenApiISH30.SetFieldValue> fieldValues = new List<OpenApiISH30.SetFieldValue>();
 
                                     //FNAME
@@ -297,7 +297,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     folderId = Convert.ToInt64(response.Id);  // TODO [Question] Why is folder id a string and not typed as long in the FolderDescriptor model?
                                     foldersToRetrieve.Add(folderId);
                                     break;
-                                case Enumerations.Protocol.AsmxAuthenticationContext:
+                                case Enumerations.Protocol.WcfSoapWithWsTrust:
                                     folderId = IshSession.Folder25.Create(
                                         ParentFolderId,
                                         FolderName,
@@ -318,7 +318,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                     switch (IshSession.Protocol)
                     {
-                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             ICollection<OpenApiISH30.RequestedField> fieldValues = new List<OpenApiISH30.RequestedField>();
                             fieldValues.Add(new OpenApiISH30.RequestedField()
                             {
@@ -351,7 +351,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             }).GetAwaiter().GetResult();
                             returnedFolders.AddRange(new IshFolders(responseGet, IshSession.Separator).Folders);
                             break;
-                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                        case Enumerations.Protocol.WcfSoapWithWsTrust:
                             string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(foldersToRetrieve.ToArray(), requestedMetadata.ToXml());
                             IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
                             returnedFolders.AddRange(retrievedFolders.Folders);

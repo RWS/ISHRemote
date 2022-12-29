@@ -88,7 +88,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </example>
     /// <example>
     /// <code>
-    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Protocol AsmxAuthenticationContext
+    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Protocol WcfSoapWithWsTrust
     /// </code>
     /// <para>Building a session for the chosen service based on username/password authentication. Parameter Protocol indicates the preferred communication/authentication route.</para>
     /// </example>
@@ -176,7 +176,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         private SecureString _ishSecurePassword = null;
         private TimeSpan _timeout = new TimeSpan(0, 30, 0);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private bool _ignoreSslPolicyErrors = false;
-        private Enumerations.Protocol _protocol = Enumerations.Protocol.AsmxAuthenticationContext;
+        private Enumerations.Protocol _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
 
         #endregion
         protected override void ProcessRecord()

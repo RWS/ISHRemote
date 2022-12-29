@@ -151,15 +151,16 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
             if (new IshVersion(_ishConnectionConfiguration.SoftwareVersion).MajorVersion >= 15)
             {
-                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _protocol[{_protocol}] differs from suggested Protocol[{Enumerations.Protocol.AsmxAuthenticationContext}]. Using _protocol.");
+                _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _protocol[{_protocol}] differs from suggested Protocol[{Enumerations.Protocol.WcfSoapWithWsTrust}]. Using _protocol.");
             }
         }
 
         private void CreateConnection()
         {
+            _logger.WriteDebug($"CreateConnection protocol[{Protocol}]");
             switch (Protocol)
             {
-                case Enumerations.Protocol.AsmxAuthenticationContext:
+                case Enumerations.Protocol.WcfSoapWithWsTrust:
                     { 
                         //prepare connection for authentication/authorization
                         var connectionParameters = new InfoShareWcfConnectionParameters
@@ -176,7 +177,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         _serverVersion = new IshVersion(application25Proxy.GetVersion());
                     }
                     break;
-                case Enumerations.Protocol.OpenApiBasicAuthentication:
+                case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                     { 
                         _logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
                         //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
@@ -201,9 +202,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                     {
                         switch (Protocol)
                         {
-                            case Enumerations.Protocol.OpenApiBasicAuthentication:
+                            case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                                 // TODO [Must] Add OpenApi implementation
-                            case Enumerations.Protocol.AsmxAuthenticationContext:
+                            case Enumerations.Protocol.WcfSoapWithWsTrust:
                                 _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
                                 _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null));
                                 break;
@@ -292,9 +293,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
                     switch (Protocol)
                     {
-                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             // TODO [Must] Add OpenApi implementation
-                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                        case Enumerations.Protocol.WcfSoapWithWsTrust:
                             string requestedMetadata = "<ishfields><ishfield name='USERNAME' level='none'/></ishfields>";
                             string xmlIshObjects = User25.GetMyMetadata(requestedMetadata);
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
@@ -319,9 +320,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                     //TODO [Could] IshSession could initialize the current IshUser completely based on all available user metadata and store it on the IshSession
                     switch (Protocol)
                     {
-                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             // TODO [Must] Add OpenApi implementation
-                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                        case Enumerations.Protocol.WcfSoapWithWsTrust:
                             string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
                             string xmlIshObjects = User25.GetMyMetadata(requestedMetadata);
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
@@ -383,9 +384,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                 VerifyTokenValidity();
                 switch (Protocol)
                 {
-                    case Enumerations.Protocol.OpenApiBasicAuthentication:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                         // TODO [Must] Add OpenApi implementation
-                    case Enumerations.Protocol.AsmxAuthenticationContext:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
                         var application25Proxy = _connection.GetApplication25Channel();
                         return application25Proxy.Authenticate2();
                     default:

@@ -240,9 +240,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         // Process card ids in batches
                         switch (IshSession.Protocol)
                         {
-                            case Enumerations.Protocol.OpenApiBasicAuthentication:
+                            case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             // TODO [Must] Add OpenApi implementation
-                            case Enumerations.Protocol.AsmxAuthenticationContext:
+                            case Enumerations.Protocol.WcfSoapWithWsTrust:
                                 string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(folderCardIdBatch.ToArray(), _requestedMetadata.ToXml());
                                 IshFolders retrievedObjects = new IshFolders(xmlIshFolders);
                                 returnIshFolders.AddRange(retrievedObjects.Folders);
@@ -264,9 +264,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         IshFolders retrievedFolders = null;
                         switch (IshSession.Protocol)
                         {
-                            case Enumerations.Protocol.OpenApiBasicAuthentication:
+                            case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             // TODO [Must] Add OpenApi implementation
-                            case Enumerations.Protocol.AsmxAuthenticationContext:
+                            case Enumerations.Protocol.WcfSoapWithWsTrust:
                                 string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(folderCardIdBatch.ToArray(), _requestedMetadata.ToXml());
                                 retrievedFolders = new IshFolders(xmlIshFolders);
                                 break;
@@ -293,9 +293,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     IshFolders retrievedFolders = null;
                     switch (IshSession.Protocol)
                     {
-                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                         // TODO [Must] Add OpenApi implementation
-                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                        case Enumerations.Protocol.WcfSoapWithWsTrust:
                             string xmlIshFolder = IshSession.Folder25.GetMetadata(
                                 BaseFolderLabelToEnum(IshSession, baseFolderLabel),
                                 folderPathTrisoft,
@@ -314,7 +314,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     IshFolders retrievedFolders = null;
                     switch (IshSession.Protocol)
                     {
-                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             /*
                             // convert IshSession.DefaultRequestedMetadata to FieldGroup, and retrieve from IshSession property
                             retrievedFolders = new IshFolders(IshSession.OpenApi30Service.GetRootFolderListAsync(
@@ -324,7 +324,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             // returns all base/root folders, then select the right one
                             break;
                             */
-                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                        case Enumerations.Protocol.WcfSoapWithWsTrust:
                             string xmlIshFolders = IshSession.Folder25.GetMetadata(
                                 baseFolder,
                                 new string[0],
@@ -421,9 +421,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 IshFolders retrievedFolders = null;
                 switch (IshSession.Protocol)
                 {
-                    case Enumerations.Protocol.OpenApiBasicAuthentication:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                     // TODO [Must] Add OpenApi implementation
-                    case Enumerations.Protocol.AsmxAuthenticationContext:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
                         string xmlIshFolders = IshSession.Folder25.GetSubFoldersByIshFolderRef(ishFolder.IshFolderRef);
                         // GetSubFolders contains ishfolder for the parent folder + ishfolder inside for the subfolders
                         retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder/ishfolder");
@@ -435,9 +435,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     // Add the required fields (needed for pipe operations)
                     switch (IshSession.Protocol)
                     {
-                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                         // TODO [Must] Add OpenApi implementation
-                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                        case Enumerations.Protocol.WcfSoapWithWsTrust:
                             string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids,_requestedMetadata.ToXml());
                             retrievedFolders = new IshFolders(xmlIshFolders);
                             break;
