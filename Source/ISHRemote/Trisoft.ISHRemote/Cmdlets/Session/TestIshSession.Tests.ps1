@@ -35,6 +35,9 @@ Describe "Test-IshSession" -Tags "Read" {
 		It "Parameter WsBaseUrl invalid" {
 			Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" | Should -Be $false
 		}
+		It "Parameter WsBaseUrl invalid and -Timeout exists" {
+			Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -Timeout 5 | Should -Be $false
+		}
 	}
 
 	Context "Test-IshSession PSCredential" {

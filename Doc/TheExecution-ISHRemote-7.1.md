@@ -2,6 +2,10 @@
 
 This page will try to track work in progress. And because I work on it in free time, it will help trace how I got where I am in the first place plus what is next. Inspired by [ThePlan-ISHRemote-7.0.md](./ThePlan-ISHRemote-7.0.md) and [TheExecution-ISHRemote-7.0.md](./TheExecution-ISHRemote-7.0.md).
 
+Remember
+* https://mecdev12qa01.global.sdl.corp/ISHWSSQL2017/Api/api-docs/index.html requires pre-authentication
+* https://mecdev12qa01.global.sdl.corp/ISHCSSQL2017/OrganizeSpace/OApi/api-docs/index.html forces authentication
+
 
 
 # On Tridion Docs 14SP4/14.0.4 and earlier
@@ -135,8 +139,18 @@ Add (nested binary module) AMRemote that could offer cmdlets like
 * `Get-AMUser`, `Set-AMUser` and `Remove-AMUser`. It would be nice if ISHRemote and AMRemote would understand each others object model. That is why just adding some cmdlets in ISHRemote is so much easier than a clean AMRemote PowerShell automation library.
 
 
-
-# To Do
+# Done
+* Merging in #115 branch that was AsmxSoapWithAuthenticationContext plus OpenApiWithOpenIdConnect efforts
+* Update spec.json
+* Rename protocol and ishSession.OpenApi30Service -> ishSession.OpenApiISH30Service so ishSession.OpenApiAM10Service
+* Case Files
+    * IshFolder.cs skipped OpenApi object conversion here with #115 merge?!
+    * Enumerations.cs left various enum conversions in #115
+    * IshFields.cs skipped OpenApi object conversion here with #115 merge?!
+    * IshFolders.cs skipped OpenApi object conversion here with #115 merge?!
+    * AddIshFolder.cs
+    * GetIshFolder.cs
+# Next
 * Parameter group `New-IShSession` ActiveDirectory/Interactive does not have `-Timeout` parameter.
 * Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed.
 * Describe what Tridion Docs User Profile disable means, and when it kicks in.

@@ -28,6 +28,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApi\Trisoft.ISHRemote.OpenApi.csproj" />
+  </ItemGroup>
     
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />

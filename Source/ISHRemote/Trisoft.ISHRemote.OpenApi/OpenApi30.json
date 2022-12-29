@@ -1,0 +1,6335 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "InfoShare API v3.0",
+    "contact": {
+      "name": "RWS Support",
+      "url": "https://gateway.sdl.com/"
+    },
+    "version": "v3.0"
+  },
+  "servers": [
+    {
+      "url": "https://mecdev12qa01.global.sdl.corp/ISHWSORA19/api"
+    }
+  ],
+  "paths": {
+    "/Application/Version": {
+      "get": {
+        "tags": [
+          "Application"
+        ],
+        "summary": "Gets the version of the application server.",
+        "operationId": "GetApplicationVersion",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Baselines/Get": {
+      "post": {
+        "tags": [
+          "Baselines"
+        ],
+        "summary": "Gets all baselines in the repository that match the criteria given in the parameters.",
+        "operationId": "GetBaselineList",
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetBaselineList"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetBaselineList"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetBaselineList"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Baseline"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Baseline"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/DocumentObjects/ByLogicalId/Get": {
+      "post": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Gets all document objects in the Repository that match the criteria given in the parameters.",
+        "description": "Depending on which status filter is specified, the objects with following status types can be returned:\r\n<table class=\"table\"><thead><tr><th>Status filter</th><th>Returned status types</th></tr></thead><tbody><tr><td>All</td><td>All status types</td></tr><tr><td>LatestReleased</td><td>Latest released excluding out-of-date</td></tr><tr><td>DraftOrLatestReleased</td><td>Draft and latest released excluding out-of-date</td></tr><tr><td>AllReleased</td><td>All released including out-of-date</td></tr></tbody></table>",
+        "operationId": "GetDocumentObjectListByLogicalId",
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectListByLogicalId"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectListByLogicalId"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectListByLogicalId"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentObject"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/DocumentObjects/Get": {
+      "post": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Gets all document objects in the Repository that match the criteria given in the parameters.",
+        "description": "Depending on which status filter is specified, the objects with following status types can be returned:\r\n<table class=\"table\"><thead><tr><th>Status filter</th><th>Returned status types</th></tr></thead><tbody><tr><td>All</td><td>All status types</td></tr><tr><td>LatestReleased</td><td>Latest released excluding out-of-date</td></tr><tr><td>DraftOrLatestReleased</td><td>Draft and latest released excluding out-of-date</td></tr><tr><td>AllReleased</td><td>All released including out-of-date</td></tr></tbody></table>",
+        "operationId": "GetDocumentObjectList",
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectList"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectList"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectList"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentObject"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/DocumentObjects/ByLanguageCardId/Get": {
+      "post": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Gets all document objects in the Repository that match the criteria given in the parameters.",
+        "description": "Depending on which status filter is specified, the objects with following status types can be returned:\r\n<table class=\"table\"><thead><tr><th>Status filter</th><th>Returned status types</th></tr></thead><tbody><tr><td>All</td><td>All status types</td></tr><tr><td>LatestReleased</td><td>Latest released excluding out-of-date</td></tr><tr><td>DraftOrLatestReleased</td><td>Draft and latest released excluding out-of-date</td></tr><tr><td>AllReleased</td><td>All released including out-of-date</td></tr></tbody></table>",
+        "operationId": "GetDocumentObjectListByLanguageCardId",
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectListByLanguageCardId"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectListByLanguageCardId"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentObjectListByLanguageCardId"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentObject"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/DocumentObjects/ByLanguageCardId/{languageCardId}": {
+      "get": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Gets the document object by its language card identifier.",
+        "operationId": "GetDocumentObjectByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "description": "Language card identifier of the document object.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "selectedProperties",
+            "in": "query",
+            "description": "Specifies the properties that will be returned. If not supplied, only the identifier will be returned.",
+            "schema": {
+              "$ref": "#/components/schemas/SelectedProperties"
+            }
+          },
+          {
+            "name": "fieldGroup",
+            "in": "query",
+            "description": "Group of metadata fields that will be returned. If not supplied, no fields will be returned.",
+            "schema": {
+              "$ref": "#/components/schemas/FieldGroup"
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "description": "Specifies one or more metadata fields to return.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "includeLinks",
+            "in": "query",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentObject"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Updates the document object by its language card identifier.",
+        "operationId": "UpdateDocumentObjectByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "description": "Language card identifier of the document object.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDocumentObject"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDocumentObject"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDocumentObject"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Deletes a document object by its language card identifier.",
+        "operationId": "DeleteDocumentObjectByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "description": "Language card identifier of the document object to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The parameters that will be used for delete operation.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLanguageCardId"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLanguageCardId"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLanguageCardId"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/DocumentObjects/ByLanguageCardId/{languageCardId}/Content": {
+      "get": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Gets the content by its language card identifier.",
+        "operationId": "GetDocumentObjectContentByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "description": "Language card identifier of the document object.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Updates the document object content by its language card identifier.",
+        "operationId": "UpdateDocumentObjectContentByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "description": "Language card identifier of the document object.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "metadata": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/UpdateDocumentObjectContent"
+                      }
+                    ],
+                    "nullable": true
+                  }
+                }
+              },
+              "encoding": {
+                "content": {
+                  "style": "form"
+                },
+                "metadata": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/DocumentObjects/ByLanguageCardId/{languageCardId}/PossibleTargetStatuses": {
+      "get": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Getting status (transition) list by language card identifier.",
+        "operationId": "GetDocumentObjectPossibleTargetStatusListByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "description": "Language card identifier of the document object.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LovValue"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LovValue"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/DocumentObjects/PossibleTargetStatuses": {
+      "get": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Getting status (initial) list by document object type.",
+        "operationId": "GetDocumentObjectPossibleTargetStatusList",
+        "parameters": [
+          {
+            "name": "objectType",
+            "in": "query",
+            "description": "Type of the document.",
+            "schema": {
+              "$ref": "#/components/schemas/DocumentObjectType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LovValue"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LovValue"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/DocumentObjects/ByLogicalId/{logicalId}": {
+      "delete": {
+        "tags": [
+          "DocumentObjects"
+        ],
+        "summary": "Deletes a document object by its logical identifier.",
+        "operationId": "DeleteDocumentObjectByLogicalId",
+        "parameters": [
+          {
+            "name": "logicalId",
+            "in": "path",
+            "description": "Logical identifier of the document object to delete.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The parameters that will be used for delete operation.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLogicalId"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLogicalId"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentObjectByLogicalId"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/RootFolders": {
+      "get": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Gets the root folders of types like Data, System, Favorites.",
+        "operationId": "GetRootFolderList",
+        "parameters": [
+          {
+            "name": "selectedProperties",
+            "in": "query",
+            "description": "Selected properties to filter the properties. Default is Id.",
+            "schema": {
+              "$ref": "#/components/schemas/SelectedProperties"
+            }
+          },
+          {
+            "name": "fieldGroup",
+            "in": "query",
+            "description": "Field group of Metadata fields. Default is None.",
+            "schema": {
+              "$ref": "#/components/schemas/FieldGroup"
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "description": "Specifies one or more metadata fields to return.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "includeLinks",
+            "in": "query",
+            "description": "{true} to include the links; otherwise, {false}. Default is {false}.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/{id}/Objects": {
+      "get": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Gets the objects in the folder specified by id.",
+        "description": "Depending on which object type is specified, the following types can be returned:\r\n<table class=\"table\"><thead><tr><th>Object type</th><th>Returned types</th></tr></thead><tbody><tr><td>Any</td><td>Folders and contents</td></tr><tr><td>Folders</td><td>Folder, ReferenceFolder, PublicationFolder, MapFolder, TopicFolder, LibraryFolder, IllustrationFolder and OtherFolder</td></tr><tr><td>Contents</td><td>Publication, Map, Topic, Library, Illustration and Other</td></tr></tbody></table>",
+        "operationId": "GetFolderObjectList",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Card identifier of the folder whose objects will be returned, e.g. 25432.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "objectType",
+            "in": "query",
+            "description": "Specifies whether folders, contents or both will be returned. If not supplied, all types will be returned.",
+            "schema": {
+              "$ref": "#/components/schemas/FolderObjectType"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "The language for which to retrieve document metadata fields, e.g. <tt>VLANGUAGEEN</tt>, <tt>en</tt>. If not supplied, the user language will be used.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resolution",
+            "in": "query",
+            "description": "The resolution for which to retrieve image metadata fields, e.g. <tt>VRESLOW</tt>, <tt>Low</tt>. If not supplied, the system resolution will be used.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "selectedProperties",
+            "in": "query",
+            "description": "Specifies the properties that will be returned. If not supplied, only the identifier will be returned.",
+            "schema": {
+              "$ref": "#/components/schemas/SelectedProperties"
+            }
+          },
+          {
+            "name": "fieldGroup",
+            "in": "query",
+            "description": "Group of metadata fields that will be returned. If not supplied, no fields will be returned.",
+            "schema": {
+              "$ref": "#/components/schemas/FieldGroup"
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "description": "Specifies one or more metadata fields to return.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "includeLinks",
+            "in": "query",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "includePartialItems",
+            "in": "query",
+            "description": "<tt>true</tt> to include partial items when the version or language is missing; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BaseObject"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BaseObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/{id}": {
+      "delete": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Deletes a folder.",
+        "operationId": "DeleteFolder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the folder to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Gets the properties of the given folder.",
+        "operationId": "GetFolder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier of the folder.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "selectedProperties",
+            "in": "query",
+            "description": "Specifies which properties to return.",
+            "schema": {
+              "$ref": "#/components/schemas/SelectedProperties"
+            }
+          },
+          {
+            "name": "fieldGroup",
+            "in": "query",
+            "description": "Specifies the group of metadata fields to return.",
+            "schema": {
+              "$ref": "#/components/schemas/FieldGroup"
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "description": "Specifies one or more metadata fields to return.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "includeLinks",
+            "in": "query",
+            "description": "{true} to include the links; otherwise, {false}. Default is {false}.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Updates the folder specified by id.",
+        "operationId": "UpdateFolder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier of folder.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The update folder model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFolder"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFolder"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFolder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders": {
+      "post": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Creates the new folder in the specified parent folder.",
+        "operationId": "CreateFolder",
+        "requestBody": {
+          "description": "The create folder model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFolder"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFolder"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFolder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderDescriptor"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderDescriptor"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/Get": {
+      "post": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Gets all folders in the Repository that match the criteria given in the parameters.",
+        "operationId": "GetFolderList",
+        "requestBody": {
+          "description": "Request folders with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetFolderList"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetFolderList"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetFolderList"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/Move": {
+      "post": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Moves folder. NOT IMPLEMENTED.",
+        "operationId": "MoveFolder",
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Moves objects. NOT IMPLEMENTED.",
+        "operationId": "MoveObjectToFolder",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/{id}/Shortcuts/{logicalId}": {
+      "put": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Adds shortcut for folder. NOT IMPLEMENTED.",
+        "operationId": "AddShortcutToFolder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "logicalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/{id}/Shortcuts": {
+      "delete": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Deletes a shortcut for folder. NOT IMPLEMENTED.",
+        "operationId": "RemoveShortcutFromFolder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Folders/{id}/Location": {
+      "get": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Gets the parents of the given folder.",
+        "operationId": "GetFolderLocation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier of the folder.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "selectedProperties",
+            "in": "query",
+            "description": "Specifies which properties to return.",
+            "schema": {
+              "$ref": "#/components/schemas/SelectedProperties"
+            }
+          },
+          {
+            "name": "fieldGroup",
+            "in": "query",
+            "description": "Specifies the group of metadata fields to return.",
+            "schema": {
+              "$ref": "#/components/schemas/FieldGroup"
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "description": "Specifies one or more metadata fields to return.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "includeLinks",
+            "in": "query",
+            "description": "{true} to include the links; otherwise, {false}. Default is {false}.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Lists/{id}/Values": {
+      "get": {
+        "tags": [
+          "Lists"
+        ],
+        "summary": "Get the values for the specified list of values.",
+        "operationId": "GetLovValueList",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The identifier of a list of values (e.g. DRESOLUTION).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activityFilter",
+            "in": "query",
+            "description": "The filter to limit the result of the active LovValues.",
+            "schema": {
+              "$ref": "#/components/schemas/ActivityFilter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LovValue"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LovValue"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/MetadataBinding/Fields/{fieldName}/Levels/{fieldLevel}/Tags/Get": {
+      "post": {
+        "tags": [
+          "MetadataBinding"
+        ],
+        "summary": "Gets list of tags that match the criteria given in the parameters for specified field.",
+        "operationId": "GetMetadataBindingTagList",
+        "parameters": [
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Element name of a field.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldLevel",
+            "in": "path",
+            "description": "Level of an object.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Level"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMetadataBindingTagList"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMetadataBindingTagList"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMetadataBindingTagList"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagList"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/MetadataBinding/Fields/{fieldName}/Levels/{fieldLevel}/TagStructure/Get": {
+      "post": {
+        "tags": [
+          "MetadataBinding"
+        ],
+        "summary": "Gets tags structure that match the criteria given in the parameters for specified field.",
+        "operationId": "GetMetadataBindingTagStructure",
+        "parameters": [
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Element name of a field.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldLevel",
+            "in": "path",
+            "description": "Level of an object.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Level"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMetadataBindingTagStructure"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMetadataBindingTagStructure"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMetadataBindingTagStructure"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagStructure"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagStructure"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications": {
+      "post": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Creates publication. - NOT IMPLEMENTED.",
+        "operationId": "CreatePublication",
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Publication"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Publication"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications/ByLanguageCardId/{languageCardId}": {
+      "put": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Updates publication. - NOT IMPLEMENTED.",
+        "operationId": "UpdatePublicationByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Deletes publication. - NOT IMPLEMENTED.",
+        "operationId": "DeletePublicationByLanguageCardId",
+        "parameters": [
+          {
+            "name": "languageCardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications/ByLanguageCardId/{logicalId}": {
+      "put": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Updates publication. - NOT IMPLEMENTED.",
+        "operationId": "UpdatePublicationByLogicalId",
+        "parameters": [
+          {
+            "name": "logicalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications/ByLogicalId/{logicalId}": {
+      "delete": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Deletes publication. - NOT IMPLEMENTED.",
+        "operationId": "DeletePublicationByLogicalId",
+        "parameters": [
+          {
+            "name": "logicalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Publications/ByLogicalId/Get": {
+      "post": {
+        "tags": [
+          "Publications"
+        ],
+        "summary": "Gets all publications in the Repository that match the criteria given in the parameters.",
+        "description": "Depending on which status filter is specified, the objects with following status types can be returned:\r\n<table class=\"table\"><thead><tr><th>Status filter</th><th>Returned status types</th></tr></thead><tbody><tr><td>All</td><td>All status types</td></tr><tr><td>LatestReleased</td><td>Latest released excluding out-of-date</td></tr><tr><td>DraftOrLatestReleased</td><td>Draft and latest released excluding out-of-date</td></tr><tr><td>AllReleased</td><td>All released including out-of-date</td></tr></tbody></table>",
+        "operationId": "GetPublicationListByLogicalId",
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPublicationListByLogicalId"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPublicationListByLogicalId"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPublicationListByLogicalId"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Publication"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Publication"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/UserGroups/Get": {
+      "post": {
+        "tags": [
+          "UserGroups"
+        ],
+        "summary": "Gets the user groups.",
+        "operationId": "GetUserGroupList",
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserGroupList"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserGroupList"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserGroupList"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserGroup"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserGroup"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/UserGroups": {
+      "post": {
+        "tags": [
+          "UserGroups"
+        ],
+        "summary": "Creates user group. NOT IMPLEMENTED.",
+        "operationId": "CreateUserGroup",
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroup"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroup"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/UserGroups/{id}": {
+      "put": {
+        "tags": [
+          "UserGroups"
+        ],
+        "summary": "Updates user group. NOT IMPLEMENTED.",
+        "operationId": "UpdateUserGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "UserGroups"
+        ],
+        "summary": "Deletes user group. NOT IMPLEMENTED.",
+        "operationId": "DeleteUserGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v3/Users/Get": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Gets all users in the repository that match the criteria given in the parameters.",
+        "operationId": "GetUserList",
+        "requestBody": {
+          "description": "Request object with the criteria in its properties.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserList"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserList"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserList"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoShareProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivityFilter": {
+        "enum": [
+          "none",
+          "active",
+          "inactive"
+        ],
+        "type": "string",
+        "description": "Allows explicit filtering."
+      },
+      "BaseFolder": {
+        "enum": [
+          "none",
+          "data",
+          "system",
+          "favorites",
+          "editorTemplate"
+        ],
+        "type": "string",
+        "description": "Enumeration holding all base folders."
+      },
+      "BaseItem": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RelatedInfo"
+          },
+          {
+            "required": [
+              "type"
+            ],
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The fully qualified class name of the object that the Trisoft.InfoShare.WebApi.V30.Models.BaseItem object represents.",
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "description": "The identifier.",
+                "readOnly": true
+              },
+              "title": {
+                "type": "string",
+                "description": "The title.",
+                "nullable": true
+              },
+              "description": {
+                "type": "string",
+                "description": "The description.",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents an item.",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "User": "#/components/schemas/User",
+            "UserGroup": "#/components/schemas/UserGroup",
+            "Publication": "#/components/schemas/Publication",
+            "BaseObject": "#/components/schemas/BaseObject",
+            "LovValue": "#/components/schemas/LovValue",
+            "RevisionInfo": "#/components/schemas/RevisionInfo",
+            "Tag": "#/components/schemas/Tag",
+            "Folder": "#/components/schemas/Folder",
+            "ElectronicDocumentType": "#/components/schemas/ElectronicDocumentType",
+            "DocumentObject": "#/components/schemas/DocumentObject",
+            "Baseline": "#/components/schemas/Baseline"
+          }
+        }
+      },
+      "Baseline": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a baseline."
+      },
+      "BaseObject": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseItem"
+          },
+          {
+            "required": [
+              "type"
+            ],
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FieldValue"
+                },
+                "description": "The list of field values.",
+                "nullable": true
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Link"
+                },
+                "description": "A list of actions or links that are allowed on the object.",
+                "nullable": true
+              },
+              "messages": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Message"
+                },
+                "description": "A list of messages related to the object. The messages can contain warnings and errors.",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Base definition for objects.",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "User": "#/components/schemas/User",
+            "UserGroup": "#/components/schemas/UserGroup",
+            "Publication": "#/components/schemas/Publication",
+            "RevisionInfo": "#/components/schemas/RevisionInfo",
+            "Folder": "#/components/schemas/Folder",
+            "ElectronicDocumentType": "#/components/schemas/ElectronicDocumentType",
+            "DocumentObject": "#/components/schemas/DocumentObject",
+            "Baseline": "#/components/schemas/Baseline"
+          }
+        }
+      },
+      "CardFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "$ref": "#/components/schemas/BaseObject"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "CardFilterFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SetBaseObject"
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "CardLikeFilterFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "CreateFolder": {
+        "type": "object",
+        "properties": {
+          "parentId": {
+            "minimum": -1,
+            "exclusiveMinimum": true,
+            "type": "string",
+            "description": "The identifier of parent folder (e.g. 34567)."
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "The list of field values."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a create folder model."
+      },
+      "DateTimeFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "DateTimeFilterFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "DeleteDocumentObjectByLanguageCardId": {
+        "type": "object",
+        "properties": {
+          "requiredCurrentFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "The fields that will be used in concurrency check.\r\nEach individual field in this collection should have the same exact value in the database in order to delete the Trisoft.InfoShare.WebApi.V30.DocumentObjects.Models.DocumentObject",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to delete document object."
+      },
+      "DeleteDocumentObjectByLogicalId": {
+        "type": "object",
+        "properties": {
+          "requiredCurrentFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "The fields that will be used in concurrency check.\r\nEach individual field in this collection should have the same exact value in the database in order to delete the Trisoft.InfoShare.WebApi.V30.DocumentObjects.Models.DocumentObject",
+            "nullable": true
+          },
+          "version": {
+            "type": "string",
+            "description": "The version.",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "description": "The Language.",
+            "nullable": true
+          },
+          "resolution": {
+            "type": "string",
+            "description": "The resolution.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to delete document object."
+      },
+      "DocumentObject": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "documentObjectType": {
+                "$ref": "#/components/schemas/DocumentObjectType"
+              },
+              "languageCardId": {
+                "type": "integer",
+                "description": "The language card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "versionCardId": {
+                "type": "integer",
+                "description": "The version card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "logicalId": {
+                "type": "string",
+                "description": "The logical identifier.",
+                "readOnly": true
+              },
+              "version": {
+                "type": "string",
+                "description": "The version.",
+                "nullable": true
+              },
+              "language": {
+                "type": "string",
+                "description": "The language.",
+                "nullable": true
+              },
+              "resolution": {
+                "type": "string",
+                "description": "The resolution.",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a document."
+      },
+      "DocumentObjectLink": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RelatedInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Type of the current instance. Contains a fixed value 'DocumentObjectLink'.",
+                "readOnly": true
+              },
+              "linkType": {
+                "$ref": "#/components/schemas/DocumentObjectLinkType"
+              },
+              "target": {
+                "type": "string",
+                "description": "The reference to the contents that the link targets.",
+                "readOnly": true
+              },
+              "endTarget": {
+                "type": "string",
+                "description": "Reference to the last element in the range when a range of elements inside the contents is referenced.",
+                "nullable": true,
+                "readOnly": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a link to a node in the contents of a document object."
+      },
+      "DocumentObjectLinkType": {
+        "enum": [
+          "contentReference",
+          "hyperlink",
+          "link",
+          "variable"
+        ],
+        "type": "string",
+        "description": "Defines the type of a link in the contents of a document object."
+      },
+      "DocumentObjectParseError": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RelatedInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of the current object. Contains a fixed value 'DocumentObjectParseError'.",
+                "readOnly": true
+              },
+              "reason": {
+                "type": "string",
+                "description": "Gets a message describing the current error.",
+                "nullable": true,
+                "readOnly": true
+              },
+              "lineNumber": {
+                "type": "integer",
+                "description": "Gets the line number indicating where the error occurred. Line numbers start at 1.",
+                "format": "int32",
+                "nullable": true,
+                "readOnly": true
+              },
+              "linePosition": {
+                "type": "integer",
+                "description": "Gets the line position indicating where the error occurred. Line position starts at 1.",
+                "format": "int32",
+                "nullable": true,
+                "readOnly": true
+              },
+              "errorCode": {
+                "type": "string",
+                "description": "Gets the error code.",
+                "nullable": true,
+                "readOnly": true
+              },
+              "sourceText": {
+                "type": "string",
+                "description": "Gets the text of the content that causes the error.",
+                "nullable": true,
+                "readOnly": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Returns detailed information about a parsing error in the contents of a document object."
+      },
+      "DocumentObjectType": {
+        "enum": [
+          "any",
+          "topic",
+          "map",
+          "library",
+          "illustration",
+          "other"
+        ],
+        "type": "string",
+        "description": "Enumeration holding the type of document."
+      },
+      "ElectronicDocumentType": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a edt."
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "A short, human-readable summary of the event message.",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable explanation specific to this occurrence of the event message.",
+            "nullable": true
+          },
+          "eventId": {
+            "type": "integer",
+            "description": "The identifier of the corresponding event.",
+            "format": "int32",
+            "nullable": true
+          },
+          "eventName": {
+            "type": "string",
+            "description": "The name of the corresponding event.",
+            "nullable": true
+          },
+          "logId": {
+            "type": "integer",
+            "description": "The identifier of the corresponding entry in the log.",
+            "format": "int64",
+            "nullable": true
+          },
+          "relatedInfo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedInfo"
+            },
+            "description": "A list of additional information related to this occurrence of the event message.",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "severity": {
+            "$ref": "#/components/schemas/SeverityLevel"
+          }
+        },
+        "additionalProperties": false,
+        "description": "An error message."
+      },
+      "FieldGroup": {
+        "enum": [
+          "none",
+          "basic",
+          "descriptive",
+          "system",
+          "all"
+        ],
+        "type": "string",
+        "description": "Groups of metadata fields."
+      },
+      "FieldValue": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RelatedInfo"
+          },
+          {
+            "required": [
+              "type"
+            ],
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/FieldValueType"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              },
+              "ishField": {
+                "$ref": "#/components/schemas/IshField"
+              },
+              "title": {
+                "type": "string",
+                "description": "The user-friendly title of the field.",
+                "nullable": true
+              },
+              "description": {
+                "type": "string",
+                "description": "The description of the field.",
+                "nullable": true
+              },
+              "isModified": {
+                "type": "boolean",
+                "description": "Indicates whether the value has been modified by the metadata\r\nconfiguration since the object was created or its metadata was last set.",
+                "nullable": true,
+                "readOnly": true
+              },
+              "messages": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Message"
+                },
+                "description": "A list of messages related to the field value.\r\n<remarks>The messages can contain warnings and errors.</remarks>",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a field value that contains information to access a field, and the value associated with the field.",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "CardFieldValue": "#/components/schemas/CardFieldValue",
+            "DateTimeFieldValue": "#/components/schemas/DateTimeFieldValue",
+            "LovFieldValue": "#/components/schemas/LovFieldValue",
+            "MultiCardFieldValue": "#/components/schemas/MultiCardFieldValue",
+            "MultiDateTimeFieldValue": "#/components/schemas/MultiDateTimeFieldValue",
+            "MultiLovFieldValue": "#/components/schemas/MultiLovFieldValue",
+            "MultiNumberFieldValue": "#/components/schemas/MultiNumberFieldValue",
+            "MultiStringFieldValue": "#/components/schemas/MultiStringFieldValue",
+            "MultiTagFieldValue": "#/components/schemas/MultiTagFieldValue",
+            "MultiVersionFieldValue": "#/components/schemas/MultiVersionFieldValue",
+            "NumberFieldValue": "#/components/schemas/NumberFieldValue",
+            "StringFieldValue": "#/components/schemas/StringFieldValue",
+            "TagFieldValue": "#/components/schemas/TagFieldValue",
+            "VersionFieldValue": "#/components/schemas/VersionFieldValue"
+          }
+        }
+      },
+      "FieldValueType": {
+        "enum": [
+          "StringFieldValue",
+          "NumberFieldValue",
+          "DateTimeFieldValue",
+          "LovFieldValue",
+          "CardFieldValue",
+          "TagFieldValue",
+          "VersionFieldValue",
+          "MultiStringFieldValue",
+          "MultiNumberFieldValue",
+          "MultiDateTimeFieldValue",
+          "MultiLovFieldValue",
+          "MultiCardFieldValue",
+          "MultiTagFieldValue",
+          "MultiVersionFieldValue"
+        ],
+        "type": "string",
+        "description": "The Trisoft.InfoShare.WebApi.V30.Models.Enumerations.FieldValueType enumeration specifies the type of a field value."
+      },
+      "FilterFieldValue": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/FilterFieldValueType"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the filter field.",
+            "nullable": true
+          },
+          "ishField": {
+            "$ref": "#/components/schemas/IshField"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/MetadataFilterOperator"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a filter field that contains information to access a field, and the value associated with the field.",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "CardFilterFieldValue": "#/components/schemas/CardFilterFieldValue",
+            "CardLikeFilterFieldValue": "#/components/schemas/CardLikeFilterFieldValue",
+            "DateTimeFilterFieldValue": "#/components/schemas/DateTimeFilterFieldValue",
+            "LovFilterFieldValue": "#/components/schemas/LovFilterFieldValue",
+            "LovLikeFilterFieldValue": "#/components/schemas/LovLikeFilterFieldValue",
+            "NumberFilterFieldValue": "#/components/schemas/NumberFilterFieldValue",
+            "StringFilterFieldValue": "#/components/schemas/StringFilterFieldValue",
+            "TagFilterFieldValue": "#/components/schemas/TagFilterFieldValue"
+          }
+        }
+      },
+      "FilterFieldValueType": {
+        "enum": [
+          "StringFilterFieldValue",
+          "NumberFilterFieldValue",
+          "DateTimeFilterFieldValue",
+          "LovFilterFieldValue",
+          "LovLikeFilterFieldValue",
+          "CardFilterFieldValue",
+          "CardLikeFilterFieldValue",
+          "TagFilterFieldValue"
+        ],
+        "type": "string",
+        "description": "Specifies the possible types of {FilterFieldValue}."
+      },
+      "Folder": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "folderType": {
+                "$ref": "#/components/schemas/FolderType"
+              },
+              "baseFolder": {
+                "$ref": "#/components/schemas/BaseFolder"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a folder."
+      },
+      "FolderDescriptor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The identifier (e.g. 34567).",
+            "readOnly": true
+          },
+          "folderType": {
+            "$ref": "#/components/schemas/FolderType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a folder descriptor model."
+      },
+      "FolderObjectType": {
+        "enum": [
+          "any",
+          "folders",
+          "contents"
+        ],
+        "type": "string",
+        "description": "Enumeration that lists possible folder item types."
+      },
+      "FolderType": {
+        "enum": [
+          "folder",
+          "referenceFolder",
+          "illustrationFolder",
+          "libraryFolder",
+          "mapFolder",
+          "otherFolder",
+          "publicationFolder",
+          "topicFolder"
+        ],
+        "type": "string",
+        "description": "Enumeration holding the type of a folder."
+      },
+      "GetBaselineList": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List with baselineIds which can be used to limit the result to baselines within this list that match the other filters.\r\nIf not supplied, all the baselines will be returned.",
+            "nullable": true
+          },
+          "activityFilter": {
+            "$ref": "#/components/schemas/ActivityFilter"
+          },
+          "filterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterFieldValue"
+            },
+            "description": "The filter fields that contain information to access a field, and the value associated with the field.",
+            "nullable": true
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get all baselines in the repository that match the criteria given in the properties."
+      },
+      "GetDocumentObjectList": {
+        "type": "object",
+        "properties": {
+          "objectTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentObjectType"
+            },
+            "description": "Type of the document. If not supplied, all the type of documents will be returned.",
+            "default": [
+              "any"
+            ]
+          },
+          "statusFilter": {
+            "$ref": "#/components/schemas/StatusFilter"
+          },
+          "filterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterFieldValue"
+            },
+            "description": "The filter fields that contain information to access a field, and the value associated with the field.",
+            "nullable": true
+          },
+          "selectedProperties": {
+            "$ref": "#/components/schemas/SelectedProperties"
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get all objects in the repository that match the criteria given in the properties."
+      },
+      "GetDocumentObjectListByLanguageCardId": {
+        "required": [
+          "languageCardIds"
+        ],
+        "type": "object",
+        "properties": {
+          "objectTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentObjectType"
+            },
+            "description": "Type of the document. If not supplied, all the type of documents will be returned.",
+            "default": [
+              "any"
+            ]
+          },
+          "languageCardIds": {
+            "minLength": 1,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Language card identifiers of the objects."
+          },
+          "statusFilter": {
+            "$ref": "#/components/schemas/StatusFilter"
+          },
+          "filterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterFieldValue"
+            },
+            "description": "The filter fields that contain information to access a field, and the value associated with the field.",
+            "nullable": true
+          },
+          "selectedProperties": {
+            "$ref": "#/components/schemas/SelectedProperties"
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get all objects in the repository that match the criteria given in the properties."
+      },
+      "GetDocumentObjectListByLogicalId": {
+        "required": [
+          "logicalIds"
+        ],
+        "type": "object",
+        "properties": {
+          "objectTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentObjectType"
+            },
+            "description": "Type of the document. If not supplied, all the type of documents will be returned.",
+            "default": [
+              "any"
+            ]
+          },
+          "logicalIds": {
+            "minLength": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Logical ids of the objects."
+          },
+          "statusFilter": {
+            "$ref": "#/components/schemas/StatusFilter"
+          },
+          "filterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterFieldValue"
+            },
+            "description": "The filter fields that contain information to access a field, and the value associated with the field.",
+            "nullable": true
+          },
+          "selectedProperties": {
+            "$ref": "#/components/schemas/SelectedProperties"
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          },
+          "includePartialItems": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include partial items when the version or language is missing; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get all objects in the repository that match the criteria given in the properties."
+      },
+      "GetFolderList": {
+        "required": [
+          "ids"
+        ],
+        "type": "object",
+        "properties": {
+          "ids": {
+            "minLength": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List with folderIds which can be used to limit the result to folders within this list that match the other filters."
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          },
+          "selectedProperties": {
+            "$ref": "#/components/schemas/SelectedProperties"
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request folder to get all folders in the repository that match the criteria given in the properties."
+      },
+      "GetMetadataBindingTagList": {
+        "type": "object",
+        "properties": {
+          "inputFilter": {
+            "type": "string",
+            "description": "String used to filter the possible tags.",
+            "nullable": true
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "Specify some fields of the object which might impact the possible tags.\r\nFor instance FTESTCOUNTRIES with value \"Netherlands\" will limit the result to \"Amsterdam\"",
+            "nullable": true
+          },
+          "maxTagsToReturn": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "description": "Maximum number of tags that should be returned.",
+            "format": "int64",
+            "default": 20
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get metadata bound tags that match the criteria given in the properties."
+      },
+      "GetMetadataBindingTagStructure": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "Specify some fields of the object which might impact the possible tags structure.\r\nFor instance FTESTCOUNTRIES with value \"Netherlands\" will limit the result to \"Amsterdam\"",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get metadata bound tags structure that match the criteria given in the properties."
+      },
+      "GetPublicationListByLogicalId": {
+        "required": [
+          "logicalIds"
+        ],
+        "type": "object",
+        "properties": {
+          "logicalIds": {
+            "minLength": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Logical ids of the objects."
+          },
+          "statusFilter": {
+            "$ref": "#/components/schemas/StatusFilter"
+          },
+          "filterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterFieldValue"
+            },
+            "description": "The filter fields that contain information to access a field, and the value associated with the field.",
+            "nullable": true
+          },
+          "selectedProperties": {
+            "$ref": "#/components/schemas/SelectedProperties"
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          },
+          "includePartialItems": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the partial items; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get all publications in the repository that match the criteria given in the properties."
+      },
+      "GetUserGroupList": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List with userGroupIds which can be used to limit the result to user groups within this list that match the other filters.\r\nIf not supplied, all the user groups will be returned.",
+            "nullable": true
+          },
+          "activityFilter": {
+            "$ref": "#/components/schemas/ActivityFilter"
+          },
+          "filterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterFieldValue"
+            },
+            "description": "The filter fields that contain information to access a field, and the value associated with the field.",
+            "nullable": true
+          },
+          "selectedProperties": {
+            "$ref": "#/components/schemas/SelectedProperties"
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "<tt>true</tt> to include the links; otherwise, <tt>false</tt>. Default is <tt>false</tt>.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get all user groups in the repository that match the criteria given in the properties."
+      },
+      "GetUserList": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List with userIds which can be used to limit the result to users within this list that match the other filters.\r\nIf not supplied, all the users will be returned.",
+            "nullable": true
+          },
+          "activityFilter": {
+            "$ref": "#/components/schemas/ActivityFilter"
+          },
+          "filterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterFieldValue"
+            },
+            "description": "The filter fields that contain information to access a field, and the value associated with the field.",
+            "nullable": true
+          },
+          "fieldGroup": {
+            "$ref": "#/components/schemas/FieldGroup"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedField"
+            },
+            "description": "Specifies one or more metadata fields to return.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to get all users in the repository that match the criteria given in the properties."
+      },
+      "InfoShareProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "A URI reference [RFC3986] that identifies the problem type. This specification encourages that, when\r\ndereferenced, it provide human-readable documentation for the problem type\r\n(e.g., using HTML [W3C.REC-html5-20141028]).  When this member is not present, its value is assumed to be\r\n\"about:blank\".",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "description": "A short, human-readable summary of the problem type.It SHOULD NOT change from occurrence to occurrence\r\nof the problem, except for purposes of localization(e.g., using proactive content negotiation;\r\nsee[RFC7231], Section 3.4).",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "description": "The HTTP status code([RFC7231], Section 6) generated by the origin server for this occurrence of the problem.",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable explanation specific to this occurrence of the problem.",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "description": "A URI reference that identifies the specific occurrence of the problem.It may or may not yield further information if dereferenced.",
+            "nullable": true
+          },
+          "eventId": {
+            "type": "integer",
+            "description": "The event identifier specific to this occurrence of the problem..",
+            "format": "int32"
+          },
+          "eventName": {
+            "type": "string",
+            "description": "The even name specific to this occurrence of the problem.",
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "description": "A list of errors related to this occurrence of the problem.",
+            "nullable": true
+          },
+          "relatedInfo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedInfo"
+            },
+            "description": "A list of additional information related to this occurrence of the problem.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "IshField": {
+        "required": [
+          "name",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Type of the current instance. Contains a fixed value 'IshField'.",
+            "readOnly": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The name/label of the InfoShare field (e.g. FTITLE)."
+          },
+          "level": {
+            "$ref": "#/components/schemas/Level"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a field that contains information to access a field."
+      },
+      "Level": {
+        "enum": [
+          "none",
+          "annotation",
+          "compute",
+          "data",
+          "detail",
+          "language",
+          "logical",
+          "object",
+          "progress",
+          "reply",
+          "version"
+        ],
+        "type": "string",
+        "description": "Enumeration holding the visible InfoShare hierarchy levels."
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Gets or sets the URL for this Trisoft.Utilities.WebApi.Links.Link.",
+            "nullable": true
+          },
+          "rel": {
+            "type": "string",
+            "description": "Gets or sets the relation for this Trisoft.Utilities.WebApi.Links.Link.",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "description": "Gets or sets the HTTP method for this Trisoft.Utilities.WebApi.Links.Link.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a HATEOAS link model."
+      },
+      "LovFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "$ref": "#/components/schemas/LovValue"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "LovFilterFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SetLovValue"
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "LovLikeFilterFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "LovValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "active": {
+                "type": "boolean",
+                "description": "The active value.",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents an item in a value list."
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the current object.",
+            "nullable": true,
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "description": "A short, human-readable summary of the event message.",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable explanation specific to this occurrence of the event message.",
+            "nullable": true
+          },
+          "severity": {
+            "$ref": "#/components/schemas/SeverityLevel"
+          },
+          "eventId": {
+            "type": "integer",
+            "description": "The identifier of the corresponding event.",
+            "format": "int32",
+            "nullable": true
+          },
+          "eventName": {
+            "type": "string",
+            "description": "The name of the corresponding event.",
+            "nullable": true
+          },
+          "logId": {
+            "type": "integer",
+            "description": "The identifier of the corresponding entry in the log.",
+            "format": "int64",
+            "nullable": true
+          },
+          "relatedInfo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedInfo"
+            },
+            "description": "A list of additional information related to this occurrence of the event message.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "An event message."
+      },
+      "MetadataFilterOperator": {
+        "enum": [
+          "equal",
+          "notEqual",
+          "in",
+          "notIn",
+          "like",
+          "greaterThan",
+          "lessThan",
+          "greaterThanOrEqual",
+          "lessThanOrEqual",
+          "between",
+          "empty",
+          "notEmpty"
+        ],
+        "type": "string",
+        "description": "Specifies the possible filter operators that can be used by {FilterFieldValue}."
+      },
+      "MultiCardFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BaseObject"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "MultiDateTimeFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "MultiLovFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LovValue"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "MultiNumberFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "format": "double"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "MultiStringFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "MultiTagFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Tag"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "MultiVersionFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "NumberFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "format": "double",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "NumberFilterFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "Publication": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "versionCardId": {
+                "type": "integer",
+                "description": "The version card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "languageCardId": {
+                "type": "integer",
+                "description": "The language card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "logicalId": {
+                "type": "string",
+                "description": "The logical identifier.",
+                "readOnly": true
+              },
+              "version": {
+                "type": "string",
+                "description": "The version.",
+                "nullable": true
+              },
+              "outputFormat": {
+                "type": "string",
+                "description": "The output format identifier.",
+                "nullable": true
+              },
+              "languageCombination": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The language combination.",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a publication."
+      },
+      "RelatedInfo": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "description": "A list of additional information.",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "User": "#/components/schemas/User",
+            "UserGroup": "#/components/schemas/UserGroup",
+            "Publication": "#/components/schemas/Publication",
+            "BaseItem": "#/components/schemas/BaseItem",
+            "BaseObject": "#/components/schemas/BaseObject",
+            "LovValue": "#/components/schemas/LovValue",
+            "RevisionInfo": "#/components/schemas/RevisionInfo",
+            "Tag": "#/components/schemas/Tag",
+            "FieldValue": "#/components/schemas/FieldValue",
+            "CardFieldValue": "#/components/schemas/CardFieldValue",
+            "DateTimeFieldValue": "#/components/schemas/DateTimeFieldValue",
+            "LovFieldValue": "#/components/schemas/LovFieldValue",
+            "MultiCardFieldValue": "#/components/schemas/MultiCardFieldValue",
+            "MultiDateTimeFieldValue": "#/components/schemas/MultiDateTimeFieldValue",
+            "MultiLovFieldValue": "#/components/schemas/MultiLovFieldValue",
+            "MultiNumberFieldValue": "#/components/schemas/MultiNumberFieldValue",
+            "MultiStringFieldValue": "#/components/schemas/MultiStringFieldValue",
+            "MultiTagFieldValue": "#/components/schemas/MultiTagFieldValue",
+            "MultiVersionFieldValue": "#/components/schemas/MultiVersionFieldValue",
+            "NumberFieldValue": "#/components/schemas/NumberFieldValue",
+            "StringFieldValue": "#/components/schemas/StringFieldValue",
+            "TagFieldValue": "#/components/schemas/TagFieldValue",
+            "VersionFieldValue": "#/components/schemas/VersionFieldValue",
+            "Folder": "#/components/schemas/Folder",
+            "ElectronicDocumentType": "#/components/schemas/ElectronicDocumentType",
+            "DocumentObject": "#/components/schemas/DocumentObject",
+            "DocumentObjectLink": "#/components/schemas/DocumentObjectLink",
+            "DocumentObjectParseError": "#/components/schemas/DocumentObjectParseError",
+            "Baseline": "#/components/schemas/Baseline",
+            "SchemaValidationError": "#/components/schemas/SchemaValidationError"
+          }
+        }
+      },
+      "RequestedField": {
+        "required": [
+          "ishField",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Type of the current instance. E.g. 'RequestedField'.",
+            "readOnly": true
+          },
+          "ishField": {
+            "$ref": "#/components/schemas/IshField"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a requested metadata field."
+      },
+      "RevisionInfo": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a revision info."
+      },
+      "SchemaValidationError": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RelatedInfo"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of the current object.",
+                "nullable": true,
+                "readOnly": true
+              },
+              "path": {
+                "type": "string",
+                "description": "Path to the schema where validation failed.",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Class representing a schema validation error."
+      },
+      "SelectedProperties": {
+        "enum": [
+          "id",
+          "descriptive",
+          "listOfValues"
+        ],
+        "type": "string",
+        "description": "Enumeration holding the selected properties."
+      },
+      "SetBaseline": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetBaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a baseline."
+      },
+      "SetBaseObject": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of the current instance. Contains a fixed value 'SetBaseObject'.",
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "description": "The identifier."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents an object.",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "SetUser": "#/components/schemas/SetUser",
+            "SetUserGroup": "#/components/schemas/SetUserGroup",
+            "SetPublication": "#/components/schemas/SetPublication",
+            "SetFolder": "#/components/schemas/SetFolder",
+            "SetElectronicDocumentType": "#/components/schemas/SetElectronicDocumentType",
+            "SetDocumentObject": "#/components/schemas/SetDocumentObject",
+            "SetBaseline": "#/components/schemas/SetBaseline"
+          }
+        }
+      },
+      "SetCardFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "$ref": "#/components/schemas/SetBaseObject"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetDateTimeFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetDocumentObject": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetBaseObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "languageCardId": {
+                "type": "integer",
+                "description": "The language card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "versionCardId": {
+                "type": "integer",
+                "description": "The version card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "logicalId": {
+                "type": "string",
+                "description": "The logical identifier.",
+                "readOnly": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a document."
+      },
+      "SetElectronicDocumentType": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetBaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a edt."
+      },
+      "SetFieldValue": {
+        "required": [
+          "ishField",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/SetFieldValueType"
+          },
+          "ishField": {
+            "$ref": "#/components/schemas/IshField"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a field value that contains information to access a field, and the value associated with the field.",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "SetCardFieldValue": "#/components/schemas/SetCardFieldValue",
+            "SetDateTimeFieldValue": "#/components/schemas/SetDateTimeFieldValue",
+            "SetLovFieldValue": "#/components/schemas/SetLovFieldValue",
+            "SetMultiCardFieldValue": "#/components/schemas/SetMultiCardFieldValue",
+            "SetMultiDateTimeFieldValue": "#/components/schemas/SetMultiDateTimeFieldValue",
+            "SetMultiLovFieldValue": "#/components/schemas/SetMultiLovFieldValue",
+            "SetMultiNumberFieldValue": "#/components/schemas/SetMultiNumberFieldValue",
+            "SetMultiStringFieldValue": "#/components/schemas/SetMultiStringFieldValue",
+            "SetMultiTagFieldValue": "#/components/schemas/SetMultiTagFieldValue",
+            "SetMultiVersionFieldValue": "#/components/schemas/SetMultiVersionFieldValue",
+            "SetNumberFieldValue": "#/components/schemas/SetNumberFieldValue",
+            "SetStringFieldValue": "#/components/schemas/SetStringFieldValue",
+            "SetTagFieldValue": "#/components/schemas/SetTagFieldValue",
+            "SetVersionFieldValue": "#/components/schemas/SetVersionFieldValue"
+          }
+        }
+      },
+      "SetFieldValueType": {
+        "enum": [
+          "SetCardFieldValue",
+          "SetDateTimeFieldValue",
+          "SetLovFieldValue",
+          "SetMultiCardFieldValue",
+          "SetMultiDateTimeFieldValue",
+          "SetMultiLovFieldValue",
+          "SetMultiNumberFieldValue",
+          "SetMultiStringFieldValue",
+          "SetMultiTagFieldValue",
+          "SetMultiVersionFieldValue",
+          "SetNumberFieldValue",
+          "SetStringFieldValue",
+          "SetTagFieldValue",
+          "SetVersionFieldValue"
+        ],
+        "type": "string",
+        "description": "The Trisoft.InfoShare.WebApi.V30.Models.Enumerations.SetFieldValueType enumeration specifies the type of a settable field value."
+      },
+      "SetFolder": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetBaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a folder."
+      },
+      "SetLovFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "$ref": "#/components/schemas/SetLovValue"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetLovValue": {
+        "required": [
+          "id",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Type of the current instance. Contains a fixed value 'Trisoft.InfoShare.WebApi.V30.Models.SetLovValue'.",
+            "readOnly": true
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The identifier."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a settable item in a value list."
+      },
+      "SetMultiCardFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SetBaseObject"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetMultiDateTimeFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetMultiLovFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SetLovValue"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetMultiNumberFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "format": "double"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetMultiStringFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetMultiTagFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SetTag"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetMultiVersionFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetNumberFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "format": "double",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetPublication": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetBaseObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "versionCardId": {
+                "type": "integer",
+                "description": "The version card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "languageCardId": {
+                "type": "integer",
+                "description": "The language card identifier.",
+                "format": "int64",
+                "nullable": true
+              },
+              "logicalId": {
+                "type": "string",
+                "description": "The logical identifier."
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a publication."
+      },
+      "SetStringFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetTag": {
+        "required": [
+          "id",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Type of update tag object.",
+            "readOnly": true
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The identifier."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a tag."
+      },
+      "SetTagFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "$ref": "#/components/schemas/SetTag"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SetUser": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetBaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a user."
+      },
+      "SetUserGroup": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetBaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a user group."
+      },
+      "SetVersionFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SetFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "SeverityLevel": {
+        "enum": [
+          "error",
+          "warning",
+          "message",
+          "info"
+        ],
+        "type": "string",
+        "description": "List of Severity Levels"
+      },
+      "StatusFilter": {
+        "enum": [
+          "all",
+          "latestReleased",
+          "draftOrLatestReleased",
+          "allReleased"
+        ],
+        "type": "string",
+        "description": "Allows explicit filtering on the language level status field.\r\n<remarks>\r\nDepending on which status filter is specified, the objects with following status types can be returned:\r\n<table class=\"table\"><thead><tr><th>Status filter</th><th>Returned status types</th></tr></thead><tbody><tr><td>All</td><td>All status types</td></tr><tr><td>LatestReleased</td><td>Latest released excluding out-of-date</td></tr><tr><td>DraftOrLatestReleased</td><td>Draft and latest released excluding out-of-date</td></tr><tr><td>AllReleased</td><td>All released including out-of-date</td></tr></tbody></table></remarks>"
+      },
+      "StringFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "StringFilterFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "Tag": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "annotatedTitle": {
+                "type": "string",
+                "description": "The annotated title of the tag.",
+                "nullable": true
+              },
+              "isSelectable": {
+                "type": "boolean",
+                "description": "A value that indicates whether the tag can be selected."
+              },
+              "isValid": {
+                "type": "boolean",
+                "description": "A value that indicates whether the tag is valid."
+              }
+            }
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a tag."
+      },
+      "TagFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "$ref": "#/components/schemas/Tag"
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "TagFilterFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterFieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SetTag"
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "TagList": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The fully qualified class name of the object that the Trisoft.InfoShare.WebApi.V30.MetadataBinding.Models.TagList object represents.",
+            "readOnly": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            },
+            "description": "Gets or sets the list of tags."
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "description": "Gets or sets the list of messages.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a list with tags."
+      },
+      "TagRelation": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The fully qualified class name of the object that the Trisoft.InfoShare.WebApi.V30.MetadataBinding.Models.TagRelation object represents.",
+            "readOnly": true
+          },
+          "fromId": {
+            "type": "string",
+            "description": "The from tag id. If this property is null or System.String.Empty, it indicates that this term appears as a root in the tree.",
+            "nullable": true
+          },
+          "toId": {
+            "type": "string",
+            "description": "The to tag id."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a tag relation."
+      },
+      "TagStructure": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The fully qualified class name of the object that the Trisoft.InfoShare.WebApi.V30.MetadataBinding.Models.TagStructure object represents.",
+            "readOnly": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            },
+            "description": "Gets or sets the list of tags."
+          },
+          "relations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagRelation"
+            },
+            "description": "Gets or sets the list of tag relations."
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "description": "Gets or sets the list of messages.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a tags structure."
+      },
+      "UpdateDocumentObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The fully qualified class name of the object that the Trisoft.InfoShare.WebApi.V30.DocumentObjects.Models.UpdateDocumentObject object represents.",
+            "readOnly": true
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "The list of field values to be changed."
+          },
+          "requiredCurrentFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "Gets the fields that will be used in concurrency check.\r\nEach individual field in this collection should have the same exact value in the database in order to update the Trisoft.InfoShare.WebApi.V30.DocumentObjects.Models.DocumentObject",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a document."
+      },
+      "UpdateDocumentObjectContent": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The fully qualified class name of the object that the Trisoft.InfoShare.WebApi.V30.DocumentObjects.Models.UpdateDocumentObjectContent object represents.",
+            "readOnly": true
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "The list of field values to be changed.",
+            "nullable": true
+          },
+          "requiredCurrentFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "Gets the fields that will be used in concurrency check.\r\nEach individual field in this collection should have the same exact value in the database in order to update the Trisoft.InfoShare.WebApi.V30.DocumentObjects.Models.DocumentObject",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request object to update object content in the repository that match the criteria given in the properties."
+      },
+      "UpdateFolder": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetFieldValue"
+            },
+            "description": "The list of field values."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents an update folder model."
+      },
+      "User": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a user."
+      },
+      "UserGroup": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseObject"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "additionalProperties": false,
+        "description": "Represents a user group."
+      },
+      "VersionFieldValue": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FieldValue"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

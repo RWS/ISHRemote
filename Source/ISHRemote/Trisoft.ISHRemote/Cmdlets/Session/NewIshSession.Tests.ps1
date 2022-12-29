@@ -38,6 +38,9 @@ Describe "New-IshSession" -Tags "Read" {
 		It "Parameter WsBaseUrl invalid" {
 			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" } | Should -Throw "Invalid URI: The hostname could not be parsed."
 		}
+		It "Parameter WsBaseUrl invalid and -Timeout exists" {
+			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -Timeout 5 } | Should -Throw "Invalid URI: The hostname could not be parsed."
+		}
 	}
 
 	Context "New-IshSession PSCredential" {
@@ -276,6 +279,17 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 		It "IshSession.UserRole25" {
 			$ishSession.UserRole25 -ne $null | Should -Not -BeNullOrEmpty
+		}
+	}
+
+	Context "New-IshSession returns IshSession OpenApi ServiceReference" {
+		BeforeAll {
+			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		}
+		It "IshSession.OpenApi30Service" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				 $ishSession.OpenApi30Service -ne $null | Should -Not -BeNullOrEmpty
+			}
 		}
 	}
 }

@@ -238,9 +238,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     foreach (List<long> folderCardIdBatch in devidedFolderCardIdsList)
                     {
                         // Process card ids in batches
-                        string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(folderCardIdBatch.ToArray(), _requestedMetadata.ToXml());
-                        IshFolders retrievedObjects = new IshFolders(xmlIshFolders);
-                        returnIshFolders.AddRange(retrievedObjects.Folders);
+                        switch (IshSession.Protocol)
+                        {
+                            case Enumerations.Protocol.OpenApiBasicAuthentication:
+                            // TODO [Must] Add OpenApi implementation
+                            case Enumerations.Protocol.AsmxAuthenticationContext:
+                                string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(folderCardIdBatch.ToArray(), _requestedMetadata.ToXml());
+                                IshFolders retrievedObjects = new IshFolders(xmlIshFolders);
+                                returnIshFolders.AddRange(retrievedObjects.Folders);
+                                break;
+                        }
                         currentFolderCardIdCount += folderCardIdBatch.Count;
                         WriteDebug($"Retrieving CardIds.length[{ folderCardIdBatch.Count}] RequestedMetadata.length[{ _requestedMetadata.ToXml().Length}] {currentFolderCardIdCount}/{folderCardIds.Count}");
                     }
@@ -254,9 +261,17 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     foreach (List<long> folderCardIdBatch in devidedFolderCardIdsList)
                     {
                         // Process card ids in batches
-                        string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(folderCardIdBatch.ToArray(), _requestedMetadata.ToXml());
-                        IshFolders retrievedObjects = new IshFolders(xmlIshFolders);
-                        returnIshFolders.AddRange(retrievedObjects.Folders);
+                        IshFolders retrievedFolders = null;
+                        switch (IshSession.Protocol)
+                        {
+                            case Enumerations.Protocol.OpenApiBasicAuthentication:
+                            // TODO [Must] Add OpenApi implementation
+                            case Enumerations.Protocol.AsmxAuthenticationContext:
+                                string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(folderCardIdBatch.ToArray(), _requestedMetadata.ToXml());
+                                retrievedFolders = new IshFolders(xmlIshFolders);
+                                break;
+                        }
+                        returnIshFolders.AddRange(retrievedFolders.Folders);
                         currentFolderCardIdCount += folderCardIdBatch.Count;
                         WriteDebug($"Retrieving CardIds.length[{folderCardIdBatch.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] {currentFolderCardIdCount}/{_retrievedFolderIds.Count}");
                     }
@@ -275,11 +290,19 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     Array.Copy(folderPathElements, 1, folderPathTrisoft, 0, folderPathElements.Length - 1);
 
                     WriteDebug($"FolderPath[{ folderPath}]");
-                    string xmlIshFolder = IshSession.Folder25.GetMetadata(
-                        BaseFolderLabelToEnum(IshSession, baseFolderLabel),
-                        folderPathTrisoft,
-                        _requestedMetadata.ToXml());
-                    IshFolders retrievedFolders = new IshFolders(xmlIshFolder, "ishfolder");
+                    IshFolders retrievedFolders = null;
+                    switch (IshSession.Protocol)
+                    {
+                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        // TODO [Must] Add OpenApi implementation
+                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                            string xmlIshFolder = IshSession.Folder25.GetMetadata(
+                                BaseFolderLabelToEnum(IshSession, baseFolderLabel),
+                                folderPathTrisoft,
+                                _requestedMetadata.ToXml());
+                            retrievedFolders = new IshFolders(xmlIshFolder, "ishfolder");
+                            break;
+                    }
                     returnIshFolders.AddRange(retrievedFolders.Folders);
                 }
                 else if (ParameterSetName == "BaseFolderGroup")
@@ -288,11 +311,27 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     var baseFolder = EnumConverter.ToBaseFolder<Folder25ServiceReference.BaseFolder>(BaseFolder);
 
                     WriteDebug($"BaseFolder[{baseFolder}]");
-                    string xmlIshFolders = IshSession.Folder25.GetMetadata(
-                        baseFolder,
-                        new string[0],
-                        _requestedMetadata.ToXml());
-                    IshFolders retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder");
+                    IshFolders retrievedFolders = null;
+                    switch (IshSession.Protocol)
+                    {
+                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                            /*
+                            // convert IshSession.DefaultRequestedMetadata to FieldGroup, and retrieve from IshSession property
+                            retrievedFolders = new IshFolders(IshSession.OpenApi30Service.GetRootFolderListAsync(
+                                OpenApi.SelectedProperties.Id, 
+                                OpenApi.FieldGroup.All,
+                                _requestedMetadata.ToJson30Model(TypeFieldDefinition), false).GetAwaiter().GetResult());
+                            // returns all base/root folders, then select the right one
+                            break;
+                            */
+                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                            string xmlIshFolders = IshSession.Folder25.GetMetadata(
+                                baseFolder,
+                                new string[0],
+                                _requestedMetadata.ToXml());
+                            retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder");
+                            break;
+                    }
                     returnIshFolders.AddRange(retrievedFolders.Folders);
                 }
 
@@ -379,14 +418,30 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             if (currentDepth < (maxDepth - 1))
             {
                 WriteDebug($"RetrieveRecursive IshFolderRef[{ishFolder.IshFolderRef}] folderName[{folderName}] ({currentDepth}<{maxDepth})");
-                string xmlIshFolders = IshSession.Folder25.GetSubFoldersByIshFolderRef(ishFolder.IshFolderRef);
-                // GetSubFolders contains ishfolder for the parent folder + ishfolder inside for the subfolders
-                IshFolders retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder/ishfolder");
+                IshFolders retrievedFolders = null;
+                switch (IshSession.Protocol)
+                {
+                    case Enumerations.Protocol.OpenApiBasicAuthentication:
+                    // TODO [Must] Add OpenApi implementation
+                    case Enumerations.Protocol.AsmxAuthenticationContext:
+                        string xmlIshFolders = IshSession.Folder25.GetSubFoldersByIshFolderRef(ishFolder.IshFolderRef);
+                        // GetSubFolders contains ishfolder for the parent folder + ishfolder inside for the subfolders
+                        retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder/ishfolder");
+                        break;
+                }
+
                 if (retrievedFolders.Ids.Length > 0)
                 {
                     // Add the required fields (needed for pipe operations)
-                    xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids,_requestedMetadata.ToXml());
-                    retrievedFolders = new IshFolders(xmlIshFolders);
+                    switch (IshSession.Protocol)
+                    {
+                        case Enumerations.Protocol.OpenApiBasicAuthentication:
+                        // TODO [Must] Add OpenApi implementation
+                        case Enumerations.Protocol.AsmxAuthenticationContext:
+                            xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids,_requestedMetadata.ToXml());
+                            retrievedFolders = new IshFolders(xmlIshFolders);
+                            break;
+                    }
                     // sort them
                     ++currentDepth;
                     IshFolder[] sortedFolders = retrievedFolders.SortedFolders;
