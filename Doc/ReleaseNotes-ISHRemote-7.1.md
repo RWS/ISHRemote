@@ -28,7 +28,8 @@ Again, most cmdlets and business logic are fully compatible, except the below:
 
 ## Breaking Changes - Requirements
 
-* work-in-progress
+* Renamed `InfoShareWcfSoapConnection.cs` and moved it to `Connection\InfoShareWcfSoapWithWsTrustConnection.cs`
+* Introduced sibling `Connection\InfoShareOpenApiConnection.cs`
 
 
 ## Quality Assurance

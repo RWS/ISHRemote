@@ -68,9 +68,9 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
-        private OpenApiISH30Service _openApiISH30Service;
+        private InfoShareOpenApiConnection _infoshareOpenApiConnection;
 
-        private InfoShareWcfSoapWithWsTrustConnection _connection;
+        private InfoShareWcfSoapWithWsTrustConnection _infoShareWcfSoapConnection;
         private Annotation25ServiceReference.Annotation _annotation25;
         private Application25ServiceReference.Application _application25;
         private DocumentObj25ServiceReference.DocumentObj _documentObj25;
@@ -192,10 +192,10 @@ namespace Trisoft.ISHRemote.Objects.Public
                 Timeout = _timeout,
                 IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
             };
-            _connection = new InfoShareWcfSoapWithWsTrustConnection(_logger, _webServicesBaseUri, connectionParameters);
+            _infoShareWcfSoapConnection = new InfoShareWcfSoapWithWsTrustConnection(_logger, _webServicesBaseUri, connectionParameters);
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateInfoShareWcfSoapWithWsTrustConnection _serverVersion GetApplication25Channel");
-            var application25Proxy = _connection.GetApplication25Channel();
+            var application25Proxy = _infoShareWcfSoapConnection.GetApplication25Channel();
             _logger.WriteDebug("CreateInfoShareWcfSoapWithWsTrustConnection _serverVersion GetApplication25Channel.GetVersion");
             _serverVersion = new IshVersion(application25Proxy.GetVersion());
         }
@@ -406,7 +406,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                         // TODO [Must] Add OpenApi implementation
                     case Enumerations.Protocol.WcfSoapWithWsTrust:
-                        var application25Proxy = _connection.GetApplication25Channel();
+                        var application25Proxy = _infoShareWcfSoapConnection.GetApplication25Channel();
                         return application25Proxy.Authenticate2();
                     default:
                         return ("Not-Available-Over-" + Protocol.ToString());
@@ -513,7 +513,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_annotation25 == null)
                 {
-                    _annotation25 = _connection.GetAnnotation25Channel();
+                    _annotation25 = _infoShareWcfSoapConnection.GetAnnotation25Channel();
                 }
                 return _annotation25;
             }
@@ -527,7 +527,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_application25 == null)
                 {
-                    _application25 = _connection.GetApplication25Channel();
+                    _application25 = _infoShareWcfSoapConnection.GetApplication25Channel();
                 }
                 return _application25;
             }
@@ -541,7 +541,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_user25 == null)
                 {
-                    _user25 = _connection.GetUser25Channel();
+                    _user25 = _infoShareWcfSoapConnection.GetUser25Channel();
                 }
                 return _user25;
             }
@@ -555,7 +555,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_userRole25 == null)
                 {
-                    _userRole25 = _connection.GetUserRole25Channel();
+                    _userRole25 = _infoShareWcfSoapConnection.GetUserRole25Channel();
                 }
                 return _userRole25;
             }
@@ -569,7 +569,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_userGroup25 == null)
                 {
-                    _userGroup25 = _connection.GetUserGroup25Channel();
+                    _userGroup25 = _infoShareWcfSoapConnection.GetUserGroup25Channel();
                 }
                 return _userGroup25;
             }
@@ -583,7 +583,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_documentObj25 == null)
                 {
-                    _documentObj25 = _connection.GetDocumentObj25Channel();
+                    _documentObj25 = _infoShareWcfSoapConnection.GetDocumentObj25Channel();
                 }
                 return _documentObj25;
             }
@@ -597,7 +597,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_publicationOutput25 == null)
                 {
-                    _publicationOutput25 = _connection.GetPublicationOutput25Channel();
+                    _publicationOutput25 = _infoShareWcfSoapConnection.GetPublicationOutput25Channel();
                 }
                 return _publicationOutput25;
             }
@@ -611,7 +611,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_settings25 == null)
                 {
-                    _settings25 = _connection.GetSettings25Channel();
+                    _settings25 = _infoShareWcfSoapConnection.GetSettings25Channel();
                 }
                 return _settings25;
             }
@@ -625,7 +625,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_eventMonitor25 == null)
                 {
-                    _eventMonitor25 = _connection.GetEventMonitor25Channel();
+                    _eventMonitor25 = _infoShareWcfSoapConnection.GetEventMonitor25Channel();
                 }
                 return _eventMonitor25;
             }
@@ -639,7 +639,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_baseline25 == null)
                 {
-                    _baseline25 = _connection.GetBaseline25Channel();
+                    _baseline25 = _infoShareWcfSoapConnection.GetBaseline25Channel();
                 }
                 return _baseline25;
             }
@@ -653,7 +653,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_metadataBinding25 == null)
                 {
-                    _metadataBinding25 = _connection.GetMetadataBinding25Channel();
+                    _metadataBinding25 = _infoShareWcfSoapConnection.GetMetadataBinding25Channel();
                 }
                 return _metadataBinding25;
             }
@@ -667,7 +667,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_folder25 == null)
                 {
-                    _folder25 = _connection.GetFolder25Channel();
+                    _folder25 = _infoShareWcfSoapConnection.GetFolder25Channel();
                 }
                 return _folder25;
             }
@@ -681,7 +681,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_listOfValues25 == null)
                 {
-                    _listOfValues25 = _connection.GetListOfValues25Channel();
+                    _listOfValues25 = _infoShareWcfSoapConnection.GetListOfValues25Channel();
                 }
                 return _listOfValues25;
             }
@@ -695,7 +695,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_outputFormat25 == null)
                 {
-                    _outputFormat25 = _connection.GetOutputFormat25Channel();
+                    _outputFormat25 = _infoShareWcfSoapConnection.GetOutputFormat25Channel();
                 }
                 return _outputFormat25;
             }
@@ -709,7 +709,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_EDT25 == null)
                 {
-                    _EDT25 = _connection.GetEDT25Channel();
+                    _EDT25 = _infoShareWcfSoapConnection.GetEDT25Channel();
                 }
                 return _EDT25;
             }
@@ -723,7 +723,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_translationJob25 == null)
                 {
-                    _translationJob25 = _connection.GetTranslationJob25Channel();
+                    _translationJob25 = _infoShareWcfSoapConnection.GetTranslationJob25Channel();
                 }
                 return _translationJob25;
             }
@@ -737,7 +737,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_translationTemplate25 == null)
                 {
-                    _translationTemplate25 = _connection.GetTranslationTemplate25Channel();
+                    _translationTemplate25 = _infoShareWcfSoapConnection.GetTranslationTemplate25Channel();
                 }
                 return _translationTemplate25;
             }
@@ -751,7 +751,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_search25 == null)
                 {
-                    _search25 = _connection.GetSearch25Channel();
+                    _search25 = _infoShareWcfSoapConnection.GetSearch25Channel();
                 }
                 return _search25;
             }
@@ -765,7 +765,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
                 if (_backgroundTask25 == null)
                 {
-                    _backgroundTask25 = _connection.GetBackgroundTask25Channel();
+                    _backgroundTask25 = _infoShareWcfSoapConnection.GetBackgroundTask25Channel();
                 }
                 return _backgroundTask25;
             }
@@ -775,11 +775,11 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         private void VerifyTokenValidity()
         {
-            if (_connection.IsValid) return;
+            if (_infoShareWcfSoapConnection.IsValid) return;
 
             // Not valid...
             // ...dispose connection
-            _connection.Dispose();
+            _infoShareWcfSoapConnection.Dispose();
             // ...discard all channels
             _annotation25 = null; 
             _application25 = null;
@@ -806,7 +806,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         public void Dispose()
         {
-            _connection.Dispose();
+            _infoShareWcfSoapConnection.Dispose();
         }
         public void Close()
         {

@@ -273,7 +273,7 @@ namespace Trisoft.ISHRemote.Connection
         {
             _logger = logger;
 
-            _logger.WriteDebug($"Incomming  infoShareWSBaseUri[{infoShareWSBaseUri}]");
+            _logger.WriteDebug($"Incomming infoShareWSBaseUri[{infoShareWSBaseUri}]");
             if (infoShareWSBaseUri == null)
                 throw new ArgumentNullException("infoShareWSBaseUri");
             if (parameters == null)

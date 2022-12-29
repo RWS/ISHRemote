@@ -42,6 +42,16 @@ namespace Trisoft.ISHRemote.Objects
         /// </summary>
         public Uri InfoShareWSUrl { get; set; }
 
+        /// <summary>
+        /// The clientconfiguration.xml discovery file tells us the configured Issuer AuthenticationType. Expected values are WindowsMixed, UserNameMixed and AccessManagement.
+        /// </summary>
+        public string AuthenticationType { get; set; }
+
+        /// <summary>
+        /// The clientconfiguration.xml discovery file tells us the configured Issuer Url. Expected values are .../issue/wstrust/mixed/username or .../ISHAM/.
+        /// </summary>
+        public Uri IssuerUrl { get; set; }
+
 
         /// <summary>
         /// Constructor
@@ -49,7 +59,7 @@ namespace Trisoft.ISHRemote.Objects
         /// <param name="xmlConnectionConfiguration">An xml string holding the /ISHWS/connectionconfiguration.xml content</param>
         public IshConnectionConfiguration(string xmlConnectionConfiguration)
         {
-            // A sample 14SP3/14.0.3 file looks like
+            // A sample 14SP3/14.0.3 /ISHWS/connectionconfiguration.xml file looks like
             //<?xml version="1.0" encoding="utf-8"?>
             //<connectionconfiguration version="1.0.0.0">
             //  <infosharesoftwareversion>14.0.3</infosharesoftwareversion>
@@ -66,12 +76,30 @@ namespace Trisoft.ISHRemote.Objects
             //  <projectconfigurationurl>https://ish.example.com/ISHCM/ClientConfig/ClientConfig.xml</projectconfigurationurl>
             //</connectionconfiguration>
 
+            // A sample 15/15.0.0 /ISHWS/owcf/connectionconfiguration.xml file looks like
+            //<?xml version="1.0" encoding="utf-8"?>
+            //<connectionconfiguration version="1.0.0.0">
+            //  <infosharesoftwareversion >15.0.0</infosharesoftwareversion>
+            //  <infoshareapplicationname>InfoShareAuthorSQL2019</infoshareapplicationname>
+            //  <infosharewsurl>https://mecdevapp10.global.sdl.corp/ISHWSSQL2019/OWcf/</infosharewsurl>
+            //  <infoshareauthorurl>https://mecdevapp10.global.sdl.corp/ISHCMSQL2019/</infoshareauthorurl>
+            //  <infosharecsurl>https://mecdevapp10.global.sdl.corp/ISHCSSQL2019/</infosharecsurl>
+            //  <infosharewscertificatevalidationmode>ChainTrust</infosharewscertificatevalidationmode>
+            //  <issuer>
+            //    <authenticationtype>AccessManagement</authenticationtype>
+            //    <url>https://mecdevapp10.global.sdl.corp/ISHAMSQL2019</url>
+            //  </issuer>
+            //  <projectconfigurationurl>https://mecdevapp10.global.sdl.corp/ISHCMSQL2019/ClientConfig/ClientConfig.xml</projectconfigurationurl>
+            //</connectionconfiguration>
+
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xmlConnectionConfiguration);
             // Potential version check in the future: xmlDocument.SelectSingleNode("connectionconfiguration").Attributes.GetNamedItem("version").Value);
             SoftwareVersion = xmlDocument.SelectSingleNode("connectionconfiguration/infosharesoftwareversion").InnerText;
             ApplicationName = xmlDocument.SelectSingleNode("connectionconfiguration/infoshareapplicationname").InnerText;
             InfoShareWSUrl = new Uri(xmlDocument.SelectSingleNode("connectionconfiguration/infosharewsurl").InnerText);
+            AuthenticationType = xmlDocument.SelectSingleNode("connectionconfiguration/issuer/authenticationtype").InnerText;
+            IssuerUrl = new Uri(xmlDocument.SelectSingleNode("connectionconfiguration/issuer/url").InnerText);
         }
     }
 }
