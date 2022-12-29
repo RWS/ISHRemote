@@ -68,6 +68,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
+        private InfoShareOpenApiConnectionParameters _infoShareOpenApiConnectionParameters;
         private InfoShareOpenApiConnection _infoshareOpenApiConnection;
 
         private InfoShareWcfSoapWithWsTrustConnection _infoShareWcfSoapConnection;
@@ -141,21 +142,29 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 _logger.WriteDebug($"LoadConnectionConfiguration noticed incoming _webServicesBaseUri[{_webServicesBaseUri}] differs from ishwsConnectionConfiguration.InfoShareWSUrl[{ishwsConnectionConfiguration.InfoShareWSUrl}]. Using _webServicesBaseUri.");
             }
+            IshConnectionConfiguration owcfConnectionConfiguration = null;
             if (new IshVersion(ishwsConnectionConfiguration.SoftwareVersion).MajorVersion >= 15)
             {
                 var wcfConnectionConfigurationUri = new Uri(_webServicesBaseUri, "owcf/connectionconfiguration.xml");
-                IshConnectionConfiguration owcfConnectionConfiguration = LoadConnectionConfiguration(wcfConnectionConfigurationUri);
+                owcfConnectionConfiguration = LoadConnectionConfiguration(wcfConnectionConfigurationUri);
                 _logger.WriteVerbose($"LoadConnectionConfiguration found InfoShareWSUrl[{ishwsConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{ishwsConnectionConfiguration.ApplicationName}] SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
             }
             switch (_protocol)
             {
                 case Enumerations.Protocol.Autodetect:
                     _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
-                    _logger.WriteVerbose($"LoadConnectionConfiguration selected protocol[{_protocol}]");
+                    _logger.WriteVerbose($"LoadConnectionConfiguration  tocol[{_protocol}]");
                     CreateInfoShareWcfSoapWithWsTrustConnection();
                     break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                     _logger.WriteDebug($"LoadConnectionConfiguration selected protocol[{_protocol}]");
+                    _infoShareOpenApiConnectionParameters = new InfoShareOpenApiConnectionParameters
+                    {
+                        AuthenticationType = owcfConnectionConfiguration.AuthenticationType,
+                        InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
+                        IssuerUrl = owcfConnectionConfiguration.IssuerUrl,
+                        Timeout = _timeout
+                    };
                     CreateOpenApiWithOpenIdConnectConnection();
                     // explictly initializing WcfSoapWithWsTrust as well, as many cmdlets in turn OpenAPI calls are still missing
                     CreateInfoShareWcfSoapWithWsTrustConnection();
@@ -201,14 +210,17 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
         private void CreateOpenApiWithOpenIdConnectConnection()
         {
+            
             _logger.WriteDebug($"CreateOpenApiWithOpenIdConnectConnection");
-            _logger.WriteDebug("CreateConnection openApi30Service.GetApplicationVersionAsync");
+            _infoshareOpenApiConnection = new InfoShareOpenApiConnection(_logger, _httpClient, _infoShareOpenApiConnectionParameters);
+
             //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
             //    "Basic",
             //    Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
-            _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
-            _openApiISH30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
-            _serverVersion = new IshVersion(_openApiISH30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+            //_openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
+            //_openApiISH30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
+            //_logger.WriteDebug("CreateOpenApiWithOpenIdConnectConnection openApi30Service.GetApplicationVersionAsync");
+            //_serverVersion = new IshVersion(_openApiISH30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -498,7 +510,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             get
             {
                 // should always be initialized by CreateConnection
-                return _openApiISH30Service;
+                return null;
             }
         }
         #endregion
