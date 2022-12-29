@@ -438,7 +438,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         case Enumerations.Protocol.OpenApiBasicAuthentication:
                         // TODO [Must] Add OpenApi implementation
                         case Enumerations.Protocol.AsmxAuthenticationContext:
-                            xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids,_requestedMetadata.ToXml());
+                            string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids,_requestedMetadata.ToXml());
                             retrievedFolders = new IshFolders(xmlIshFolders);
                             break;
                     }

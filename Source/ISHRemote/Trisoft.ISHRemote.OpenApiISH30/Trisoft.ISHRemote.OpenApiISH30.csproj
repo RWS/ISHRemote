@@ -5,14 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="OpenApi30.json" />
+    <None Remove="OpenApiISH30.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="OpenApi30.json">
+    <OpenApiReference Include="OpenApiISH30.json">
       <CodeGenerator>NSwagCSharp</CodeGenerator>
-      <Namespace>Trisoft.ISHRemote.OpenApi</Namespace>
-      <ClassName>OpenApi30{controller}Service</ClassName>
+      <Namespace>Trisoft.ISHRemote.OpenApiISH30</Namespace>
+      <ClassName>OpenApiISH30{controller}Service</ClassName>
     </OpenApiReference>
   </ItemGroup>
 

@@ -759,5 +759,34 @@ namespace Trisoft.ISHRemote.Objects
                     return BaselineSourceEnumeration.Manual;
             }
         }
+
+        /// <summary>
+        /// OpenApi (dd 20211228) expects DDOCTYPE value instead of more generic enumeration of folder types.
+        /// </summary>
+        internal static string ToDDOCTYPEValue(IshFolderType ishFolderType)
+        {
+            switch (ishFolderType)
+            {
+                case IshFolderType.ISHModule:
+                    return "VDOCTYPEMAP";
+                case IshFolderType.ISHMasterDoc:
+                    return "VDOCTYPEMASTER";
+                case IshFolderType.ISHLibrary:
+                    return "VDOCTYPELIB";
+                case IshFolderType.ISHTemplate:
+                    return "VDOCTYPETEMPLATE";
+                case IshFolderType.ISHIllustration:
+                    return "VDOCTYPEILLUSTRATION";
+                case IshFolderType.ISHPublication:
+                    return "VDOCTYPEPUBLICATION";
+                case IshFolderType.ISHReference:
+                    return "VDOCTYPEREFERENCE";
+                case IshFolderType.ISHQuery:
+                    return "VDOCTYPEQUERY";
+                case IshFolderType.ISHNone:
+                default:
+                    return "VDOCTYPENONE";
+            }
+        }
     }
 }

@@ -22,6 +22,7 @@ using System.Xml;
 using System.IO;
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Objects.Public;
+using Trisoft.ISHRemote.ExtensionMethods;
 
 namespace Trisoft.ISHRemote.Objects
 {
@@ -70,6 +71,49 @@ namespace Trisoft.ISHRemote.Objects
                 {
                     AddField(new IshMetadataField(xmlIshField));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Creates a new instance based on the incoming OpenApi models. Any multi-value field are joined up by the separator (typically comma-space)
+        /// </summary>
+        /// <param name="oFieldValues">Incoming OpenApi Field Values</param>
+        /// <param name="separator">Any multi-value field are joined up by the separator (typically comma-space), mostly coming from IshSession.</param>
+        public IshFields(ICollection<OpenApiISH30.FieldValue> oFieldValues, string separator)
+        {
+            _fields = new List<IshField>();
+            foreach (var oFieldValue in oFieldValues)
+            {
+                switch (oFieldValue.Type)
+                {
+                    case OpenApiISH30.FieldValueType.CardFieldValue:
+                        var cardFieldValue = oFieldValue as OpenApiISH30.CardFieldValue;  // Can I be optimistic or is null-check required after every cast?
+                        _fields.Add(new IshMetadataField(cardFieldValue.IshField.Name, cardFieldValue.IshField.Level.ToISHFieldLevel(), Enumerations.ValueType.Value, cardFieldValue.Value.Title));
+                        _fields.Add(new IshMetadataField(cardFieldValue.IshField.Name, cardFieldValue.IshField.Level.ToISHFieldLevel(), Enumerations.ValueType.Element, cardFieldValue.Value.Id));
+                        break;
+                    case OpenApiISH30.FieldValueType.MultiCardFieldValue:
+                        var multiCardFieldValue = oFieldValue as OpenApiISH30.MultiCardFieldValue;
+                        foreach (var baseObject in multiCardFieldValue.Value)
+                        {
+                            _fields.Add(new IshMetadataField(multiCardFieldValue.IshField.Name, multiCardFieldValue.IshField.Level.ToISHFieldLevel(), Enumerations.ValueType.Value, baseObject.Title));
+                            _fields.Add(new IshMetadataField(multiCardFieldValue.IshField.Name, multiCardFieldValue.IshField.Level.ToISHFieldLevel(), Enumerations.ValueType.Element, baseObject.Id));
+
+
+                            // so what baseObject is this... UserGroup, how can you know, based on FieldTypeDefinition, quite complicated
+                            //baseObject.
+                            //_fields.Add(new IshMetadataField(multiCardFieldValue.IshField.Name, Enumerations.ToFieldLevel(multiCardFieldValue.IshField.Level), Enumerations.ValueType.Value, String.Join(separator, )));
+                            //_fields.Add(new IshMetadataField(multiCardFieldValue.IshField.Name, Enumerations.ToFieldLevel(multiCardFieldValue.IshField.Level), Enumerations.ValueType.Id, String.Join(separator, multiCardFieldValue.)));
+
+                        }
+                        
+                        break;
+                }
+                /*
+                var o = new OpenApi.NumberFieldValue();
+                var t = oFieldValue.Type; // the type to use to cast to the right NumberFieldValue or whatever type?
+                oFieldValue.IshField
+                AddField(new IshMetadataField())
+                */
             }
         }
 

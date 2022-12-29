@@ -74,6 +74,18 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="IshFolder"/> class.
+        /// </summary>
+        /// <param name="oFolder">OpenApi model</param>
+        /// <param name="separator">Any multi-value field are joined up by the separator (typically comma-space), mostly coming from IshSession.</param>
+        public IshFolder(OpenApiISH30.Folder oFolder, string separator)
+        {
+            _ishFolderRef = Convert.ToInt64(oFolder.Id);
+            _ishFolderType = (Enumerations.IshFolderType)Enum.Parse(typeof(Enumerations.IshFolderType), oFolder.FolderType.ToString());
+            _ishFields = new IshFields(oFolder.Fields, separator);
+        }
+
+        /// <summary>
         /// Gets the IshType property.
         /// </summary>
         public Enumerations.ISHType IshType

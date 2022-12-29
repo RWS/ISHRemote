@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApi\Trisoft.ISHRemote.OpenApi.csproj" />
+    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.csproj" />
   </ItemGroup>
     
   <ItemGroup>

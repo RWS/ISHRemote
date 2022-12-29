@@ -1,4 +1,20 @@
-﻿using System;
+﻿/*
+* Copyright (c) 2014 All Rights Reserved by the SDL Group.
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Trisoft.ISHRemote.Objects;
@@ -6,25 +22,25 @@ using Trisoft.ISHRemote.Objects.Public;
 
 namespace Trisoft.ISHRemote.ExtensionMethods
 {
-    internal static class OpenApiFieldValueExtensions
+    internal static class OpenApiISH30FieldValueExtensions
     {
-        internal static IshFields ToIshFields(this ICollection<OpenApi.FieldValue> fieldValues, IshSession ishSession)
+        internal static IshFields ToIshFields(this ICollection<OpenApiISH30.FieldValue> fieldValues, IshSession ishSession)
         {
             var ishFields = new IshFields();
             foreach (var fieldValue in fieldValues)
             {
                 switch (fieldValue.Type)
                 {
-                    case OpenApi.FieldValueType.CardFieldValue:
+                    case OpenApiISH30.FieldValueType.CardFieldValue:
                         {
-                            var typedFieldValue = fieldValue as OpenApi.CardFieldValue;  // Can I be optimistic or is null-check required after every cast?
-                            ishFields.AddField(new IshMetadataField(typedFieldValue.IshField.Name, Enumerations.ToFieldLevel(typedFieldValue.IshField.Level), Enumerations.ValueType.Value, typedFieldValue.Value.Title));
-                            ishFields.AddField(new IshMetadataField(typedFieldValue.IshField.Name, Enumerations.ToFieldLevel(typedFieldValue.IshField.Level), Enumerations.ValueType.Id, typedFieldValue.Value.Id));
+                            var typedFieldValue = fieldValue as OpenApiISH30.CardFieldValue;  // Can I be optimistic or is null-check required after every cast?
+                            ishFields.AddField(new IshMetadataField(typedFieldValue.IshField.Name, typedFieldValue.IshField.Level.ToISHFieldLevel(), Enumerations.ValueType.Value, typedFieldValue.Value.Title));
+                            ishFields.AddField(new IshMetadataField(typedFieldValue.IshField.Name, typedFieldValue.IshField.Level.ToISHFieldLevel(), Enumerations.ValueType.Id, typedFieldValue.Value.Id));
                             break;
                         }
-                    case OpenApi.FieldValueType.MultiCardFieldValue:
+                    case OpenApiISH30.FieldValueType.MultiCardFieldValue:
                         {
-                            var typedFieldValue = fieldValue as OpenApi.MultiCardFieldValue;
+                            var typedFieldValue = fieldValue as OpenApiISH30.MultiCardFieldValue;
                             StringBuilder values = new StringBuilder();
                             StringBuilder ids = new StringBuilder();
                             // TODO [Question] BaseObject offers Title (ahum Value) and Id (probably card_id) but where do I get Element name?
@@ -35,37 +51,37 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                             }
                             ishFields.AddField(new IshMetadataField(
                                 typedFieldValue.IshField.Name,
-                                Enumerations.ToFieldLevel(typedFieldValue.IshField.Level),
+                                typedFieldValue.IshField.Level.ToISHFieldLevel(),
                                 Enumerations.ValueType.Value,
                                 string.Join(ishSession.Separator, values))
                                 );
                             ishFields.AddField(new IshMetadataField(
                                 typedFieldValue.IshField.Name,
-                                Enumerations.ToFieldLevel(typedFieldValue.IshField.Level),
+                                typedFieldValue.IshField.Level.ToISHFieldLevel(),
                                 Enumerations.ValueType.Id,
                                 string.Join(ishSession.Separator, ids))
                                 );
                             break;
                         }
-                    case OpenApi.FieldValueType.DateTimeFieldValue:
+                    case OpenApiISH30.FieldValueType.DateTimeFieldValue:
                         {
                             // IShSession should offer date time format string as property
                             break;
                         }
-                    case OpenApi.FieldValueType.MultiDateTimeFieldValue:
+                    case OpenApiISH30.FieldValueType.MultiDateTimeFieldValue:
                         {
                             break;
                         }
-                    case OpenApi.FieldValueType.LovFieldValue:
+                    case OpenApiISH30.FieldValueType.LovFieldValue:
                         {
-                            var typedFieldValue = fieldValue as OpenApi.LovFieldValue;
-                            ishFields.AddField(new IshMetadataField(typedFieldValue.IshField.Name, Enumerations.ToFieldLevel(typedFieldValue.IshField.Level), Enumerations.ValueType.Value, typedFieldValue.Value.Title));
-                            ishFields.AddField(new IshMetadataField(typedFieldValue.IshField.Name, Enumerations.ToFieldLevel(typedFieldValue.IshField.Level), Enumerations.ValueType.Id, typedFieldValue.Value.Id));
+                            var typedFieldValue = fieldValue as OpenApiISH30.LovFieldValue;
+                            ishFields.AddField(new IshMetadataField(typedFieldValue.IshField.Name, typedFieldValue.IshField.Level.ToISHFieldLevel(), Enumerations.ValueType.Value, typedFieldValue.Value.Title));
+                            ishFields.AddField(new IshMetadataField(typedFieldValue.IshField.Name, typedFieldValue.IshField.Level.ToISHFieldLevel(), Enumerations.ValueType.Id, typedFieldValue.Value.Id));
                             break;
                         }
-                    case OpenApi.FieldValueType.MultiLovFieldValue:
+                    case OpenApiISH30.FieldValueType.MultiLovFieldValue:
                         {
-                            var typedFieldValue = fieldValue as OpenApi.MultiLovFieldValue;
+                            var typedFieldValue = fieldValue as OpenApiISH30.MultiLovFieldValue;
                             StringBuilder values = new StringBuilder();
                             StringBuilder ids = new StringBuilder();
                             // TODO [Question] BaseObject offers Title (ahum Value) and Id (probably card_id) but where do I get Element name?
@@ -76,34 +92,34 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                             }
                             ishFields.AddField(new IshMetadataField(
                                 typedFieldValue.IshField.Name,
-                                Enumerations.ToFieldLevel(typedFieldValue.IshField.Level),
+                                typedFieldValue.IshField.Level.ToISHFieldLevel(),
                                 Enumerations.ValueType.Value,
                                 string.Join(ishSession.Separator, values))
                                 );
                             ishFields.AddField(new IshMetadataField(
                                 typedFieldValue.IshField.Name,
-                                Enumerations.ToFieldLevel(typedFieldValue.IshField.Level),
+                                typedFieldValue.IshField.Level.ToISHFieldLevel(),
                                 Enumerations.ValueType.Id,
                                 string.Join(ishSession.Separator, ids))
                                 );
                             break;
                         }
-                    case OpenApi.FieldValueType.NumberFieldValue:
+                    case OpenApiISH30.FieldValueType.NumberFieldValue:
                         break;
-                    case OpenApi.FieldValueType.MultiNumberFieldValue:
+                    case OpenApiISH30.FieldValueType.MultiNumberFieldValue:
                         break;
-                    case OpenApi.FieldValueType.StringFieldValue:
+                    case OpenApiISH30.FieldValueType.StringFieldValue:
                         break;
-                    case OpenApi.FieldValueType.MultiStringFieldValue:
+                    case OpenApiISH30.FieldValueType.MultiStringFieldValue:
                         break;
-                    case OpenApi.FieldValueType.TagFieldValue:
+                    case OpenApiISH30.FieldValueType.TagFieldValue:
                         break;
-                    case OpenApi.FieldValueType.MultiTagFieldValue:
+                    case OpenApiISH30.FieldValueType.MultiTagFieldValue:
                         break;
-                    case OpenApi.FieldValueType.VersionFieldValue:
+                    case OpenApiISH30.FieldValueType.VersionFieldValue:
                         break;
                     default:
-                        throw new NotImplementedException($"OpenApiFieldValueExtensions.ToIshFields cannot handle fieldValue.Type[{ fieldValue.Type }]");
+                        throw new NotImplementedException($"OpenApiISH30FieldValueExtensions.ToIshFields cannot handle fieldValue.Type[{ fieldValue.Type }]");
                 }
             }
             return ishFields;

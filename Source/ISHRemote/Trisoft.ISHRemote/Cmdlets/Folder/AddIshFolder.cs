@@ -162,51 +162,51 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                 switch (IshSession.Protocol)
                                 {
                                     case Enumerations.Protocol.OpenApiBasicAuthentication:
-                                        ICollection<OpenApi.SetFieldValue> fieldValues = new List<OpenApi.SetFieldValue>();
+                                        ICollection<OpenApiISH30.SetFieldValue> fieldValues = new List<OpenApiISH30.SetFieldValue>();
 
                                         //FNAME
-                                        var fieldFolderName = new OpenApi.SetStringFieldValue()
+                                        var fieldFolderName = new OpenApiISH30.SetStringFieldValue()
                                         {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FNAME", Type = nameof(OpenApi.IshField) },
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FNAME", Type = nameof(OpenApiISH30.IshField) },
                                             Value = folderName
                                         };
                                         fieldValues.Add(fieldFolderName);
 
                                         //FDOCUMENTTYPE (aka Folder Type)
-                                        var fieldFolderType = new OpenApi.SetLovFieldValue()
+                                        var fieldFolderType = new OpenApiISH30.SetLovFieldValue()
                                         {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApi.IshField) },
-                                            Value = new OpenApi.SetLovValue() { Id = "VDOCTYPEILLUSTRATION" }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApiISH30.IshField) },
+                                            Value = new OpenApiISH30.SetLovValue() { Id = "VDOCTYPEILLUSTRATION" }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
                                         };
                                         fieldValues.Add(fieldFolderType);
 
                                         //READ-ACCESS
-                                        var fieldReadAccess = new OpenApi.SetMultiCardFieldValue()
+                                        var fieldReadAccess = new OpenApiISH30.SetMultiCardFieldValue()
                                         {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApi.IshField) },
-                                            Value = new List<OpenApi.SetBaseObject>()
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApiISH30.IshField) },
+                                            Value = new List<OpenApiISH30.SetBaseObject>()
                                         };
                                         // Convert multi-value fields of ISHRemote models via IshSession.Separator
                                         foreach (string readaccessItem in readAccessString.Split(IshSession.Separator.ToCharArray()))
                                         {
-                                            fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = readaccessItem });
+                                            fieldReadAccess.Value.Add(new OpenApiISH30.SetUserGroup() { Id = readaccessItem });
                                         }
                                         fieldValues.Add(fieldReadAccess);
 
                                         //FUSERGROUP (aka Owned by)
-                                        var fieldWriteAccess = new OpenApi.SetMultiCardFieldValue()
+                                        var fieldWriteAccess = new OpenApiISH30.SetMultiCardFieldValue()
                                         {
-                                            IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApi.IshField) },
-                                            Value = new List<OpenApi.SetBaseObject>()
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApiISH30.IshField) },
+                                            Value = new List<OpenApiISH30.SetBaseObject>()
                                         };
                                         // Convert multi-value fields of ISHRemote models via IshSession.Separator
                                         foreach (string writeaccessItem in ownedBy.Split(IshSession.Separator.ToCharArray()))
                                         {
-                                            fieldReadAccess.Value.Add(new OpenApi.SetUserGroup() { Id = writeaccessItem });
+                                            fieldReadAccess.Value.Add(new OpenApiISH30.SetUserGroup() { Id = writeaccessItem });
                                         }
                                         fieldValues.Add(fieldWriteAccess);
 
-                                        var response = IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
+                                        var response = IshSession.OpenApiISH30Service.CreateFolderAsync(new OpenApiISH30.CreateFolder()
                                         {
                                             ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
                                             Fields = fieldValues
@@ -214,11 +214,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         folderId = Convert.ToInt64(response.Id);  // TODO [Question] Why is folder id a string and not typed as long in the FolderDescriptor model?
 
                                         // Ivo's pitch, but worried about ValueType, so testing a manual collection first.
-                                        //IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
+                                        //IshSession.OpenApi30Service.CreateFolderAsync(new OpenApiISH30.CreateFolder()
                                         //{
                                         //    ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
                                         //    //Fields = setFieldValueCollection
-                                        //    Fields = ishFolder.IshFields.ToSetFieldValues(IshSession)
+                                        //    Fields = ishFolder.IshFields.ToOpenApiISH30SetFieldValues(IshSession)
                                         //});
 
                                         foldersToRetrieve.Add(folderId);
@@ -249,47 +249,47 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             switch (IshSession.Protocol)
                             {
                                 case Enumerations.Protocol.OpenApiBasicAuthentication:
-                                    ICollection<OpenApi.SetFieldValue> fieldValues = new List<OpenApi.SetFieldValue>();
+                                    ICollection<OpenApiISH30.SetFieldValue> fieldValues = new List<OpenApiISH30.SetFieldValue>();
 
                                     //FNAME
-                                    var fieldFolderName = new OpenApi.SetStringFieldValue()
+                                    var fieldFolderName = new OpenApiISH30.SetStringFieldValue()
                                     {
-                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FNAME", Type = nameof(OpenApi.IshField) },
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FNAME", Type = nameof(OpenApiISH30.IshField) },
                                         Value = FolderName
                                     };
                                     fieldValues.Add(fieldFolderName);
 
                                     //FDOCUMENTTYPE (aka Folder Type)
-                                    var fieldFolderType = new OpenApi.SetLovFieldValue()
+                                    var fieldFolderType = new OpenApiISH30.SetLovFieldValue()
                                     {
-                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApi.IshField) },
-                                        Value = new OpenApi.SetLovValue() { Id = Enumerations.ToDDOCTYPEValue(FolderType), Type = nameof(OpenApi.SetLovValue) }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FDOCUMENTTYPE", Type = nameof(OpenApiISH30.IshField) },
+                                        Value = new OpenApiISH30.SetLovValue() { Id = Enumerations.ToDDOCTYPEValue(FolderType), Type = nameof(OpenApiISH30.SetLovValue) }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
                                     };
                                     fieldValues.Add(fieldFolderType);
 
                                     //READ-ACCESS
-                                    var fieldReadAccess = new OpenApi.SetMultiLovFieldValue()
+                                    var fieldReadAccess = new OpenApiISH30.SetMultiLovFieldValue()
                                     {
-                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApi.IshField) },
-                                        Value = new List<OpenApi.SetLovValue>()
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "READ-ACCESS", Type = nameof(OpenApiISH30.IshField) },
+                                        Value = new List<OpenApiISH30.SetLovValue>()
                                     };
                                     // Convert multi-value fields of ISHRemote models via IshSession.Separator
                                     foreach (string readaccessItem in readAccess)
                                     {
-                                        fieldReadAccess.Value.Add(new OpenApi.SetLovValue() { Id = readaccessItem, Type = nameof(OpenApi.SetLovValue) });
+                                        fieldReadAccess.Value.Add(new OpenApiISH30.SetLovValue() { Id = readaccessItem, Type = nameof(OpenApiISH30.SetLovValue) });
                                     }
                                     fieldValues.Add(fieldReadAccess);
 
                                     //FUSERGROUP (aka Owned by)
-                                    var ownedByValue = String.IsNullOrEmpty(ownedBy) ? null : new OpenApi.SetUserGroup() { Id = ownedBy };
-                                    var fieldWriteAccess = new OpenApi.SetCardFieldValue()
+                                    var ownedByValue = String.IsNullOrEmpty(ownedBy) ? null : new OpenApiISH30.SetUserGroup() { Id = ownedBy };
+                                    var fieldWriteAccess = new OpenApiISH30.SetCardFieldValue()
                                     {
-                                        IshField = new OpenApi.IshField() { Level = OpenApi.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApi.IshField) },
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FUSERGROUP", Type = nameof(OpenApiISH30.IshField) },
                                         Value = ownedByValue
                                     };
                                     fieldValues.Add(fieldWriteAccess);
 
-                                    var response = IshSession.OpenApi30Service.CreateFolderAsync(new OpenApi.CreateFolder()
+                                    var response = IshSession.OpenApiISH30Service.CreateFolderAsync(new OpenApiISH30.CreateFolder()
                                     {
                                         ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
                                         Fields = fieldValues
@@ -298,7 +298,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     foldersToRetrieve.Add(folderId);
                                     break;
                                 case Enumerations.Protocol.AsmxAuthenticationContext:
-                                    var folderId = IshSession.Folder25.Create(
+                                    folderId = IshSession.Folder25.Create(
                                         ParentFolderId,
                                         FolderName,
                                         ownedBy,
@@ -319,34 +319,34 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     switch (IshSession.Protocol)
                     {
                         case Enumerations.Protocol.OpenApiBasicAuthentication:
-                            ICollection<OpenApi.RequestedField> fieldValues = new List<OpenApi.RequestedField>();
-                            fieldValues.Add(new OpenApi.RequestedField()
+                            ICollection<OpenApiISH30.RequestedField> fieldValues = new List<OpenApiISH30.RequestedField>();
+                            fieldValues.Add(new OpenApiISH30.RequestedField()
                             {
-                                IshField = new OpenApi.IshField()
+                                IshField = new OpenApiISH30.IshField()
                                 {
                                     Name = "FITTLE",
-                                    Level = OpenApi.Level.Logical,
-                                    Type = nameof(OpenApi.IshField)
+                                    Level = OpenApiISH30.Level.Logical,
+                                    Type = nameof(OpenApiISH30.IshField)
                                 },
-                                Type = nameof(OpenApi.RequestedField)
+                                Type = nameof(OpenApiISH30.RequestedField)
                             });
                             /*
-                            ICollection<OpenApi.FilterFieldValue> filterFieldValues = new List<OpenApi.FilterFieldValue>();
-                            fieldValues.Add(new OpenApi.CardFilterFieldValue()  // Looks a lot like SetFieldVAlue, so strongly typed
+                            ICollection<OpenApiISH30.FilterFieldValue> filterFieldValues = new List<OpenApiISH30.FilterFieldValue>();
+                            fieldValues.Add(new OpenApiISH30.CardFilterFieldValue()  // Looks a lot like SetFieldVAlue, so strongly typed
                             {
-                                IshField = new OpenApi.IshField()
+                                IshField = new OpenApiISH30.IshField()
                                 {
                                     Name = "FITTLE",
-                                    Level = OpenApi.Level.Logical,
-                                    Type = nameof(OpenApi.IshField)
+                                    Level = OpenApiISH30.Level.Logical,
+                                    Type = nameof(OpenApiISH30.IshField)
                                 },
-                                Type = nameof(OpenApi.RequestedField)
+                                Type = nameof(OpenApiISH30.RequestedField)
                             });
                             */
-                            var responseGet = IshSession.OpenApi30Service.GetFolderListAsync(new OpenApi.GetFolderList()
+                            var responseGet = IshSession.OpenApiISH30Service.GetFolderListAsync(new OpenApiISH30.GetFolderList()
                             {
                                 Ids = foldersToRetrieve.ConvertAll<string>(x => x.ToString()),
-                                FieldGroup = Enumerations.ToOpenApiFieldGroup(IshSession.DefaultRequestedMetadata),
+                                FieldGroup = OpenApiISH30EnumerationsExtensions.ToOpenApiISH30FieldGroup(IshSession.DefaultRequestedMetadata),
                                 
                             }).GetAwaiter().GetResult();
                             returnedFolders.AddRange(new IshFolders(responseGet, IshSession.Separator).Folders);
@@ -372,7 +372,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
             }
-            catch (OpenApi.ApiException<OpenApi.InfoShareProblemDetails> exception)
+            catch (OpenApiISH30.ApiException<OpenApiISH30.InfoShareProblemDetails> exception)
             {
                 if (exception.Result != null)
                 {
@@ -382,7 +382,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         string warning = $"ErrorEventName[{error.EventName}] ErrorDetail[{error.Detail}]";
                         foreach (var relatedInfo in error.RelatedInfo)
                         {
-                            var schemaValidationError = relatedInfo as OpenApi.SchemaValidationError;
+                            var schemaValidationError = relatedInfo as OpenApiISH30.SchemaValidationError;
                             warning += $" on ErrorPath[{schemaValidationError.Path}]";
                         }
                         WriteWarning(warning);

@@ -24,7 +24,7 @@ using System.Security;
 using Trisoft.ISHRemote.Connection;
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Interfaces;
-using Trisoft.ISHRemote.OpenApi;
+using Trisoft.ISHRemote.OpenApiISH30;
 
 namespace Trisoft.ISHRemote.Objects.Public
 {
@@ -69,7 +69,7 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
-        private OpenApi30Service _openApi30Service;
+        private OpenApiISH30Service _openApiISH30Service;
 
         private InfoShareWcfSoapWithWsTrustConnection _connection;
         private Annotation25ServiceReference.Annotation _annotation25;
@@ -182,9 +182,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                         //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
                         //    "Basic",
                         //    Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
-                        _openApi30Service = new Trisoft.ISHRemote.OpenApi.OpenApi30Service(_httpClient);
-                        _openApi30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
-                        _serverVersion = new IshVersion(_openApi30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+                        _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
+                        _openApiISH30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
+                        _serverVersion = new IshVersion(_openApiISH30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
                     }
                     // if GetApplicationVersionAsync doesnot force authentication we should for a initialize IshUser at this location for both protocols
                     break;
@@ -473,12 +473,12 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         #region OpenApi internal/3.0 Services
-        public OpenApi30Service OpenApi30Service
+        public OpenApiISH30Service OpenApiISH30Service
         {
             get
             {
                 // should always be initialized by CreateConnection
-                return _openApi30Service;
+                return _openApiISH30Service;
             }
         }
         #endregion

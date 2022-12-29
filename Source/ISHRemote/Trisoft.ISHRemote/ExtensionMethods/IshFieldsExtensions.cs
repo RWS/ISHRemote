@@ -1,21 +1,37 @@
+/*
+* Copyright (c) 2014 All Rights Reserved by the SDL Group.
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
-using Trisoft.ISHRemote.OpenApi;
+using Trisoft.ISHRemote.OpenApiISH30;
 
 namespace Trisoft.ISHRemote.ExtensionMethods
 {
     internal static class IshFieldsExtensionMethods
     {
-        internal static ICollection<SetFieldValue> ToSetFieldValues(this IshFields ishFields, IshSession ishSession )
+        internal static ICollection<SetFieldValue> ToOpenApiISH30SetFieldValues(this IshFields ishFields, IshSession ishSession)
         {
             ICollection<SetFieldValue> fieldValues = new List<SetFieldValue>();
 
             foreach(Objects.Public.IshField ishField in ishFields.Fields())
             {
-                SetFieldValue setFieldValue = IshFieldToSetFieldValue(ishField, ishSession, ishFields);
+                SetFieldValue setFieldValue = IshFieldToOpenApiISH30SetFieldValue(ishField, ishSession, ishFields);
                 if (setFieldValue != null)
                 {
                     fieldValues.Add(setFieldValue);
@@ -25,57 +41,57 @@ namespace Trisoft.ISHRemote.ExtensionMethods
             return fieldValues;
         }
 
-        internal static OpenApi.Level ToOpenApiLevel(this Enumerations.Level level)
+        internal static OpenApiISH30.Level ToOpenApiISH30Level(this Enumerations.Level level)
         {
             switch(level)
             {
                 case Enumerations.Level.Annotation:
-                    return OpenApi.Level.Annotation;
+                    return OpenApiISH30.Level.Annotation;
 
                 case Enumerations.Level.Data:
-                    return OpenApi.Level.Data;
+                    return OpenApiISH30.Level.Data;
 
                 case Enumerations.Level.Detail:
-                    return OpenApi.Level.Detail;
+                    return OpenApiISH30.Level.Detail;
 
                 case Enumerations.Level.History:
                     // TODO
-                    return OpenApi.Level.None;
+                    return OpenApiISH30.Level.None;
 
                 case Enumerations.Level.Lng:
-                    return OpenApi.Level.Language;
+                    return OpenApiISH30.Level.Language;
 
                 case Enumerations.Level.Logical:
-                    return OpenApi.Level.Logical;
+                    return OpenApiISH30.Level.Logical;
 
                 case Enumerations.Level.None:
-                    return OpenApi.Level.None;
+                    return OpenApiISH30.Level.None;
 
                 case Enumerations.Level.Progress:
-                    return OpenApi.Level.None;
+                    return OpenApiISH30.Level.None;
 
                 case Enumerations.Level.Reply:
-                    return OpenApi.Level.Reply;
+                    return OpenApiISH30.Level.Reply;
 
                 case Enumerations.Level.Task:
                     // TODO
-                    return OpenApi.Level.None;
+                    return OpenApiISH30.Level.None;
                 
                 case Enumerations.Level.Version:
-                    return OpenApi.Level.Version;
+                    return OpenApiISH30.Level.Version;
             }
 
-            return OpenApi.Level.None;
+            return OpenApiISH30.Level.None;
         }
 
-        private static SetFieldValue IshFieldToSetFieldValue(Objects.Public.IshField ishField, IshSession ishSession, IshFields ishFields)
+        private static SetFieldValue IshFieldToOpenApiISH30SetFieldValue(Objects.Public.IshField ishField, IshSession ishSession, IshFields ishFields)
         {
             SetFieldValue setFieldValue = null;
             IshTypeFieldDefinition ishTypeFieldDefinition = ishSession.IshTypeFieldDefinition.FirstOrDefault(f => f.Name == ishField.Name && f.Level == ishField.Level);
 
             if (ishTypeFieldDefinition != null)
             {
-                OpenApi.IshField openApiIshField = new OpenApi.IshField() {  Level = ishField.Level.ToOpenApiLevel(), Name = ishField.Name, Type = nameof(OpenApi.IshField ) };
+                OpenApiISH30.IshField openApiIshField = new OpenApiISH30.IshField() {  Level = ishField.Level.ToOpenApiISH30Level(), Name = ishField.Name, Type = nameof(OpenApiISH30.IshField ) };
                 
                 string fieldValue = ishFields.GetFieldValue(ishField.Name, ishField.Level, ishField.ValueType);
                 // TODO why is the separator on IshSession a string?
