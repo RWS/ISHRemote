@@ -92,6 +92,12 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>Building a session for the chosen service based on username/password authentication. Parameter Protocol indicates the preferred communication/authentication route.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Protocol OpenApiWithOpenIdConnect -ClientId "c826e7e1-c35c-43fe-9756-e1b61f44bb40" -ClientSecret "ziKiGbx6N0G3m69/vWMZUTs2paVO1Mzqt6Y6TX7mnpPJyFVODsI1Vw=="
+    /// </code>
+    /// <para>Building a session for the chosen service based on username/password authentication. Parameter Protocol indicates the preferred communication/authentication route.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.New, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(IshSession))]
     public sealed class NewIshSession : SessionCmdlet
@@ -136,6 +142,32 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
+        /// <para type="description">Client ID when Protocol OpenApiWithOpenIdConnect is used to trigger OAuth2/OpenIDConnect Client Credential Flow for usage to Issuer's /connect/token endpoint.</para>
+        /// </summary>
+        // TODO [Must] ClientId/ClientSecret should become mandatory on seperate ParameterSetName = "CredentialFlow". When all OpenApi function are there, can be removed from ParameterSetName UserNamePassword/PSCredential as no fall back is required anymore.
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
+        [AllowEmptyString]
+        public string ClientId
+        {
+            get { return _clientId; }
+            set { _clientId = value; }
+        }
+
+        /// <summary>
+        /// <para type="description">Client Secret when Protocol OpenApiWithOpenIdConnect is used to trigger OAuth2/OpenIDConnect Client Credential Flow for usage to Issuer's /connect/token endpoint.</para>
+        /// </summary>
+        // TODO [Must] ClientId/ClientSecret should become mandatory on seperate ParameterSetName = "CredentialFlow". When all OpenApi function are there, can be removed from ParameterSetName UserNamePassword/PSCredential as no fall back is required anymore.
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
+        [AllowEmptyString]
+        public string ClientSecret
+        {
+            get { return _clientSecret; }
+            set { _clientSecret = value; }
+        }
+
+        /// <summary>
         /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml Defaults to 30 minutes.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
@@ -150,6 +182,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <summary>
         /// <para type="description">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
         /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         public SwitchParameter IgnoreSslPolicyErrors
@@ -174,6 +207,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         private string _ishUserName = null;
         private string _ishPassword = null;
         private SecureString _ishSecurePassword = null;
+        private string _clientId = null;
+        private string _clientSecret = null;
+        private SecureString _clientSecureSecret = null;
         private TimeSpan _timeout = new TimeSpan(0, 30, 0);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private bool _ignoreSslPolicyErrors = false;
         private Enumerations.Protocol _protocol = Enumerations.Protocol.Autodetect;
@@ -192,6 +228,8 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                     _ishPassword = null;
                 }
                 int ishPasswordLength = _ishPassword == null ? 0 : _ishPassword.Length;
+                int clientSecretLength = _clientSecret == null ? 0 : _clientSecret.Length;
+
                 if (PSCredential != null)
                 {
                     _ishUserName = PSCredential.UserName;
@@ -200,15 +238,17 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 else if (!String.IsNullOrWhiteSpace(_ishPassword))
                 {
                     _ishSecurePassword = SecureStringConversions.StringToSecureString(_ishPassword);
+                    _clientSecureSecret = SecureStringConversions.StringToSecureString(_clientSecret);
                 }
                 else
                 {
                     _ishSecurePassword = null;
+                    _clientSecureSecret = null;
                 }
 
-                WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + "]");
-                WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}] Protocol[{_protocol}]");
-                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _timeout, _ignoreSslPolicyErrors, _protocol);
+                WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] ClientId[{_clientId}] ClientSecret[" + new string('*', clientSecretLength) + "]");
+                WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] ClientId[{_clientId}] ClientSecret[" + new string('*', clientSecretLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}] Protocol[{_protocol}]");
+                IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _clientId, _clientSecureSecret, _timeout, _ignoreSslPolicyErrors, _protocol);
 
                 // Do early load of IshTypeFieldSetup (either <13-TriDKXmlSetup-based or >=13-RetrieveFieldSetupByIshType-API-based) for
                 // usage by ToIshMetadataFields/.../ToIshRequestedMetadataFields and Expand-ISHParameter.ps1 parameter autocompletion

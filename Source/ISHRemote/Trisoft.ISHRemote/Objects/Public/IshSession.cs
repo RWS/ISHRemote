@@ -42,6 +42,8 @@ namespace Trisoft.ISHRemote.Objects.Public
         private string _userName;
         private string _userLanguage;
         private readonly SecureString _ishSecurePassword;
+        private string _clientId;
+        private readonly SecureString _clientSecureSecret;
         private readonly string _separator = ", ";
         private readonly string _folderPathSeparator = @"\";
 
@@ -100,10 +102,12 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <param name="webServicesBaseUrl">The url to the web service API. For example 'https://example.com/ISHWS/'</param>
         /// <param name="ishUserName">InfoShare user name. For example 'Admin'</param>
         /// <param name="ishSecurePassword">Matching password as SecureString of the incoming user name. When null is provided, a NetworkCredential() is created instead.</param>
+        /// <param name="clientId">Access Management (ISHAM) Client Identifier of a Service Account. For example 'c826e7e1-c35c-43fe-9756-e1b61f44bb40'</param>
+        /// <param name="clientSecureSecret">Access Management (ISHAM) Client Secret is the matching password as SecureString of the clientId.For example 'ziKiGbx6N0G3m69/vWMZUTs2paVO1Mzqt6Y6TX7mnpPJyFVODsAAAA=='.</param>
         /// <param name="timeout">Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml</param>
         /// <param name="ignoreSslPolicyErrors">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</param>
         /// <param name="protocol">Protocol indicates the preferred communication/authentication route.</param>
-        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, TimeSpan timeout, bool ignoreSslPolicyErrors, Enumerations.Protocol protocol)
+        public IshSession(ILogger logger, string webServicesBaseUrl, string ishUserName, SecureString ishSecurePassword, string clientId, SecureString clientSecureSecret, TimeSpan timeout, bool ignoreSslPolicyErrors, Enumerations.Protocol protocol)
         {
             _logger = logger;
             _ignoreSslPolicyErrors = ignoreSslPolicyErrors;
@@ -134,6 +138,8 @@ namespace Trisoft.ISHRemote.Objects.Public
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
             _ishSecurePassword = ishSecurePassword;
+            _clientId = clientId;
+            _clientSecureSecret = clientSecureSecret;
 
             // Detecting or verifying protocol
             var ishwsConnectionConfigurationUri = new Uri(_webServicesBaseUri, "connectionconfiguration.xml");
@@ -173,7 +179,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                         AuthenticationType = owcfConnectionConfiguration.AuthenticationType,
                         InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
                         IssuerUrl = owcfConnectionConfiguration.IssuerUrl,
-                        Timeout = _timeout
+                        Timeout = _timeout,
+                        ClientId = _clientId,
+                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
                     };
                     CreateOpenApiWithOpenIdConnectConnection();
                     // explictly initializing WcfSoapWithWsTrust as well, as many cmdlets in turn OpenAPI calls are still missing

@@ -132,7 +132,7 @@ Would a **smart** mode on the session make sense? So imagine `Find-IShUser` or `
 
 
 ## Add Access Management cmdlets 
-Either some basic cmdlets in **ISHRemote** that return an object model that can be used as input for other cmdlets. So `Get-AMUser` returns Access Management `AMUser`s, where the `ClientID` field could be used to `Find-IshUser`. And `Set-AMUser` accepting `IShUser` where the `FISHEXTERNALID` could be used to update Access Management user profiles.
+Either some basic cmdlets in **ISHRemote** that return an object model that can be used as input for other cmdlets. So `Get-AMUser` returns Access Management `AMUser`s, where the `ClientId` field could be used to `Find-IshUser`. And `Set-AMUser` accepting `IShUser` where the `FISHEXTERNALID` could be used to update Access Management user profiles.
 
 Add (nested binary module) AMRemote that could offer cmdlets like
 * `New-AMSession`, similar to `New-IShSession`, that returns an `AMSession` object with OpenApi proxy.
@@ -143,6 +143,8 @@ Add (nested binary module) AMRemote that could offer cmdlets like
 * Merging in #115 branch that was AsmxSoapWithAuthenticationContext plus OpenApiWithOpenIdConnect efforts
 * Update spec.json
 * Rename protocol and ishSession.OpenApi30Service -> ishSession.OpenApiISH30Service so ishSession.OpenApiAM10Service
+* Parameter group `New-IShSession` ActiveDirectory/Interactive does not have `-Timeout` parameter.
+* Cmdlets `New-IshSession` and `Test-IshSession` received parameter `-Protocol`, `-ClientId` and `-ClientSecret` so when protocol is set to `OpenApiWithOpenIdConnect` it is the preferred route, fall back to `WcfSoapWithWsTrust` when OpenApi calls are unavailable. 
 * Case Files
     * IshFolder.cs skipped OpenApi object conversion here with #115 merge?!
     * Enumerations.cs left various enum conversions in #115
@@ -151,7 +153,8 @@ Add (nested binary module) AMRemote that could offer cmdlets like
     * AddIshFolder.cs
     * GetIshFolder.cs
 # Next
-* Parameter group `New-IShSession` ActiveDirectory/Interactive does not have `-Timeout` parameter.
+
+* Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
 * Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed.
 * Describe what Tridion Docs User Profile disable means, and when it kicks in.
 * Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID).
