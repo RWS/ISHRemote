@@ -238,7 +238,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 else if (!String.IsNullOrWhiteSpace(_ishPassword))
                 {
                     _ishSecurePassword = SecureStringConversions.StringToSecureString(_ishPassword);
-                    _clientSecureSecret = SecureStringConversions.StringToSecureString(_clientSecret);
+                    _clientSecureSecret = _clientSecret == null ? null : SecureStringConversions.StringToSecureString(_clientSecret);
                 }
                 else
                 {
@@ -259,10 +259,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 this.SessionState.PSVariable.Set(ISHRemoteSessionStateIshSession, ishSession);
 
                 WriteObject(ishSession);
-            }
-            catch (NotSupportedException notSupportedException)
-            {
-                WriteError(new ErrorRecord(notSupportedException, "-1", ErrorCategory.InvalidOperation, null));
             }
             catch (TrisoftAutomationException trisoftAutomationException)
             {

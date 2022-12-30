@@ -7,15 +7,6 @@
 }
 
 Describe "Test-IshSession" -Tags "Read" {
-	Context "Test-IshSession ISHDeploy::Enable-ISHIntegrationSTSInternalAuthentication/Prepare-SupportAccess.ps1" {
-		It "Parameter WsBaseUrl contains 'SDL' (legacy script)" -Skip {
-			Test-IshSession -WsBaseUrl https://example.com/ISHWS/SDL/ -IshUserName x -IshPassword y | Should -Be $true
-		}
-		It "Parameter WsBaseUrl contains 'Internal' (ISHDeploy)" -Skip {
-			Test-IshSession -WsBaseUrl https://example.com/ISHWS/Internal/ -IshUserName x -IshPassword y | Should -Be $true
-		}
-	}
-
 	Context "Test-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
 			Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" | Should -Be $false

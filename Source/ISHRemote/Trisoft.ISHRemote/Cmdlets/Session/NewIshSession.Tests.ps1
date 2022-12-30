@@ -8,17 +8,6 @@
 }
 
 Describe "New-IshSession" -Tags "Read" {
-	Context "New-IshSession ISHDeploy::Enable-ISHIntegrationSTSInternalAuthentication/Prepare-SupportAccess.ps1" {
-		It "Parameter WsBaseUrl contains 'SDL' (legacy script)" -skip {
-			$ishSession = New-IshSession -WsBaseUrl https://example.com/ISHWS/SDL/ -IshUserName x -IshPassword y
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-		}
-		It "Parameter WsBaseUrl contains 'Internal' (ISHDeploy)" -skip {
-			$ishSession = New-IshSession -WsBaseUrl https://example.com/ISHWS/Internal/ -IshUserName x -IshPassword y
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-		}
-	}
-
 	Context "New-IshSession UserNamePassword" {
 		It "Parameter WsBaseUrl invalid" {
 			{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -IshUserName "INVALIDISHUSERNAME" -IshPassword "INVALIDISHPASSWORD" } | Should -Throw "Invalid URI: The hostname could not be parsed."

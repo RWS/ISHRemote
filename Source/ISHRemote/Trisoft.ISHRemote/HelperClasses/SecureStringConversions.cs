@@ -28,6 +28,7 @@ namespace Trisoft.ISHRemote.HelperClasses
     {
         public static SecureString StringToSecureString(string value)
         {
+            if (string.IsNullOrEmpty(value)) return null;
             char[] chars = value.ToCharArray();
             var ss = new SecureString();
             for (int i = 0; i < chars.Length; i++)
@@ -39,8 +40,8 @@ namespace Trisoft.ISHRemote.HelperClasses
 
         public static String SecureStringToString(SecureString value)
         {
+            if (value == null) return null;
             IntPtr bstr = Marshal.SecureStringToBSTR(value);
-
             try
             {
                 return Marshal.PtrToStringBSTR(bstr);

@@ -363,11 +363,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 WriteVerbose("returned object count[" + returnedFolders.Count + "]");
                 WriteObject(IshSession, ISHType, returnedFolders.ConvertAll(x => (IshBaseObject)x), true);
             }
-
-            catch (NotSupportedException notSupportedException)
-            {
-                WriteError(new ErrorRecord(notSupportedException, "-1", ErrorCategory.NotImplemented, null));
-            }
             catch (TrisoftAutomationException trisoftAutomationException)
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));

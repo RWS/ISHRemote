@@ -156,6 +156,10 @@ namespace Trisoft.ISHRemote.Objects.Public
                 owcfConnectionConfiguration = LoadConnectionConfiguration(wcfConnectionConfigurationUri);
                 _logger.WriteVerbose($"LoadConnectionConfiguration found InfoShareWSUrl[{ishwsConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{ishwsConnectionConfiguration.ApplicationName}] SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
             }
+            if (string.IsNullOrEmpty(_clientId))
+            {
+                _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
+            }
             switch (_protocol)
             {
                 case Enumerations.Protocol.Autodetect:
@@ -198,6 +202,15 @@ namespace Trisoft.ISHRemote.Objects.Public
                     break;
                 case Enumerations.Protocol.WcfSoapWithWsTrust:
                     _logger.WriteDebug($"LoadConnectionConfiguration selected protocol[{_protocol}]");
+                    _infoShareWcfSoapConnectionParameters = new InfoShareWcfConnectionParameters
+                    {
+                        AuthenticationType = ishwsConnectionConfiguration.AuthenticationType,
+                        InfoShareWSUrl = ishwsConnectionConfiguration.InfoShareWSUrl,
+                        IssuerUrl = ishwsConnectionConfiguration.IssuerUrl,
+                        Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
+                        Timeout = _timeout,
+                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
+                    };
                     CreateInfoShareWcfSoapWithWsTrustConnection();
                     break;
                 default:
