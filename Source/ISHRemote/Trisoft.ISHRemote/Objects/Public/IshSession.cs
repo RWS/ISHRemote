@@ -549,8 +549,11 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                // should always be initialized by CreateConnection
-                return _infoshareOpenApiConnection.GetOpenApiISH30ServiceProxy();
+                if (_infoshareOpenApiConnection != null)
+                {
+                    return _infoshareOpenApiConnection.GetOpenApiISH30ServiceProxy();
+                }
+                return null;
             }
         }
         #endregion

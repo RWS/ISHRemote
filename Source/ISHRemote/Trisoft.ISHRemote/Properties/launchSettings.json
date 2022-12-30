@@ -1,9 +1,21 @@
 {
   "profiles": {
-    "Trisoft.ISHRemote": {
+    "ISHRemote OpenApi SystemBrowser": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Protocol OpenApiWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Protocol OpenApiWithOpenIdConnect  -ClientId \"c826e7e1-c35c-43fe-9756-e1b61f44bb40\"  -IgnoreSslPolicyErrors -debug\"",
+      "nativeDebugging": true
+    },
+    "ISHRemote Autodetect": {
+      "commandName": "Executable",
+      "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -IgnoreSslPolicyErrors -debug\"",
+      "nativeDebugging": true
+    },
+    "ISHRemote OpenApi CredentialFlow": {
+      "commandName": "Executable",
+      "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Protocol OpenApiWithOpenIdConnect  -ClientId \"c826e7e1-c35c-43fe-9756-e1b61f44bb40\" -ClientSecret \"ziKiGbx6N0G3m69/vWMZUTs2paVO1Mzqt6Y6TX7mnpPJyFVODsI1Vw==\" -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     }
   }

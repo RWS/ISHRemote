@@ -14,22 +14,30 @@
 * limitations under the License.
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using IdentityModel.Client;
+using IdentityModel.OidcClient;
 using Trisoft.ISHRemote.Interfaces;
-using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.OpenApiISH30;
+using System.Diagnostics;
 
 namespace Trisoft.ISHRemote.Connection
 {
     internal sealed class InfoShareOpenApiConnection : IDisposable
     {
+        /// <summary>
+        /// Gets or sets when access token should be refreshed (relative to its expiration time).
+        /// </summary>
+        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(1);
+
         #region Private Members
         /// <summary>
         /// Logger
@@ -50,7 +58,13 @@ namespace Trisoft.ISHRemote.Connection
         private bool disposedValue;
         #endregion
 
-
+        public class Tokens
+        {
+            internal string AccessToken { get; set; }
+            internal string IdentityToken { get; set; }
+            internal string RefreshToken { get; set; }
+            internal DateTime AccessTokenExpiration { get; set; }
+        }
 
         #region Constructors
         /// <summary>
@@ -69,8 +83,21 @@ namespace Trisoft.ISHRemote.Connection
             _logger.WriteDebug($"InfoShareOpenApiConnection InfoShareWSUrl[{_connectionParameters.InfoShareWSUrl}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");
             if (string.IsNullOrEmpty(_connectionParameters.BearerToken))
             {
-                _logger.WriteDebug($"InfoShareOpenApiConnection ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
-                _connectionParameters.BearerToken = GetNewBearerToken();
+                if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) || (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
+                {
+                    // attempt System Browser retrieval of Access/Bearer Token
+                    _logger.WriteDebug($"InfoShareOpenApiConnection System Browser");
+                    Tokens tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
+                }
+                else
+                {
+                    // Raw method without OidcClient works
+                    _logger.WriteDebug($"InfoShareOpenApiConnection ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
+                    _connectionParameters.BearerToken = GetNewBearerToken();
+                    // OidcClient fails
+                    // Tokens tokens = GetTokensOverClientCredentialsAsync(null).GetAwaiter().GetResult();
+                    // _connectionParameters.BearerToken = tokens.AccessToken;
+                }
             }
             else 
             {
@@ -86,6 +113,10 @@ namespace Trisoft.ISHRemote.Connection
 
 
         #region Private Methods
+        /// <summary>
+        /// Rough get Bearer/Access token based on class parameters
+        /// </summary>
+        /// <returns>Bearer Token</returns>
         private string GetNewBearerToken()
         {
             var requestUri = new Uri(_connectionParameters.IssuerUrl, "connect/token");
@@ -108,7 +139,122 @@ namespace Trisoft.ISHRemote.Connection
             return tokenObject.access_Token;
         }
 
-        private void Dispose(bool disposing)
+        /// <summary>
+        /// OidcClient-based get Bearer/Access based on class parameters. Will refresh if possible.
+        /// </summary>
+        /// <param name="tokens">Incoming tokens, can be null. Forcing new Access Token, or attempt Refresh</param>
+        /// <param name="cancellationToken">Default</param>
+        /// <returns>New Tokens with new or refreshed valeus</returns>
+        private async Task<Tokens> GetTokensOverClientCredentialsAsync(Tokens tokens, CancellationToken cancellationToken = default)
+        {
+            var requestUri = new Uri(_connectionParameters.IssuerUrl, "connect/token");
+            Tokens returnTokens = null;
+            if ((tokens != null) && (tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration) > DateTime.Now))  // skew 60 seconds
+            {
+                _logger.WriteDebug($"GetTokensOverClientCredentialsAsync from requestUri[{requestUri}] using ClientId[{_connectionParameters.ClientId}] RefreshToken[{new string('*', tokens.RefreshToken.Length)}]");
+                var refreshTokenRequest = new RefreshTokenRequest
+                {
+                    Address = requestUri.ToString(),
+                    ClientId = _connectionParameters.ClientId,
+                    RefreshToken = tokens.RefreshToken
+                };
+                TokenResponse response = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest, cancellationToken).ConfigureAwait(false);
+                // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
+                if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    throw new ApplicationException($"GetTokensOverClientCredentialsAsync Refresh Error[{response.Error}]");
+                }
+                returnTokens = new Tokens
+                {
+                    AccessToken = response.AccessToken,
+                    IdentityToken = response.IdentityToken,
+                    RefreshToken = response.RefreshToken,
+                    AccessTokenExpiration = DateTime.Now.AddSeconds(response.ExpiresIn)
+                };
+            }
+            else // tokens where null, or expired
+            {
+                _logger.WriteDebug($"GetTokensOverClientCredentialsAsync from requestUri[{requestUri}] using ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
+                var tokenRequest = new ClientCredentialsTokenRequest
+                {
+                    Address = requestUri.ToString(),
+                    ClientId = _connectionParameters.ClientId,
+                    ClientSecret = _connectionParameters.ClientSecret
+                };
+                TokenResponse response = await _httpClient.RequestClientCredentialsTokenAsync(tokenRequest, cancellationToken).ConfigureAwait(false);
+
+                // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
+                if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    throw new ApplicationException($"GetTokensOverClientCredentialsAsync Access Error[{response.Error}]");
+                }
+
+                returnTokens = new Tokens
+                {
+                    AccessToken = response.AccessToken,
+                    RefreshToken = response.RefreshToken,
+                    AccessTokenExpiration = DateTime.Now.AddSeconds(response.ExpiresIn)
+                };
+            }
+            return returnTokens;
+        }
+
+        private async Task<Tokens> GetTokensOverSystemBrowserAsync(CancellationToken cancellationToken = default)
+        {
+
+            using (var localHttpEndpoint = new InfoShareOpenIdConnectLocalHttpEndpoint())
+            {
+                var oidcClientOptions = new OidcClientOptions
+                {
+                    Authority = _connectionParameters.IssuerUrl.ToString(),
+                    ClientId = _connectionParameters.ClientId,
+                    Scope = "openid profile email role forwarded offline_access",
+                    RedirectUri = localHttpEndpoint.BaseUrl,
+                    Policy = new Policy()
+                    {
+                        Discovery = new DiscoveryPolicy
+                        {
+                            ValidateIssuerName = false,
+                            RequireHttps = false
+                        }
+                    }
+                };
+                var oidcClient = new OidcClient(oidcClientOptions);
+
+                AuthorizeState state = await oidcClient.PrepareLoginAsync(cancellationToken: cancellationToken);
+
+                localHttpEndpoint.StartListening();
+                // Open system browser to start the OIDC authentication flow
+                Process.Start(state.StartUrl);
+                // Wait for HTTP POST signalling end of authentication flow
+                localHttpEndpoint.AwaitHttpRequest(cancellationToken);
+                string formdata = localHttpEndpoint.GetHttpRequestBody();
+
+                // Send an HTTP Redirect to Access Management logged in page.
+                await localHttpEndpoint.SendHttpRedirectAsync($"{_connectionParameters.IssuerUrl}/Account/LoggedIn?clientId={_connectionParameters.ClientId}", cancellationToken);
+
+                LoginResult loginResult = await oidcClient.ProcessResponseAsync(formdata, state, cancellationToken: cancellationToken);
+                if (loginResult.IsError)
+                {
+                    throw new ApplicationException($"GetTokensOverSystemBrowserAsync Error[{loginResult.Error}]");
+                }
+                if (string.IsNullOrEmpty(loginResult.AccessToken))
+                {
+                    throw new ApplicationException($"GetTokensOverSystemBrowserAsync No Access Token received.");
+                }
+
+                var result = new Tokens
+                {
+                    AccessToken = loginResult.AccessToken,
+                    IdentityToken = loginResult.IdentityToken,
+                    RefreshToken = loginResult.RefreshToken,
+                    AccessTokenExpiration = loginResult.AccessTokenExpiration.LocalDateTime
+                };
+                return result;
+            }
+        }
+
+            private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
