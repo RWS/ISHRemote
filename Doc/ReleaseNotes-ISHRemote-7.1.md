@@ -31,6 +31,10 @@ Again, most cmdlets and business logic are fully compatible, except the below:
 * Renamed `InfoShareWcfSoapConnection.cs` and moved it to `Connection\InfoShareWcfSoapWithWsTrustConnection.cs`
 * Introduced sibling `Connection\InfoShareOpenApiConnection.cs`
 
+Below is more v8.0 then v7.1, consider bumping?
+* Aligned implementation of `Connection\InfoShareWcfSoapWithWsTrustConnection.cs` with `Connection\InfoShareOpenApiConnection.cs` which should make it easier to extract these `\Connection\` classes if desired. But also removed anything refering to Explicit Issuer (unreachable code since ISHRemote v7.0) an anything regarding `/Internal/` or `/SDL/` realm detection as no longer needed in Tridion Docs 15 (only ISHSTS).
+* Layout of `IshSession` was enriched with `BearerToken` through `ISHRemote.Format.ps1xml`.
+
 
 ## Quality Assurance
 

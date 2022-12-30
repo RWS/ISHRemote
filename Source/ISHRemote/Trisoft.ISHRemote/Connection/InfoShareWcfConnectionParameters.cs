@@ -27,6 +27,34 @@ namespace Trisoft.ISHRemote.Connection
     /// </summary>
     internal sealed class InfoShareWcfConnectionParameters
     {
+        private Uri _infoShareWSUrl;
+        /// <summary>
+        /// The clientconfiguration.xml discovery file tells us the configured ISHWS Url is "https://ish.example.com/ISHWS/" while you perhaps are doing https://localhost/ or behind the configured load balancer.
+        /// </summary>
+        public Uri InfoShareWSUrl
+        {
+            get { return _infoShareWSUrl; }
+            set
+            {
+                var infoShareWSUrl = value.ToString();
+                _infoShareWSUrl = (infoShareWSUrl.EndsWith("/")) ? new Uri(infoShareWSUrl) : new Uri(infoShareWSUrl.ToString() + "/");
+            }
+        }
+        /// <summary>
+        /// The clientconfiguration.xml discovery file tells us the configured Issuer AuthenticationType. Expected values are WindowsMixed, UserNameMixed and AccessManagement.
+        /// </summary>
+        public string AuthenticationType { get; set; }
+
+        private Uri _issuerUrl;
+        /// <summary>
+        /// The clientconfiguration.xml discovery file tells us the configured Issuer Url. Expected values are .../issue/wstrust/mixed/username or .../ISHAM/.
+        /// </summary>
+        public Uri IssuerUrl
+        {
+            get { return _issuerUrl; }
+            set { _issuerUrl = value; }
+        }
+
         /// <summary>
         /// The connection credential.
         /// </summary>

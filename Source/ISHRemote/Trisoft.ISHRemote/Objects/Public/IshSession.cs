@@ -71,6 +71,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private InfoShareOpenApiConnectionParameters _infoShareOpenApiConnectionParameters;
         private InfoShareOpenApiConnection _infoshareOpenApiConnection;
 
+        private InfoShareWcfConnectionParameters _infoShareWcfSoapConnectionParameters;
         private InfoShareWcfSoapWithWsTrustConnection _infoShareWcfSoapConnection;
         private Annotation25ServiceReference.Annotation _annotation25;
         private Application25ServiceReference.Application _application25;
@@ -153,7 +154,16 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 case Enumerations.Protocol.Autodetect:
                     _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
-                    _logger.WriteVerbose($"LoadConnectionConfiguration  tocol[{_protocol}]");
+                    _logger.WriteVerbose($"LoadConnectionConfiguration selected protocol[{_protocol}]");
+                    _infoShareWcfSoapConnectionParameters = new InfoShareWcfConnectionParameters
+                    {
+                        AuthenticationType = ishwsConnectionConfiguration.AuthenticationType,
+                        InfoShareWSUrl = ishwsConnectionConfiguration.InfoShareWSUrl,
+                        IssuerUrl = ishwsConnectionConfiguration.IssuerUrl,
+                        Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
+                        Timeout = _timeout,
+                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
+                    };
                     CreateInfoShareWcfSoapWithWsTrustConnection();
                     break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
@@ -167,6 +177,15 @@ namespace Trisoft.ISHRemote.Objects.Public
                     };
                     CreateOpenApiWithOpenIdConnectConnection();
                     // explictly initializing WcfSoapWithWsTrust as well, as many cmdlets in turn OpenAPI calls are still missing
+                    _infoShareWcfSoapConnectionParameters = new InfoShareWcfConnectionParameters
+                    {
+                        AuthenticationType = ishwsConnectionConfiguration.AuthenticationType,
+                        InfoShareWSUrl = ishwsConnectionConfiguration.InfoShareWSUrl,
+                        IssuerUrl = ishwsConnectionConfiguration.IssuerUrl,
+                        Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
+                        Timeout = _timeout,
+                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
+                    };
                     CreateInfoShareWcfSoapWithWsTrustConnection();
                     break;
                 case Enumerations.Protocol.WcfSoapWithWsTrust:
@@ -193,15 +212,8 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         private void CreateInfoShareWcfSoapWithWsTrustConnection()
         {
-            _logger.WriteDebug($"CreateInfoShareWcfSoapWithWsTrustConnection");
-            //prepare connection for authentication/authorization
-            var connectionParameters = new InfoShareWcfConnectionParameters
-            {
-                Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
-                Timeout = _timeout,
-                IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
-            };
-            _infoShareWcfSoapConnection = new InfoShareWcfSoapWithWsTrustConnection(_logger, _webServicesBaseUri, connectionParameters);
+            _logger.WriteVerbose($"CreateInfoShareWcfSoapWithWsTrustConnection");
+            _infoShareWcfSoapConnection = new InfoShareWcfSoapWithWsTrustConnection(_logger, _httpClient, _infoShareWcfSoapConnectionParameters);
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateInfoShareWcfSoapWithWsTrustConnection _serverVersion GetApplication25Channel");
             var application25Proxy = _infoShareWcfSoapConnection.GetApplication25Channel();
@@ -211,16 +223,10 @@ namespace Trisoft.ISHRemote.Objects.Public
         private void CreateOpenApiWithOpenIdConnectConnection()
         {
             
-            _logger.WriteDebug($"CreateOpenApiWithOpenIdConnectConnection");
+            _logger.WriteVerbose($"CreateOpenApiWithOpenIdConnectConnection");
             _infoshareOpenApiConnection = new InfoShareOpenApiConnection(_logger, _httpClient, _infoShareOpenApiConnectionParameters);
-
-            //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
-            //    "Basic",
-            //    Convert.ToBase64String(Encoding.ASCII.GetBytes(_ishUserName+':'+ SecureStringConversions.SecureStringToString(_ishSecurePassword))));
-            //_openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
-            //_openApiISH30Service.BaseUrl = new Uri(_webServicesBaseUri, "api").ToString();
-            //_logger.WriteDebug("CreateOpenApiWithOpenIdConnectConnection openApi30Service.GetApplicationVersionAsync");
-            //_serverVersion = new IshVersion(_openApiISH30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+            _logger.WriteDebug("CreateOpenApiWithOpenIdConnectConnection openApi30Service.GetApplicationVersionAsync");
+            _serverVersion = new IshVersion(OpenApiISH30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -420,9 +426,22 @@ namespace Trisoft.ISHRemote.Objects.Public
                     case Enumerations.Protocol.WcfSoapWithWsTrust:
                         var application25Proxy = _infoShareWcfSoapConnection.GetApplication25Channel();
                         return application25Proxy.Authenticate2();
-                    default:
-                        return ("Not-Available-Over-" + Protocol.ToString());
                 }
+                return ("Not-Available-Over-" + Protocol.ToString());
+            }
+        }
+
+        public string BearerToken
+        {
+            get
+            {
+                VerifyTokenValidity();
+                switch (Protocol)
+                {
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        return _infoShareOpenApiConnectionParameters.BearerToken;
+                }
+                return String.Empty;
             }
         }
 
@@ -510,7 +529,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             get
             {
                 // should always be initialized by CreateConnection
-                return null;
+                return _infoshareOpenApiConnection.GetOpenApiISH30ServiceProxy();
             }
         }
         #endregion

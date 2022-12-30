@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Trisoft.ISHRemote": {
+      "commandName": "Executable",
+      "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Protocol OpenApiWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
+      "nativeDebugging": true
+    }
+  }
+}

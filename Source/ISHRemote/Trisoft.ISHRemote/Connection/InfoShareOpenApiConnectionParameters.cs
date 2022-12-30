@@ -31,7 +31,7 @@ namespace Trisoft.ISHRemote.Connection
         public Uri InfoShareWSUrl {
             get { return _infoShareWSUrl; }
             set {
-                var infoShareWSUrl = value.ToString().Replace("OWcf", "api");
+                var infoShareWSUrl = value.ToString().Replace("OWcf/", "").Replace("OWcf", "");
                 _infoShareWSUrl = (infoShareWSUrl.EndsWith("/")) ? new Uri(infoShareWSUrl) : new Uri(infoShareWSUrl.ToString() + "/");
             }
         }
