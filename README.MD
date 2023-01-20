@@ -133,6 +133,11 @@ Rought steps to release...
     1. Start new release notes, under a new version number like `v0.14-beta`
 1. Close version milestone on https://github.com/sdl/ISHRemote/milestone/
 
+## Debugging PowerShell in Visual Studio
+
+Since Visual Studio 2022, we use `\ISHRemote\Trisoft.ISHRemote\Properties\launchSettings.json` which theoretically also works on Visual Studio Code. Don't forget to set the matching Framework for debugging the library, either `net48` or `net6.0`, for the matching PowerShell version in the start debugging dropdown.
+- Debugging the binary assembly in PowerShell 5.1 you need to use `"executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"`
+- Debugging the binary assembly in PowerShell 7.3+ you need to use `"executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe"`. Using the *Windows Store* PowerShell often results in error `Unable to attach to CoreCLR. A debug component is not installed.` while debugging.
 ## Debugging PowerShell in Visual Studio Code
 
 Setting up your Visual Studio Code is explained on the internet, see [Scripting Guys](https://rkeithhill.wordpress.com/2017/02/19/scripting-guys-blog-posts-on-using-visual-studio-code-for-powershell-development/) who in turn link to

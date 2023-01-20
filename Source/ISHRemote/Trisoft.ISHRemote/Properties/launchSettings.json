@@ -1,21 +1,33 @@
 {
   "profiles": {
-    "ISHRemote OpenApi SystemBrowser": {
+    "PS5 New-IshSession OpenApi SystemBrowser": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
       "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Protocol OpenApiWithOpenIdConnect  -ClientId \"c826e7e1-c35c-43fe-9756-e1b61f44bb40\"  -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
-    "ISHRemote Autodetect": {
+    "PS5 New-IshSession OpenApi CredentialFlow": {
+      "commandName": "Executable",
+      "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Protocol OpenApiWithOpenIdConnect  -ClientId \"c826e7e1-c35c-43fe-9756-e1b61f44bb40\" -ClientSecret \"ziKiGbx6N0G3m69/vWMZUTs2paVO1Mzqt6Y6TX7mnpPJyFVODsI1Vw==\" -IgnoreSslPolicyErrors -debug\"",
+      "nativeDebugging": true
+    },
+    "PS5 New-IshSession ISHRemote Autodetect": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
       "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
-    "ISHRemote OpenApi CredentialFlow": {
+    "PS7 New-IshSession OpenApi CredentialFlow": {
       "commandName": "Executable",
-      "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe",
       "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Protocol OpenApiWithOpenIdConnect  -ClientId \"c826e7e1-c35c-43fe-9756-e1b61f44bb40\" -ClientSecret \"ziKiGbx6N0G3m69/vWMZUTs2paVO1Mzqt6Y6TX7mnpPJyFVODsI1Vw==\" -IgnoreSslPolicyErrors -debug\"",
+      "nativeDebugging": true
+    },
+    "PS7 New-IshSession OpenApi SystemBrowser": {
+      "commandName": "Executable",
+      "executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://mecdev12qa01.global.sdl.corp/ISHWSORA19/ -IshUserName admin -IshPassword admin -Protocol OpenApiWithOpenIdConnect  -ClientId \"c826e7e1-c35c-43fe-9756-e1b61f44bb40\"  -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     }
   }

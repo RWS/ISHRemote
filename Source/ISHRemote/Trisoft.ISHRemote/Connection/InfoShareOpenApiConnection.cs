@@ -28,6 +28,7 @@ using IdentityModel.OidcClient;
 using Trisoft.ISHRemote.Interfaces;
 using Trisoft.ISHRemote.OpenApiISH30;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Trisoft.ISHRemote.Connection
 {
@@ -93,10 +94,10 @@ namespace Trisoft.ISHRemote.Connection
                 {
                     // Raw method without OidcClient works
                     _logger.WriteDebug($"InfoShareOpenApiConnection ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
-                    _connectionParameters.BearerToken = GetNewBearerToken();
+                    //_connectionParameters.BearerToken = GetNewBearerToken();
                     // OidcClient fails
-                    // Tokens tokens = GetTokensOverClientCredentialsAsync(null).GetAwaiter().GetResult();
-                    // _connectionParameters.BearerToken = tokens.AccessToken;
+                    Tokens tokens = GetTokensOverClientCredentialsAsync(null).GetAwaiter().GetResult();
+                    _connectionParameters.BearerToken = tokens.AccessToken;
                 }
             }
             else 
@@ -207,7 +208,7 @@ namespace Trisoft.ISHRemote.Connection
                 var oidcClientOptions = new OidcClientOptions
                 {
                     Authority = _connectionParameters.IssuerUrl.ToString(),
-                    ClientId = _connectionParameters.ClientId,
+                    ClientId = "Tridion_Docs_Content_Importer",  // TODO [Must] InfoShareOpenApiConnection ClientId is hardcoded to Tridion_Docs_Content_Importer
                     Scope = "openid profile email role forwarded offline_access",
                     RedirectUri = localHttpEndpoint.BaseUrl,
                     Policy = new Policy()
@@ -225,9 +226,45 @@ namespace Trisoft.ISHRemote.Connection
 
                 localHttpEndpoint.StartListening();
                 // Open system browser to start the OIDC authentication flow
-                Process.Start(state.StartUrl);
+                try
+                {
+                    Process.Start(state.StartUrl);
+                }
+                catch
+                {
+                    string url = state.StartUrl;
+                    // hack because of this: https://github.com/dotnet/corefx/issues/10361
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        //url = url.Replace("&", "^&");
+                        //Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                        ProcessStartInfo processStartInfo = new ProcessStartInfo
+                        {
+                            FileName = url,
+                            UseShellExecute = true
+                        };
+                        Process.Start(processStartInfo);
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        Process.Start("xdg-open", url);
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        Process.Start("open", url);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+
                 // Wait for HTTP POST signalling end of authentication flow
                 localHttpEndpoint.AwaitHttpRequest(cancellationToken);
+
+                //TODO CONTINUE HERE ... no longer over post, so no body as described on https://github.com/IdentityModel/IdentityModel.OidcClient/issues/325
+
                 string formdata = localHttpEndpoint.GetHttpRequestBody();
 
                 // Send an HTTP Redirect to Access Management logged in page.

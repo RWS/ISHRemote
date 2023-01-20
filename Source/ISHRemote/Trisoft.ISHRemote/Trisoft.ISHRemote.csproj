@@ -90,7 +90,7 @@
   <!-- Generating Module Manifest only once -->
   <Target Name="ModuleManifest" AfterTargets="CopyCmdletDoc" Condition="'$(TargetFramework)' == 'net48'">
     <PropertyGroup>
-      <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">pwsh</PowerShellExe>
+      <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">&quot;C:\Program Files\PowerShell\7\pwsh.exe&quot;</PowerShellExe>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
 	  <ISHRemote48DllFilePath>$(ProjectDir)bin/$(Configuration)/net48/Trisoft.ISHRemote.dll</ISHRemote48DllFilePath>
       <ManifestFilePath>$(ISHRemoteDir)/$(ModuleName).psd1</ManifestFilePath>
