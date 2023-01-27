@@ -38,24 +38,26 @@ namespace Trisoft.ISHRemote.Connection
 
         internal HttpListenerContext Context { get; private set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        internal InfoShareOpenIdConnectLocalHttpEndpoint()
+        TaskCompletionSource<string> _source = new TaskCompletionSource<string>();
+
+        public InfoShareOpenIdConnectLocalHttpEndpoint(int port, string path = null)
         {
-            BaseUrl = $"http://127.0.0.1:{GetFreePort()}";
+            path = path ?? String.Empty;
+            if (path.StartsWith("/")) path = path.Substring(1);
+            BaseUrl = $"http://127.0.0.1:{port}/{path}";
 
             _httpListener = new HttpListener();
-            _httpListener.Prefixes.Add($"{BaseUrl}/");
+            _httpListener.Prefixes.Add(BaseUrl);
+
+            _httpListener.Start();
         }
 
         public void Dispose()
             => _httpListener.Stop();
 
-        internal void StartListening()
-            => _httpListener.Start();
 
-        internal void AwaitHttpRequest(CancellationToken cancellationToken)
+
+        public Task<string> WaitForCallbackAsync(int timeoutInSeconds = 300, CancellationToken cancellationToken = default)
         {
             Task<HttpListenerContext> httpListenerContextTask = _httpListener.GetContextAsync();
 
@@ -81,9 +83,15 @@ namespace Trisoft.ISHRemote.Connection
             {
                 HandleErrorNotification(request.QueryString["msg"]);
             }
+
+            _source.TrySetResult(request.RawUrl); // Context?.Request.QueryString.Value  // request.QueryString.ToString(); #... .Value;
+
+            return _source.Task;
         }
 
-        internal void HandleErrorNotification(string errorMessage)
+        #region Private Functions
+
+        private void HandleErrorNotification(string errorMessage)
         {
             WriteHttpResponseAsync("text/plain", "Error received.", default).Wait();
             Thread.Sleep(100);
@@ -97,7 +105,7 @@ namespace Trisoft.ISHRemote.Connection
             throw new ApplicationException(exceptionMessage);
         }
 
-        internal string GetHttpRequestBody()
+        private string GetHttpRequestBody()
         {
             HttpListenerRequest request = Context?.Request;
             if (request == null || !request.HasEntityBody)
@@ -114,7 +122,7 @@ namespace Trisoft.ISHRemote.Connection
             }
         }
 
-        internal async Task WriteHttpResponseAsync(string contentType, string responseBody, CancellationToken cancellationToken)
+        private async Task WriteHttpResponseAsync(string contentType, string responseBody, CancellationToken cancellationToken)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(responseBody);
 
@@ -128,7 +136,7 @@ namespace Trisoft.ISHRemote.Connection
             }
         }
 
-        internal Task SendHttpRedirectAsync(string redirectUrl, CancellationToken cancellationToken)
+        public Task SendHttpRedirectAsync(string redirectUrl, CancellationToken cancellationToken)
         {
             string responseBody = $"<html><head><meta http-equiv='refresh' content='0;url={redirectUrl}'></head><body>Redirecting...</body></html>";
             return WriteHttpResponseAsync("text/html", responseBody, cancellationToken);
@@ -142,6 +150,8 @@ namespace Trisoft.ISHRemote.Connection
             tcpListener.Stop();
             return port;
         }
+        #endregion
+
+
     }
 }
-

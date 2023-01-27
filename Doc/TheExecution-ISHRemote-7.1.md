@@ -154,6 +154,19 @@ Add (nested binary module) AMRemote that could offer cmdlets like
     * GetIshFolder.cs
 # Next
 
+* Branch #152 has .NET Standard (so no Kestrel like ) based 127.0.0.1:SomePort RedirectUri through classes `InfoShareOpenIdConnectLocalHttpEndpoint` and `InfoShareOpenIdConnectSystemBrowser`. This seemingly works over IdentityServer's `OidcClient` packages for PS7/NET6+ but not on PS5/NET48 ending with errors like below. Only one person in the world has this with an almost impossible solution for PowerShell using AssemblyRedirects (see https://github.com/IdentityModel/Documentation/issues/13)
+```at System.Text.Json.JsonElement.EnumerateObject()
+   at IdentityModel.Client.DiscoveryDocumentResponse.ValidateEndpoints(JsonElement json, DiscoveryPolicy policy)
+   at IdentityModel.Client.DiscoveryDocumentResponse.Validate(DiscoveryPolicy policy)
+   at IdentityModel.Client.DiscoveryDocumentResponse.InitializeAsync(Object initializationData)
+   at IdentityModel.Client.ProtocolResponse.<FromHttpResponseAsync>d__0`1.MoveNext()
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at IdentityModel.Client.HttpClientDiscoveryExtensions.<GetDiscoveryDocumentAsync>d__1.MoveNext()
+   ```
+Next? Update all third-party for the OidcClient packages??
+
+
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
   
 * Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs

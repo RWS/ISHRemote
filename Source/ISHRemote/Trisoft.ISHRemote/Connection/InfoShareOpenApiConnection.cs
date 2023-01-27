@@ -202,7 +202,54 @@ namespace Trisoft.ISHRemote.Connection
 
         private async Task<Tokens> GetTokensOverSystemBrowserAsync(CancellationToken cancellationToken = default)
         {
+            var browser = new InfoShareOpenIdConnectSystemBrowser();
 
+            string redirectUri = string.Format($"http://127.0.0.1:{browser.Port}");
+
+            var oidcClientOptions = new OidcClientOptions
+            {
+                Authority = _connectionParameters.IssuerUrl.ToString(),
+                ClientId = "Tridion_Docs_Content_Importer",  // TODO [Must] InfoShareOpenApiConnection ClientId is hardcoded to Tridion_Docs_Content_Importer
+                Scope = "openid profile email role forwarded offline_access",
+                RedirectUri = redirectUri,
+                FilterClaims = false,
+                Policy = new Policy() { Discovery = new IdentityModel.Client.DiscoveryPolicy
+                { 
+                    ValidateIssuerName = false,  // Casing matters, otherwise "Error loading discovery document: "PolicyViolation" - "Issuer name does not match authority"
+                    ValidateEndpoints = false  // Otherwise "Error loading discovery document: Endpoint belongs to different authority: https://mecdev12qa01.global.sdl.corp/ISHAMORA19/.well-known/openid-configuration/jwks"
+                } },
+                Browser = browser,
+                IdentityTokenValidator = new JwtHandlerIdentityTokenValidator(),
+                RefreshTokenInnerHttpHandler = new HttpClientHandler()
+                {
+                    ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true
+                }
+        };
+
+#if NET48
+            // Certificate validation works different on .NET Framework 4.8 versus .NET (Core) 6.0+, below is a catch all
+            // bypass for /.well-known/openid-configuration detection. Otherwise you get error 
+            // "Error loading discovery document: Error connecting to /.well-known/openid-configuration. Operation is not valid due to the current state of the object..'"
+            oidcClientOptions.BackchannelHandler = new HttpClientHandler()
+            { 
+                ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true 
+            };
+#endif
+
+
+            var oidcClient = new OidcClient(oidcClientOptions);
+            var loginResult = await oidcClient.LoginAsync(new LoginRequest());
+
+            var result = new Tokens
+            {
+                AccessToken = loginResult.AccessToken,
+                IdentityToken = loginResult.IdentityToken,
+                RefreshToken = loginResult.RefreshToken,
+                AccessTokenExpiration = loginResult.AccessTokenExpiration.LocalDateTime
+            };
+            return result;
+
+            /*** before, can be deleted
             using (var localHttpEndpoint = new InfoShareOpenIdConnectLocalHttpEndpoint())
             {
                 var oidcClientOptions = new OidcClientOptions
@@ -264,6 +311,8 @@ namespace Trisoft.ISHRemote.Connection
                 localHttpEndpoint.AwaitHttpRequest(cancellationToken);
 
                 //TODO CONTINUE HERE ... no longer over post, so no body as described on https://github.com/IdentityModel/IdentityModel.OidcClient/issues/325
+                //BETTER TO return to pure example code: https://github.com/IdentityModel/IdentityModel.OidcClient/blob/f35b3f06f418e1b2a6fdd8a0de3d09497589368a/clients/ConsoleClientWithBrowser/Program.cs
+                // and merge the better parts of InfoShareOpenIdConnectLocalHttpEndpoint StartProcess with a the example SystemBrowser class... yes more dependencies, but also more standard OIDCClient usage
 
                 string formdata = localHttpEndpoint.GetHttpRequestBody();
 
@@ -289,6 +338,7 @@ namespace Trisoft.ISHRemote.Connection
                 };
                 return result;
             }
+            ***/
         }
 
             private void Dispose(bool disposing)
