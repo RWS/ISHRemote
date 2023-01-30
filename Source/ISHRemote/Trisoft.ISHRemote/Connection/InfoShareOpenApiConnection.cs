@@ -29,6 +29,7 @@ using Trisoft.ISHRemote.Interfaces;
 using Trisoft.ISHRemote.OpenApiISH30;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using IdentityModel.OidcClient.Infrastructure;
 
 namespace Trisoft.ISHRemote.Connection
 {
@@ -81,6 +82,10 @@ namespace Trisoft.ISHRemote.Connection
             _connectionParameters = infoShareOpenApiConnectionParameters;
             // Could to more strict _connectionParameters checks
 
+            // Not attaching logging to OidcClient anyway, there is a bug that still does logging although not configured
+            // See https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
+            LogSerializer.Enabled = false;
+
             _logger.WriteDebug($"InfoShareOpenApiConnection InfoShareWSUrl[{_connectionParameters.InfoShareWSUrl}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");
             if (string.IsNullOrEmpty(_connectionParameters.BearerToken))
             {
@@ -89,6 +94,7 @@ namespace Trisoft.ISHRemote.Connection
                     // attempt System Browser retrieval of Access/Bearer Token
                     _logger.WriteDebug($"InfoShareOpenApiConnection System Browser");
                     Tokens tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
+                    _connectionParameters.BearerToken = tokens.AccessToken;
                 }
                 else
                 {

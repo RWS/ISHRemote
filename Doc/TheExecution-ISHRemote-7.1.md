@@ -152,8 +152,6 @@ Add (nested binary module) AMRemote that could offer cmdlets like
     * IshFolders.cs skipped OpenApi object conversion here with #115 merge?!
     * AddIshFolder.cs
     * GetIshFolder.cs
-# Next
-
 * Branch #152 has .NET Standard (so no Kestrel like ) based 127.0.0.1:SomePort RedirectUri through classes `InfoShareOpenIdConnectLocalHttpEndpoint` and `InfoShareOpenIdConnectSystemBrowser`. This seemingly works over IdentityServer's `OidcClient` packages for PS7/NET6+ but not on PS5/NET48 ending with errors like below. Only one person in the world has this with an almost impossible solution for PowerShell using AssemblyRedirects (see https://github.com/IdentityModel/Documentation/issues/13)
 ```at System.Text.Json.JsonElement.EnumerateObject()
    at IdentityModel.Client.DiscoveryDocumentResponse.ValidateEndpoints(JsonElement json, DiscoveryPolicy policy)
@@ -164,9 +162,10 @@ Add (nested binary module) AMRemote that could offer cmdlets like
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
    at IdentityModel.Client.HttpClientDiscoveryExtensions.<GetDiscoveryDocumentAsync>d__1.MoveNext()
    ```
-Next? Update all third-party for the OidcClient packages??
+For whoever stumbles on this transitive package dependency of `System.Runtime.CompilerServices.Unsafe` (and/or `System.Text.Json `), solved it through a forced Assembly load of the v6 version (while v5 was expected and .NET Framework 4.8 loads v4.0.4). Solution is in the pragma-protected `NewIshSession::BeginProcessing` section in `NewIshSession.cs`. For completeness there is an OidClient logging-not-initialized seralization bug which I bypassed through `LogSerializer.Enabled = false;`. Inspired by https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624 in Preprocessing step of the cmdlet that needs it.
 
-
+# Next
+* Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
   
 * Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs

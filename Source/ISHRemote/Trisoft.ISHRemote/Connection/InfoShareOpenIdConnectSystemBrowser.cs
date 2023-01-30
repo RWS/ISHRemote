@@ -1,0 +1,126 @@
+﻿/*
+* Copyright (c) 2014 All Rights Reserved by the SDL Group.
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+using IdentityModel.OidcClient.Browser;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Trisoft.ISHRemote.Connection
+{
+    public class InfoShareOpenIdConnectSystemBrowser : IBrowser
+    {
+        public int Port { get; }
+        private readonly string _path;
+
+        public InfoShareOpenIdConnectSystemBrowser(int? port = null, string path = null)
+        {
+            _path = path;
+
+            if (!port.HasValue)
+            {
+                Port = GetRandomUnusedPort();
+            }
+            else
+            {
+                Port = port.Value;
+            }
+        }
+
+        private int GetRandomUnusedPort()
+        {
+            var listener = new TcpListener(IPAddress.Loopback, 0);
+            listener.Start();
+            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+            listener.Stop();
+            return port;
+        }
+
+        public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
+        {
+            using (var listener = new InfoShareOpenIdConnectLocalHttpEndpoint(Port, _path))
+            {
+                OpenBrowser(options.StartUrl);
+
+                try
+                {
+                    var result = await listener.WaitForCallbackAsync();
+
+                    // Send an HTTP Redirect to Access Management logged in page.
+                    //listener.SendHttpRedirectAsync($"{_connectionParameters.IssuerUrl}/Account/LoggedIn?clientId={_connectionParameters.ClientId}", cancellationToken);
+                    await listener.SendHttpRedirectAsync("https://www.rws.com", cancellationToken);
+
+
+                    if (String.IsNullOrWhiteSpace(result))
+                    {
+                        return new BrowserResult { ResultType = BrowserResultType.UnknownError, Error = "Empty response." };
+                    }
+
+                    return new BrowserResult { Response = result, ResultType = BrowserResultType.Success };
+                }
+                catch (TaskCanceledException ex)
+                {
+                    return new BrowserResult { ResultType = BrowserResultType.Timeout, Error = ex.Message };
+                }
+                catch (Exception ex)
+                {
+                    return new BrowserResult { ResultType = BrowserResultType.UnknownError, Error = ex.Message };
+                }
+            }
+        }
+
+        public static void OpenBrowser(string url)
+        {
+            try
+            {
+                Process.Start(url);
+            }
+            catch
+            {
+                // hack because of this: https://github.com/dotnet/corefx/issues/10361
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    //url = url.Replace("&", "^&");
+                    //Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    };
+                    Process.Start(processStartInfo);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", url);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", url);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+    }
+}
