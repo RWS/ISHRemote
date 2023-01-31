@@ -162,12 +162,13 @@ Add (nested binary module) AMRemote that could offer cmdlets like
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
    at IdentityModel.Client.HttpClientDiscoveryExtensions.<GetDiscoveryDocumentAsync>d__1.MoveNext()
    ```
-For whoever stumbles on this transitive package dependency of `System.Runtime.CompilerServices.Unsafe` (and/or `System.Text.Json `), solved it through a forced Assembly load of the v6 version (while v5 was expected and .NET Framework 4.8 loads v4.0.4). Solution is in the pragma-protected `NewIshSession::BeginProcessing` section in `NewIshSession.cs`. For completeness there is an OidClient logging-not-initialized seralization bug which I bypassed through `LogSerializer.Enabled = false;`. Inspired by https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624 in Preprocessing step of the cmdlet that needs it.
+For whoever stumbles on this transitive package dependency of `System.Runtime.CompilerServices.Unsafe` (and/or `System.Text.Json `), solved it through a forced Assembly load of the v6 version (while v5 was expected and .NET Framework 4.8 loads v4.0.4). Solution is in the pragma-protected `SessionCmdlet::BeginProcessing` section in `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs`. For completeness there is an OidClient logging-not-initialized seralization bug which I bypassed through `LogSerializer.Enabled = false;`. Inspired by https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624 in Preprocessing step of the cmdlet that needs it.
 
 # Next
 * Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
-  
+* Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainAssemblyResolveHelper.cs`
+    > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs` on https://github.com/RWS/ISHRemote/
 * Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs
 
 * Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed.

@@ -216,45 +216,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         private Enumerations.Protocol _protocol = Enumerations.Protocol.Autodetect;
         #endregion
 
-#if NET48
-        /// <summary>
-        /// NET48 comes with System.Runtime.CompilerServices.Unsafe v4.0.4 while OidcClient is compiled against v5.0.0 and OpenApi/NSwag expects v6.0.0
-        /// According to https://github.com/IdentityModel/Documentation/issues/13 OidClient can be forced up through assemblyBinding redirects.
-        /// However PowerShell.exe .config is unreachable from a binary PowerShell library perspective. 
-        /// So according to https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624
-        /// and https://stackoverflow.com/questions/62764744/could-not-load-file-or-assembly-system-runtime-compilerservices-unsafe
-        /// we can force a higher version to be loaded.
-        /// </summary>
-        protected override void BeginProcessing()
-        {
-            base.BeginProcessing();
-            WriteWarning("Beware NewIshSession::BeginProcessing is attaching AssemblyResolve handler to force System.Runtime.CompilerServices.Unsafe v6+.");
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-            string filePathSRCSUnsafe = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Runtime.CompilerServices.Unsafe.dll");
-            WriteDebug($"Beware NewIshSession::BeginProcessing forcefully loading filePathSRCSUnsafe[{filePathSRCSUnsafe}]");
-            var assemblySRCSUnsafe = Assembly.LoadFrom(filePathSRCSUnsafe);
-            string filePathSTJson = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Text.Json.dll");
-            var assemblySTJson = Assembly.LoadFrom(filePathSTJson);
-        }
-
-        /// <summary>
-        /// Return previously force-loaded (higher-version) assembly
-        /// </summary>
-        Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            var name = new AssemblyName(args.Name);
-            if (name.Name == "System.Runtime.CompilerServices.Unsafe")
-            {
-                return typeof(System.Runtime.CompilerServices.Unsafe).Assembly;
-            }
-            else if (name.Name == "System.Text.Json")
-            {
-                return typeof(System.Text.Json.JsonDocument).Assembly;
-            }
-            return null;
-        }
-#endif
-
         protected override void ProcessRecord()
         {
             try

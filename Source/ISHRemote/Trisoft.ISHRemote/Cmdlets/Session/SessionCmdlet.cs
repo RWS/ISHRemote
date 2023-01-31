@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trisoft.ISHRemote.HelperClasses;
 
 namespace Trisoft.ISHRemote.Cmdlets.Session
 {
@@ -28,5 +29,20 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// <remarks>Inherits from <see cref="TrisoftCmdlet"/>.</remarks>
     public abstract class SessionCmdlet : TrisoftCmdlet
     {
+#if NET48
+        /// <summary>
+        /// Solves the PS51/NET48 problem of OidcClient which continuously threw 
+        /// 'Error connecting to https://sts.windows.net/{tenant}/.well-known/openid-configuration. 
+        /// Operation is not valid due to the current state of the object' in GetDiscoveryDocumentAsync
+        /// as described on https://github.com/IdentityModel/Documentation/issues/13
+        /// <see cref="AppDomainAssemblyResolveHelper"/>
+        /// </summary>
+        protected override void BeginProcessing()
+        {
+            base.BeginProcessing();
+            WriteWarning("IshSession-cmdlets on PS5.1/NET48 force Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll");
+            AppDomainAssemblyResolveHelper.Redirect();
+        }
+#endif
     }
 }
