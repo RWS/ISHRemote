@@ -169,6 +169,8 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
 * Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainAssemblyResolveHelper.cs`
     > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs` on https://github.com/RWS/ISHRemote/
+    > Another hint is adding `LogSerializer.Enabled = false;` because if you do not attach logging to OidcClient, there seemingly is a bug that still does logging although not configured. see https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
+            
 * Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs
 
 * Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed.

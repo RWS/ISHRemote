@@ -247,7 +247,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _logger.WriteVerbose($"CreateOpenApiWithOpenIdConnectConnection");
             _infoshareOpenApiConnection = new InfoShareOpenApiConnection(_logger, _httpClient, _infoShareOpenApiConnectionParameters);
             _logger.WriteDebug("CreateOpenApiWithOpenIdConnectConnection openApi30Service.GetApplicationVersionAsync");
-            _serverVersion = new IshVersion(OpenApiISH30Service.GetApplicationVersionAsync().GetAwaiter().GetResult());
+            _serverVersion = new IshVersion(_infoshareOpenApiConnection.GetOpenApiISH30ServiceProxy().GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -452,7 +452,10 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
         }
 
-        public string BearerToken
+        /// <summary>
+        /// Access Token is also known as Bearer Token
+        /// </summary>
+        public string AccessToken
         {
             get
             {
@@ -460,7 +463,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                 switch (Protocol)
                 {
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        return _infoShareOpenApiConnectionParameters.BearerToken;
+                        return _infoShareOpenApiConnectionParameters.Tokens.AccessToken;
                 }
                 return String.Empty;
             }
@@ -549,6 +552,8 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
+                VerifyTokenValidity();
+
                 if (_infoshareOpenApiConnection != null)
                 {
                     return _infoshareOpenApiConnection.GetOpenApiISH30ServiceProxy();
@@ -830,33 +835,110 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         private void VerifyTokenValidity()
         {
-            if (_infoShareWcfSoapConnection.IsValid) return;
-
-            // Not valid...
-            // ...dispose connection
-            _infoShareWcfSoapConnection.Dispose();
-            // ...discard all channels
-            _annotation25 = null; 
-            _application25 = null;
-            _backgroundTask25 = null; 
-            _baseline25 = null;            
-            _documentObj25 = null;
-            _EDT25 = null;
-            _eventMonitor25 = null;
-            _folder25 = null;
-            _listOfValues25 = null;
-            _metadataBinding25 = null;
-            _outputFormat25 = null;
-            _publicationOutput25 = null;
-            _search25 = null;
-            _settings25 = null;
-            _translationJob25 = null;
-            _translationTemplate25 = null;
-            _user25 = null;
-            _userGroup25 = null;
-            _userRole25 = null;
-            // ...and re-create connection
-            CreateInfoShareWcfSoapWithWsTrustConnection();
+            switch (_protocol)
+            {
+                case Enumerations.Protocol.Autodetect:
+                    if (!_infoShareWcfSoapConnection.IsValid)
+                    {
+                        // Not valid...
+                        // ...dispose connection
+                        _infoShareWcfSoapConnection.Dispose();
+                        _infoshareOpenApiConnection.Dispose();
+                        // ...discard all channels
+                        _annotation25 = null;
+                        _application25 = null;
+                        _backgroundTask25 = null;
+                        _baseline25 = null;
+                        _documentObj25 = null;
+                        _EDT25 = null;
+                        _eventMonitor25 = null;
+                        _folder25 = null;
+                        _listOfValues25 = null;
+                        _metadataBinding25 = null;
+                        _outputFormat25 = null;
+                        _publicationOutput25 = null;
+                        _search25 = null;
+                        _settings25 = null;
+                        _translationJob25 = null;
+                        _translationTemplate25 = null;
+                        _user25 = null;
+                        _userGroup25 = null;
+                        _userRole25 = null;
+                        // ...and re-create connection
+                        CreateInfoShareWcfSoapWithWsTrustConnection();
+                    }
+                    break;
+                case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                    if (!_infoshareOpenApiConnection.IsValid)
+                    {
+                        // ... discard OpenApiISH30Service
+                        // ...and re-create connection
+                        CreateOpenApiWithOpenIdConnectConnection();
+                    }
+                    if (!_infoShareWcfSoapConnection.IsValid)
+                    {
+                        // Not valid...
+                        // ...dispose connection
+                        _infoShareWcfSoapConnection.Dispose();
+                        _infoshareOpenApiConnection.Dispose();
+                        // ...discard all channels
+                        _annotation25 = null;
+                        _application25 = null;
+                        _backgroundTask25 = null;
+                        _baseline25 = null;
+                        _documentObj25 = null;
+                        _EDT25 = null;
+                        _eventMonitor25 = null;
+                        _folder25 = null;
+                        _listOfValues25 = null;
+                        _metadataBinding25 = null;
+                        _outputFormat25 = null;
+                        _publicationOutput25 = null;
+                        _search25 = null;
+                        _settings25 = null;
+                        _translationJob25 = null;
+                        _translationTemplate25 = null;
+                        _user25 = null;
+                        _userGroup25 = null;
+                        _userRole25 = null;
+                        // ...and re-create connection
+                        CreateInfoShareWcfSoapWithWsTrustConnection();
+                    }
+                    break;
+                case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    if (!_infoShareWcfSoapConnection.IsValid)
+                    {
+                        // Not valid...
+                        // ...dispose connection
+                        _infoShareWcfSoapConnection.Dispose();
+                        _infoshareOpenApiConnection.Dispose();
+                        // ...discard all channels
+                        _annotation25 = null;
+                        _application25 = null;
+                        _backgroundTask25 = null;
+                        _baseline25 = null;
+                        _documentObj25 = null;
+                        _EDT25 = null;
+                        _eventMonitor25 = null;
+                        _folder25 = null;
+                        _listOfValues25 = null;
+                        _metadataBinding25 = null;
+                        _outputFormat25 = null;
+                        _publicationOutput25 = null;
+                        _search25 = null;
+                        _settings25 = null;
+                        _translationJob25 = null;
+                        _translationTemplate25 = null;
+                        _user25 = null;
+                        _userGroup25 = null;
+                        _userRole25 = null;
+                        // ...and re-create connection
+                        CreateInfoShareWcfSoapWithWsTrustConnection();
+                    }
+                    break;
+                default:
+                    throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
+            }
         }
 
         public void Dispose()

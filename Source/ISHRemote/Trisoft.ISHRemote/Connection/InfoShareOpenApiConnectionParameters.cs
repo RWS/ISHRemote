@@ -22,6 +22,17 @@ using System.Threading.Tasks;
 
 namespace Trisoft.ISHRemote.Connection
 {
+    internal sealed class Tokens
+    {
+        /// <summary>
+        /// Access Token is also known as Bearer Token
+        /// </summary>
+        internal string AccessToken { get; set; }
+        internal string IdentityToken { get; set; }
+        internal string RefreshToken { get; set; }
+        internal DateTime AccessTokenExpiration { get; set; }
+    }
+
     internal sealed class InfoShareOpenApiConnectionParameters
     {
         private Uri _infoShareWSUrl;
@@ -35,6 +46,32 @@ namespace Trisoft.ISHRemote.Connection
                 _infoShareWSUrl = (infoShareWSUrl.EndsWith("/")) ? new Uri(infoShareWSUrl) : new Uri(infoShareWSUrl.ToString() + "/");
             }
         }
+
+        /// <summary>
+        /// Client Application Id as configured on Access Management which allows a http://127.0.0.1:SomePort redirect url
+        /// </summary>
+        public string ClientAppId { get; set; } = "Tridion_Docs_Content_Importer";  // TODO[Must] InfoShareOpenApiConnection ClientId is hardcoded to Tridion_Docs_Content_Importer, introduce dedidcated ISHRemote one
+
+        /// <summary>
+        /// Existing scopes as configured on Access Management
+        /// </summary>
+        public string Scope { get; set; } = "openid profile email role forwarded offline_access";
+
+        private string _redirectUri = null;
+        /// <summary>
+        /// When Sign In succeeded the browser is redirect to this link. Typically https://ish.example.com/ISHAM/Account/loggedIn?clientId=c826e7e1-c35c-43fe-9756-e1b61f44bb40 where the ClientId GUID is the ISHAM Account.
+        /// </summary>
+        public string RedirectUri { 
+            get 
+            {
+                if (string.IsNullOrEmpty(_redirectUri))
+                { return $"{IssuerUrl}/Account/LoggedIn?clientId={ClientId}"; }
+                else
+                { return "https://www.rws.com"; }
+            }
+            set { _redirectUri = value; }
+        }
+
         /// <summary>
         /// The clientconfiguration.xml discovery file tells us the configured Issuer AuthenticationType. Expected values are WindowsMixed, UserNameMixed and AccessManagement.
         /// </summary>
@@ -48,11 +85,10 @@ namespace Trisoft.ISHRemote.Connection
             get { return _issuerUrl; }
             set { _issuerUrl = (value.ToString().EndsWith("/")) ? value : new Uri(value.ToString() + "/"); } 
         }
-
         /// <summary>
-        /// Access Token (if not specified, it is requested using provided <see cref="ClientId"/> and <see cref="ClientSecret"/>)
+        /// Collects various tokens with expiration date
         /// </summary>
-        public string BearerToken { get; set; } = String.Empty;
+        public Tokens Tokens { get; set; } = null;
         /// <summary>
         /// ClientId to request for an access token
         /// </summary>
