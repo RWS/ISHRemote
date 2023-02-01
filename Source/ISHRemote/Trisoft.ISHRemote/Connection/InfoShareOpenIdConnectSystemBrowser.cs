@@ -29,11 +29,13 @@ namespace Trisoft.ISHRemote.Connection
 {
     public class InfoShareOpenIdConnectSystemBrowser : IBrowser
     {
+        public string RedirectUrl = "https://www.rws.com"; 
         public int Port { get; }
         private readonly string _path;
 
-        public InfoShareOpenIdConnectSystemBrowser(int? port = null, string path = null)
+        public InfoShareOpenIdConnectSystemBrowser(string redirectUrl, int? port = null, string path = null)
         {
+            RedirectUrl = redirectUrl;
             _path = path;
 
             if (!port.HasValue)
@@ -65,10 +67,7 @@ namespace Trisoft.ISHRemote.Connection
                 {
                     var result = await listener.WaitForCallbackAsync();
 
-                    // Send an HTTP Redirect to Access Management logged in page.
-                    //listener.SendHttpRedirectAsync($"{_connectionParameters.IssuerUrl}/Account/LoggedIn?clientId={_connectionParameters.ClientId}", cancellationToken);
-                    await listener.SendHttpRedirectAsync("https://www.rws.com", cancellationToken);
-
+                    await listener.SendHttpRedirectAsync(RedirectUrl, cancellationToken);
 
                     if (String.IsNullOrWhiteSpace(result))
                     {

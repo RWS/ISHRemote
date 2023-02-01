@@ -1117,7 +1117,7 @@ namespace Trisoft.ISHRemote.Connection
         private GenericXmlSecurityToken IssueToken()
         {
 #if NET48
-            _logger.WriteDebug("Issue Token (NET48)");
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Issue Token (NET48)");
             var issuerEndpoint = FindIssuerEndpoint();
 
             var requestSecurityToken = new RequestSecurityToken
@@ -1137,21 +1137,21 @@ namespace Trisoft.ISHRemote.Connection
                 WSTrustChannel channel = null;
                 try
                 {
-                    _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}]");
+                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}]");
                     channel = (WSTrustChannel)factory.CreateChannel();
                     RequestSecurityTokenResponse requestSecurityTokenResponse;
                     var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
-                    _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
                     return genericXmlToken;
                 }
                 catch
                 {
                     // Fallback to 10.0.X and 11.0.X configuration using relying party per url like /InfoShareWS/API25/Application.svc
                     requestSecurityToken.AppliesTo = new EndpointReference(_serviceUriByServiceName[Application25].AbsoluteUri);
-                    _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}] as fallback on 10.0.x/11.0.x");
+                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}] as fallback on 10.0.x/11.0.x");
                     RequestSecurityTokenResponse requestSecurityTokenResponse;
                     var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
-                    _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
                     return genericXmlToken;
                 }
                 finally
@@ -1164,11 +1164,11 @@ namespace Trisoft.ISHRemote.Connection
                 }
             }
 #else
-            _logger.WriteDebug("Issue Token (NET6+)");
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Issue Token (NET6+)");
             SecurityTokenProvider tokenProvider = null;
             try
             {
-                _logger.WriteDebug($"Issue Token for AppliesTo[{_infoShareWSAppliesTo.AbsoluteUri}]");
+                _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{_infoShareWSAppliesTo.AbsoluteUri}]");
                 var issuerWS2007HttpBinding = new WS2007HttpBinding();
                 // Originals of UserName Endpoint STS · Issue #4542 · dotnet/wcf https://github.com/dotnet/wcf/issues/4542
                 issuerWS2007HttpBinding.Security.Mode = SecurityMode.TransportWithMessageCredential;
@@ -1195,7 +1195,7 @@ namespace Trisoft.ISHRemote.Connection
                 ((ICommunicationObject)tokenProvider).Open();
                 // tokenProvider.SupportsTokenRenewal = false currently??
                 var genericXmlToken = (GenericXmlSecurityToken)tokenProvider.GetToken(_connectionParameters.IssueTimeout);
-                _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
                 return genericXmlToken;
             }
             finally

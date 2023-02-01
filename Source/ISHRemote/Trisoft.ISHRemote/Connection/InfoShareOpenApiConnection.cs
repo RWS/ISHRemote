@@ -103,6 +103,7 @@ namespace Trisoft.ISHRemote.Connection
                 // Don't think this will happen
                 _logger.WriteDebug($"InfoShareOpenApiConnection reusing AccessToken[{ _connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{ _connectionParameters.Tokens.AccessTokenExpiration}]");
             }
+            _logger.WriteDebug($"InfoShareOpenApiConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration}]");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
             _logger.WriteDebug($"InfoShareOpenApiConnection using Normalized infoShareWSBaseUri[{_connectionParameters.InfoShareWSUrl}]"); 
             _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
@@ -178,7 +179,7 @@ namespace Trisoft.ISHRemote.Connection
         {
             _logger.WriteDebug($"GetTokensOverSystemBrowserAsync from Authority[{_connectionParameters.IssuerUrl.ToString()}] using ClientAppId[{_connectionParameters.ClientAppId}] Scope[{_connectionParameters.Scope}]");
 
-            var browser = new InfoShareOpenIdConnectSystemBrowser();
+            var browser = new InfoShareOpenIdConnectSystemBrowser(_connectionParameters.RedirectUri);
 
             string redirectUri = string.Format($"http://127.0.0.1:{browser.Port}");
 
@@ -302,6 +303,7 @@ namespace Trisoft.ISHRemote.Connection
                 {
                     //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
                     _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
+                    _logger.WriteDebug($"InfoShareOpenApiConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration}]");
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
                     return true;
                 }
