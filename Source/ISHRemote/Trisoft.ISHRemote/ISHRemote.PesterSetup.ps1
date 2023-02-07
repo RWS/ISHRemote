@@ -98,6 +98,8 @@ if (Test-Path -Path $debugPesterSetupFilePath -PathType Leaf)
 	# $wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
 	# $ishUserName = 'myusername'
 	# $ishPassword = 'mypassword'
+	# $amClientId = 'myserviceaccountclientid'
+	# $amClientSecret = 'myserviceaccountclientsecret'
 }
 #endregion
 

@@ -84,18 +84,22 @@ namespace Trisoft.ISHRemote.Connection
             _logger.WriteDebug($"InfoShareOpenApiConnection InfoShareWSUrl[{_connectionParameters.InfoShareWSUrl}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");
             if (_connectionParameters.Tokens == null)
             {
-                if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) || (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
+                if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) && (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
                     // attempt System Browser retrieval of Access/Bearer Token
                     _logger.WriteDebug($"InfoShareOpenApiConnection System Browser");
                     _connectionParameters.Tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
                 }
-                else
+                else if ((!string.IsNullOrEmpty(_connectionParameters.ClientId)) && (!string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
                     // Raw method without OidcClient works
                     //_connectionParameters.BearerToken = GetTokensOverClientCredentialsRaw();
                     _logger.WriteDebug($"InfoShareOpenApiConnection ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
                     _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
+                }
+                else
+                {
+                    throw new ArgumentException("Expected ClientId and ClientSecret to be not null or empty.");
                 }
             }
             else 

@@ -70,6 +70,11 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
+        /// <summary>
+        /// OpenIdConnect Client Application Id that is typically configured in Access Management (ISHID) to allow a local redirect (http://127.0.0.1:SomePort/)
+        /// This option is not typically used but allows validating other applications like Tridion_Docs_Content_Importer
+        /// </summary>
+        private string _clientAppId = "Tridion_Docs_Content_Importer";   // TODO[Must] InfoShareOpenApiConnection ClientId is hardcoded to Tridion_Docs_Content_Importer, introduce dedidcated ISHRemote one
         private InfoShareOpenApiConnectionParameters _infoShareOpenApiConnectionParameters;
         private InfoShareOpenApiConnection _infoshareOpenApiConnection;
 
@@ -154,12 +159,13 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 var wcfConnectionConfigurationUri = new Uri(_webServicesBaseUri, "owcf/connectionconfiguration.xml");
                 owcfConnectionConfiguration = LoadConnectionConfiguration(wcfConnectionConfigurationUri);
-                _logger.WriteVerbose($"LoadConnectionConfiguration found InfoShareWSUrl[{ishwsConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{ishwsConnectionConfiguration.ApplicationName}] SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
+                _logger.WriteVerbose($"LoadConnectionConfiguration found InfoShareWSUrl[{owcfConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{owcfConnectionConfiguration.ApplicationName}] SoftwareVersion[{owcfConnectionConfiguration.SoftwareVersion}]");
             }
-            if (string.IsNullOrEmpty(_clientId))
+            else
             {
                 _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
             }
+
             switch (_protocol)
             {
                 case Enumerations.Protocol.Autodetect:
@@ -184,6 +190,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
                         IssuerUrl = owcfConnectionConfiguration.IssuerUrl,
                         Timeout = _timeout,
+                        ClientAppId = _clientAppId,
                         ClientId = _clientId,
                         ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
                     };
@@ -468,6 +475,18 @@ namespace Trisoft.ISHRemote.Objects.Public
                 return String.Empty;
             }
         }
+
+        /// <summary>
+        /// OpenIdConnect Client Application Id that is typically configured in Access Management (ISHID) to allow a local redirect (http://127.0.0.1:SomePort/)
+        /// This option is not typically used but allows validating other applications like Tridion_Docs_Content_Importer
+        /// </summary>
+        public string ClientAppId
+        {
+            get { return _clientAppId; }
+            // Setter is a bit silly as New-IShSession doesn't set it in time, we'll see...
+            set { _clientAppId = value; }
+        }
+
 
         public string Separator
         {

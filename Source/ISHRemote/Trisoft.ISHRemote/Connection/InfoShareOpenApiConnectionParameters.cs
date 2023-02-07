@@ -50,7 +50,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <summary>
         /// Client Application Id as configured on Access Management which allows a http://127.0.0.1:SomePort redirect url
         /// </summary>
-        public string ClientAppId { get; set; } = "Tridion_Docs_Content_Importer";  // TODO[Must] InfoShareOpenApiConnection ClientId is hardcoded to Tridion_Docs_Content_Importer, introduce dedidcated ISHRemote one
+        public string ClientAppId { get; set; } 
 
         /// <summary>
         /// Existing scopes as configured on Access Management

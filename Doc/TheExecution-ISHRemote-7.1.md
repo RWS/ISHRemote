@@ -42,6 +42,9 @@ Add `-Timeout` parameter to this parameter group.
 
 
 # Protocol and Parameter Group Scenarios
+
+On Tridion Docs 14SPx/14.0.x and earlier, it is always `WcfSoapWithOpenIdConnect`. Starting from Tridion Docs 15/15.0.0 most customers will still use `WcfSoapWithOpenIdConnect` authenticated over `UserNameMixed` provided by `ISHSTS`-only. Experimenting on Tridion Docs 15/15.0.0 is possible for cmdlets having a side-by-side implementation when using `Protocol` `OpenApiWithOpenIdConnect`; when the OpenAPI implementation is not there, a fall back to `WcfSoapWithOpenIdConnect` will happen.
+
 1. Explicit parameter group `Protocol`
     1. Use `WcfSoapWithWsTrust`, so SOAP 1.2 end points protected by WS-Federation/WS-Trust
     2. Use `WcfSoapWithOpenIdConnect`, so SOAP 1.2 end points protected by Access Management
@@ -163,6 +166,7 @@ Add (nested binary module) AMRemote that could offer cmdlets like
    at IdentityModel.Client.HttpClientDiscoveryExtensions.<GetDiscoveryDocumentAsync>d__1.MoveNext()
    ```
 For whoever stumbles on this transitive package dependency of `System.Runtime.CompilerServices.Unsafe` (and/or `System.Text.Json `), solved it through a forced Assembly load of the v6 version (while v5 was expected and .NET Framework 4.8 loads v4.0.4). Solution is in the pragma-protected `SessionCmdlet::BeginProcessing` section in `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs`. For completeness there is an OidClient logging-not-initialized seralization bug which I bypassed through `LogSerializer.Enabled = false;`. Inspired by https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624 in Preprocessing step of the cmdlet that needs it.
+* Verify Token Validation is there, happens for WCF/OpenApi at the same time... refresh token is used when expiration allows. Otherwise build new connection.
 
 # Next
 * Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
