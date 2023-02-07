@@ -24,17 +24,23 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Trisoft.ISHRemote.Interfaces;
 
 namespace Trisoft.ISHRemote.Connection
 {
     public class InfoShareOpenIdConnectSystemBrowser : IBrowser
     {
+        /// <summary>
+        /// Logger
+        /// </summary>
+        private readonly ILogger _logger;
         public string RedirectUrl = "https://www.rws.com"; 
         public int Port { get; }
         private readonly string _path;
 
-        public InfoShareOpenIdConnectSystemBrowser(string redirectUrl, int? port = null, string path = null)
+        public InfoShareOpenIdConnectSystemBrowser(ILogger logger, string redirectUrl, int? port = null, string path = null)
         {
+            _logger = logger;
             RedirectUrl = redirectUrl;
             _path = path;
 
@@ -59,6 +65,7 @@ namespace Trisoft.ISHRemote.Connection
 
         public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
         {
+            _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser InvokeAsync port[{Port}] path[{_path}]");
             using (var listener = new InfoShareOpenIdConnectLocalHttpEndpoint(Port, _path))
             {
                 OpenBrowser(options.StartUrl);
@@ -67,6 +74,7 @@ namespace Trisoft.ISHRemote.Connection
                 {
                     var result = await listener.WaitForCallbackAsync();
 
+                    _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser SendHttpRedirectAsync RedirectUrl[{RedirectUrl}]");
                     await listener.SendHttpRedirectAsync(RedirectUrl, cancellationToken);
 
                     if (String.IsNullOrWhiteSpace(result))
@@ -87,8 +95,9 @@ namespace Trisoft.ISHRemote.Connection
             }
         }
 
-        public static void OpenBrowser(string url)
+        public void OpenBrowser(string url)
         {
+            _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser OpenBrowser url[{url}]");
             try
             {
                 Process.Start(url);

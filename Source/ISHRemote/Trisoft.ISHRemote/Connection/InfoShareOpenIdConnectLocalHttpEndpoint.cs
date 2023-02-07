@@ -52,8 +52,17 @@ namespace Trisoft.ISHRemote.Connection
             _httpListener.Start();
         }
 
+        /// <summary>
+        /// Listener has to be kept alive to allow 2nd redirect to page showing 'You are now signed in.'/'This browser tab can be closed.' to be shown.
+        /// </summary>
         public void Dispose()
-            => _httpListener.Stop();
+        {
+            Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                _httpListener.Stop();
+            });
+        }
 
 
 
