@@ -74,7 +74,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// OpenIdConnect Client Application Id that is typically configured in Access Management (ISHID) to allow a local redirect (http://127.0.0.1:SomePort/)
         /// This option is not typically used but allows validating other applications like Tridion_Docs_Content_Importer
         /// </summary>
-        private string _clientAppId = "Tridion_Docs_Content_Importer";   // TODO[Must] InfoShareOpenApiConnection ClientId is hardcoded to Tridion_Docs_Content_Importer, introduce dedidcated ISHRemote one
+        private string _clientAppId = "ISHRemote";
         private InfoShareOpenApiConnectionParameters _infoShareOpenApiConnectionParameters;
         private InfoShareOpenApiConnection _infoshareOpenApiConnection;
 

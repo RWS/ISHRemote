@@ -118,8 +118,8 @@ Theoretical option, no user scenario yet.
 
 ### Service users update from Tridion Docs to Access Management
 Access Management Service account profiles have a *Name*, *ClientID with 1-or-2 Secrets* and *Services and roles*. 
-* A scenario is to update the Access Management Service account *Name* to comply with a naming convention originating from the Tridion Docs User Profile.
-* In case the Access Management Service account is missing, it can be created. And the IShUser could get an `FISHEXTERNALID` entry.
+* A scenario is to update the Access Management Service account *Name* to comply with a naming convention originating from the Tridion Docs User Profile. One could even have the ClientID the same as the Tridion Docs Username value, so both `ServiceUser` for example.
+* In case the Access Management Service account is missing, it can be created. And the IShUser could get an `FISHEXTERNALID` entry. Note that if you use ClientID equal to the Username which is set in `FISHEXTERNALID` then you do not need to add anything to `FISHEXTERNALID`. So the trick is to use ClientID equal to `USERNAME` field.
 * In case the Tridion Docs User Profile is disabled, it could revoke the Secrets.
 
 Typical cmdlet behavior - `Sync-IShUser -IShUser <selection> -ToAccessManagementServiceAccounts` - is to do this synchronize for a mandatory selection as you don't want all (`Find-IShUsers`) to become service accounts. The `-WhatIf` would return `IShUser`s where a create/update would have happened.
@@ -169,7 +169,7 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Verify Token Validation is there, happens for WCF/OpenApi at the same time... refresh token is used when expiration allows. Otherwise build new connection.
 
 # Next
-* Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
+* Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to ISHRemote/Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
 * Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainAssemblyResolveHelper.cs`
     > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs` on https://github.com/RWS/ISHRemote/
