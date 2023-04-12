@@ -124,17 +124,40 @@ Describe "Find-IshAnnotation" -Tags "Create" {
             $replyIdsP2 -contains $ishAnnotations[0].ReplyRef | Should -Be $true
             $replyIdsP2 -contains $ishAnnotations[1].ReplyRef | Should -Be $true
 		}
-		It "Find all annotations from Publication1 and Publication2 using FilterOperator cilike" {
-            $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTATIONREPLIES" -Level Annotation
-			$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHPUBLOGICALID -Level Annotation -FilterOperator In -Value "$($ishObjectPub1.IshRef), $($ishObjectPub2.IshRef)" |
-            				  Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator CiLike -Value "%ishreMOTE pEsTEr ON%"
-            $ishAnnotations = Find-IshAnnotation -IshSession $ishsession `
-                                                -RequestedMetadata $requestedMetadata `
-                                                -MetadataFilter $metadataFilter
-			$ishAnnotations.Count | Should -BeExactly 4
-			foreach($ishAnnotation in $ishAnnotations)
-			{
-				$ishAnnotation.fishannotationtext_annotation_value.Contains("ISHRemote Pester on") | Should -Be $true
+		It "Find all annotations from Publication1 and Publication2 using FilterOperator cilike since 15.0.0" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) {
+				$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTATIONREPLIES" -Level Annotation
+				$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHPUBLOGICALID -Level Annotation -FilterOperator In -Value "$($ishObjectPub1.IshRef), $($ishObjectPub2.IshRef)" |
+								Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator CiLike -Value "%ishreMOTE pEsTEr ON%"
+				$ishAnnotations = Find-IshAnnotation -IshSession $ishsession `
+													-RequestedMetadata $requestedMetadata `
+													-MetadataFilter $metadataFilter
+				$ishAnnotations.Count | Should -BeExactly 4
+				foreach($ishAnnotation in $ishAnnotations)
+				{
+					$ishAnnotation.fishannotationtext_annotation_value.Contains("ISHRemote Pester on") | Should -Be $true
+				}
+			}
+		}
+		It "Find all annotations from Publication1 and Publication2 using FilterOperator cilike till 14SP4/14.0.4 - FilterOperator cilike is not supported" {
+			if (([Version]$ishSession.ServerVersion).Major -lt 15) {
+				$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTATIONREPLIES" -Level Annotation
+				$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHPUBLOGICALID -Level Annotation -FilterOperator In -Value "$($ishObjectPub1.IshRef), $($ishObjectPub2.IshRef)" |
+								Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator CiLike -Value "%ishreMOTE pEsTEr ON%"
+				$exceptionSubString = " The 'ishoperator' attribute is invalid - The value 'cilike' is invalid according to its datatype 'IshOperator' - The Enumeration constraint failed"
+				try {
+					Find-IshAnnotation -IshSession $ishsession `
+									  -RequestedMetadata $requestedMetadata `
+									  -MetadataFilter $metadataFilter
+				} catch {
+					[string]$exceptionMessage = $_.Exception.Message
+				}
+				try {
+					$exceptionMessage.Contains($exceptionSubString) | Should -Be $true
+				}
+				catch {
+					throw [string]($_.Exception.Message + " Unexpected exception message occurs: " + $exceptionMessage)
+				}
 			}
 		}
     }
