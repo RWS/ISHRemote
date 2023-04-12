@@ -139,25 +139,17 @@ Describe "Find-IshAnnotation" -Tags "Create" {
 				}
 			}
 		}
-		It "Find all annotations from Publication1 and Publication2 using FilterOperator cilike till 14SP4/14.0.4 - FilterOperator cilike is not supported" {
+		It "Find all annotations from Publication1 and Publication2 using FilterOperator cilike till 14SPx/14.0.x - FilterOperator cilike is not supported" {
 			if (([Version]$ishSession.ServerVersion).Major -lt 15) {
 				$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTATIONREPLIES" -Level Annotation
 				$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHPUBLOGICALID -Level Annotation -FilterOperator In -Value "$($ishObjectPub1.IshRef), $($ishObjectPub2.IshRef)" |
 								Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator CiLike -Value "%ishreMOTE pEsTEr ON%"
-				$exceptionSubString = " The 'ishoperator' attribute is invalid - The value 'cilike' is invalid according to its datatype 'IshOperator' - The Enumeration constraint failed"
-				try {
-					Find-IshAnnotation -IshSession $ishsession `
-									  -RequestedMetadata $requestedMetadata `
-									  -MetadataFilter $metadataFilter
-				} catch {
-					[string]$exceptionMessage = $_.Exception.Message
-				}
-				try {
-					$exceptionMessage.Contains($exceptionSubString) | Should -Be $true
-				}
-				catch {
-					throw [string]($_.Exception.Message + " Unexpected exception message occurs: " + $exceptionMessage)
-				}
+				$exception = { Find-IshAnnotation -IshSession $ishsession `
+								-RequestedMetadata $requestedMetadata `
+								-MetadataFilter $metadataFilter } | Should -Throw -PassThru
+				# 14.0.4 message is: [-105002] The XML of xmlMetadataFilter did not pass schema ISHAnnotationFilterFields validation. The 'ishoperator' attribute is invalid - The value 'cilike' is invalid according to its datatype 'IshOperator' - The Enumeration constraint failed. [105002;SchemaValidationFailure]
+				$exception -like "*105002*" | Should -Be $true 
+				$exception -like "*SchemaValidationFailure*" | Should -Be $true
 			}
 		}
     }
