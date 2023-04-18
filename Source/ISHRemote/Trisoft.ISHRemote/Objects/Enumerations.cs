@@ -192,7 +192,9 @@ namespace Trisoft.ISHRemote.Objects
             [StringValue("empty")]
             Empty,
             [StringValue("notempty")]
-            NotEmpty
+            NotEmpty,
+            [StringValue("cilike")]
+            CiLike
         }
 
         /// <summary>
@@ -347,7 +349,7 @@ namespace Trisoft.ISHRemote.Objects
             /// <summary>
             /// Event Monitor table
             /// </summary>
-            ISHEvent, 
+            ISHEvent,
             /// <summary>
             /// Annotations
             /// </summary>
