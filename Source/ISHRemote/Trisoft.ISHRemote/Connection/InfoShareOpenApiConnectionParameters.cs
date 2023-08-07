@@ -22,17 +22,6 @@ using System.Threading.Tasks;
 
 namespace Trisoft.ISHRemote.Connection
 {
-    internal sealed class Tokens
-    {
-        /// <summary>
-        /// Access Token is also known as Bearer Token
-        /// </summary>
-        internal string AccessToken { get; set; }
-        internal string IdentityToken { get; set; }
-        internal string RefreshToken { get; set; }
-        internal DateTime AccessTokenExpiration { get; set; }
-    }
-
     internal sealed class InfoShareOpenApiConnectionParameters
     {
         private Uri _infoShareWSUrl;

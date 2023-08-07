@@ -116,7 +116,7 @@ namespace Trisoft.ISHRemote.Connection
         #endregion
 
 
-        #region Private Methods
+        #region Token Handling
         /*
         /// <summary>
         /// Rough get Bearer/Access token based on class parameters without using OidcClient class library. Could be used for debugging
@@ -256,7 +256,9 @@ namespace Trisoft.ISHRemote.Connection
             };
             return returnTokens;
         }
+        #endregion
 
+        #region IDisposable Methods
         private void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -270,24 +272,6 @@ namespace Trisoft.ISHRemote.Connection
                 }
                 disposedValue = true;
             }
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
-
-        #region Public Methods
-        /// <summary>
-        /// Create a /Wcf/API25/Annotation.svc proxy
-        /// </summary>
-        /// <returns>The proxy</returns>
-        public OpenApiISH30Service GetOpenApiISH30ServiceProxy()
-        {
-            return _openApiISH30Service;
         }
 
         /// <summary>
@@ -316,6 +300,24 @@ namespace Trisoft.ISHRemote.Connection
                     return false;
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        /// Create a /Wcf/API25/Annotation.svc proxy
+        /// </summary>
+        /// <returns>The proxy</returns>
+        public OpenApiISH30Service GetOpenApiISH30ServiceProxy()
+        {
+            return _openApiISH30Service;
         }
         #endregion
     }

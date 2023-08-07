@@ -59,7 +59,8 @@ namespace Trisoft.ISHRemote.Connection
         {
             Task.Run(async () =>
             {
-                await Task.Delay(5000);
+                // TODO [Should] Refactor sleep-thread for closing http listener for System Browser modern authentication to explicit stop/start listening
+                await Task.Delay(20000);
                 _httpListener.Stop();
             });
         }

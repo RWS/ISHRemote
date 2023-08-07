@@ -45,10 +45,10 @@ namespace Trisoft.ISHRemote.Objects
             /// <para type="description">Wcf (Soap12) endpoints exist since InfoShare 10.0.0, always authenticated over WS-Federation/WS-Trust which works for internal and external user profiles.</para>
             /// </summary>
             WcfSoapWithWsTrust = 1000,
-            // <summary>
-            // <para type="description">Wcf (Soap12) endpoints exist since InfoShare 15.0.0 as public Api, always authenticated over OpenIDConnect/OAuth20 which works for internal and external user profiles.</para>
-            // </summary>
-            //WcfSoapWithOpenIdConnect = 1500,
+            /// <summary>
+            /// <para type="description">Wcf (Soap12) endpoints exist since InfoShare 15.0.0 as public Api, always authenticated over OpenIDConnect/OAuth20 which works for internal and external user profiles.</para>
+            /// </summary>
+            WcfSoapWithOpenIdConnect = 1500,
             /// <summary>
             /// <para type="description">OpenApi (rest) endpoints exist since InfoShare 15.0.0 as private Api, always authenticated over OpenIDConnect/OAuth20 which works for internal and external user profiles.</para>
             /// </summary>

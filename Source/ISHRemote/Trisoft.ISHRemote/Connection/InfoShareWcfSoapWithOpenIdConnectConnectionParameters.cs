@@ -25,7 +25,7 @@ namespace Trisoft.ISHRemote.Connection
     /// <summary>
     /// Optional InfoShare Wcf connection parameters.
     /// </summary>
-    internal sealed class InfoShareWcfConnectionParameters
+    internal sealed class InfoShareWcfSoapWithOpenIdConnectConnectionParameters
     {
         private Uri _infoShareWSUrl;
         /// <summary>
@@ -40,6 +40,33 @@ namespace Trisoft.ISHRemote.Connection
                 _infoShareWSUrl = (infoShareWSUrl.EndsWith("/")) ? new Uri(infoShareWSUrl) : new Uri(infoShareWSUrl.ToString() + "/");
             }
         }
+
+        /// <summary>
+        /// Client Application Id as configured on Access Management which allows a http://127.0.0.1:SomePort redirect url
+        /// </summary>
+        public string ClientAppId { get; set; }
+
+        /// <summary>
+        /// Existing scopes as configured on Access Management
+        /// </summary>
+        public string Scope { get; set; } = "openid profile email role forwarded offline_access";
+
+        private string _redirectUri = null;
+        /// <summary>
+        /// When Sign In succeeded the browser is redirect to this link. Typically https://ish.example.com/ISHAM/Account/loggedIn?clientId=c826e7e1-c35c-43fe-9756-e1b61f44bb40 where the ClientId GUID is the ISHAM Account.
+        /// </summary>
+        public string RedirectUri
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_redirectUri))
+                { return $"{IssuerUrl}/Account/LoggedIn?clientId={ClientId}"; }
+                else
+                { return "https://www.rws.com"; }
+            }
+            set { _redirectUri = value; }
+        }
+
         /// <summary>
         /// The clientconfiguration.xml discovery file tells us the configured Issuer AuthenticationType. Expected values are WindowsMixed, UserNameMixed and AccessManagement.
         /// </summary>
@@ -52,13 +79,21 @@ namespace Trisoft.ISHRemote.Connection
         public Uri IssuerUrl
         {
             get { return _issuerUrl; }
-            set { _issuerUrl = value; }
+            set { _issuerUrl = (value.ToString().EndsWith("/")) ? value : new Uri(value.ToString() + "/"); }
         }
-
         /// <summary>
-        /// The connection credential.
+        /// Collects various tokens with expiration date
         /// </summary>
-        public NetworkCredential Credential { get; set; }
+        public Tokens Tokens { get; set; } = null;
+        /// <summary>
+        /// ClientId to request for an access token
+        /// </summary>
+        public string ClientId { get; set; } = String.Empty;
+        /// <summary>
+        /// ClientSecret to request for an access token
+        /// </summary>
+        public string ClientSecret { get; set; } = String.Empty;
+
         /// <summary>
         /// Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml
         /// </summary>
@@ -71,10 +106,6 @@ namespace Trisoft.ISHRemote.Connection
         /// Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies
         /// </summary>
         public TimeSpan ServiceTimeout { get { return Timeout; } }
-        /// <summary>
-        /// If True, authenticate immediately; otherwise, authenticate on the first service request.
-        /// </summary>
-        public bool AutoAuthenticate { get; set; } = false;
         /// <summary>
         /// If True, certificate validation for HTTPS and the Service will be skipped
         /// </summary>

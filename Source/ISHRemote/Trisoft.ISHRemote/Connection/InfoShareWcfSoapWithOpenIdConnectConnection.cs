@@ -28,9 +28,19 @@ using System.ServiceModel.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
 using System.IdentityModel.Selectors;
+using System.Net.Http.Headers;
+using IdentityModel.Client;
+using IdentityModel.OidcClient;
+using System.Threading.Tasks;
+using System.Threading;
+using Trisoft.ISHRemote.OpenApiISH30;
+using System.Security.Claims;
+using System.Text;
+using System.Xml;
 
 #if NET48
-using System.IdentityModel.Protocols.WSTrust;
+//using System.IdentityModel.Protocols.WSTrust;
+using System.Security.Cryptography;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Security.Tokens;
 #else
@@ -43,7 +53,7 @@ namespace Trisoft.ISHRemote.Connection
     /// Dynamic proxy (so without app.config) generation of Service References towards the InfoShare Web Services writen in Windows Communication Foundation (WCF) protected by WS-Trust (aka WS-Federation active) SOAP protocol.
     /// On ISHRemote v1 and earlier, so in turn before InfoShare 15 and earlier, this class was your starting point for dynamic proxy (so without app.config) generation of Service References. The inital class was written in .NET Framework style. Inspired by https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/ this class has pragmas to illustrate .NET Framework and .NET 6.0+ style side-by-side.
     /// </summary>
-    internal sealed class InfoShareWcfSoapWithWsTrustConnection : IDisposable, IInfoShareWcfSoapConnection
+    internal sealed class InfoShareWcfSoapWithOpenIdConnectConnection : IDisposable, IInfoShareWcfSoapConnection
     {
         #region Constants
         /// <summary>
@@ -136,19 +146,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <summary>
         /// Parameters that configure the connection behavior.
         /// </summary>
-        private readonly InfoShareWcfSoapWithWsTrustConnectionParameters _connectionParameters;
-        /// <summary>
-        /// The binding type that is required by the end point of the WS-Trust issuer.
-        /// </summary>
-        private readonly string _issuerAuthenticationType;
-        /// <summary>
-        /// The WS-Trust endpoint for the Security Token Service that provides the functionality to issue tokens as specified by the issuerwstrustbindingtype.
-        /// </summary>
-        private readonly Uri _issuerWSTrustEndpointUri;
-        /// <summary>
-        /// WS STS Realm to issue tokens for
-        /// </summary>
-        private readonly Uri _infoShareWSAppliesTo;
+        private readonly InfoShareWcfSoapWithOpenIdConnectConnectionParameters _connectionParameters;
         /// <summary>
         /// Service URIs by service.
         /// </summary>
@@ -157,17 +155,17 @@ namespace Trisoft.ISHRemote.Connection
         /// <summary>
 		/// The token that is used to access the services.
 		/// </summary>
-		private readonly Lazy<GenericXmlSecurityToken> _issuedToken;
+		private GenericXmlSecurityToken _issuedToken = null;
 #if NET48
         /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
-        private Binding _commonBinding;
+        private Binding _commonBinding = null;
 #else
         /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
-        private WSFederationHttpBinding _commonBinding;
+        private WSFederationHttpBinding _commonBinding = null;
 #endif
 
         /// <summary>
@@ -248,72 +246,177 @@ namespace Trisoft.ISHRemote.Connection
         private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
         #endregion Private Members
 
+#if NET48
+        #region NET48 OpenIdConnect
+        /// <summary>
+        /// Wrapping the Bearer/Access Token as jwt (Json Web Token) claim into a Saml 2.0 token to push over WCF (Windows Communication Foundation) SOAP
+        /// </summary>
+        private static GenericXmlSecurityToken WrapJwt(string jwt)
+        {
+            // https://leastprivilege.com/2015/07/02/give-your-wcf-security-architecture-a-makeover-with-identityserver3/
+            // https://github.com/IdentityServer/IdentityServer3/issues/1107
+            // https://stackoverflow.com/questions/16312907/delivering-a-jwt-securitytoken-to-a-wcf-client
+            // https://github.com/IdentityServer/IdentityServer3.Samples/tree/dev/source/Clients/WcfService
+
+            var subject = new ClaimsIdentity("saml");
+            subject.AddClaim(new Claim("jwt", jwt));
+
+            var descriptor = new SecurityTokenDescriptor
+            {
+                TokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0",
+                TokenIssuerName = "urn:wrappedjwt",
+                Subject = subject,
+                SigningCredentials = new X509SigningCredentials(_certficate)
+            };
+
+            var handler = new System.IdentityModel.Tokens.Saml2SecurityTokenHandler();
+            bool canWRite = handler.CanWriteToken;
+            var token = handler.CreateToken(descriptor) as System.IdentityModel.Tokens.Saml2SecurityToken;
+
+            StringBuilder sb = new StringBuilder();
+            XmlWriter xmlWriter = XmlWriter.Create(sb);
+            handler.WriteToken(xmlWriter, token);
+
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(sb.ToString());
+            var xmlToken = new GenericXmlSecurityToken(
+                xmlDocument.DocumentElement,
+                null,
+                DateTime.Now,
+                DateTime.Now.AddHours(1),
+                null,
+                null,
+                null);
+
+            return xmlToken;
+        }
+
+        /// <summary>
+        /// Generate a client certificate to sign the saml token
+        /// </summary>
+        /// <param name="certName"></param>
+        /// <returns></returns>
+        private static X509Certificate2 CreateX509Certificate2(string certName = "Client Tools")
+        {
+            var ecdsa = ECDsa.Create();
+            var rsa = RSA.Create();
+            var req = new CertificateRequest($"cn={certName}", rsa, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
+            var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
+
+            string password = Guid.NewGuid().ToString();
+            return new X509Certificate2(cert.Export(X509ContentType.Pfx, password), password);
+        }
+        
+        /// <summary>
+        /// Static certificate to reuse signing the saml token
+        /// </summary>
+        private static X509Certificate2 _certficate = CreateX509Certificate2();
+        #endregion
+#endif
+
+
+
+        /// <summary>
+        /// Gets or sets when access token should be refreshed (relative to its expiration time).
+        /// </summary>
+        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(1);
+
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of <c>InfoShareWcfSoapWithWsTrustConnection</c> class.
+        /// Initializes a new instance of <c>InfoShareWcfSoapWithOpenIdConnectConnection</c> class.
         /// </summary>
         /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
         /// <param name="httpClient">Incoming reused, probably Ssl/Tls initialized already.</param>
         /// <param name="infoShareWcfConnectionParameters">Connection parameters.</param>
-        public InfoShareWcfSoapWithWsTrustConnection(ILogger logger, HttpClient httpClient, InfoShareWcfSoapWithWsTrustConnectionParameters infoShareWcfConnectionParameters)
+        public InfoShareWcfSoapWithOpenIdConnectConnection(ILogger logger, HttpClient httpClient, InfoShareWcfSoapWithOpenIdConnectConnectionParameters infoShareWcfConnectionParameters)
         {
             _logger = logger;
             _httpClient = httpClient;
             _connectionParameters = infoShareWcfConnectionParameters;
             // Could to more strict _connectionParameters checks
 
-            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection InfoShareWSUrl[{_connectionParameters.InfoShareWSUrl}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");
-
-              // using the ISHWS url from connectionconfiguration.xml instead of the potentially wrongly cased incoming one [TS-10630]
-            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection using Normalized infoShareWSBaseUri[{_connectionParameters.InfoShareWSUrl}]");
-            this.InfoShareWSBaseUri = _connectionParameters.InfoShareWSUrl;
-            _issuerAuthenticationType = _connectionParameters.AuthenticationType;
-            _infoShareWSAppliesTo = _connectionParameters.InfoShareWSUrl;
-            _issuerWSTrustEndpointUri = _connectionParameters.IssuerUrl;
-#if NET6_0_OR_GREATER
-            if (_issuerWSTrustEndpointUri.ToString().EndsWith("windowsmixed"))
+            _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection InfoShareWSUrl[{_connectionParameters.InfoShareWSUrl}]");
+            if (_connectionParameters.Tokens == null)
             {
-                throw new PlatformNotSupportedException($"PowerShell7+/NET6+ only supports /wstrust/mixed/username. Windows PowerShell 5.1/NET4.8 supports /wstrust/mixed/username and windowsmixed (aka Windows Authentication). IssuerUrl[{_issuerWSTrustEndpointUri}] PlatformVersion[{Environment.Version}]");
+                if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) && (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
+                {
+                    // attempt System Browser retrieval of Access/Bearer Token
+                    _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection System Browser");
+                    _connectionParameters.Tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
+                }
+                else if ((!string.IsNullOrEmpty(_connectionParameters.ClientId)) && (!string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
+                {
+                    // Raw method without OidcClient works
+                    //_connectionParameters.BearerToken = GetTokensOverClientCredentialsRaw();
+                    _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
+                    _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
+                }
+                else
+                {
+                    throw new ArgumentException("Expected ClientId and ClientSecret to be not null or empty.");
+                }
             }
-#endif
+            else
+            {
+                // Don't think this will happen
+                _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection reusing AccessToken[{_connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{_connectionParameters.Tokens.AccessTokenExpiration}]");
+            }
+            _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration}]");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
+            // using the ISHWS url from connectionconfiguration.xml instead of the potentially wrongly cased incoming one [TS-10630]
+            _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection using Normalized infoShareWSBaseUri[{_connectionParameters.InfoShareWSUrl}]");
+            this.InfoShareWSBaseUri = _connectionParameters.InfoShareWSUrl;
+
             _logger.WriteDebug($"Resolving Service Uris");
             ResolveServiceUris();
 
-            // The lazy initialization depends on all the initialization above.
-            _issuedToken = new Lazy<GenericXmlSecurityToken>(IssueToken);
-
 #if NET48
-            // Set the endpoints
-            ResolveEndpoints(_connectionParameters.AutoAuthenticate);
-#else
-            WS2007HttpBinding issuerBinding = new WS2007HttpBinding(SecurityMode.TransportWithMessageCredential);
-            issuerBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-            issuerBinding.Security.Message.EstablishSecurityContext = false;
-            issuerBinding.SendTimeout = _connectionParameters.IssueTimeout;
-            issuerBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
-
-            EndpointAddress issuerAddress = new EndpointAddress(IssuerWSTrustEndpointUri);
-
-            WSTrustTokenParameters tokenParameters = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerBinding, issuerAddress); // WS-Trust 1.3 is 2007
-            tokenParameters.KeyType = SecurityKeyType.SymmetricKey;
-            // CacheIssuedTokens, MaxIssuedCachingTime, and IssuedTokenRenewalThresholdPercentage These properties indicate whether tokens should be
-            // cached and for how long.In many cases, these properties don�t need to be set as the defaults(tokens are cached for 60 % of their lifetime) are sufficient.
-            tokenParameters.CacheIssuedTokens = true;
-            tokenParameters.MessageSecurityVersion = MessageSecurityVersion.WSSecurity11WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10;
-
-            // AppliesTo is currently implicitly set to full case-sensitive .../ISHWS/....svc urls, and not .../ISHWS/ using ISHSTS historic fallback mechanism
-            // https://github.com/dotnet/wcf/issues/4542 or https://dotnetfiddle.net/h3C2ZC samples go over CreateSecurityTokenProvider and allows setting AppliesTo but forces a completely different code base
-
-            _commonBinding = new System.ServiceModel.Federation.WSFederationHttpBinding(tokenParameters);
+            //extract from WcfSoapWithWsTrustConnection::ResolveEndpoints function to get to binding
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Resolving Binding (NET48)");
+            Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
+            var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
+            // Get endpont for http or https depending on the base uri passed
+            var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
+            CustomBinding customBinding = (CustomBinding)applicationServiceEndpoint.Binding;
+            // Increasing Text Message quotas
+            var textMessageEncoding = customBinding.Elements.Find<TextMessageEncodingBindingElement>();
+            textMessageEncoding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
+            textMessageEncoding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
+            textMessageEncoding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
+            textMessageEncoding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
+            textMessageEncoding.ReaderQuotas.MaxDepth = 64;
+            // Increasing Transport Quotas
+            var transport = customBinding.Elements.Find<TransportBindingElement>();
+            transport.MaxReceivedMessageSize = Int32.MaxValue;
+            transport.MaxBufferPoolSize = Int32.MaxValue;
+            // Applying Send/Receive Timeouts
+            _commonBinding = applicationServiceEndpoint.Binding;
             _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
             _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
-            _commonBinding.MaxReceivedMessageSize = Int32.MaxValue;
-            _commonBinding.MaxBufferPoolSize = Int32.MaxValue;
+
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Wrapping AccessToken (NET48)");
+            // The lazy initialization depends on all the initialization above.
+            _issuedToken = WrapJwt(_connectionParameters.Tokens.AccessToken);
+#else
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Resolving Binding (NET6+)");
+            _commonBinding = new WSFederationHttpBinding(new WSTrustTokenParameters
+            {
+                TokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0",
+                KeyType = SecurityKeyType.BearerKey
+            });
+            _commonBinding.Security.Message.EstablishSecurityContext = false;
+            // Increasing Text Message quotas
             _commonBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
             _commonBinding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
             _commonBinding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
             _commonBinding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
             _commonBinding.ReaderQuotas.MaxDepth = 64;
+            // Increasing Transport Quotas
+            _commonBinding.MaxReceivedMessageSize = Int32.MaxValue;
+            _commonBinding.MaxBufferPoolSize = Int32.MaxValue;
+            // Applying Send/Receive Timeouts
+            _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
+            _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
 #endif
         }
         #endregion
@@ -323,19 +426,7 @@ namespace Trisoft.ISHRemote.Connection
         /// Root uri for the Web Services
         /// </summary>
         public Uri InfoShareWSBaseUri { get; private set; }
-        /// <summary>
-        /// Checks whether the token is issued and still valid
-        /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                // we have the actual issued token which we can check for expiring
-                bool result = IssuedToken.ValidTo.ToUniversalTime() >= DateTime.UtcNow;
-                //_logger.WriteDebug($"Token still valid? {result} ({IssuedToken.ValidTo.ToUniversalTime()} >= {DateTime.UtcNow})");
-                return result;
-            }
-        }
+
         #endregion Properties
 
         #region Public Methods
@@ -352,7 +443,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
             }
-            return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -360,8 +451,8 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
             }
-            _annotationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _annotationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+            //DeleteThis//_annotationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+            //DeleteThis//_annotationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
             _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
             if (_connectionParameters.IgnoreSslPolicyErrors)
             {
@@ -387,15 +478,20 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
             }
-            return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
-                _applicationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _applicationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                //DeleteThis//_applicationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_applicationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_applicationClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _applicationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -423,15 +519,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
             }
-            return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
-                _documentObjClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _documentObjClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_documentObjClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_documentObjClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -459,15 +555,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
             }
-            return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
-                _folderClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _folderClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_folderClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_folderClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -495,15 +591,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
             }
-            return _userClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _userClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
-                _userClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _userClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_userClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_userClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -531,15 +627,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
             }
-            return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
-                _userRoleClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _userRoleClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_userRoleClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_userRoleClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -567,15 +663,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
             }
-            return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
-                _userGroupClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _userGroupClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_userGroupClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_userGroupClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -603,15 +699,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
             }
-            return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
-                _listOfValuesClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _listOfValuesClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_listOfValuesClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_listOfValuesClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -639,15 +735,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
             }
-            return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
-                _publicationOutputClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _publicationOutputClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_publicationOutputClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_publicationOutputClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -675,15 +771,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
             }
-            return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
-                _outputFormatClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _outputFormatClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_outputFormatClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_outputFormatClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -711,15 +807,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
             }
-            return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
-                _settingsClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _settingsClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_settingsClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_settingsClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -747,15 +843,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
             }
-            return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
-                _EDTClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _EDTClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_EDTClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_EDTClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -783,15 +879,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
             }
-            return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
-                _eventMonitorClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _eventMonitorClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_eventMonitorClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_eventMonitorClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -819,15 +915,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
             }
-            return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
-                _baselineClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _baselineClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_baselineClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_baselineClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -855,15 +951,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
             }
-            return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
-                _metadataBindingClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _metadataBindingClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_metadataBindingClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_metadataBindingClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -891,15 +987,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
             }
-            return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
-                _searchClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _searchClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_searchClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_searchClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -927,15 +1023,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
             }
-            return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
-                _translationJobClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _translationJobClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_translationJobClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_translationJobClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -963,15 +1059,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
             }
-            return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
-                _translationTemplateClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _translationTemplateClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_translationTemplateClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_translationTemplateClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -1000,15 +1096,15 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
             }
-            return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
+            return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
 #else
             if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
-                _backgroundTaskClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                _backgroundTaskClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                //DeleteThis//_backgroundTaskClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                //DeleteThis//_backgroundTaskClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -1021,41 +1117,6 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _backgroundTaskClient.ChannelFactory.CreateChannel();
 #endif
-        }
-        #endregion
-
-        #region Private Properties
-        /// <summary>
-        /// Gets the binding type that is required by the end point of the WS-Trust issuer.
-        /// </summary>
-        private string IssuerAuthenticationType
-        {
-            get
-            {
-                return _issuerAuthenticationType;
-            }
-        }
-
-        /// <summary>
-        /// Gets the WS-Trust endpoint for the Security Token Service that provides the functionality to issue tokens as specified by the issuerwstrustbindingtype.
-        /// </summary>
-        private Uri IssuerWSTrustEndpointUri
-        {
-            get
-            {
-                return _issuerWSTrustEndpointUri;
-            }
-        }
-
-        /// <summary>
-        /// Gets the token that is used to access the services.
-        /// </summary>
-        private GenericXmlSecurityToken IssuedToken
-        {
-            get
-            {
-                return _issuedToken.Value;
-            }
         }
         #endregion
 
@@ -1083,189 +1144,6 @@ namespace Trisoft.ISHRemote.Connection
             _serviceUriByServiceName.Add(TranslationTemplate25, new Uri(InfoShareWSBaseUri, "Wcf/API25/TranslationTemplate.svc"));
             _serviceUriByServiceName.Add(BackgroundTask25, new Uri(InfoShareWSBaseUri, "Wcf/API25/BackgroundTask.svc"));
         }
-
-#if NET48
-        /// <summary>
-        /// Resolve endpoints
-        /// 1. Binding enpoints for the InfoShareWS endpoints
-        /// 2. Look into the issuer elements to extract the issuer binding and endpoint
-        /// </summary>
-        private void ResolveEndpoints(bool autoAuthenticate)
-        {
-            _logger.WriteDebug("Resolving endpoints");
-            Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
-            var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
-            // Get endpont for http or https depending on the base uri passed
-            var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
-            ApplyTimeout(applicationServiceEndpoint, _connectionParameters.ServiceTimeout);
-            ApplyQuotas(applicationServiceEndpoint);
-            _commonBinding = applicationServiceEndpoint.Binding;
-
-            if (autoAuthenticate)
-            {
-                // Resolve the token
-                var token = IssuedToken;
-            }
-            _logger.WriteDebug("Resolved endpoints");
-        }
-#endif
-
-        /// <summary>
-        /// Issues the token
-        /// Mostly copied from Service References
-        /// </summary>
-        private GenericXmlSecurityToken IssueToken()
-        {
-#if NET48
-            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Issue Token (NET48)");
-            var issuerEndpoint = FindIssuerEndpoint();
-
-            var requestSecurityToken = new RequestSecurityToken
-            {
-                RequestType = RequestTypes.Issue,
-                AppliesTo = new EndpointReference(_infoShareWSAppliesTo.AbsoluteUri),
-                KeyType = System.IdentityModel.Protocols.WSTrust.KeyTypes.Symmetric
-            };
-            using (var factory = new WSTrustChannelFactory((WS2007HttpBinding)issuerEndpoint.Binding, issuerEndpoint.Address))
-            {
-                ApplyCredentials(factory.Credentials);
-                ApplyTimeout(factory.Endpoint, _connectionParameters.IssueTimeout);
-
-                factory.TrustVersion = TrustVersion.WSTrust13;
-                factory.Credentials.SupportInteractive = false;
-
-                WSTrustChannel channel = null;
-                try
-                {
-                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}]");
-                    channel = (WSTrustChannel)factory.CreateChannel();
-                    RequestSecurityTokenResponse requestSecurityTokenResponse;
-                    var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
-                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
-                    return genericXmlToken;
-                }
-                catch
-                {
-                    // Fallback to 10.0.X and 11.0.X configuration using relying party per url like /InfoShareWS/API25/Application.svc
-                    requestSecurityToken.AppliesTo = new EndpointReference(_serviceUriByServiceName[Application25].AbsoluteUri);
-                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}] as fallback on 10.0.x/11.0.x");
-                    RequestSecurityTokenResponse requestSecurityTokenResponse;
-                    var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
-                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
-                    return genericXmlToken;
-                }
-                finally
-                {
-                    if (channel != null)
-                    {
-                        channel.Abort();
-                    }
-                    factory.Abort();
-                }
-            }
-#else
-            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Issue Token (NET6+)");
-            SecurityTokenProvider tokenProvider = null;
-            try
-            {
-                _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{_infoShareWSAppliesTo.AbsoluteUri}]");
-                var issuerWS2007HttpBinding = new WS2007HttpBinding();
-                // Originals of UserName Endpoint STS · Issue #4542 · dotnet/wcf https://github.com/dotnet/wcf/issues/4542
-                issuerWS2007HttpBinding.Security.Mode = SecurityMode.TransportWithMessageCredential;
-                issuerWS2007HttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-                issuerWS2007HttpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-                issuerWS2007HttpBinding.Security.Message.EstablishSecurityContext = false;
-                issuerWS2007HttpBinding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Default;
-
-                var tokenParams = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerWS2007HttpBinding, new EndpointAddress(IssuerWSTrustEndpointUri));
-                tokenParams.KeyType = SecurityKeyType.BearerKey; // "http://schemas.microsoft.com/idfx/keytype/bearer";
-
-                var clientCredentials = new ClientCredentials();
-                clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-                var trustCredentials = new WSTrustChannelClientCredentials(clientCredentials);
-                var tokenManager = trustCredentials.CreateSecurityTokenManager();
-
-                var tokenRequirement = new SecurityTokenRequirement();
-                EndpointAddress appliesTo = new EndpointAddress(_infoShareWSAppliesTo.AbsoluteUri); //Realm WITHOUT Application.svc!!
-                tokenRequirement.Properties["http://schemas.microsoft.com/ws/2006/05/servicemodel/securitytokenrequirement/IssuedSecurityTokenParameters"] = tokenParams;
-                tokenRequirement.Properties["http://schemas.microsoft.com/ws/2006/05/servicemodel/securitytokenrequirement/TargetAddress"] = appliesTo;
-
-                tokenProvider = tokenManager.CreateSecurityTokenProvider(tokenRequirement);
-                ((ICommunicationObject)tokenProvider).Open();
-                // tokenProvider.SupportsTokenRenewal = false currently??
-                var genericXmlToken = (GenericXmlSecurityToken)tokenProvider.GetToken(_connectionParameters.IssueTimeout);
-                _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
-                return genericXmlToken;
-            }
-            finally
-            {
-                if (tokenProvider != null)
-                {
-                    ((ICommunicationObject)tokenProvider).Close();
-                }
-            }
-#endif
-        }
-
-#if NET48
-        /// <summary>
-        /// Extract the Issuer endpoint and configure the appropriate one
-        /// </summary>
-        private ServiceEndpoint FindIssuerEndpoint()
-        {
-            _logger.WriteDebug("FindIssuerEndpoint");
-            EndpointAddress issuerMetadataAddress = null;
-            EndpointAddress issuerAddress = null;
-            IssuedSecurityTokenParameters protectionTokenParameters = null;
-
-
-            //Based on the scheme dynamically extract the protection token parameters from a Property path string using reflection.
-            //Writing the code requires to much casting. The paths are taken from the powershell scripts
-            if (InfoShareWSBaseUri.Scheme == Uri.UriSchemeHttp)
-            {
-                dynamic binding = _commonBinding;
-                protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].ProtectionTokenParameters.BootstrapSecurityBindingElement.ProtectionTokenParameters;
-            }
-            else
-            {
-                dynamic binding = _commonBinding;
-                protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].EndpointSupportingTokenParameters.Endorsing[0].BootstrapSecurityBindingElement.EndpointSupportingTokenParameters.Endorsing[0];
-            }
-            issuerMetadataAddress = protectionTokenParameters.IssuerMetadataAddress;
-            issuerAddress = protectionTokenParameters.IssuerAddress;
-            _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
-
-
-            ServiceEndpointCollection serviceEndpointCollection;
-            try
-            {
-                // Start with the mex endpoint
-                var wsdlImporter = GetWsdlImporter(issuerMetadataAddress.Uri);
-                serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
-            }
-            catch
-            {
-                // Re-try with the wsdl endpoint
-                var wsdlImporter = GetWsdlImporter(new Uri(issuerMetadataAddress.Uri.AbsoluteUri.Replace("/mex", "?wsdl")));
-                serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
-            }
-
-            var issuerWSTrustEndpointAbsolutePath = IssuerWSTrustEndpointUri.AbsolutePath;
-            _logger.WriteDebug($"FindIssuerEndpoint issuerWSTrustEndpointAbsolutePath[{issuerWSTrustEndpointAbsolutePath}]");
-            ServiceEndpoint issuerServiceEndpoint = serviceEndpointCollection.FirstOrDefault(
-                x => x.Address.Uri.AbsolutePath.Equals(issuerWSTrustEndpointAbsolutePath, StringComparison.OrdinalIgnoreCase));
-
-            if (issuerServiceEndpoint == null)
-            {
-                throw new InvalidOperationException(String.Format("WSTrust endpoint not configured: '{0}'.", issuerWSTrustEndpointAbsolutePath));
-            }
-            
-            protectionTokenParameters.IssuerBinding = issuerServiceEndpoint.Binding;
-            protectionTokenParameters.IssuerAddress = issuerServiceEndpoint.Address;
-            return issuerServiceEndpoint;
-        }
-#endif
 
         /// <summary>
         /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
@@ -1327,22 +1205,6 @@ namespace Trisoft.ISHRemote.Connection
         }
 #endif
 
-        /// <summary>
-        /// Initializes client credentials 
-        /// </summary>
-        /// <param name="clientCredentials">Client credentials to initialize</param>
-        private void ApplyCredentials(ClientCredentials clientCredentials)
-        {
-            if (IssuerAuthenticationType == "UserNameMixed")
-            {
-                if (_connectionParameters.Credential == null)
-                {
-                    throw new InvalidOperationException($"Authentication endpoint {_issuerWSTrustEndpointUri} requires credentials");
-                }
-                clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            }
-        }
 
         /// <summary>
         /// Apply timeouts to the endpoint
@@ -1357,6 +1219,8 @@ namespace Trisoft.ISHRemote.Connection
                 endpoint.Binding.SendTimeout = timeout.Value;
             }
         }
+
+
 #if NET48
         /// <summary>
         /// Applies quotas to endpoint
@@ -1379,6 +1243,179 @@ namespace Trisoft.ISHRemote.Connection
         }
 #endif
 
+        #endregion
+
+        #region Token Handling
+        /*
+        /// <summary>
+        /// Rough get Bearer/Access token based on class parameters without using OidcClient class library. Could be used for debugging
+        /// </summary>
+        /// <returns>Bearer Token</returns>
+        private string GetTokensOverClientCredentialsRaw()
+        {
+            var requestUri = new Uri(_connectionParameters.IssuerUrl, "connect/token");
+            _logger.WriteDebug($"GetTokensOverClientCredentialsRaw from requestUri[{requestUri}] using ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]" );
+
+            FormUrlEncodedContent credentialsForm = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("client_id", _connectionParameters.ClientId),
+                new KeyValuePair<string, string>("client_secret", _connectionParameters.ClientSecret),
+                new KeyValuePair<string, string>("grant_type", "client_credentials")
+            });
+            
+            HttpResponseMessage response = _httpClient.PostAsync(requestUri, credentialsForm).GetAwaiter().GetResult();
+            response.EnsureSuccessStatusCode();
+            // response holds something like
+            // {"access_token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjA5RTNGMzY3NDdCMEVCODMzOUNDNERENENGQzdDQ0M1N0FBQjQwRkRSUzI1NiIsIng1dCI6IkNlUHpaMGV3NjRNNXpFM1V6OGZNeFhxclFQMCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL21lY2RldjEycWEwMS5nbG9iYWwuc2RsLmNvcnAvaXNoYW1vcmExOSIsIm5iZiI6MTY3MjM5MDI5NywiaWF0IjoxNjcyMzkwMjk3LCJleHAiOjE2NzIzOTM4OTcsImF1ZCI6WyJUcmlkaW9uX0RvY3NfQ29udGVudF9NYW5hZ2VyX0FwaSIsIlRyaWRpb25fRG9jc19XZWJfRXh0ZW5zaW9uc19BcGkiLCJUcmlkaW9uLkFjY2Vzc01hbmFnZW1lbnQiXSwic2NvcGUiOlsiVHJpZGlvbl9Eb2NzX0NvbnRlbnRfTWFuYWdlcl9BcGkiLCJUcmlkaW9uX0RvY3NfV2ViX0V4dGVuc2lvbnNfQXBpIiwiVHJpZGlvbi5BY2Nlc3NNYW5hZ2VtZW50Il0sImNsaWVudF9pZCI6ImM4MjZlN2UxLWMzNWMtNDNmZS05NzU2LWUxYjYxZjQ0YmI0MCIsInN1YiI6ImM4MjZlN2UxLWMzNWMtNDNmZS05NzU2LWUxYjYxZjQ0YmI0MCIsInVzZXJfaWQiOiIzOTYiLCJyb2xlIjpbIlRyaWRpb24uQWNjZXNzTWFuYWdlbWVudC5BZG1pbmlzdHJhdG9yIiwiVHJpZGlvbi5Eb2NzLkNvbnRlbnRNYW5hZ2VyLkFkbWluaXN0cmF0b3IiLCJUcmlkaW9uLkRvY3MuQ29udGVudE1hbmFnZXIuVXNlciIsIlRyaWRpb24uRG9jcy5XZWIuRXh0ZW5zaW9ucy5Vc2VyIl0sImp0aSI6IkMyMkNGQjhDMzVDQzNDN0VBODI3OUI5QkYyOTU5NkY1In0.oPKgzEkLkgaOqmb25uXVQzK4pNh72TBHRFl2ycnX5rHvoheBzsaGasqTwNVtzlCVbnUJkxjPV_pevUSR4dkB6UpgTqvsEfk_AeXVw-f_Nz250fAwjug0Xongp7un5VCFjSiNFUdCBfpBV0fLadyTAWAjMfr1XaFJhoDGk3lCOiH59WvcWazkr5C8LDQt129bCDEZZs3aWMf-TiAxwOkfVmEAcJz-KFz4BwgfhzqAd5sJI98mIfFx_aXEAFt7JcwWKhgwxLleYKKx2sXbL8sFQ2oe8S0e5HR7AQonNx6ygAw9Q1317_Y-fdGHDmGM7SC6Z7EUAsKH9-r2Uf4AuCBR1w","expires_in":3600,"token_type":"Bearer","scope":"Tridion_Docs_Content_Manager_Api Tridion_Docs_Web_Extensions_Api Tridion.AccessManagement"}
+            string tokenResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var tokenObject = JsonConvert.DeserializeAnonymousType(tokenResponse, new { access_Token = "" });
+            _logger.WriteDebug($"GetTokensOverClientCredentialsRaw from requestUri[{requestUri}] resulted in BearerToken.Length[{tokenObject.access_Token.Length}]");
+            return tokenObject.access_Token;
+        }
+        */
+
+        /// <summary>
+        /// OidcClient-based get Bearer/Access based on class parameters. Will refresh if possible.
+        /// </summary>
+        /// <param name="cancellationToken">Default</param>
+        /// <returns>New Tokens with new or refreshed valeus</returns>
+        private async Task<Tokens> GetTokensOverClientCredentialsAsync(CancellationToken cancellationToken = default)
+        {
+            var requestUri = new Uri(_connectionParameters.IssuerUrl, "connect/token");
+            Tokens returnTokens = null;
+            _logger.WriteDebug($"GetTokensOverClientCredentialsAsync from requestUri[{requestUri}] using ClientId[{_connectionParameters.ClientId}] ClientSecret.Length[{_connectionParameters.ClientSecret.Length}]");
+            var tokenRequest = new ClientCredentialsTokenRequest
+            {
+                Address = requestUri.ToString(),
+                ClientId = _connectionParameters.ClientId,
+                ClientSecret = _connectionParameters.ClientSecret
+            };
+            TokenResponse response = await _httpClient.RequestClientCredentialsTokenAsync(tokenRequest, cancellationToken).ConfigureAwait(false);
+
+            // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
+            if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"GetTokensOverClientCredentialsAsync Access Error[{response.Error}]");
+            }
+
+            returnTokens = new Tokens
+            {
+                AccessToken = response.AccessToken,
+                RefreshToken = response.RefreshToken,
+                AccessTokenExpiration = DateTime.Now.AddSeconds(response.ExpiresIn)
+            };
+
+            return returnTokens;
+        }
+
+        private async Task<Tokens> GetTokensOverSystemBrowserAsync(CancellationToken cancellationToken = default)
+        {
+            _logger.WriteDebug($"GetTokensOverSystemBrowserAsync from Authority[{_connectionParameters.IssuerUrl.ToString()}] using ClientAppId[{_connectionParameters.ClientAppId}] Scope[{_connectionParameters.Scope}]");
+
+            var browser = new InfoShareOpenIdConnectSystemBrowser(_logger, _connectionParameters.RedirectUri);
+
+            string redirectUri = string.Format($"http://127.0.0.1:{browser.Port}");
+
+            var oidcClientOptions = new OidcClientOptions
+            {
+                Authority = _connectionParameters.IssuerUrl.ToString(),
+                ClientId = _connectionParameters.ClientAppId,
+                Scope = _connectionParameters.Scope,
+                RedirectUri = redirectUri,
+                FilterClaims = false,
+                Policy = new Policy()
+                {
+                    Discovery = new IdentityModel.Client.DiscoveryPolicy
+                    {
+                        ValidateIssuerName = false,  // Casing matters, otherwise "Error loading discovery document: "PolicyViolation" - "Issuer name does not match authority"
+                        ValidateEndpoints = false  // Otherwise "Error loading discovery document: Endpoint belongs to different authority: https://mecdev12qa01.global.sdl.corp/ISHAMORA19/.well-known/openid-configuration/jwks"
+                    }
+                },
+                Browser = browser,
+                IdentityTokenValidator = new JwtHandlerIdentityTokenValidator(),
+                RefreshTokenInnerHttpHandler = new HttpClientHandler()
+                {
+                    ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true
+                }
+            };
+
+#if NET48
+            // Certificate validation works different on .NET Framework 4.8 versus .NET (Core) 6.0+, below is a catch all
+            // bypass for /.well-known/openid-configuration detection. Otherwise you get error 
+            // "Error loading discovery document: Error connecting to /.well-known/openid-configuration. Operation is not valid due to the current state of the object..'"
+            oidcClientOptions.BackchannelHandler = new HttpClientHandler()
+            { 
+                ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true 
+            };
+#endif
+
+            var oidcClient = new OidcClient(oidcClientOptions);
+            var loginResult = await oidcClient.LoginAsync(new LoginRequest());
+
+            var result = new Tokens
+            {
+                AccessToken = loginResult.AccessToken,
+                IdentityToken = loginResult.IdentityToken,
+                RefreshToken = loginResult.RefreshToken,
+                AccessTokenExpiration = loginResult.AccessTokenExpiration.LocalDateTime
+            };
+            return result;
+        }
+
+        private async Task<Tokens> RefreshTokensAsync(CancellationToken cancellationToken = default)
+        {
+            var requestUri = new Uri(_connectionParameters.IssuerUrl, "connect/token");
+            Tokens returnTokens = null;
+            _logger.WriteDebug($"RefreshTokensAsync from requestUri[{requestUri}] using ClientAppId[{_connectionParameters.ClientAppId}] RefreshToken.Length[{_connectionParameters.Tokens.RefreshToken.Length}]");
+            var refreshTokenRequest = new RefreshTokenRequest
+            {
+                Address = requestUri.ToString(),
+                ClientId = _connectionParameters.ClientAppId,
+                RefreshToken = _connectionParameters.Tokens.RefreshToken
+            };
+            TokenResponse response = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest, cancellationToken).ConfigureAwait(false);
+            // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
+            if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"RefreshTokensAsync Refresh Error[{response.Error}]");
+            }
+            returnTokens = new Tokens
+            {
+                AccessToken = response.AccessToken,
+                IdentityToken = response.IdentityToken,
+                RefreshToken = response.RefreshToken,
+                AccessTokenExpiration = DateTime.Now.AddSeconds(response.ExpiresIn)
+            };
+            return returnTokens;
+        }
+         
+        /// <summary>
+        /// Checks whether the token is issued and still valid
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
+                // we have the actual issued token which we can check for expiring
+                if (_connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime() >= DateTime.UtcNow)
+                {
+                    //_logger.WriteDebug($"Access Token is valid ({_connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime()} >= {DateTime.UtcNow})");
+                    return true;
+                }
+                else if (_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime() >= DateTime.UtcNow)
+                {
+                    //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
+                    _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
+                    _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration}]");
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
         #endregion
 
         #region IDisposable Methods

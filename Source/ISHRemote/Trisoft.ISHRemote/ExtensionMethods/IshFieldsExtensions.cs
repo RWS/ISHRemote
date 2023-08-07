@@ -55,7 +55,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                     return OpenApiISH30.Level.Detail;
 
                 case Enumerations.Level.History:
-                    // TODO
+                    // TODO [Could] API30 enumerations
                     return OpenApiISH30.Level.None;
 
                 case Enumerations.Level.Lng:
@@ -74,7 +74,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                     return OpenApiISH30.Level.Reply;
 
                 case Enumerations.Level.Task:
-                    // TODO
+                    // TODO [Could] API30 enumerations
                     return OpenApiISH30.Level.None;
                 
                 case Enumerations.Level.Version:
