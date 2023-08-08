@@ -52,7 +52,7 @@ On Tridion Docs 14SPx/14.0.x and earlier, it is always `WcfSoapWithOpenIdConnect
 2. Reading `/ISHWS/connectionconfiguration.xml`
 3. If `infosharesoftwareversion` <= 15.0.0
     1. Set `Protocol` to `WcfSoapWithWsTrust`
-    2. Note that `issuer/authenticationtype` should be `WindowsMixed` (only PowerShell 5.1) or `UserNameMixed` (both)
+    2. Note that `issuer/authenticationtype` should be `WindowsMixed` (only PowerShell 5.1) or `UserNameMixed` (on PowerShell 5.1 and PowerShell 7.2+)
     3. Allow parameter groups ActiveDirectory/PSCredential/UserNamePassword as before
 4. If `infosharesoftwareversion` >= 15.0.0 but < 16.0.0 (so only private OpenApi)
     1. Reading `/ISHWS/owcf/connectionconfiguration.xml`
@@ -167,8 +167,12 @@ Add (nested binary module) AMRemote that could offer cmdlets like
    ```
 For whoever stumbles on this transitive package dependency of `System.Runtime.CompilerServices.Unsafe` (and/or `System.Text.Json `), solved it through a forced Assembly load of the v6 version (while v5 was expected and .NET Framework 4.8 loads v4.0.4). Solution is in the pragma-protected `SessionCmdlet::BeginProcessing` section in `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs`. For completeness there is an OidClient logging-not-initialized seralization bug which I bypassed through `LogSerializer.Enabled = false;`. Inspired by https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624 in Preprocessing step of the cmdlet that needs it.
 * Verify Token Validation is there, happens for WCF/OpenApi at the same time... refresh token is used when expiration allows. Otherwise build new connection.
+* Added `WcfSoapWithOpenIdConnectConnection` next to long time `WcfSoapWithWsTrustConnection` and `OpenApiConnection` attempts as protocols on the `New-IshSession`. This required quite some hefty refactoring in `C:\GITHUB\ISHRemote`\Source\ISHRemote\Trisoft.ISHRemote\Connection\`. End result is ISHWS/OWcf web services next to ISHWS/Wcf web services.
+
+
 
 # Next
+* Cleanup `IInfoShareWcfSoapConnection.cs` and references as nobody uses it.
 * Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to ISHRemote/Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
 * Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainAssemblyResolveHelper.cs`

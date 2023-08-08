@@ -153,7 +153,6 @@ namespace Trisoft.ISHRemote.Connection
         /// Service URIs by service.
         /// </summary>
         private readonly Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
-
         /// <summary>
 		/// The token that is used to access the services.
 		/// </summary>
@@ -276,7 +275,7 @@ namespace Trisoft.ISHRemote.Connection
                 throw new PlatformNotSupportedException($"PowerShell7+/NET6+ only supports /wstrust/mixed/username. Windows PowerShell 5.1/NET4.8 supports /wstrust/mixed/username and windowsmixed (aka Windows Authentication). IssuerUrl[{_issuerWSTrustEndpointUri}] PlatformVersion[{Environment.Version}]");
             }
 #endif
-            _logger.WriteDebug($"Resolving Service Uris");
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Resolving Service Uris");
             ResolveServiceUris();
 
             // The lazy initialization depends on all the initialization above.
@@ -338,7 +337,7 @@ namespace Trisoft.ISHRemote.Connection
         }
         #endregion Properties
 
-        #region Public Methods
+        #region Public Get..Channel Methods
         /// <summary>
         /// Create a /Wcf/API25/Annotation.svc proxy
         /// </summary>
@@ -1060,7 +1059,9 @@ namespace Trisoft.ISHRemote.Connection
         #endregion
 
         #region Private Methods
-
+        /// <summary>
+        /// One location to bind relative urls to service names
+        /// </summary>
         private void ResolveServiceUris()
         {
             _serviceUriByServiceName.Add(Annotation25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Annotation.svc"));
@@ -1084,31 +1085,28 @@ namespace Trisoft.ISHRemote.Connection
             _serviceUriByServiceName.Add(BackgroundTask25, new Uri(InfoShareWSBaseUri, "Wcf/API25/BackgroundTask.svc"));
         }
 
-#if NET48
         /// <summary>
-        /// Resolve endpoints
-        /// 1. Binding enpoints for the InfoShareWS endpoints
-        /// 2. Look into the issuer elements to extract the issuer binding and endpoint
+        /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
         /// </summary>
-        private void ResolveEndpoints(bool autoAuthenticate)
+        /// <returns>The connection configuration.</returns>
+        private XDocument LoadConnectionConfiguration()
         {
-            _logger.WriteDebug("Resolving endpoints");
-            Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
-            var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
-            // Get endpont for http or https depending on the base uri passed
-            var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
-            ApplyTimeout(applicationServiceEndpoint, _connectionParameters.ServiceTimeout);
-            ApplyQuotas(applicationServiceEndpoint);
-            _commonBinding = applicationServiceEndpoint.Binding;
-
-            if (autoAuthenticate)
+            HttpClientHandler handler = new HttpClientHandler();
+            if (_connectionParameters.IgnoreSslPolicyErrors)
             {
-                // Resolve the token
-                var token = IssuedToken;
+                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             }
-            _logger.WriteDebug("Resolved endpoints");
+            handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
+            var httpClient = new HttpClient(handler);
+            httpClient.Timeout = _connectionParameters.Timeout;
+            var connectionConfigurationUri = new Uri(InfoShareWSBaseUri, "connectionconfiguration.xml");
+            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{httpClient.Timeout}]");
+            var responseMessage = httpClient.GetAsync(connectionConfigurationUri).Result;
+            string response = responseMessage.Content.ReadAsStringAsync().Result;
+
+            var connectionConfiguration = XDocument.Parse(response);
+            return connectionConfiguration;
         }
-#endif
 
         /// <summary>
         /// Issues the token
@@ -1210,6 +1208,30 @@ namespace Trisoft.ISHRemote.Connection
 
 #if NET48
         /// <summary>
+        /// Resolve endpoints
+        /// 1. Binding enpoints for the InfoShareWS endpoints
+        /// 2. Look into the issuer elements to extract the issuer binding and endpoint
+        /// </summary>
+        private void ResolveEndpoints(bool autoAuthenticate)
+        {
+            _logger.WriteDebug("Resolving endpoints");
+            Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
+            var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
+            // Get endpont for http or https depending on the base uri passed
+            var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
+            ApplyTimeout(applicationServiceEndpoint, _connectionParameters.ServiceTimeout);
+            ApplyQuotas(applicationServiceEndpoint);
+            _commonBinding = applicationServiceEndpoint.Binding;
+
+            if (autoAuthenticate)
+            {
+                // Resolve the token
+                var token = IssuedToken;
+            }
+            _logger.WriteDebug("Resolved endpoints");
+        }
+
+        /// <summary>
         /// Extract the Issuer endpoint and configure the appropriate one
         /// </summary>
         private ServiceEndpoint FindIssuerEndpoint()
@@ -1265,35 +1287,7 @@ namespace Trisoft.ISHRemote.Connection
             protectionTokenParameters.IssuerAddress = issuerServiceEndpoint.Address;
             return issuerServiceEndpoint;
         }
-#endif
 
-        /// <summary>
-        /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
-        /// </summary>
-        /// <returns>The connection configuration.</returns>
-        private XDocument LoadConnectionConfiguration()
-        {
-            HttpClientHandler handler = new HttpClientHandler();
-            if (_connectionParameters.IgnoreSslPolicyErrors)
-            {
-                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-            }
-            handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
-            var httpClient = new HttpClient(handler);
-            httpClient.Timeout = _connectionParameters.Timeout;
-            var connectionConfigurationUri = new Uri(InfoShareWSBaseUri, "connectionconfiguration.xml");
-            _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{httpClient.Timeout}]");
-            var responseMessage = httpClient.GetAsync(connectionConfigurationUri).Result;
-            string response = responseMessage.Content.ReadAsStringAsync().Result;
-
-            var connectionConfiguration = XDocument.Parse(response);
-            return connectionConfiguration;
-        }
-
-      
-
-
-#if NET48
         /// <summary>
         /// Find the wsdl importer
         /// </summary>
@@ -1325,7 +1319,6 @@ namespace Trisoft.ISHRemote.Connection
             var metadataSet = mexClient.GetMetadata(wsdlUri, MetadataExchangeClientMode.HttpGet);
             return new WsdlImporter(metadataSet);
         }
-#endif
 
         /// <summary>
         /// Initializes client credentials 
@@ -1357,7 +1350,7 @@ namespace Trisoft.ISHRemote.Connection
                 endpoint.Binding.SendTimeout = timeout.Value;
             }
         }
-#if NET48
+
         /// <summary>
         /// Applies quotas to endpoint
         /// </summary>

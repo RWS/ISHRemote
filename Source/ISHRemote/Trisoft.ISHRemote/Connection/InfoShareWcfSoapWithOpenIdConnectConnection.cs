@@ -37,9 +37,9 @@ using Trisoft.ISHRemote.OpenApiISH30;
 using System.Security.Claims;
 using System.Text;
 using System.Xml;
+using System.IO;
 
 #if NET48
-//using System.IdentityModel.Protocols.WSTrust;
 using System.Security.Cryptography;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Security.Tokens;
@@ -50,7 +50,7 @@ using System.ServiceModel.Federation;
 namespace Trisoft.ISHRemote.Connection
 {
     /// <summary>
-    /// Dynamic proxy (so without app.config) generation of Service References towards the InfoShare Web Services writen in Windows Communication Foundation (WCF) protected by WS-Trust (aka WS-Federation active) SOAP protocol.
+    /// Dynamic proxy (so without app.config) generation of Service References towards the InfoShare Web Services writen in Windows Communication Foundation (WCF) protected by OpenIdConnect security protocol.
     /// On ISHRemote v1 and earlier, so in turn before InfoShare 15 and earlier, this class was your starting point for dynamic proxy (so without app.config) generation of Service References. The inital class was written in .NET Framework style. Inspired by https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/ this class has pragmas to illustrate .NET Framework and .NET 6.0+ style side-by-side.
     /// </summary>
     internal sealed class InfoShareWcfSoapWithOpenIdConnectConnection : IDisposable, IInfoShareWcfSoapConnection
@@ -245,81 +245,6 @@ namespace Trisoft.ISHRemote.Connection
         private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
         #endregion Private Members
 
-#if NET48
-        #region NET48 OpenIdConnect
-        /// <summary>
-        /// Wrapping the Bearer/Access Token as jwt (Json Web Token) claim into a Saml 2.0 token to push over WCF (Windows Communication Foundation) SOAP
-        /// </summary>
-        private static GenericXmlSecurityToken WrapJwt(string jwt)
-        {
-            // https://leastprivilege.com/2015/07/02/give-your-wcf-security-architecture-a-makeover-with-identityserver3/
-            // https://github.com/IdentityServer/IdentityServer3/issues/1107
-            // https://stackoverflow.com/questions/16312907/delivering-a-jwt-securitytoken-to-a-wcf-client
-            // https://github.com/IdentityServer/IdentityServer3.Samples/tree/dev/source/Clients/WcfService
-
-            var subject = new ClaimsIdentity("saml");
-            subject.AddClaim(new Claim("jwt", jwt));
-
-            var descriptor = new SecurityTokenDescriptor
-            {
-                TokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0",
-                TokenIssuerName = "urn:wrappedjwt",
-                Subject = subject,
-                SigningCredentials = new X509SigningCredentials(_certficate)
-            };
-
-            var handler = new System.IdentityModel.Tokens.Saml2SecurityTokenHandler();
-            bool canWRite = handler.CanWriteToken;
-            var token = handler.CreateToken(descriptor) as System.IdentityModel.Tokens.Saml2SecurityToken;
-
-            StringBuilder sb = new StringBuilder();
-            XmlWriter xmlWriter = XmlWriter.Create(sb);
-            handler.WriteToken(xmlWriter, token);
-
-            XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(sb.ToString());
-            var xmlToken = new GenericXmlSecurityToken(
-                xmlDocument.DocumentElement,
-                null,
-                DateTime.Now,
-                DateTime.Now.AddHours(1),
-                null,
-                null,
-                null);
-
-            return xmlToken;
-        }
-
-        /// <summary>
-        /// Generate a client certificate to sign the saml token
-        /// </summary>
-        /// <param name="certName"></param>
-        /// <returns></returns>
-        private static X509Certificate2 CreateX509Certificate2(string certName = "Client Tools")
-        {
-            var ecdsa = ECDsa.Create();
-            var rsa = RSA.Create();
-            var req = new CertificateRequest($"cn={certName}", rsa, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
-            var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
-
-            string password = Guid.NewGuid().ToString();
-            return new X509Certificate2(cert.Export(X509ContentType.Pfx, password), password);
-        }
-        
-        /// <summary>
-        /// Static certificate to reuse signing the saml token
-        /// </summary>
-        private static X509Certificate2 _certficate = CreateX509Certificate2();
-        #endregion
-#endif
-
-
-
-        /// <summary>
-        /// Gets or sets when access token should be refreshed (relative to its expiration time).
-        /// </summary>
-        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(1);
-
         #region Constructors
         /// <summary>
         /// Initializes a new instance of <c>InfoShareWcfSoapWithOpenIdConnectConnection</c> class.
@@ -360,13 +285,13 @@ namespace Trisoft.ISHRemote.Connection
                 // Don't think this will happen
                 _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection reusing AccessToken[{_connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{_connectionParameters.Tokens.AccessTokenExpiration}]");
             }
-            _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration}]");
+            _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
             // using the ISHWS url from connectionconfiguration.xml instead of the potentially wrongly cased incoming one [TS-10630]
             _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection using Normalized infoShareWSBaseUri[{_connectionParameters.InfoShareWSUrl}]");
             this.InfoShareWSBaseUri = _connectionParameters.InfoShareWSUrl;
 
-            _logger.WriteDebug($"Resolving Service Uris");
+            _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Resolving Service Uris");
             ResolveServiceUris();
 
 #if NET48
@@ -376,25 +301,28 @@ namespace Trisoft.ISHRemote.Connection
             var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
             // Get endpont for http or https depending on the base uri passed
             var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
-            CustomBinding customBinding = (CustomBinding)applicationServiceEndpoint.Binding;
-            // Increasing Text Message quotas
-            var textMessageEncoding = customBinding.Elements.Find<TextMessageEncodingBindingElement>();
-            textMessageEncoding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
-            textMessageEncoding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
-            textMessageEncoding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
-            textMessageEncoding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
-            textMessageEncoding.ReaderQuotas.MaxDepth = 64;
-            // Increasing Transport Quotas
+            
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Text ReaderQuotas");
+            XmlDictionaryReaderQuotas readerQuotas = new XmlDictionaryReaderQuotas();
+            readerQuotas.MaxStringContentLength = Int32.MaxValue;
+            readerQuotas.MaxNameTableCharCount = Int32.MaxValue; 
+            readerQuotas.MaxArrayLength = Int32.MaxValue;
+            readerQuotas.MaxBytesPerRead = Int32.MaxValue;
+            readerQuotas.MaxDepth = 64;
+            applicationServiceEndpoint.Binding.GetType().GetProperty("ReaderQuotas").SetValue(applicationServiceEndpoint.Binding, readerQuotas, null);
+
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Transport Quotas");
+            CustomBinding customBinding = new CustomBinding(applicationServiceEndpoint.Binding.CreateBindingElements());
             var transport = customBinding.Elements.Find<TransportBindingElement>();
             transport.MaxReceivedMessageSize = Int32.MaxValue;
             transport.MaxBufferPoolSize = Int32.MaxValue;
-            // Applying Send/Receive Timeouts
-            _commonBinding = applicationServiceEndpoint.Binding;
+
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Send/Receive Timeouts");
+            _commonBinding = customBinding;
             _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
             _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
 
-            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Wrapping AccessToken (NET48)");
-            // The lazy initialization depends on all the initialization above.
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Wrapping AccessToken");
             _issuedToken = WrapJwt(_connectionParameters.Tokens.AccessToken);
 #else
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Resolving Binding (NET6+)");
@@ -404,16 +332,16 @@ namespace Trisoft.ISHRemote.Connection
                 KeyType = SecurityKeyType.BearerKey
             });
             _commonBinding.Security.Message.EstablishSecurityContext = false;
-            // Increasing Text Message quotas
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Text ReaderQuotas");
             _commonBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
             _commonBinding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
             _commonBinding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
             _commonBinding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
             _commonBinding.ReaderQuotas.MaxDepth = 64;
-            // Increasing Transport Quotas
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Transport Quotas");
             _commonBinding.MaxReceivedMessageSize = Int32.MaxValue;
             _commonBinding.MaxBufferPoolSize = Int32.MaxValue;
-            // Applying Send/Receive Timeouts
+            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Send/Receive Timeouts");
             _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
             _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
 #endif
@@ -425,10 +353,13 @@ namespace Trisoft.ISHRemote.Connection
         /// Root uri for the Web Services
         /// </summary>
         public Uri InfoShareWSBaseUri { get; private set; }
-
+        /// <summary>
+        /// Gets or sets when access token should be refreshed (relative to its expiration time).
+        /// </summary>
+        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(1);
         #endregion Properties
 
-        #region Public Methods
+        #region Public Get..Channel Methods
         /// <summary>
         /// Create a /Wcf/API25/Annotation.svc proxy
         /// </summary>
@@ -1172,7 +1103,9 @@ namespace Trisoft.ISHRemote.Connection
         #endregion
 
         #region Private Methods
-
+        /// <summary>
+        /// One location to bind relative urls to service names
+        /// </summary>
         private void ResolveServiceUris()
         {
             _serviceUriByServiceName.Add(Annotation25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Annotation.svc"));
@@ -1219,10 +1152,48 @@ namespace Trisoft.ISHRemote.Connection
             return connectionConfiguration;
         }
 
-      
-
-
 #if NET48
+        /// <summary>
+        /// Wrapping the Bearer/Access Token as jwt (Json Web Token) claim into a Saml 2.0 token to push over WCF (Windows Communication Foundation) SOAP
+        /// Inspired by, hence hat tip to,
+        /// https://leastprivilege.com/2015/07/02/give-your-wcf-security-architecture-a-makeover-with-identityserver3/
+        /// https://github.com/IdentityServer/IdentityServer3/issues/1107
+        /// https://stackoverflow.com/questions/16312907/delivering-a-jwt-securitytoken-to-a-wcf-client
+        /// https://github.com/IdentityServer/IdentityServer3.Samples/tree/dev/source/Clients/WcfService
+        /// </summary>
+        private static GenericXmlSecurityToken WrapJwt(string jwt)
+        {
+            var subject = new ClaimsIdentity("saml");
+            subject.AddClaim(new Claim("jwt", jwt));
+
+            var descriptor = new SecurityTokenDescriptor
+            {
+                TokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0",
+                TokenIssuerName = "urn:wrappedjwt",
+                Subject = subject,
+            };
+
+            var handler = new System.IdentityModel.Tokens.Saml2SecurityTokenHandler();
+
+            var token = handler.CreateToken(descriptor);
+            var sb = new StringBuilder(128);
+            using (var xmlTextWriter = new XmlTextWriter(new StringWriter(sb)))
+            {
+                handler.WriteToken(xmlTextWriter, token);
+                var xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(sb.ToString());
+                var xmlToken = new GenericXmlSecurityToken(
+                    xmlDocument.DocumentElement,
+                    null,
+                    DateTime.UtcNow,
+                    DateTime.UtcNow.AddHours(1),
+                    null,
+                    null,
+                    null);
+                return xmlToken;
+            }
+        }
+
         /// <summary>
         /// Find the wsdl importer
         /// </summary>
@@ -1254,32 +1225,10 @@ namespace Trisoft.ISHRemote.Connection
             var metadataSet = mexClient.GetMetadata(wsdlUri, MetadataExchangeClientMode.HttpGet);
             return new WsdlImporter(metadataSet);
         }
-
-
-        /// <summary>
-        /// Applies quotas to endpoint
-        /// </summary>
-        /// <param name="endpoint">The endpoint</param>
-        private void ApplyQuotas(ServiceEndpoint endpoint)
-        {
-            _logger.WriteDebug($"ApplyQuotas on serviceEndpoint[{endpoint.Address.Uri}]");
-            CustomBinding customBinding = (CustomBinding)endpoint.Binding;
-            var textMessageEncoding = customBinding.Elements.Find<TextMessageEncodingBindingElement>();
-            textMessageEncoding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
-            textMessageEncoding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
-            textMessageEncoding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
-            textMessageEncoding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
-            textMessageEncoding.ReaderQuotas.MaxDepth = 64;
-
-            var transport = customBinding.Elements.Find<TransportBindingElement>();
-            transport.MaxReceivedMessageSize = Int32.MaxValue;
-            transport.MaxBufferPoolSize = Int32.MaxValue;
-        }
 #endif
-
         #endregion
 
-        #region Token Handling
+        #region Token Handling, keep IN SYNC with InfoShareOpenApiConnection
         /*
         /// <summary>
         /// Rough get Bearer/Access token based on class parameters without using OidcClient class library. Could be used for debugging
@@ -1422,7 +1371,7 @@ namespace Trisoft.ISHRemote.Connection
             };
             return returnTokens;
         }
-         
+
         /// <summary>
         /// Checks whether the token is issued and still valid
         /// </summary>
@@ -1440,7 +1389,7 @@ namespace Trisoft.ISHRemote.Connection
                 {
                     //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
                     _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
-                    _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration}]");
+                    _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
                     return true;
                 }

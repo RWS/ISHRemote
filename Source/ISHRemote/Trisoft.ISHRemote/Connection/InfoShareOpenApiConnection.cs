@@ -35,11 +35,6 @@ namespace Trisoft.ISHRemote.Connection
 {
     internal sealed class InfoShareOpenApiConnection : IDisposable
     {
-        /// <summary>
-        /// Gets or sets when access token should be refreshed (relative to its expiration time).
-        /// </summary>
-        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(1);
-
         #region Private Members
         /// <summary>
         /// Logger
@@ -107,7 +102,7 @@ namespace Trisoft.ISHRemote.Connection
                 // Don't think this will happen
                 _logger.WriteDebug($"InfoShareOpenApiConnection reusing AccessToken[{ _connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{ _connectionParameters.Tokens.AccessTokenExpiration}]");
             }
-            _logger.WriteDebug($"InfoShareOpenApiConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration}]");
+            _logger.WriteDebug($"InfoShareOpenApiConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
             _logger.WriteDebug($"InfoShareOpenApiConnection using Normalized infoShareWSBaseUri[{_connectionParameters.InfoShareWSUrl}]"); 
             _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
@@ -115,8 +110,22 @@ namespace Trisoft.ISHRemote.Connection
         }
         #endregion
 
+        #region Public Properties
+        /// <summary>
+        /// Gets or sets when access token should be refreshed (relative to its expiration time).
+        /// </summary>
+        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(1);
+        /// <summary>
+        /// Create a /Wcf/API25/Annotation.svc proxy
+        /// </summary>
+        /// <returns>The proxy</returns>
+        public OpenApiISH30Service GetOpenApiISH30ServiceProxy()
+        {
+            return _openApiISH30Service;
+        }
+        #endregion
 
-        #region Token Handling
+        #region Token Handling, keep IN SYNC with InfoShareWcfSoapWithOpenIdConnectConnection
         /*
         /// <summary>
         /// Rough get Bearer/Access token based on class parameters without using OidcClient class library. Could be used for debugging
@@ -256,23 +265,6 @@ namespace Trisoft.ISHRemote.Connection
             };
             return returnTokens;
         }
-        #endregion
-
-        #region IDisposable Methods
-        private void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    if (_openApiISH30Service != null)
-                    {
-                        ((IDisposable)_openApiISH30Service).Dispose();
-                    }
-                }
-                disposedValue = true;
-            }
-        }
 
         /// <summary>
         /// Checks whether the token is issued and still valid
@@ -291,7 +283,7 @@ namespace Trisoft.ISHRemote.Connection
                 {
                     //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
                     _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
-                    _logger.WriteDebug($"InfoShareOpenApiConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration}]");
+                    _logger.WriteDebug($"InfoShareOpenApiConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
                     return true;
                 }
@@ -301,23 +293,29 @@ namespace Trisoft.ISHRemote.Connection
                 }
             }
         }
+        #endregion
+
+        #region IDisposable Methods
+        private void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (_openApiISH30Service != null)
+                    {
+                        ((IDisposable)_openApiISH30Service).Dispose();
+                    }
+                }
+                disposedValue = true;
+            }
+        }
 
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-        #endregion
-
-        #region Public Methods
-        /// <summary>
-        /// Create a /Wcf/API25/Annotation.svc proxy
-        /// </summary>
-        /// <returns>The proxy</returns>
-        public OpenApiISH30Service GetOpenApiISH30ServiceProxy()
-        {
-            return _openApiISH30Service;
         }
         #endregion
     }
