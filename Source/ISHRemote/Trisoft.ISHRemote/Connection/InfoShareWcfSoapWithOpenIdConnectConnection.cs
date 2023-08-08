@@ -151,12 +151,11 @@ namespace Trisoft.ISHRemote.Connection
         /// Service URIs by service.
         /// </summary>
         private readonly Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
-
+#if NET48
         /// <summary>
 		/// The token that is used to access the services.
 		/// </summary>
 		private GenericXmlSecurityToken _issuedToken = null;
-#if NET48
         /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
@@ -451,8 +450,11 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
             }
-            //DeleteThis//_annotationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            //DeleteThis//_annotationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+            _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_annotationClient.ChannelFactory.Credentials);
+            var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+            _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
             _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
             if (_connectionParameters.IgnoreSslPolicyErrors)
             {
@@ -486,8 +488,6 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
 
-                //DeleteThis//_applicationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_applicationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_applicationClient.ChannelFactory.Credentials);
                 var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
                 _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
@@ -526,8 +526,11 @@ namespace Trisoft.ISHRemote.Connection
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
-                //DeleteThis//_documentObjClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_documentObjClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+            
+                _documentObjClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_documentObjClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _documentObjClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -562,8 +565,11 @@ namespace Trisoft.ISHRemote.Connection
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
-                //DeleteThis//_folderClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_folderClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _folderClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_folderClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _folderClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -598,8 +604,11 @@ namespace Trisoft.ISHRemote.Connection
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
-                //DeleteThis//_userClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_userClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _userClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _userClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -634,8 +643,11 @@ namespace Trisoft.ISHRemote.Connection
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
-                //DeleteThis//_userRoleClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_userRoleClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _userRoleClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userRoleClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _userRoleClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -670,8 +682,11 @@ namespace Trisoft.ISHRemote.Connection
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
-                //DeleteThis//_userGroupClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_userGroupClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _userGroupClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userGroupClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _userGroupClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -706,8 +721,11 @@ namespace Trisoft.ISHRemote.Connection
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
-                //DeleteThis//_listOfValuesClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_listOfValuesClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _listOfValuesClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_listOfValuesClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _listOfValuesClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -742,8 +760,11 @@ namespace Trisoft.ISHRemote.Connection
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
-                //DeleteThis//_publicationOutputClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_publicationOutputClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _publicationOutputClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_publicationOutputClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _publicationOutputClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -778,8 +799,11 @@ namespace Trisoft.ISHRemote.Connection
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
-                //DeleteThis//_outputFormatClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_outputFormatClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _outputFormatClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_outputFormatClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _outputFormatClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -814,8 +838,11 @@ namespace Trisoft.ISHRemote.Connection
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
-                //DeleteThis//_settingsClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_settingsClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _settingsClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_settingsClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _settingsClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -850,8 +877,11 @@ namespace Trisoft.ISHRemote.Connection
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
-                //DeleteThis//_EDTClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_EDTClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _EDTClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_EDTClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _EDTClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -886,8 +916,11 @@ namespace Trisoft.ISHRemote.Connection
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
-                //DeleteThis//_eventMonitorClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_eventMonitorClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _eventMonitorClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_eventMonitorClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _eventMonitorClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -922,8 +955,11 @@ namespace Trisoft.ISHRemote.Connection
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
-                //DeleteThis//_baselineClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_baselineClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _baselineClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_baselineClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _baselineClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -958,8 +994,11 @@ namespace Trisoft.ISHRemote.Connection
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
-                //DeleteThis//_metadataBindingClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_metadataBindingClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _metadataBindingClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_metadataBindingClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _metadataBindingClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -994,8 +1033,11 @@ namespace Trisoft.ISHRemote.Connection
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
-                //DeleteThis//_searchClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_searchClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _searchClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_searchClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _searchClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -1030,8 +1072,11 @@ namespace Trisoft.ISHRemote.Connection
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
-                //DeleteThis//_translationJobClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_translationJobClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _translationJobClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_translationJobClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _translationJobClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -1066,8 +1111,11 @@ namespace Trisoft.ISHRemote.Connection
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
-                //DeleteThis//_translationTemplateClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_translationTemplateClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _translationTemplateClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_translationTemplateClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _translationTemplateClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -1103,8 +1151,11 @@ namespace Trisoft.ISHRemote.Connection
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
-                //DeleteThis//_backgroundTaskClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                //DeleteThis//_backgroundTaskClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+
+                _backgroundTaskClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_backgroundTaskClient.ChannelFactory.Credentials);
+                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                _backgroundTaskClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+
                 _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
@@ -1203,25 +1254,8 @@ namespace Trisoft.ISHRemote.Connection
             var metadataSet = mexClient.GetMetadata(wsdlUri, MetadataExchangeClientMode.HttpGet);
             return new WsdlImporter(metadataSet);
         }
-#endif
 
 
-        /// <summary>
-        /// Apply timeouts to the endpoint
-        /// </summary>
-        /// <param name="endpoint">The endpoint</param>
-        /// <param name="timeout">The timeout</param>
-        private void ApplyTimeout(ServiceEndpoint endpoint, TimeSpan? timeout)
-        {
-            if (timeout != null)
-            {
-                endpoint.Binding.ReceiveTimeout = timeout.Value;
-                endpoint.Binding.SendTimeout = timeout.Value;
-            }
-        }
-
-
-#if NET48
         /// <summary>
         /// Applies quotas to endpoint
         /// </summary>
