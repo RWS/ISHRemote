@@ -81,7 +81,11 @@ namespace Trisoft.ISHRemote.Objects
             [StringValue("annotation")]
             Annotation = 500,
             [StringValue("reply")]
-            Reply = 510
+            Reply = 510,
+            [StringValue("project")]
+            Project = 600,
+            [StringValue("assignee")]
+            Assignee = 610
         }
 
         /// <summary>
@@ -219,7 +223,9 @@ namespace Trisoft.ISHRemote.Objects
             [StringValue("empty")]
             Empty,
             [StringValue("notempty")]
-            NotEmpty
+            NotEmpty,
+            [StringValue("cilike")]
+            CiLike
         }
 
         /// <summary>
@@ -374,11 +380,15 @@ namespace Trisoft.ISHRemote.Objects
             /// <summary>
             /// Event Monitor table
             /// </summary>
-            ISHEvent, 
+            ISHEvent,
             /// <summary>
             /// Annotations
             /// </summary>
-            ISHAnnotation
+            ISHAnnotation,
+            /// <summary>
+            /// Projects
+            /// </summary>
+            ISHProject
         }
 
 
