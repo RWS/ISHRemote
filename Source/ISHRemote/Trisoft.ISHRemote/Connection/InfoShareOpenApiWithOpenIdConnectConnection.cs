@@ -33,7 +33,7 @@ using IdentityModel.OidcClient.Infrastructure;
 
 namespace Trisoft.ISHRemote.Connection
 {
-    internal sealed class InfoShareOpenApiConnection : InfoShareOpenIdConnectConnectionBase, IDisposable
+    internal sealed class InfoShareOpenApiWithOpenIdConnectConnection : InfoShareOpenIdConnectConnectionBase, IDisposable
     {
         #region Private Members
         /// <summary>
@@ -48,12 +48,12 @@ namespace Trisoft.ISHRemote.Connection
 
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of <c>InfoShareOpenApiConnection</c> class.
+        /// Initializes a new instance of <c>InfoShareOpenApiWithOpenIdConnectConnection</c> class.
         /// </summary>
         /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
         /// <param name="httpClient">Incoming reused, probably Ssl/Tls initialized already.</param>
         /// <param name="infoShareOpenIdConnectConnectionParameters">Connection parameters.</param>
-        public InfoShareOpenApiConnection(ILogger logger, HttpClient httpClient, InfoShareOpenIdConnectConnectionParameters infoShareOpenIdConnectConnectionParameters)
+        public InfoShareOpenApiWithOpenIdConnectConnection(ILogger logger, HttpClient httpClient, InfoShareOpenIdConnectConnectionParameters infoShareOpenIdConnectConnectionParameters)
             : base(logger, httpClient, infoShareOpenIdConnectConnectionParameters)
         {
             // Not attaching logging to OidcClient anyway, there is a bug that still does logging although not configured
@@ -62,20 +62,20 @@ namespace Trisoft.ISHRemote.Connection
             var infoShareWSUrl = _connectionParameters.InfoShareWSUrl.ToString().Replace("OWcf/", "").Replace("OWcf", "");
             var infoShareWSUrlForOpenApi = (infoShareWSUrl.EndsWith("/")) ? new Uri(infoShareWSUrl) : new Uri(infoShareWSUrl.ToString() + "/");
 
-            _logger.WriteDebug($"InfoShareOpenApiConnection InfoShareWSUrl[{infoShareWSUrlForOpenApi}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");
+            _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection InfoShareWSUrl[{infoShareWSUrlForOpenApi}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");
             if (_connectionParameters.Tokens == null)
             {
                 if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) && (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
                     // attempt System Browser retrieval of Access/Bearer Token
-                    _logger.WriteDebug($"InfoShareOpenApiConnection System Browser");
+                    _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection System Browser");
                     _connectionParameters.Tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
                 }
                 else if ((!string.IsNullOrEmpty(_connectionParameters.ClientId)) && (!string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
                     // Raw method without OidcClient works
                     //_connectionParameters.BearerToken = GetTokensOverClientCredentialsRaw();
-                    _logger.WriteDebug($"InfoShareOpenApiConnection ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
+                    _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
                     _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
                 }
                 else
@@ -86,11 +86,11 @@ namespace Trisoft.ISHRemote.Connection
             else 
             {
                 // Don't think this will happen
-                _logger.WriteDebug($"InfoShareOpenApiConnection reusing AccessToken[{ _connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{ _connectionParameters.Tokens.AccessTokenExpiration}]");
+                _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection reusing AccessToken[{ _connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{ _connectionParameters.Tokens.AccessTokenExpiration}]");
             }
-            _logger.WriteDebug($"InfoShareOpenApiConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
+            _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
-            _logger.WriteDebug($"InfoShareOpenApiConnection using Normalized infoShareWSBaseUri[{infoShareWSUrlForOpenApi}]"); 
+            _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection using Normalized infoShareWSBaseUri[{infoShareWSUrlForOpenApi}]"); 
             _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
             _openApiISH30Service.BaseUrl = new Uri(infoShareWSUrlForOpenApi, "api").ToString();
         }
@@ -121,14 +121,14 @@ namespace Trisoft.ISHRemote.Connection
                 // we have the actual issued token which we can check for expiring
                 if (_connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime() >= DateTime.UtcNow)
                 {
-                    //_logger.WriteDebug($"Access Token is valid ({_connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime()} >= {DateTime.UtcNow})");
+                    //_logger.WriteDebug($"Access Token is valid ({_connectionParameters.InfoShareOpenIdConnectTokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime()} >= {DateTime.UtcNow})");
                     return true;
                 }
                 else if (_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime() >= DateTime.UtcNow)
                 {
-                    //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
+                    //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.InfoShareOpenIdConnectTokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
                     _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
-                    _logger.WriteDebug($"InfoShareOpenApiConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
+                    _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
                     return true;
                 }

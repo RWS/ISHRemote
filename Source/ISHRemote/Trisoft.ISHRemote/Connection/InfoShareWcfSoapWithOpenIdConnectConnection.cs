@@ -353,12 +353,12 @@ namespace Trisoft.ISHRemote.Connection
                 // we have the actual issued token which we can check for expiring
                 if (_connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime() >= DateTime.UtcNow)
                 {
-                    //_logger.WriteDebug($"Access Token is valid ({_connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime()} >= {DateTime.UtcNow})");
+                    //_logger.WriteDebug($"Access Token is valid ({_connectionParameters.InfoShareOpenIdConnectTokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime()} >= {DateTime.UtcNow})");
                     return true;
                 }
                 else if (_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime() >= DateTime.UtcNow)
                 {
-                    //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
+                    //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.InfoShareOpenIdConnectTokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
                     _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
                     _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);

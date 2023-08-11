@@ -175,11 +175,11 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
     * Merge InfoShareOpenApiConnectionParameters and InfoShareWcfSoapWithOpenIdConnectConnectionParameters into InfoShareOpenIdConnectConnectionParameters thereby single sourcing Tokens across the two services! And one Timeout is enough to rule them all :)
     * Single source tokens between wcf and openapi login and refresh 
     * Remove interface on soap classes 
-
-# Next
-* Refactor single source token code
-    * Rename InfoShareOpenApiConnection to InfoShareOpenApiWithOpenIdConnectConnection
     * Rename Tokens to InfoShareOpenIdConnectTokens
+    * Rename InfoShareOpenApiConnection to InfoShareOpenApiWithOpenIdConnectConnection
+* Refactor from AppDomainAssemblyResolveHelper structure to https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/ because it load earlier instead of only New-IshSession
+
+# Next   
 * Put Protocol in IshSession print next to ServerVersion (perhaps no AuthContext anymore)
 * Test refresh with short expiration 
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy

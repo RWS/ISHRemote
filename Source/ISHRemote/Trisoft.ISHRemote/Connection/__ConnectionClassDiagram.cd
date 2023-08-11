@@ -7,18 +7,11 @@
       <FileName>Connection\IshConnectionConfiguration.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Trisoft.ISHRemote.Connection.Tokens">
-    <Position X="0.5" Y="3.5" Width="3.25" />
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectTokens">
+    <Position X="0.5" Y="3.75" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAMAAAAAAAAAAA=</HashCode>
-      <FileName>Connection\Tokens.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenApiConnectionParameters">
-    <Position X="3" Y="1.75" Width="3.25" />
-    <TypeIdentifier>
-      <HashCode>AABAAIAAAAIAACAAiAACAAAAAAhAAAMAAAAIAAABAAA=</HashCode>
-      <FileName>Connection\InfoShareOpenApiConnectionParameters.cs</FileName>
+      <FileName>Connection\InfoShareOpenIdConnectTokens.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectConnectionParameters">
@@ -34,14 +27,6 @@
       <HashCode>AAAAAAAAAAKAAAAACAACAAAgAAAAAAMAAAAIAAIEBAA=</HashCode>
       <FileName>Connection\InfoShareWcfSoapWithWsTrustConnectionParameters.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenApiConnection">
-    <Position X="4.25" Y="9" Width="3.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAA0AAEAAAAAAAAAAAAAAAgAAAAA=</HashCode>
-      <FileName>Connection\InfoShareOpenApiConnection.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectLocalHttpEndpoint">
     <Position X="0.5" Y="5.75" Width="3.25" />
@@ -162,6 +147,14 @@
       <HashCode>AAAAEAAAAQAAIAAAABAQAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connection\InfoShareOpenIdConnectConnectionBase.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenApiWithOpenIdConnectConnection">
+    <Position X="4.25" Y="9" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAA0AAEAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Connection\InfoShareOpenApiWithOpenIdConnectConnection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

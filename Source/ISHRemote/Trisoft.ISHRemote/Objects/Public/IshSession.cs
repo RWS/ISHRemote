@@ -76,7 +76,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// </summary>
         private string _clientAppId = "ISHRemote";
         private InfoShareOpenIdConnectConnectionParameters _infoShareOpenIdConnectConnectionParameters; 
-        private InfoShareOpenApiConnection _infoShareOpenApiConnection;
+        private InfoShareOpenApiWithOpenIdConnectConnection _infoShareOpenApiWithOpenIdConnectConnection;
         private InfoShareWcfSoapWithOpenIdConnectConnection _infoShareWcfSoapWithOpenIdConnectConnection;
         private InfoShareWcfSoapWithWsTrustConnectionParameters _infoShareWcfSoapWithWsTrustConnectionParameters;
         private InfoShareWcfSoapWithWsTrustConnection _infoShareWcfSoapWithWsTrustConnection;
@@ -270,9 +270,9 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             
             _logger.WriteVerbose($"CreateOpenApiWithOpenIdConnectConnection");
-            _infoShareOpenApiConnection = new InfoShareOpenApiConnection(_logger, _httpClient, _infoShareOpenIdConnectConnectionParameters);
+            _infoShareOpenApiWithOpenIdConnectConnection = new InfoShareOpenApiWithOpenIdConnectConnection(_logger, _httpClient, _infoShareOpenIdConnectConnectionParameters);
             _logger.WriteDebug("CreateOpenApiWithOpenIdConnectConnection openApi30Service.GetApplicationVersionAsync");
-            _serverVersion = new IshVersion(_infoShareOpenApiConnection.GetOpenApiISH30ServiceProxy().GetApplicationVersionAsync().GetAwaiter().GetResult());
+            _serverVersion = new IshVersion(_infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30ServiceProxy().GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -595,9 +595,9 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 VerifyTokenValidity();
 
-                if (_infoShareOpenApiConnection != null)
+                if (_infoShareOpenApiWithOpenIdConnectConnection != null)
                 {
-                    return _infoShareOpenApiConnection.GetOpenApiISH30ServiceProxy();
+                    return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30ServiceProxy();
                 }
                 return null;
             }
@@ -1129,7 +1129,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                     }
                     break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                    if (!_infoShareOpenApiConnection.IsValid)
+                    if (!_infoShareOpenApiWithOpenIdConnectConnection.IsValid)
                     {
                         // ... discard OpenApiISH30Service
                         // ...and re-create connection
@@ -1179,9 +1179,9 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 _infoShareWcfSoapWithOpenIdConnectConnection.Dispose( );
             }
-            if (_infoShareOpenApiConnection != null) 
+            if (_infoShareOpenApiWithOpenIdConnectConnection != null) 
             {
-                _infoShareOpenApiConnection.Dispose( );
+                _infoShareOpenApiWithOpenIdConnectConnection.Dispose( );
             }
         }
         public void Close()

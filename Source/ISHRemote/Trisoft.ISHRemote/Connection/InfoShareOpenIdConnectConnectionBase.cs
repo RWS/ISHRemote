@@ -95,11 +95,11 @@ namespace Trisoft.ISHRemote.Connection
         /// OidcClient-based get Bearer/Access based on class parameters. Will refresh if possible.
         /// </summary>
         /// <param name="cancellationToken">Default</param>
-        /// <returns>New Tokens with new or refreshed valeus</returns>
-        protected async Task<Tokens> GetTokensOverClientCredentialsAsync(CancellationToken cancellationToken = default)
+        /// <returns>New InfoShareOpenIdConnectTokens with new or refreshed valeus</returns>
+        protected async Task<InfoShareOpenIdConnectTokens> GetTokensOverClientCredentialsAsync(CancellationToken cancellationToken = default)
         {
             var requestUri = new Uri(_connectionParameters.IssuerUrl, "connect/token");
-            Tokens returnTokens = null;
+            InfoShareOpenIdConnectTokens returnTokens = null;
             _logger.WriteDebug($"GetTokensOverClientCredentialsAsync from requestUri[{requestUri}] using ClientId[{_connectionParameters.ClientId}] ClientSecret.Length[{_connectionParameters.ClientSecret.Length}]");
             var tokenRequest = new ClientCredentialsTokenRequest
             {
@@ -115,7 +115,7 @@ namespace Trisoft.ISHRemote.Connection
                 throw new ApplicationException($"GetTokensOverClientCredentialsAsync Access Error[{response.Error}]");
             }
 
-            returnTokens = new Tokens
+            returnTokens = new InfoShareOpenIdConnectTokens
             {
                 AccessToken = response.AccessToken,
                 RefreshToken = response.RefreshToken,
@@ -125,7 +125,7 @@ namespace Trisoft.ISHRemote.Connection
             return returnTokens;
         }
 
-        protected async Task<Tokens> GetTokensOverSystemBrowserAsync(CancellationToken cancellationToken = default)
+        protected async Task<InfoShareOpenIdConnectTokens> GetTokensOverSystemBrowserAsync(CancellationToken cancellationToken = default)
         {
             _logger.WriteDebug($"GetTokensOverSystemBrowserAsync from Authority[{_connectionParameters.IssuerUrl.ToString()}] using ClientAppId[{_connectionParameters.ClientAppId}] Scope[{_connectionParameters.Scope}]");
 
@@ -169,7 +169,7 @@ namespace Trisoft.ISHRemote.Connection
             var oidcClient = new OidcClient(oidcClientOptions);
             var loginResult = await oidcClient.LoginAsync(new LoginRequest());
 
-            var result = new Tokens
+            var result = new InfoShareOpenIdConnectTokens
             {
                 AccessToken = loginResult.AccessToken,
                 IdentityToken = loginResult.IdentityToken,
@@ -179,10 +179,10 @@ namespace Trisoft.ISHRemote.Connection
             return result;
         }
 
-        protected async Task<Tokens> RefreshTokensAsync(CancellationToken cancellationToken = default)
+        protected async Task<InfoShareOpenIdConnectTokens> RefreshTokensAsync(CancellationToken cancellationToken = default)
         {
             var requestUri = new Uri(_connectionParameters.IssuerUrl, "connect/token");
-            Tokens returnTokens = null;
+            InfoShareOpenIdConnectTokens returnTokens = null;
             _logger.WriteDebug($"RefreshTokensAsync from requestUri[{requestUri}] using ClientAppId[{_connectionParameters.ClientAppId}] RefreshToken.Length[{_connectionParameters.Tokens.RefreshToken.Length}]");
             var refreshTokenRequest = new RefreshTokenRequest
             {
@@ -196,7 +196,7 @@ namespace Trisoft.ISHRemote.Connection
             {
                 throw new ApplicationException($"RefreshTokensAsync Refresh Error[{response.Error}]");
             }
-            returnTokens = new Tokens
+            returnTokens = new InfoShareOpenIdConnectTokens
             {
                 AccessToken = response.AccessToken,
                 IdentityToken = response.IdentityToken,

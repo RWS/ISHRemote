@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace Trisoft.ISHRemote.Connection
 {
-    internal sealed class Tokens
+    internal sealed class InfoShareOpenIdConnectTokens
     {
         /// <summary>
         /// Access Token is also known as Bearer Token

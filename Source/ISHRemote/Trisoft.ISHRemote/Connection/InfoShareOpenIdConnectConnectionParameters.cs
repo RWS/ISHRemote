@@ -84,7 +84,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <summary>
         /// Collects various tokens with expiration date
         /// </summary>
-        public Tokens Tokens { get; set; } = null;
+        public InfoShareOpenIdConnectTokens Tokens { get; set; } = null;
         /// <summary>
         /// ClientId to request for an access token
         /// </summary>

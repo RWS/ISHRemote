@@ -35,13 +35,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// 'Error connecting to https://sts.windows.net/{tenant}/.well-known/openid-configuration. 
         /// Operation is not valid due to the current state of the object' in GetDiscoveryDocumentAsync
         /// as described on https://github.com/IdentityModel/Documentation/issues/13
-        /// <see cref="AppDomainAssemblyResolveHelper"/>
+        /// <see cref="AppDomainModuleAssemblyInitializer"/>
         /// </summary>
         protected override void BeginProcessing()
         {
             base.BeginProcessing();
-            WriteWarning("IshSession-cmdlets on PS5.1/NET48 force Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll");
-            AppDomainAssemblyResolveHelper.Redirect();
+            WriteWarning("ISHRemote module on PS5.1/NET48 force Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll");
+            //WriteWarning("IshSession-cmdlets on PS5.1/NET48 force Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll");
+            //AppDomainAssemblyResolveHelper.Redirect(); is superseded with AppDomainModuleAssemblyInitializer based on IModuleAssemblyInitializer
         }
 #endif
     }
