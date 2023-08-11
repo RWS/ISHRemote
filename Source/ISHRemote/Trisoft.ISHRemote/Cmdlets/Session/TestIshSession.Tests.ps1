@@ -17,12 +17,23 @@ Describe "Test-IshSession" -Tags "Read" {
 		It "Parameter IshPassword specified" {
 			Test-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName $ishUserName -IshPassword "INVALIDISHPASSWORD" | Should -Be $false
 		}
-		It "Parameter IshUserName empty falls back to NetworkCredential/ActiveDirectory" -Skip:(-Not $isISHRemoteWindowsAuthentication) {
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrl  -IshUserName "" -IshPassword "IGNOREISHPASSWORD" } | Should -Not -Throw "Cannot validate argument on parameter 'IshUserName'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
+	}
+
+	Context "Test-IshSession ClientIdClientSecret so protocol WcfSoapWithOpenIdConnect or OpenApiWithOpenIdConnect" {
+		if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+			It "Parameter WsBaseUrl invalid" {
+				Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" | Should -Be $false
+			}
+			It "Parameter ClientId invalid" {
+				Test-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId "INVALIDCLIENTID" -ClientSecret "INVALIDCLIENTSECRET" | Should -Be $false
+			}
+			It "Parameter ClientSecret invalid" {
+				Test-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret "INVALIDCLIENTSECRET" | Should -Be $false
+			}
 		}
 	}
 
-	Context “Test-IshSession ActiveDirectory" {
+	Context "Test-IshSession Interactive so protocol WcfSoapWithWsTrust, WcfSoapWithOpenIdConnect or OpenApiWithOpenIdConnect" {
 		It "Parameter WsBaseUrl invalid" {
 			Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" | Should -Be $false
 		}
@@ -31,7 +42,7 @@ Describe "Test-IshSession" -Tags "Read" {
 		}
 	}
 
-	Context "Test-IshSession PSCredential" {
+	Context "Test-IshSession PSCredential so protocol WcfSoapWithWsTrust, WcfSoapWithOpenIdConnect or OpenApiWithOpenIdConnect" {
 		It "Parameter WsBaseUrl invalid" {
 			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
 			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
@@ -42,19 +53,48 @@ Describe "Test-IshSession" -Tags "Read" {
 			$mycredentials = New-Object System.Management.Automation.PSCredential ("INVALIDISHUSERNAME", $securePassword)
 			Test-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $false
 		}
-		It "Parameter PSCredential" {
+		It "Parameter PSCredential over WcfSoapWithWsTrust" {
 			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
 			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
-			Test-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $true
+			Test-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $true
+		}
+		It "Parameter PSCredential over WcfSoapWithOpenIdConnect" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$secureClientSecret = ConvertTo-SecureString $amClientSecret -AsPlainText -Force
+				$mycredentials = New-Object System.Management.Automation.PSCredential ($amClientId, $secureClientSecret)
+				Test-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $true
+			}
 		}
 	}
 
-	Context "Test-IshSession returns bool" {
+	Context "Test-IshSession over WcfSoapWithWsTrust returns bool" {
 		BeforeAll {
-			$ishSessionResult = Test-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			$ishSessionResult = Test-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		}
 		It "GetType()" {
 			$ishSessionResult.GetType().Name | Should -BeExactly "Boolean"
+		}
+	}
+
+	Context "Test-IshSession over WcfSoapWithOpenIdConnect returns bool" {
+		if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+			BeforeAll {
+				$ishSessionResult = Test-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+			}
+			It "GetType()" {
+				$ishSessionResult.GetType().Name | Should -BeExactly "Boolean"
+			}
+		}
+	}
+
+	Context "Test-IshSession over OpenApiWithOpenIdConnect returns bool" {
+		if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+			BeforeAll {
+				$ishSessionResult = Test-IshSession -Protocol OpenApiWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+			}
+			It "GetType()" {
+				$ishSessionResult.GetType().Name | Should -BeExactly "Boolean"
+			}
 		}
 	}
 

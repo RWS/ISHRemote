@@ -27,6 +27,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
 {
     /// <summary>
     /// <para type="synopsis">The Test-IshSession cmdlet creates a new IshSession object using the parameters that are provided.</para>
+    /// <para type="description">The communication protocol will be derived from the server-side product version (AutoDetect). On 14SP4/14.0.4 plus ISHRemote 7.0 and earlier the default is WcfSoapWithWsTrust. Since 15/15.0.0 ISHRemote prefers Modern Authentication and selects WcfSoapWithOpenIdConnect. Experimental since 15/15.0.0 is OpenApiWithOpenIdConnect, where already possible cmdlets will go over OpenAPI REST calls instead of WcfSoapWithOpenIdConnect calls.</para>
     /// <para type="description">The Test-IshSession cmdlet internal creates a minimal IshSession object using the parameters that are provided.</para>
     /// <para type="description">Tests the WebServices (ISHWS-activation) and validates the credentials in the 'InfoShare' database (ConnectionString-activation).</para>
     /// </summary>
@@ -34,37 +35,38 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// <code>
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin"
     /// </code>
-    /// <para>Building a session for the chosen service based on username/password authentication. The username/password will be used to build a NetworkCredential object to pass for authentication to the service.</para>
+    /// <para>Building a session for the chosen service based on username/password authentication provided by the CMS as Identity Provider.</para>
+    /// <para>Protocol will be WcfSoapWithWsTrust because of parameters -IshUserName/-IshPassword.</para>
     /// </example>
     /// <example>
     /// <code>
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// </code>
-    /// <para>Building a session for the chosen service based on Active Directory authentication. An implicit NetworkCredential object will be passed for authentication to the service.</para>
+    /// <para>Building a session for the chosen service.</para>
+    /// <para>Protocol will be WcfSoapWithWsTrust on 14SP4/14.0.4 and earlier systems. An implicit NetworkCredential object will be passed for authentication to the service on PowerShell 5.1 - will throw an error on PowerShell 7.2+.</para>
+    /// <para>Protocol will be WcfSoapWithOpenIdConnect on 15/15.0.0 and later systems. This will trigger the interactive system browser based flow - so your browser as trusted single sign on client.</para>
     /// </example>
     /// <example>
     /// <code>
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "" -IshPassword "admin"
     /// </code>
     /// <para>Building a session for the chosen service based on Active Directory authentication. By providing an empty username (and ignoring the password), an implicit NetworkCredential object will be passed for authentication to the service. This makes it possible to write generic scripts for UserNameMixed/ActiveDirectory authentication.</para>
+    /// <para>Protocol will be WcfSoapWithWsTrust because of parameters -IshUserName/-IshPassword.</para>
     /// </example>
     /// <example>
     /// <code>
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// </code>
     /// <para>Iteratively the Test-IshSession line with PSCredential parameter holding a string representation will prompt you for a password.</para>
+    /// <para>Protocol will be WcfSoapWithWsTrust on 14SP4/14.0.4 and earlier systems.</para>
+    /// <para>Protocol will be WcfSoapWithOpenIdConnect on 15/15.0.0 and later systems. Note that ClientId 'Admin' has to be configured in Access Management (ISHAM), by default ClientId typically is a GUID.</para>
     /// </example>
     /// <example>
     /// <code>
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Timeout (New-TimeSpan -Seconds 30)
     /// </code>
-    /// <para>Building a session for the chosen service based on username/password authentication. The Timeout parameter, expressed as TimeSpan object, controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml.</para>
-    /// </example>
-    /// <example>
-    /// <code>
-    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin"
-    /// </code>
-    /// <para>Building a session for the chosen service based on username/password authentication. The Timeout parameter, expressed as TimeSpan object, controls Send/Receive timeouts of WCF when issuing a token or working with proxies.</para>
+    /// <para>Building a session for the chosen service based on username/password authentication provided by the CMS as Identity Provider. The Timeout parameter, expressed as TimeSpan object, controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml.</para>
+    /// <para>Protocol will be WcfSoapWithWsTrust because of parameters -IshUserName/-IshPassword.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -72,31 +74,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// $mycredentials = New-Object System.Management.Automation.PSCredential("MYISHUSERNAME", $securePassword)
     /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential $mycredentials
     /// </code>
-    /// <para>Extensive automation example based on the PSCredential parameter. Responsibility of the plain text password is yours.</para>
+    /// <para>Extensive automation example based on the PSCredential parameter. Responsibility of the plain text password or client secret is yours.</para>
+    /// <para>Protocol will be WcfSoapWithWsTrust on 14SP4/14.0.4 and earlier systems.</para>
+    /// <para>Protocol will be WcfSoapWithOpenIdConnect on 15/15.0.0 and later systems. Note that 'Admin' has to be you ClientId as configured in Access Management (ISHAM), by default this typically is a GUID.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/Internal/" -IshUserName "admin" -IshPassword "admin"
-    /// </code>
-    /// <para>When ISHDeploy Enable-ISHIntegrationSTSInternalAuthentication was executed on the server, the web services are directed to a secondary Secure Token Service (STS). This happens through the '/Internal/' postfix which in essence points to a different connectionconfiguration.xml for initialization.</para>
-    /// </example>
-    /// <example>
-    /// <code>
-    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/Internal/" -IshUserName "admin" -IshPassword "admin" -IgnoreSslPolicyErrors
-    /// </code>
-    /// <para>IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
-    /// </example>
-    /// <example>
-    /// <code>
-    /// Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Protocol WcfSoapWithWsTrust
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -ClientId "c826e7e1-c35c-43fe-9756-e1b61f44bb40" -ClientSecret "ziKiGbx6N0G3m69/vWMZUTs2paVO1Mzqt6Y6TX7mnpPJyFVODsI1Vw=="
     /// </code>
     /// <para>Building a session for the chosen service based on username/password authentication. Parameter Protocol indicates the preferred communication/authentication route.</para>
-    /// </example>
-    /// <example>
-    /// <code>
-    /// $ishSession = Test-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IshUserName "admin" -IshPassword "admin" -Protocol OpenApiWithOpenIdConnect -ClientId "c826e7e1-c35c-43fe-9756-e1b61f44bb40" -ClientSecret "ziKiGbx6N0G3m69/vWMZUTs2paVO1Mzqt6Y6TX7mnpPJyFVODsI1Vw=="
-    /// </code>
-    /// <para>Building a session for the chosen service based on username/password authentication. Parameter Protocol indicates the preferred communication/authentication route.</para>
+    /// <para>Protocol will be WcfSoapWithOpenIdConnect on 15/15.0.0 and later systems. Note that ClientId/ClientSecret has to be configured in Access Management (ISHAM), by default ClientId typically is a GUID.</para>
     /// </example>
     [Cmdlet(VerbsDiagnostic.Test, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(bool))]
@@ -105,8 +92,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <summary>
         /// <para type="description">Tridion Docs Content Manager web services main URL. Note that the URL is case-sensitive and should end with an ending slash! For example: "https://example.com/ISHWS/"</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "Interactive")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ClientIdClientSecret")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         [ValidateNotNullOrEmpty]
         public string WsBaseUrl { get; set; }
@@ -142,12 +130,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">Client ID when Protocol OpenApiWithOpenIdConnect is used to trigger OAuth2/OpenIDConnect Client Credential Flow for usage to Issuer's /connect/token endpoint.</para>
+        /// <para type="description">Client ID when Protocol OpenApiWithOpenIdConnect or WcfSoapWithOpenIdConnect is used to trigger OAuth2/OpenIDConnect Client Credential Flow for usage to Issuer's /connect/token endpoint.</para>
         /// </summary>
-        // TODO [Must] ClientId/ClientSecret should become mandatory on seperate ParameterSetName = "CredentialFlow". When all OpenApi function are there, can be removed from ParameterSetName UserNamePassword/PSCredential as no fall back is required anymore.
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
-        [AllowEmptyString]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ClientIdClientSecret")]
         public string ClientId
         {
             get { return _clientId; }
@@ -155,12 +140,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">Client Secret when Protocol OpenApiWithOpenIdConnect is used to trigger OAuth2/OpenIDConnect Client Credential Flow for usage to Issuer's /connect/token endpoint.</para>
+        /// <para type="description">Client Secret when Protocol OpenApiWithOpenIdConnect or WcfSoapWithOpenIdConnect is used to trigger OAuth2/OpenIDConnect Client Credential Flow for usage to Issuer's /connect/token endpoint.</para>
         /// </summary>
-        // TODO [Must] ClientId/ClientSecret should become mandatory on seperate ParameterSetName = "CredentialFlow". When all OpenApi function are there, can be removed from ParameterSetName UserNamePassword/PSCredential as no fall back is required anymore.
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
-        [AllowEmptyString]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ClientIdClientSecret")]
         public string ClientSecret
         {
             get { return _clientSecret; }
@@ -170,8 +152,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <summary>
         /// <para type="description">Timeout value expressed as TimeSpan, that controls Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml Defaults to 30 minutes.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "Interactive")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ClientIdClientSecret")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         public TimeSpan Timeout
         {
@@ -182,8 +165,9 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         /// <summary>
         /// <para type="description">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ActiveDirectory")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "Interactive")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ClientIdClientSecret")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         public SwitchParameter IgnoreSslPolicyErrors
         {
@@ -192,9 +176,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">IshSession Protocol tries to connect the communication protocol like ASMX (Soap11), WCF (Soap12), OpenAPI (rest) with the authentication protocol like WS-Trust (WCF-only), AuthenticationContext (Asxm-only), etc. Offering shorthand for working combinations. See also <see cref="Protocol"/>.</para>
+        /// <para type="description">IshSession Protocol tries to connect the communication protocol like WcfSoapWithWsTrust (legacy option of Tridion Docs 14SP4/14.0.4 and ISHRemote 7.0 and earlier), WcfSoapWithOpenIdConnect (since Tridion Docs 15/15.0.0) and OpenApiWithOpenIdConnect (experimental since Tridion Docs 15/15.0.0). If not provided or default value AutoDetect will pick the most optimal support protocol. See also <see cref="Protocol"/>.</para>
         /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "Interactive")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ClientIdClientSecret")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "PSCredential")]
         [ValidateNotNullOrEmpty]
         public Enumerations.Protocol Protocol
@@ -212,20 +198,25 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         private SecureString _clientSecureSecret = null;
         private TimeSpan _timeout = new TimeSpan(0, 30, 0);  // up to 15s for a DNS lookup according to https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout%28v=vs.110%29.aspx
         private bool _ignoreSslPolicyErrors = false;
-        private Enumerations.Protocol _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
-
+        private Enumerations.Protocol _protocol = Enumerations.Protocol.Autodetect;
         #endregion
+
         protected override void ProcessRecord()
         {
             try
             {
-                if ((this.ParameterSetName.StartsWith("UserNamePassword")) && string.IsNullOrEmpty(_ishUserName))
+                if (this.ParameterSetName.StartsWith("UserNamePassword"))
                 {
-                    // We came in with an empty username but with -IshUserName/-IshPassword; 
-                    // so fallback to NetworkCredential/ActiveDirectory
-                    WriteWarning("Empty -IshUserName so fall back to NetworkCredential/ActiveDirectory, ignoring -IshPassword.");
-                    _ishUserName = null;
-                    _ishPassword = null;
+                    // Usage of parameters -IshUserName/-IshPassword is only allowed on WcfSoapWithWsTrust
+                    _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
+                    if (string.IsNullOrEmpty(_ishUserName))
+                    {
+                        // We came in with an empty username but with -IshUserName/-IshPassword; 
+                        // so fallback to NetworkCredential/ActiveDirectory
+                        WriteWarning("Empty -IshUserName so fall back to NetworkCredential/ActiveDirectory, ignoring -IshPassword.");
+                        _ishUserName = null;
+                        _ishPassword = null;
+                    }
                 }
                 int ishPasswordLength = _ishPassword == null ? 0 : _ishPassword.Length;
                 int clientSecretLength = _clientSecret == null ? 0 : _clientSecret.Length;
@@ -234,10 +225,15 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                 {
                     _ishUserName = PSCredential.UserName;
                     _ishSecurePassword = PSCredential.Password;
+                    _clientId = PSCredential.UserName;
+                    _clientSecureSecret = PSCredential.Password;
                 }
                 else if (!String.IsNullOrWhiteSpace(_ishPassword))
                 {
                     _ishSecurePassword = SecureStringConversions.StringToSecureString(_ishPassword);
+                }
+                else if (!String.IsNullOrWhiteSpace(_clientSecret))
+                {
                     _clientSecureSecret = _clientSecret == null ? null : SecureStringConversions.StringToSecureString(_clientSecret);
                 }
                 else
@@ -245,8 +241,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
                     _ishSecurePassword = null;
                     _clientSecureSecret = null;
                 }
-                WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] ClientId[{_clientId}] ClientSecret[" + new string('*', clientSecretLength) + "]");
-                WriteDebug($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] ClientId[{_clientId}] ClientSecret[" + new string('*', clientSecretLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}] Protocol[{_protocol}]");
+                WriteVerbose($"Connecting to WsBaseUrl[{WsBaseUrl}] IshUserName[{_ishUserName}] IshPassword[" + new string('*', ishPasswordLength) + $"] ClientId[{_clientId}] ClientSecret[" + new string('*', clientSecretLength) + $"] Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}] Protocol[{_protocol}]");
                 IshSession ishSession = new IshSession(Logger, WsBaseUrl, _ishUserName, _ishSecurePassword, _clientId, _clientSecureSecret, _timeout, _ignoreSslPolicyErrors, _protocol);
 
                 // Keep the IshSession initialization as minimal as possible

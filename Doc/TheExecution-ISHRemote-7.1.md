@@ -187,16 +187,15 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to ISHRemote/Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
 * Refactor from AppDomainAssemblyResolveHelper structure to https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/ because it load earlier instead of only New-IshSession
 * All examples for Get-Help in New-IshSession are over -PSCredentials or -IshUserName/IshPassword but now we have interactive (so system browser) or -ClientId/ClientSecret ... adapt them all or add sentence in first example?
-
+* Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
+* Extend New-IshSession/Test-IshSession with -PSCredential also working for client/secret (and ishusername/ishpassword)
+  
 # Next   
-* Put Protocol in IshSession print next to ServerVersion (perhaps no AuthContext anymore)
 * Test refresh with short expiration 
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
-* Extend New-IshSession/Test-IshSession with -PSCredential also working for client/secret (and ishusername/ishpassword)
-* Test ps5.1 with wstrust, ps7 with both openidconnect
+* Automated Test ps5.1 with wstrust, ps7 with both openidconnect
 * Test all protocol types on all platforms via newishsession (and one other smoke test) by calling it 6 times (2 ps times 3 protocols) which colors right after prerequisites
 * Refresh OpenApi.json to released Docs 15.0.0 version
-* Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
 * Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainAssemblyResolveHelper.cs` or better `AppDomainModuleAssemblyInitializer.cs`
     > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs` on https://github.com/RWS/ISHRemote/
     > Another hint is adding `LogSerializer.Enabled = false;` because if you do not attach logging to OidcClient, there seemingly is a bug that still does logging although not configured. see https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
@@ -204,7 +203,8 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Describe what Tridion Docs User Profile disable means, and when it kicks in.
 * Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID).
  
-# Future            
+# Future  
+* Put Protocol in IshSession print next to ServerVersion (perhaps no AuthContext anymore)          
 * Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs
 
 
