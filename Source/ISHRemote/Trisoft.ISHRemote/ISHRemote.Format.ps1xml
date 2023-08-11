@@ -50,7 +50,7 @@
                 <PropertyName>ServerVersion</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>BearerToken</PropertyName>
+                <PropertyName>AccessToken</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>AuthenticationContext</PropertyName>

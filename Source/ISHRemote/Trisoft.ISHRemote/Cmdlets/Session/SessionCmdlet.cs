@@ -40,7 +40,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         protected override void BeginProcessing()
         {
             base.BeginProcessing();
-            WriteWarning("ISHRemote module on PS5.1/NET48 force Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll");
+            WriteWarning("ISHRemote module on PS5.1/NET48 forces Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll");
             //WriteWarning("IshSession-cmdlets on PS5.1/NET48 force Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll");
             //AppDomainAssemblyResolveHelper.Redirect(); is superseded with AppDomainModuleAssemblyInitializer based on IModuleAssemblyInitializer
         }

@@ -1214,7 +1214,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>A wsdl importer</returns>
         private WsdlImporter GetWsdlImporter(Uri wsdlUri)
         {
-            _logger.WriteDebug($"GetWsdlImporter wsdlUri[{wsdlUri}]");
+            _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection GetWsdlImporter wsdlUri[{wsdlUri}]");
             WSHttpBinding mexBinding = null;
             if (wsdlUri.Scheme == Uri.UriSchemeHttp)
             {

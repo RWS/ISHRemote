@@ -360,6 +360,15 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _ishUserName = value; }
         }
 
+        /// <summary>
+        /// The Client ID of the client/secret combination you passed for Credential Flow authentication (most likely over Access Management (ISHAM)).
+        /// </summary>
+        public string ClientId
+        {
+            get { return _clientId; }
+            set { _clientId = value; }
+        }
+
         internal string Name
         {
             get { return $"[{WebServicesBaseUrl}][{IshUserName}]"; }

@@ -7,9 +7,43 @@
 }
 
 Describe "Test-Prerequisite" -Tags "Read" {
-	Context "IshSession - Required overwrite in ISHRemote.PesterSetup.Debug.ps1" {
+	Context "ISHRemote.PesterSetup.Debug.ps1 minimal overwrites" {
+		It "baseUrl" {
+			$baseUrl | Should -Not -Be 'https://ish.example.com'
+			$baseUrl | Should -Not -Be ''
+		}
+		It "webServicesBaseUrl" {
+			$webServicesBaseUrl | Should -Not -Be '$baseUrl/ISHWS/'
+			$webServicesBaseUrl | Should -Not -Be ''
+		}
+		It "ishUserName" {
+			$ishUserName | Should -Not -Be 'myusername'
+			$ishUserName | Should -Not -Be ''
+		}
+		It "ishPassword" {
+			$ishPassword | Should -Not -Be 'mypassword'
+			$ishPassword | Should -Not -Be ''
+		}
+		It "amClientId" {
+			$amClientId | Should -Not -Be 'myserviceaccountclientid'
+			$amClientId | Should -Not -Be ''
+		}
+		It "amClientSecret" {
+			$amClientSecret | Should -Not -Be 'myserviceaccountclientsecret'
+			$amClientSecret | Should -Not -Be ''
+		}
+	}
+
+	Context "IshSession (<16.0.0) - Validating overwrites of ISHRemote.PesterSetup.Debug.ps1" {
 		BeforeAll {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			$ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+		}
+		It "IshSession.Protocol WcfSoapWithWsTrust" {
+			$IshSession.Protocol | Should -Be 'WcfSoapWithWsTrust'
+		}
+		It "Current IShSession user should be part of VUSERGROUPSYSTEMMANAGEMENT UserGroup" {
+			$ishUser = Get-IshUser
+			$ishUser.fusergroup_none_element -like "*VUSERGROUPSYSTEMMANAGEMENT*" | Should -Be $true
 		}
 		It "IshSession.AuthenticationContext" {
 			$ishSession.AuthenticationContext | Should -Not -BeNullOrEmpty
@@ -26,9 +60,24 @@ Describe "Test-Prerequisite" -Tags "Read" {
 		It "IshSession.ServerVersion not 0.0.0.0" {
 			$ishSession.ServerVersion | Should -Not -Be "0.0.0.0"
 		}
-		It "Current IShSession user should be part of VUSERGROUPSYSTEMMANAGEMENT UserGroup" {
-			$ishUser = Get-IshUser
-			$ishUser.fusergroup_none_element -like "*VUSERGROUPSYSTEMMANAGEMENT*"
+	}
+
+	Context "IshSession (=15.0.0) - Validating overwrites of ISHRemote.PesterSetup.Debug.ps1" {
+		if (([Version]$ishSession.ServerVersion).Major -eq 15) { 
+			BeforeAll {
+				$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+				$ishUser = Get-IshUser
+			}
+			It "IshSession.Protocol WcfSoapWithOpenIdConnect" {
+				$IshSession.Protocol | Should -Be 'WcfSoapWithOpenIdConnect'
+			}
+			It "Current IShSession user should be part of VUSERGROUPSYSTEMMANAGEMENT UserGroup" {
+				
+				$ishUser.fusergroup_none_element -like "*VUSERGROUPSYSTEMMANAGEMENT*" | Should -Be $true
+			}
+			It "Current IShSession user identified over CliendId/ClientSecret should match the IshUserName/IshPassword" {
+				$ishUser.username | Should -Be $ishUserName
+			}
 		}
 	}
 

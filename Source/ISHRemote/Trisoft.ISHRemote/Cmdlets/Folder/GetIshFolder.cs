@@ -243,6 +243,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             // TODO [Must] Add OpenApi implementation
                             case Enumerations.Protocol.WcfSoapWithWsTrust:
+                            case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                                 string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(folderCardIdBatch.ToArray(), _requestedMetadata.ToXml());
                                 IshFolders retrievedObjects = new IshFolders(xmlIshFolders);
                                 returnIshFolders.AddRange(retrievedObjects.Folders);
@@ -267,6 +268,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             // TODO [Must] Add OpenApi implementation
                             case Enumerations.Protocol.WcfSoapWithWsTrust:
+                            case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                                 string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(folderCardIdBatch.ToArray(), _requestedMetadata.ToXml());
                                 retrievedFolders = new IshFolders(xmlIshFolders);
                                 break;
@@ -296,6 +298,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                         // TODO [Must] Add OpenApi implementation
                         case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                             string xmlIshFolder = IshSession.Folder25.GetMetadata(
                                 BaseFolderLabelToEnum(IshSession, baseFolderLabel),
                                 folderPathTrisoft,
@@ -325,6 +328,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             break;
                             */
                         case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                             string xmlIshFolders = IshSession.Folder25.GetMetadata(
                                 baseFolder,
                                 new string[0],
@@ -424,6 +428,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                     // TODO [Must] Add OpenApi implementation
                     case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                         string xmlIshFolders = IshSession.Folder25.GetSubFoldersByIshFolderRef(ishFolder.IshFolderRef);
                         // GetSubFolders contains ishfolder for the parent folder + ishfolder inside for the subfolders
                         retrievedFolders = new IshFolders(xmlIshFolders, "ishfolder/ishfolder");
@@ -438,6 +443,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                         // TODO [Must] Add OpenApi implementation
                         case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                             string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(retrievedFolders.Ids,_requestedMetadata.ToXml());
                             retrievedFolders = new IshFolders(xmlIshFolders);
                             break;

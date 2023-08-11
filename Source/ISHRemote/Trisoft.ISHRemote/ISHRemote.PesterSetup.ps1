@@ -113,7 +113,11 @@ $hostname=$Matches['hostname']
 #
 #if ($null -eq $global:ishSession)
 #{
-	$global:ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+	$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+	if (([Version]$global:ishSession.ServerVersion).Major -ge 15) {
+		$global:ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+	}
+	
 #}
 $ishSession = $global:ishSession
 # TODO [Must] The StateStore is now required for all tests, but it is only done in New-IshSession. 50s performance boost to gain 

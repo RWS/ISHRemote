@@ -224,6 +224,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         foldersToRetrieve.Add(folderId);
                                         break;
                                     case Enumerations.Protocol.WcfSoapWithWsTrust:
+                                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                                         folderId = IshSession.Folder25.Create(
                                             ParentFolderId,
                                             folderName,
@@ -300,6 +301,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                     break;
                                     */
                                 case Enumerations.Protocol.WcfSoapWithWsTrust:
+                                case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                                     folderId = IshSession.Folder25.Create(
                                         ParentFolderId,
                                         FolderName,
@@ -352,6 +354,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             break;
                             */
                         case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                             string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(foldersToRetrieve.ToArray(), requestedMetadata.ToXml());
                             IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
                             returnedFolders.AddRange(retrievedFolders.Folders);

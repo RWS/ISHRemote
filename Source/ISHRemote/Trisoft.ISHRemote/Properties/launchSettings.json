@@ -3,61 +3,61 @@
     "PS5 New-IshSession OpenApi SystemBrowser": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol OpenApiWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -Protocol OpenApiWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS5 New-IshSession OpenApi CredentialFlow": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol OpenApiWithOpenIdConnect  -ClientId \"fb6af245-3960-46cc-bd6b-c2119f90285c\" -ClientSecret \"nfLtcVXYc6TWWJ2MVPQKBu2LLi6sFdrkxHuo-DTAJCZzhekjCez8sw==\" -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -Protocol OpenApiWithOpenIdConnect -ClientId \"fb6af245-3960-46cc-bd6b-c2119f90285c\" -ClientSecret \"nfLtcVXYc6TWWJ2MVPQKBu2LLi6sFdrkxHuo-DTAJCZzhekjCez8sw==\" -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS5 New-IshSession WcfSoap SystemBrowser": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol WcfSoapWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -Protocol WcfSoapWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS5 New-IshSession WcfSoap CredentialFlow": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol WcfSoapWithOpenIdConnect -ClientId \"fb6af245-3960-46cc-bd6b-c2119f90285c\" -ClientSecret \"nfLtcVXYc6TWWJ2MVPQKBu2LLi6sFdrkxHuo-DTAJCZzhekjCez8sw==\" -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -Protocol WcfSoapWithOpenIdConnect -ClientId \"fb6af245-3960-46cc-bd6b-c2119f90285c\" -ClientSecret \"nfLtcVXYc6TWWJ2MVPQKBu2LLi6sFdrkxHuo-DTAJCZzhekjCez8sw==\" -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS5 New-IshSession WcfSoapWithWsTrust": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol WcfSoapWithWsTrust -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS7 New-IshSession OpenApi CredentialFlow": {
       "commandName": "Executable",
       "executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol OpenApiWithOpenIdConnect  -ClientId \"fb6af245-3960-46cc-bd6b-c2119f90285c\" -ClientSecret \"nfLtcVXYc6TWWJ2MVPQKBu2LLi6sFdrkxHuo-DTAJCZzhekjCez8sw==\" -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -Protocol OpenApiWithOpenIdConnect -ClientId \"fb6af245-3960-46cc-bd6b-c2119f90285c\" -ClientSecret \"nfLtcVXYc6TWWJ2MVPQKBu2LLi6sFdrkxHuo-DTAJCZzhekjCez8sw==\" -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS7 New-IshSession OpenApi SystemBrowser": {
       "commandName": "Executable",
       "executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol OpenApiWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -Protocol OpenApiWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS7 New-IshSession WcfSoap CredentialFlow": {
       "commandName": "Executable",
       "executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol WcfSoapWithOpenIdConnect  -ClientId \"fb6af245-3960-46cc-bd6b-c2119f90285c\" -ClientSecret \"nfLtcVXYc6TWWJ2MVPQKBu2LLi6sFdrkxHuo-DTAJCZzhekjCez8sw==\" -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -Protocol WcfSoapWithOpenIdConnect -ClientId \"fb6af245-3960-46cc-bd6b-c2119f90285c\" -ClientSecret \"nfLtcVXYc6TWWJ2MVPQKBu2LLi6sFdrkxHuo-DTAJCZzhekjCez8sw==\" -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS7 New-IshSession WcfSoap SystemBrowser": {
       "commandName": "Executable",
       "executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol WcfSoapWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -Protocol WcfSoapWithOpenIdConnect -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     },
     "PS7 New-IshSession WcfSoapWithWsTrust": {
       "commandName": "Executable",
       "executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe",
-      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/ -IshUserName admin2 -IshPassword admin2 -Protocol WcfSoapWithWsTrust -IgnoreSslPolicyErrors -debug\"",
+      "commandLineArgs": "-NoExit -Command \"& Import-Module \"..\\ISHRemote\\ISHRemote.psm1 -Verbose; New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl https://lvndevdemeyer01.global.sdl.corp/ISHWSDita/  -IshUserName admin2 -IshPassword admin2 -IgnoreSslPolicyErrors -debug\"",
       "nativeDebugging": true
     }
   }

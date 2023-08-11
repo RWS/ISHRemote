@@ -21,22 +21,26 @@ First you need to get Authenticated, then you need to get Authorized. The Authen
 
 Once Authenticated, you have an external id.
 
-Repurpose or introduce `New-IShSession` parameter groups
+Repurpose or introduce `New-IShSession` parameter groups, and matching `Test-IshSession` groups.
 
 ## Add parameter group ClientSecret [APPROVED]
 Parameters `-Client` and `-Secret` can be easily codified
 As Access Management (ISHAM) owns the client/secret combination which is linked to the Tridion Docs User Profile, a seperate flow makes sense. Perhaps short-circuited through `connectionconfiguration.xml` configuration.
+Used on protocçols `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect`.
 
 ## Repurpose parameter group ActiveDirectory by rename to Interactive [APPROVED]
 Active Directory only makes sense for interactive mode and in essence there was no parameter to fill in. ISHRemote prefilled credentials with `NetworkCredentials`.
 Repurposing this group with no explicit parameters make sense. Depending on the `infosharesoftwareversion` mentioned in `connectionconfiguration.xml` to remain passing `NetworkCredentials` or launch a System Browser based authentication.
+Used on protocols `WcfSoapWithWsTrust` only for `WindowsMixed` variation; while `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect` only over System Browser interactive authentication.
 Add `-Timeout` parameter to this parameter group.
 
 ## Repurpose parameter group UserNamePassword [DENIED]
 `-IShUserName` and`-IShPassword` can be repurposed but will lead to confusion. In unattended mode it is Access Management (ISHAM) that owns the client/secret combination which is linked to the Tridion Docs User Profile but you will not reuse the username/password combination.
+Used on protocols `WcfSoapWithWsTrust`.
 
 ## Repurpose parameter group PSCredential [PROBABLY]
 `-PSCredential` can be repurposed but *might* lead to confusion. In unattended mode it is Access Management (ISHAM) that owns the client/secret combination which is linked to the Tridion Docs User Profile but you will not reuse the username/password combination. Guidance how to use Credential object by `connectionconfiguration.xml`.
+Used on protocols `WcfSoapWithWsTrust` only for `UserNameMixed` variation; while `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect` only over Client Credentials authentication.
 
 
 
@@ -142,6 +146,9 @@ Add (nested binary module) AMRemote that could offer cmdlets like
 * `New-AMSession`, similar to `New-IShSession`, that returns an `AMSession` object with OpenApi proxy.
 * `Get-AMUser`, `Set-AMUser` and `Remove-AMUser`. It would be nice if ISHRemote and AMRemote would understand each others object model. That is why just adding some cmdlets in ISHRemote is so much easier than a clean AMRemote PowerShell automation library.
 
+# Compatiblity
+ISHRemote compatibility is on its Cmdlets and parameters groups wherever possible across ISHRemote major and minor versions. On the inside refactoring is required to introduce Wcf Soap with OpenIdConnect authentication or later even OpenApi with OpenIdConnect authentication. So in practice people that link to the ISHRemote assembly in their program code will find feature parity but might not find code compatibility.
+Refer to __ConnectionClassDiagram restructering but also example code. Explain the relations among these files, so WcfSoapBearerToken as workaround mentioned by Duende, delivering reused WcfSoap proxies that are compatible (which is cool!)
 
 # Done
 * Merging in #115 branch that was AsmxSoapWithAuthenticationContext plus OpenApiWithOpenIdConnect efforts
@@ -177,25 +184,28 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
     * Remove interface on soap classes 
     * Rename Tokens to InfoShareOpenIdConnectTokens
     * Rename InfoShareOpenApiConnection to InfoShareOpenApiWithOpenIdConnectConnection
+* Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to ISHRemote/Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
 * Refactor from AppDomainAssemblyResolveHelper structure to https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/ because it load earlier instead of only New-IshSession
+* All examples for Get-Help in New-IshSession are over -PSCredentials or -IshUserName/IshPassword but now we have interactive (so system browser) or -ClientId/ClientSecret ... adapt them all or add sentence in first example?
 
 # Next   
 * Put Protocol in IshSession print next to ServerVersion (perhaps no AuthContext anymore)
 * Test refresh with short expiration 
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
+* Extend New-IshSession/Test-IshSession with -PSCredential also working for client/secret (and ishusername/ishpassword)
 * Test ps5.1 with wstrust, ps7 with both openidconnect
 * Test all protocol types on all platforms via newishsession (and one other smoke test) by calling it 6 times (2 ps times 3 protocols) which colors right after prerequisites
-* Cleanup `IInfoShareWcfSoapConnection.cs` and references as nobody uses it.
-* Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to ISHRemote/Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
+* Refresh OpenApi.json to released Docs 15.0.0 version
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
-* Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainAssemblyResolveHelper.cs`
+* Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainAssemblyResolveHelper.cs` or better `AppDomainModuleAssemblyInitializer.cs`
     > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs` on https://github.com/RWS/ISHRemote/
     > Another hint is adding `LogSerializer.Enabled = false;` because if you do not attach logging to OidcClient, there seemingly is a bug that still does logging although not configured. see https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
-            
-* Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs
-
 * Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed.
 * Describe what Tridion Docs User Profile disable means, and when it kicks in.
 * Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID).
+ 
+# Future            
+* Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs
+
 
 # Background and References

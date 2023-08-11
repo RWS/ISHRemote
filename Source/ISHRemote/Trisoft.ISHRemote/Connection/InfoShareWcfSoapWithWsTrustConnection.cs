@@ -1214,7 +1214,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void ResolveEndpoints(bool autoAuthenticate)
         {
-            _logger.WriteDebug("Resolving endpoints");
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Resolving endpoints");
             Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
             var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
             // Get endpont for http or https depending on the base uri passed
@@ -1228,7 +1228,7 @@ namespace Trisoft.ISHRemote.Connection
                 // Resolve the token
                 var token = IssuedToken;
             }
-            _logger.WriteDebug("Resolved endpoints");
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Resolved endpoints");
         }
 
         /// <summary>
@@ -1236,7 +1236,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private ServiceEndpoint FindIssuerEndpoint()
         {
-            _logger.WriteDebug("FindIssuerEndpoint");
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection FindIssuerEndpoint");
             EndpointAddress issuerMetadataAddress = null;
             EndpointAddress issuerAddress = null;
             IssuedSecurityTokenParameters protectionTokenParameters = null;
@@ -1256,7 +1256,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             issuerMetadataAddress = protectionTokenParameters.IssuerMetadataAddress;
             issuerAddress = protectionTokenParameters.IssuerAddress;
-            _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
 
 
             ServiceEndpointCollection serviceEndpointCollection;
@@ -1274,7 +1274,7 @@ namespace Trisoft.ISHRemote.Connection
             }
 
             var issuerWSTrustEndpointAbsolutePath = IssuerWSTrustEndpointUri.AbsolutePath;
-            _logger.WriteDebug($"FindIssuerEndpoint issuerWSTrustEndpointAbsolutePath[{issuerWSTrustEndpointAbsolutePath}]");
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection FindIssuerEndpoint issuerWSTrustEndpointAbsolutePath[{issuerWSTrustEndpointAbsolutePath}]");
             ServiceEndpoint issuerServiceEndpoint = serviceEndpointCollection.FirstOrDefault(
                 x => x.Address.Uri.AbsolutePath.Equals(issuerWSTrustEndpointAbsolutePath, StringComparison.OrdinalIgnoreCase));
 
@@ -1295,7 +1295,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>A wsdl importer</returns>
         private WsdlImporter GetWsdlImporter(Uri wsdlUri)
         {
-            _logger.WriteDebug($"GetWsdlImporter wsdlUri[{wsdlUri}]");
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection GetWsdlImporter wsdlUri[{wsdlUri}]");
             WSHttpBinding mexBinding = null;
             if (wsdlUri.Scheme == Uri.UriSchemeHttp)
             {
@@ -1357,7 +1357,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <param name="endpoint">The endpoint</param>
         private void ApplyQuotas(ServiceEndpoint endpoint)
         {
-            _logger.WriteDebug($"ApplyQuotas on serviceEndpoint[{endpoint.Address.Uri}]");
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection ApplyQuotas on serviceEndpoint[{endpoint.Address.Uri}]");
             CustomBinding customBinding = (CustomBinding)endpoint.Binding;
             var textMessageEncoding = customBinding.Elements.Find<TextMessageEncodingBindingElement>();
             textMessageEncoding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
