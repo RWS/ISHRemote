@@ -75,9 +75,8 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// This option is not typically used but allows validating other applications like Tridion_Docs_Content_Importer
         /// </summary>
         private string _clientAppId = "ISHRemote";
-        private InfoShareOpenApiConnectionParameters _infoShareOpenApiConnectionParameters;
+        private InfoShareOpenIdConnectConnectionParameters _infoShareOpenIdConnectConnectionParameters; 
         private InfoShareOpenApiConnection _infoShareOpenApiConnection;
-        private InfoShareWcfSoapWithOpenIdConnectConnectionParameters _infoShareWcfSoapWithOpenIdConnectConnectionParameters;
         private InfoShareWcfSoapWithOpenIdConnectConnection _infoShareWcfSoapWithOpenIdConnectConnection;
         private InfoShareWcfSoapWithWsTrustConnectionParameters _infoShareWcfSoapWithWsTrustConnectionParameters;
         private InfoShareWcfSoapWithWsTrustConnection _infoShareWcfSoapWithWsTrustConnection;
@@ -147,7 +146,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _clientId = clientId;
             _clientSecureSecret = clientSecureSecret;
 
-            // Detecting or verifying protocol
+            // Detecting versions
             var ishwsConnectionConfigurationUri = new Uri(_webServicesBaseUri, "connectionconfiguration.xml");
             IshConnectionConfiguration ishwsConnectionConfiguration = LoadConnectionConfiguration(ishwsConnectionConfigurationUri);
             _logger.WriteVerbose($"LoadConnectionConfiguration found InfoShareWSUrl[{ishwsConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{ishwsConnectionConfiguration.ApplicationName}] SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
@@ -162,16 +161,30 @@ namespace Trisoft.ISHRemote.Objects.Public
                 owcfConnectionConfiguration = LoadConnectionConfiguration(wcfConnectionConfigurationUri);
                 _logger.WriteVerbose($"LoadConnectionConfiguration found InfoShareWSUrl[{owcfConnectionConfiguration.InfoShareWSUrl}] ApplicationName[{owcfConnectionConfiguration.ApplicationName}] SoftwareVersion[{owcfConnectionConfiguration.SoftwareVersion}]");
             }
-            else
+
+            // Detecting protocols based on versions
+            if (_protocol == Enumerations.Protocol.Autodetect && (new IshVersion(ishwsConnectionConfiguration.SoftwareVersion).MajorVersion <= 14))
             {
                 _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
+                _logger.WriteDebug($"LoadConnectionConfiguration selecting _protocol[{_protocol}] on SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
+            }
+            else if (_protocol == Enumerations.Protocol.Autodetect && (new IshVersion(ishwsConnectionConfiguration.SoftwareVersion).MajorVersion == 15))
+            {
+                _protocol = Enumerations.Protocol.WcfSoapWithOpenIdConnect;
+                _logger.WriteDebug($"LoadConnectionConfiguration selecting _protocol[{_protocol}] on SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
+            }
+            else if (_protocol == Enumerations.Protocol.Autodetect && (new IshVersion(ishwsConnectionConfiguration.SoftwareVersion).MajorVersion >= 16))
+            {
+                // >= 16, so predicting public OpenApi
+                _protocol = Enumerations.Protocol.OpenApiWithOpenIdConnect;
+                _logger.WriteDebug($"LoadConnectionConfiguration selecting _protocol[{_protocol}] on SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
             }
 
+            // Initializing based on protocols
             switch (_protocol)
             {
-                case Enumerations.Protocol.Autodetect:
-                    _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
-                    _logger.WriteVerbose($"LoadConnectionConfiguration selected protocol[{_protocol}]");
+                case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    _logger.WriteDebug($"LoadConnectionConfiguration selected protocol[{_protocol}]");
                     _infoShareWcfSoapWithWsTrustConnectionParameters = new InfoShareWcfSoapWithWsTrustConnectionParameters
                     {
                         AuthenticationType = ishwsConnectionConfiguration.AuthenticationType,
@@ -185,7 +198,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                     break;
                 case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     _logger.WriteDebug($"LoadConnectionConfiguration selected protocol[{_protocol}]");
-                    _infoShareWcfSoapWithOpenIdConnectConnectionParameters = new InfoShareWcfSoapWithOpenIdConnectConnectionParameters
+                    _infoShareOpenIdConnectConnectionParameters = new InfoShareOpenIdConnectConnectionParameters
                     {
                         AuthenticationType = owcfConnectionConfiguration.AuthenticationType,
                         InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
@@ -199,7 +212,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                     break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                     _logger.WriteDebug($"LoadConnectionConfiguration selected protocol[{_protocol}]");
-                    _infoShareOpenApiConnectionParameters = new InfoShareOpenApiConnectionParameters
+                    _infoShareOpenIdConnectConnectionParameters = new InfoShareOpenIdConnectConnectionParameters
                     {
                         AuthenticationType = owcfConnectionConfiguration.AuthenticationType,
                         InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
@@ -210,30 +223,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                         ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
                     };
                     CreateOpenApiWithOpenIdConnectConnection();
-                    // explictly initializing WcfSoapWithWsTrust as well, as many cmdlets in turn OpenAPI calls are still missing
-                    _infoShareWcfSoapWithWsTrustConnectionParameters = new InfoShareWcfSoapWithWsTrustConnectionParameters
-                    {
-                        AuthenticationType = ishwsConnectionConfiguration.AuthenticationType,
-                        InfoShareWSUrl = ishwsConnectionConfiguration.InfoShareWSUrl,
-                        IssuerUrl = ishwsConnectionConfiguration.IssuerUrl,
-                        Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
-                        Timeout = _timeout,
-                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
-                    };
-                    CreateInfoShareWcfSoapWithWsTrustConnection();
-                    break;
-                case Enumerations.Protocol.WcfSoapWithWsTrust:
-                    _logger.WriteDebug($"LoadConnectionConfiguration selected protocol[{_protocol}]");
-                    _infoShareWcfSoapWithWsTrustConnectionParameters = new InfoShareWcfSoapWithWsTrustConnectionParameters
-                    {
-                        AuthenticationType = ishwsConnectionConfiguration.AuthenticationType,
-                        InfoShareWSUrl = ishwsConnectionConfiguration.InfoShareWSUrl,
-                        IssuerUrl = ishwsConnectionConfiguration.IssuerUrl,
-                        Credential = _ishSecurePassword == null ? null : new NetworkCredential(_ishUserName, SecureStringConversions.SecureStringToString(_ishSecurePassword)),
-                        Timeout = _timeout,
-                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
-                    };
-                    CreateInfoShareWcfSoapWithWsTrustConnection();
+                    // explictly initializing WcfSoapWithOpenIdConnect as well, as many cmdlets have matching OpenAPI calls (and/or implementation) missing
+                    CreateInfoShareWcfSoapWithOpenIdConnectConnection();
                     break;
                 default:
                     throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -267,7 +258,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private void CreateInfoShareWcfSoapWithOpenIdConnectConnection()
         {
             _logger.WriteVerbose($"CreateInfoShareWcfSoapWithOpenIdConnectConnection");
-            _infoShareWcfSoapWithOpenIdConnectConnection = new InfoShareWcfSoapWithOpenIdConnectConnection(_logger, _httpClient, _infoShareWcfSoapWithOpenIdConnectConnectionParameters);
+            _infoShareWcfSoapWithOpenIdConnectConnection = new InfoShareWcfSoapWithOpenIdConnectConnection(_logger, _httpClient, _infoShareOpenIdConnectConnectionParameters);
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateInfoShareWcfSoapWithOpenIdConnectConnection _serverVersion GetApplication25Channel");
             var application25Proxy = _infoShareWcfSoapWithOpenIdConnectConnection.GetApplication25Channel();
@@ -279,7 +270,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             
             _logger.WriteVerbose($"CreateOpenApiWithOpenIdConnectConnection");
-            _infoShareOpenApiConnection = new InfoShareOpenApiConnection(_logger, _httpClient, _infoShareOpenApiConnectionParameters);
+            _infoShareOpenApiConnection = new InfoShareOpenApiConnection(_logger, _httpClient, _infoShareOpenIdConnectConnectionParameters);
             _logger.WriteDebug("CreateOpenApiWithOpenIdConnectConnection openApi30Service.GetApplicationVersionAsync");
             _serverVersion = new IshVersion(_infoShareOpenApiConnection.GetOpenApiISH30ServiceProxy().GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
@@ -387,8 +378,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                     switch (Protocol)
                     {
                         case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                            // TODO [Must] Add OpenApi implementation
+                        // TODO [Must] Add OpenApi implementation
                         case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                             string requestedMetadata = "<ishfields><ishfield name='USERNAME' level='none'/></ishfields>";
                             string xmlIshObjects = User25.GetMyMetadata(requestedMetadata);
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
@@ -416,6 +408,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             // TODO [Must] Add OpenApi implementation
                         case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                             string requestedMetadata = "<ishfields><ishfield name='FISHUSERLANGUAGE' level='none'/></ishfields>";
                             string xmlIshObjects = User25.GetMyMetadata(requestedMetadata);
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHUser };
@@ -480,8 +473,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                         // TODO [Must] Add OpenApi implementation
                     case Enumerations.Protocol.WcfSoapWithWsTrust:
-                        var application25Proxy = _infoShareWcfSoapWithWsTrustConnection.GetApplication25Channel();
-                        return application25Proxy.Authenticate2();
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        return Application25.Authenticate2();
                 }
                 return ("Not-Available-Over-" + Protocol.ToString());
             }
@@ -498,7 +491,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                 switch (Protocol)
                 {
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        return _infoShareOpenApiConnectionParameters.Tokens.AccessToken;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        return _infoShareOpenIdConnectConnectionParameters.Tokens.AccessToken;
                 }
                 return String.Empty;
             }
@@ -625,6 +619,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _annotation25 = _infoShareWcfSoapWithWsTrustConnection.GetAnnotation25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _annotation25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetAnnotation25Channel();
                             break;
                         default:
@@ -648,6 +643,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _application25 = _infoShareWcfSoapWithWsTrustConnection.GetApplication25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _application25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetApplication25Channel();
                             break;
                         default:
@@ -671,6 +667,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _user25 = _infoShareWcfSoapWithWsTrustConnection.GetUser25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _user25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUser25Channel();
                             break;
                         default:
@@ -694,6 +691,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _userRole25 = _infoShareWcfSoapWithWsTrustConnection.GetUserRole25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _userRole25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserRole25Channel();
                             break;
                         default:
@@ -717,6 +715,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _userGroup25 = _infoShareWcfSoapWithWsTrustConnection.GetUserGroup25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _userGroup25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserGroup25Channel();
                             break;
                         default:
@@ -740,6 +739,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _documentObj25 = _infoShareWcfSoapWithWsTrustConnection.GetDocumentObj25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _documentObj25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetDocumentObj25Channel();
                             break;
                         default:
@@ -763,6 +763,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _publicationOutput25 = _infoShareWcfSoapWithWsTrustConnection.GetPublicationOutput25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _publicationOutput25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetPublicationOutput25Channel();
                             break;
                         default:
@@ -786,6 +787,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _settings25 = _infoShareWcfSoapWithWsTrustConnection.GetSettings25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _settings25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSettings25Channel();
                             break;
                         default:
@@ -809,6 +811,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _eventMonitor25 = _infoShareWcfSoapWithWsTrustConnection.GetEventMonitor25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _eventMonitor25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEventMonitor25Channel();
                             break;
                         default:
@@ -832,6 +835,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _baseline25 = _infoShareWcfSoapWithWsTrustConnection.GetBaseline25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _baseline25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBaseline25Channel();
                             break;
                         default:
@@ -855,6 +859,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _metadataBinding25 = _infoShareWcfSoapWithWsTrustConnection.GetMetadataBinding25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _metadataBinding25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetMetadataBinding25Channel();
                             break;
                         default:
@@ -878,6 +883,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _folder25 = _infoShareWcfSoapWithWsTrustConnection.GetFolder25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _folder25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetFolder25Channel();
                             break;
                         default:
@@ -901,6 +907,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _listOfValues25 = _infoShareWcfSoapWithWsTrustConnection.GetListOfValues25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _listOfValues25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetListOfValues25Channel();
                             break;
                         default:
@@ -924,6 +931,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _outputFormat25 = _infoShareWcfSoapWithWsTrustConnection.GetOutputFormat25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _outputFormat25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetOutputFormat25Channel();
                             break;
                         default:
@@ -947,6 +955,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _EDT25 = _infoShareWcfSoapWithWsTrustConnection.GetEDT25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _EDT25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEDT25Channel();
                             break;
                         default:
@@ -970,6 +979,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _translationJob25 = _infoShareWcfSoapWithWsTrustConnection.GetTranslationJob25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _translationJob25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationJob25Channel();
                             break;
                         default:
@@ -993,6 +1003,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _translationTemplate25 = _infoShareWcfSoapWithWsTrustConnection.GetTranslationTemplate25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _translationTemplate25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationTemplate25Channel();
                             break;
                         default:
@@ -1016,6 +1027,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _search25 = _infoShareWcfSoapWithWsTrustConnection.GetSearch25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _search25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSearch25Channel();
                             break;
                         default:
@@ -1039,6 +1051,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             _backgroundTask25 = _infoShareWcfSoapWithWsTrustConnection.GetBackgroundTask25Channel();
                             break;
                         case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
                             _backgroundTask25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBackgroundTask25Channel();
                             break;
                         default:
@@ -1055,49 +1068,12 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             switch (_protocol)
             {
-                case Enumerations.Protocol.Autodetect:
+                case Enumerations.Protocol.WcfSoapWithWsTrust:
                     if (!_infoShareWcfSoapWithWsTrustConnection.IsValid)
                     {
                         // Not valid...
                         // ...dispose connection
                         _infoShareWcfSoapWithWsTrustConnection.Dispose();
-                        _infoShareOpenApiConnection.Dispose();
-                        // ...discard all channels
-                        _annotation25 = null;
-                        _application25 = null;
-                        _backgroundTask25 = null;
-                        _baseline25 = null;
-                        _documentObj25 = null;
-                        _EDT25 = null;
-                        _eventMonitor25 = null;
-                        _folder25 = null;
-                        _listOfValues25 = null;
-                        _metadataBinding25 = null;
-                        _outputFormat25 = null;
-                        _publicationOutput25 = null;
-                        _search25 = null;
-                        _settings25 = null;
-                        _translationJob25 = null;
-                        _translationTemplate25 = null;
-                        _user25 = null;
-                        _userGroup25 = null;
-                        _userRole25 = null;
-                        // ...and re-create connection
-                        CreateInfoShareWcfSoapWithWsTrustConnection();
-                    }
-                    break;
-                case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                    if (!_infoShareOpenApiConnection.IsValid)
-                    {
-                        // ... discard OpenApiISH30Service
-                        // ...and re-create connection
-                        CreateOpenApiWithOpenIdConnectConnection();
-                    }
-                    if (!_infoShareWcfSoapWithOpenIdConnectConnection.IsValid)
-                    {
-                        // Not valid...
-                        // ...dispose connection
-                        _infoShareWcfSoapWithOpenIdConnectConnection.Dispose();
                         // ...discard all channels
                         _annotation25 = null;
                         _application25 = null;
@@ -1149,15 +1125,21 @@ namespace Trisoft.ISHRemote.Objects.Public
                         _userGroup25 = null;
                         _userRole25 = null;
                         // ...and re-create connection
-                        CreateInfoShareWcfSoapWithWsTrustConnection();
+                        CreateInfoShareWcfSoapWithOpenIdConnectConnection();
                     }
                     break;
-                case Enumerations.Protocol.WcfSoapWithWsTrust:
-                    if (!_infoShareWcfSoapWithWsTrustConnection.IsValid)
+                case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                    if (!_infoShareOpenApiConnection.IsValid)
+                    {
+                        // ... discard OpenApiISH30Service
+                        // ...and re-create connection
+                        CreateOpenApiWithOpenIdConnectConnection();
+                    }
+                    if (!_infoShareWcfSoapWithOpenIdConnectConnection.IsValid)
                     {
                         // Not valid...
                         // ...dispose connection
-                        _infoShareWcfSoapWithWsTrustConnection.Dispose();
+                        _infoShareWcfSoapWithOpenIdConnectConnection.Dispose();
                         // ...discard all channels
                         _annotation25 = null;
                         _application25 = null;
@@ -1179,7 +1161,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         _userGroup25 = null;
                         _userRole25 = null;
                         // ...and re-create connection
-                        CreateInfoShareWcfSoapWithWsTrustConnection();
+                        CreateInfoShareWcfSoapWithOpenIdConnectConnection();
                     }
                     break;
                 default:
@@ -1189,7 +1171,18 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         public void Dispose()
         {
-            _infoShareWcfSoapWithWsTrustConnection.Dispose();
+            if (_infoShareWcfSoapWithWsTrustConnection != null)
+            {
+                _infoShareWcfSoapWithWsTrustConnection.Dispose();
+            }
+            if (_infoShareWcfSoapWithOpenIdConnectConnection != null) 
+            {
+                _infoShareWcfSoapWithOpenIdConnectConnection.Dispose( );
+            }
+            if (_infoShareOpenApiConnection != null) 
+            {
+                _infoShareOpenApiConnection.Dispose( );
+            }
         }
         public void Close()
         {

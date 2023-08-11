@@ -15,12 +15,10 @@
 */
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Trisoft.ISHRemote.HelperClasses
 {
@@ -37,7 +35,7 @@ namespace Trisoft.ISHRemote.HelperClasses
     /// <para>On PowerShell however, the powershell.exe.config is off limits, hence the below 
     /// AssemblyResolve solution.</para>
     /// <para>Hat tip to https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624
-    /// and https://stackoverflow.com/questions/62764744/could-not-load-file-or-assembly-system-runtime-compilerservices-unsafe
+    /// and https://stackoverflow.com/questions/62764744/could-not-load-file-or-assembly-system-runtime-compilerservices-unsafe and http://www.chilkatsoft.com/p/p_502.asp
     /// we can force a higher version to be loaded.</para>
     /// </summary>
     /// <remarks>All this is only required for .NET 4.8, so PowerShell 5.1. OidcClient worked 
@@ -47,7 +45,14 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// <summary>
         /// Making sure the ResolveEventHandler only happens once
         /// </summary>
-        private static bool _isRegistered = false;
+        private static bool _isAppDomainAssemblyResolveHelperRegistered = false;
+
+        /// <summary>
+        /// Storing forcefully loaded assemblies in the dictionary at the time of writing on Windows11/NET4.8.1
+        /// </summary>
+        private static readonly ConcurrentDictionary<string, Assembly> _forcedLoadedAssemblies = new ConcurrentDictionary<string, Assembly>();
+
+
 
         /// <summary>
         /// NET 4.8 comes with System.Runtime.CompilerServices.Unsafe v4.0.4 while OidcClient 
@@ -56,23 +61,36 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// System.Runtime.CompilerServices.Unsafe to minimally v5.0.0. 
         /// On PowerShell however, the powershell.exe.config is off limits, hence the below 
         /// AssemblyResolve solution.
+        /// * System.Runtime.CompilerServices.Unsafe requested 4.0.4.1 or 5.0.0.0 but we now return 6.0.0.0
+        /// * System.Text.Json requested 5.0.0.0 but we now return 5.0.0.2
+        /// * IdentityModel.OidcClient requested but we now return
+        /// * Microsoft.Bcl.AsyncInterfaces requested 5.0.0.0 but we now return 6.0.0.0
         /// </summary>
         internal static void Redirect()
         {
-            if (!_isRegistered)
+            if (!_isAppDomainAssemblyResolveHelperRegistered)
             {
                 //WriteWarning("Attaching AssemblyResolve handler to force System.Runtime.CompilerServices.Unsafe v6+ and System.Text.Json v5+.");
                 AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 
                 string filePathSRCSUnsafe = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Runtime.CompilerServices.Unsafe.dll");
-                //WriteDebug($"Forcefully loading filePathSRCSUnsafe[{filePathSRCSUnsafe}]");
                 var assemblySRCSUnsafe = Assembly.LoadFrom(filePathSRCSUnsafe);
+                _forcedLoadedAssemblies.GetOrAdd("System.Runtime.CompilerServices.Unsafe", assemblySRCSUnsafe);
+
 
                 string filePathSTJson = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Text.Json.dll");
-                //WriteDebug($"Forcefully loading filePathSTJson[{filePathSTJson}]");
                 var assemblySTJson = Assembly.LoadFrom(filePathSTJson);
+                _forcedLoadedAssemblies.GetOrAdd("System.Text.Json", assemblySTJson);
 
-                _isRegistered = true;
+                string filePathIdentityModel = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
+                var assemblyIdentityModel = Assembly.LoadFrom(filePathIdentityModel);
+                _forcedLoadedAssemblies.GetOrAdd("IdentityModel.OidcClient", assemblyIdentityModel);
+
+                string filePathMBclAsyncInterfaces = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Microsoft.Bcl.AsyncInterfaces.dll");
+                var assemblyMBclAsyncInterfaces = Assembly.LoadFrom(filePathMBclAsyncInterfaces);
+                _forcedLoadedAssemblies.GetOrAdd("Microsoft.Bcl.AsyncInterfaces", assemblyMBclAsyncInterfaces);
+
+                _isAppDomainAssemblyResolveHelperRegistered = true;
             }
         }
 
@@ -81,16 +99,10 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// </summary>
         internal static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            var name = new AssemblyName(args.Name);
-            if (name.Name == "System.Runtime.CompilerServices.Unsafe")
-            {
-                return typeof(System.Runtime.CompilerServices.Unsafe).Assembly;
-            }
-            else if (name.Name == "System.Text.Json")
-            {
-                return typeof(System.Text.Json.JsonDocument).Assembly;
-            }
-            return null;
+            var name = new AssemblyName(args.Name).Name;
+            Assembly outAssembly = null;
+            _forcedLoadedAssemblies.TryGetValue(name, out outAssembly);
+            return outAssembly;
         }
     }
 #endif

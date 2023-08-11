@@ -17,9 +17,9 @@ Remember
 
 
 # Since Tridion Docs 15/15.0.0
-First you need to get Authenticated, then you need to get Authorized. The Authentication happens over Access Management (ISHAM), potentially federated out through a user-agent that supports redirection from the authorization server.
+First you need to get Authenticated, then you need to get Authorized. The Authentication happens over Access Management (ISHAM), potentially federated out through a user-agent (System Browser) that supports redirection from the authorization server.
 
-Once Authenticated, you have an external id
+Once Authenticated, you have an external id.
 
 Repurpose or introduce `New-IShSession` parameter groups
 
@@ -43,7 +43,8 @@ Add `-Timeout` parameter to this parameter group.
 
 # Protocol and Parameter Group Scenarios
 
-On Tridion Docs 14SPx/14.0.x and earlier, it is always `WcfSoapWithOpenIdConnect`. Starting from Tridion Docs 15/15.0.0 most customers will still use `WcfSoapWithOpenIdConnect` authenticated over `UserNameMixed` provided by `ISHSTS`-only. Experimenting on Tridion Docs 15/15.0.0 is possible for cmdlets having a side-by-side implementation when using `Protocol` `OpenApiWithOpenIdConnect`; when the OpenAPI implementation is not there, a fall back to `WcfSoapWithOpenIdConnect` will happen.
+On Tridion Docs 14SPx/14.0.x and earlier, it is always `WcfSoapWithWsTrust`. Full functionality on PowerShell 5.1 regarding `WindowsMixed` and `UserNameMixed` while PowerShell 7.2+ is limited to authentication over `UserNameMixed` provided by `ISHSTS`-only. 
+Starting from Tridion Docs 15/15.0.0 most customers will use `WcfSoapWithOpenIdConnect`. Legacy variation `WcfSoapWithWsTrust` can still be selected as well. Experimenting on Tridion Docs 15/15.0.0 is possible for cmdlets having a side-by-side implementation when using `Protocol` `OpenApiWithOpenIdConnect`; when the OpenAPI implementation is not there, a fall back to `WcfSoapWithOpenIdConnect` will happen.
 
 1. Explicit parameter group `Protocol`
     1. Use `WcfSoapWithWsTrust`, so SOAP 1.2 end points protected by WS-Federation/WS-Trust
@@ -92,13 +93,13 @@ ISHRemote as an interactive user where you can actively provide credentials. Eve
 # Problem: ISHRemote to combine ISHWS and ISHAM Data Sources
 
 
-## Add public proxy OpenApiAM10Service next to OpenApiISH30Service
+## Add public proxy OpenApiAM20Service next to OpenApiISH30Service
 The `IshSession` object will need a public `OpenApiISH30Service` served by NSwag generated `Trisoft.ISHRemote.OpenApi.OpenApiISH30Service`. This proxy, just like pre-authenticated WCF SOAP WS-Trust proxies `DocumentObj25`, will be used by cmdlets but can be used to open functionality that is not supported by the cmdlets yet.
 
-Imagine `IshSession` object offering a public `OpenApiAM10Service` served by NSwag generated `Trisoft.ISHRemote.OpenApi.OpenApiAM10Service`. This pre-authenticated proxy can open functionality that is not supported by cmdlets yet. Pre-authenticated as Tridion Docs User Profiles holding the **Administrator** User Role are administrator on Access Management (ISHAM) anyway.
+Imagine `IshSession` object offering a public `OpenApiAM20Service` served by NSwag generated `Trisoft.ISHRemote.OpenApi.OpenApiAM20Service`. This pre-authenticated proxy can open functionality that is not supported by cmdlets yet. Pre-authenticated as Tridion Docs User Profiles holding the **Administrator** User Role are administrator on Access Management (ISHAM) anyway.
 
 
-## Add cmdlet Sync-IShUser
+## IDEA: Add cmdlet Sync-IShUser
 By supporting `-WhatIf` one could see which changes will be applied either way, still returning objects that would get changed. By parameters similar to `Compare-IshTypeFieldDefinition` you could do left-hand vs right-hand side validation.
 
 ### User Profiles update from Tridion Docs to Access Management
@@ -128,13 +129,13 @@ Typical cmdlet behavior - `Sync-IShUser -IShUser <selection> -ToAccessManagement
 Theoretical option, no user scenario yet. Perhaps there is Access Management Service user that - over *ClientID* does not have a match with a Tridion Docs User Profile - usage would result in a missing profile match error anyway.
 
 
-## Add IShSession Smart mode parameter to aggregate data sources
+## IDEA: Add IShSession Smart mode parameter to aggregate data sources
 Would a **smart** mode on the session make sense? So imagine `Find-IShUser` or `Get-IShUser`...
 * Currently IShUser objects holds ISHWS information. So **LastLogin** is only filled in when the `PASSWORD` on this Tridion Docs User Profile was used, more and more scenarios over Access Management (ISHAM) will leave it empty.
 * Returning any ClientId and Secret (first characters) could help analysis.
 
 
-## Add Access Management cmdlets 
+## IDEA: Add Access Management cmdlets 
 Either some basic cmdlets in **ISHRemote** that return an object model that can be used as input for other cmdlets. So `Get-AMUser` returns Access Management `AMUser`s, where the `ClientId` field could be used to `Find-IshUser`. And `Set-AMUser` accepting `IShUser` where the `FISHEXTERNALID` could be used to update Access Management user profiles.
 
 Add (nested binary module) AMRemote that could offer cmdlets like
@@ -145,7 +146,7 @@ Add (nested binary module) AMRemote that could offer cmdlets like
 # Done
 * Merging in #115 branch that was AsmxSoapWithAuthenticationContext plus OpenApiWithOpenIdConnect efforts
 * Update spec.json
-* Rename protocol and ishSession.OpenApi30Service -> ishSession.OpenApiISH30Service so ishSession.OpenApiAM10Service
+* Rename protocol and ishSession.OpenApi30Service -> ishSession.OpenApiISH30Service so ishSession.OpenApiAM20Service
 * Parameter group `New-IShSession` ActiveDirectory/Interactive does not have `-Timeout` parameter.
 * Cmdlets `New-IshSession` and `Test-IshSession` received parameter `-Protocol`, `-ClientId` and `-ClientSecret` so when protocol is set to `OpenApiWithOpenIdConnect` it is the preferred route, fall back to `WcfSoapWithWsTrust` when OpenApi calls are unavailable. 
 * Case Files
@@ -165,13 +166,25 @@ Add (nested binary module) AMRemote that could offer cmdlets like
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
    at IdentityModel.Client.HttpClientDiscoveryExtensions.<GetDiscoveryDocumentAsync>d__1.MoveNext()
    ```
-For whoever stumbles on this transitive package dependency of `System.Runtime.CompilerServices.Unsafe` (and/or `System.Text.Json `), solved it through a forced Assembly load of the v6 version (while v5 was expected and .NET Framework 4.8 loads v4.0.4). Solution is in the pragma-protected `SessionCmdlet::BeginProcessing` section in `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs`. For completeness there is an OidClient logging-not-initialized seralization bug which I bypassed through `LogSerializer.Enabled = false;`. Inspired by https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624 in Preprocessing step of the cmdlet that needs it.
+For whoever stumbles on this transitive package dependency of `System.Runtime.CompilerServices.Unsafe` (and/or `System.Text.Json `), solved it through a forced Assembly load of the v6 version (while v5 was expected and .NET Framework 4.8 loads v4.0.4). Solution is in the pragma-protected `SessionCmdlet::BeginProcessing` section in `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs`. For completeness there is an OidClient logging-not-initialized seralization bug which I bypassed through `LogSerializer.Enabled = false;`. Inspired by https://stackoverflow.com/questions/1460271/how-to-use-assembly-binding-redirection-to-ignore-revision-and-build-numbers/2344624#2344624 in Preprocessing step of the cmdlet that needs it. A handy debugging line for me was: `[System.AppDomain]::CurrentDomain.GetAssemblies() | Out-GridView`. Or `$filePath = ".\Trisoft.ISHRemote\bin\Debug\ISHRemote\net48\IdentityModel.dll";(Get-Item -Path $filePath).VersionInfo.FileVersionRaw;$a= [System.Reflection.Assembly]::LoadFrom($filePath);$a;(Get-Item -Path $a.Location).VersionInfo.FileVersionRaw`
 * Verify Token Validation is there, happens for WCF/OpenApi at the same time... refresh token is used when expiration allows. Otherwise build new connection.
 * Added `WcfSoapWithOpenIdConnectConnection` next to long time `WcfSoapWithWsTrustConnection` and `OpenApiConnection` attempts as protocols on the `New-IshSession`. This required quite some hefty refactoring in `C:\GITHUB\ISHRemote`\Source\ISHRemote\Trisoft.ISHRemote\Connection\`. End result is ISHWS/OWcf web services next to ISHWS/Wcf web services.
-
-
+    * Later I read this well-written article about loading binary modules in either PowerShells, see https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/ and in turn his rich sample on https://github.com/rjmholt/ModuleDependencyIsolationExample/blob/master/new/JsonModule.Cmdlets/JsonModuleInitializer.cs
+* Refactor single source token code
+    * Introduce InfoShareOpenIdConnectConnectionBase to hold the token infra
+    * Merge InfoShareOpenApiConnectionParameters and InfoShareWcfSoapWithOpenIdConnectConnectionParameters into InfoShareOpenIdConnectConnectionParameters thereby single sourcing Tokens across the two services! And one Timeout is enough to rule them all :)
+    * Single source tokens between wcf and openapi login and refresh 
+    * Remove interface on soap classes 
 
 # Next
+* Refactor single source token code
+    * Rename InfoShareOpenApiConnection to InfoShareOpenApiWithOpenIdConnectConnection
+    * Rename Tokens to InfoShareOpenIdConnectTokens
+* Put Protocol in IshSession print next to ServerVersion (perhaps no AuthContext anymore)
+* Test refresh with short expiration 
+* Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
+* Test ps5.1 with wstrust, ps7 with both openidconnect
+* Test all protocol types on all platforms via newishsession (and one other smoke test) by calling it 6 times (2 ps times 3 protocols) which colors right after prerequisites
 * Cleanup `IInfoShareWcfSoapConnection.cs` and references as nobody uses it.
 * Extend and document InfoShareOpenApiConnectionParameters (redirectUri, Open up hardcoded client to ISHRemote/Tridion_Docs_Content_Importer , clean up code, check debug/verbose logging
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`

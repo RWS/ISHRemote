@@ -43,7 +43,7 @@ namespace Trisoft.ISHRemote.Connection
     /// Dynamic proxy (so without app.config) generation of Service References towards the InfoShare Web Services writen in Windows Communication Foundation (WCF) protected by WS-Trust (aka WS-Federation active) SOAP protocol.
     /// On ISHRemote v1 and earlier, so in turn before InfoShare 15 and earlier, this class was your starting point for dynamic proxy (so without app.config) generation of Service References. The inital class was written in .NET Framework style. Inspired by https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/ this class has pragmas to illustrate .NET Framework and .NET 6.0+ style side-by-side.
     /// </summary>
-    internal sealed class InfoShareWcfSoapWithWsTrustConnection : IDisposable, IInfoShareWcfSoapConnection
+    internal sealed class InfoShareWcfSoapWithWsTrustConnection : IDisposable
     {
         #region Constants
         /// <summary>
@@ -253,12 +253,12 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
         /// <param name="httpClient">Incoming reused, probably Ssl/Tls initialized already.</param>
-        /// <param name="infoShareWcfConnectionParameters">Connection parameters.</param>
-        public InfoShareWcfSoapWithWsTrustConnection(ILogger logger, HttpClient httpClient, InfoShareWcfSoapWithWsTrustConnectionParameters infoShareWcfConnectionParameters)
+        /// <param name="infoShareWcfSoapWithWsTrustConnectionParameters">Connection parameters.</param>
+        public InfoShareWcfSoapWithWsTrustConnection(ILogger logger, HttpClient httpClient, InfoShareWcfSoapWithWsTrustConnectionParameters infoShareWcfSoapWithWsTrustConnectionParameters)
         {
             _logger = logger;
             _httpClient = httpClient;
-            _connectionParameters = infoShareWcfConnectionParameters;
+            _connectionParameters = infoShareWcfSoapWithWsTrustConnectionParameters;
             // Could to more strict _connectionParameters checks
 
             _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection InfoShareWSUrl[{_connectionParameters.InfoShareWSUrl}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");

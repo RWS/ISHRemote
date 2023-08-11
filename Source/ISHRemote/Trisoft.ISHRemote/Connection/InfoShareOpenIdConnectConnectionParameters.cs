@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Trisoft.ISHRemote.Connection
 {
-    internal sealed class InfoShareOpenApiConnectionParameters
+    /// <summary>
+    /// Optional InfoShare Wcf connection parameters.
+    /// </summary>
+    internal sealed class InfoShareOpenIdConnectConnectionParameters
     {
         private Uri _infoShareWSUrl;
         /// <summary>
         /// The clientconfiguration.xml discovery file tells us the configured ISHWS Url is "https://ish.example.com/ISHWS/" while you perhaps are doing https://localhost/ or behind the configured load balancer.
         /// </summary>
-        public Uri InfoShareWSUrl {
+        public Uri InfoShareWSUrl
+        {
             get { return _infoShareWSUrl; }
-            set {
-                var infoShareWSUrl = value.ToString().Replace("OWcf/", "").Replace("OWcf", "");
+            set
+            {
+                var infoShareWSUrl = value.ToString();
                 _infoShareWSUrl = (infoShareWSUrl.EndsWith("/")) ? new Uri(infoShareWSUrl) : new Uri(infoShareWSUrl.ToString() + "/");
             }
         }
@@ -39,7 +44,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <summary>
         /// Client Application Id as configured on Access Management which allows a http://127.0.0.1:SomePort redirect url
         /// </summary>
-        public string ClientAppId { get; set; } 
+        public string ClientAppId { get; set; }
 
         /// <summary>
         /// Existing scopes as configured on Access Management
@@ -50,8 +55,9 @@ namespace Trisoft.ISHRemote.Connection
         /// <summary>
         /// When Sign In succeeded the browser is redirect to this link. Typically https://ish.example.com/ISHAM/Account/loggedIn?clientId=c826e7e1-c35c-43fe-9756-e1b61f44bb40 where the ClientId GUID is the ISHAM Account.
         /// </summary>
-        public string RedirectUri { 
-            get 
+        public string RedirectUri
+        {
+            get
             {
                 if (string.IsNullOrEmpty(_redirectUri))
                 { return $"{IssuerUrl}/Account/LoggedIn?clientId={ClientId}"; }
@@ -70,9 +76,10 @@ namespace Trisoft.ISHRemote.Connection
         /// <summary>
         /// The clientconfiguration.xml discovery file tells us the configured Issuer Url. Expected values are .../issue/wstrust/mixed/username or .../ISHAM/.
         /// </summary>
-        public Uri IssuerUrl { 
+        public Uri IssuerUrl
+        {
             get { return _issuerUrl; }
-            set { _issuerUrl = (value.ToString().EndsWith("/")) ? value : new Uri(value.ToString() + "/"); } 
+            set { _issuerUrl = (value.ToString().EndsWith("/")) ? value : new Uri(value.ToString() + "/"); }
         }
         /// <summary>
         /// Collects various tokens with expiration date
@@ -91,5 +98,17 @@ namespace Trisoft.ISHRemote.Connection
         /// Timeout to control Send/Receive timeouts of HttpClient when downloading content like connectionconfiguration.xml
         /// </summary>
         public TimeSpan Timeout { get; set; }
+        /// <summary>
+        /// Timeout to control Send/Receive timeouts of WCF when issuing a token
+        /// </summary>
+        public TimeSpan IssueTimeout { get { return Timeout; } }
+        /// <summary>
+        /// Timeout to control Send/Receive timeouts of WCF for InfoShareWS proxies
+        /// </summary>
+        public TimeSpan ServiceTimeout { get { return Timeout; } }
+        /// <summary>
+        /// If True, certificate validation for HTTPS and the Service will be skipped
+        /// </summary>
+        public bool IgnoreSslPolicyErrors { get; set; } = false;
     }
 }
