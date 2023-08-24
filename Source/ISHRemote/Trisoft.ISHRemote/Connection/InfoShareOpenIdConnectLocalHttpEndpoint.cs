@@ -25,7 +25,7 @@ using System.Text;
 namespace Trisoft.ISHRemote.Connection
 {
     /// <summary>
-    /// 
+    /// ISHRemote will listen to the Redirect Url (typically 127.0.01 and a free port) where the System Browser will federate out for authentication but eventually will call back to ISHRemote with InfoShareOpenIdConnectTokens
     /// </summary>
     /// <remarks>Hat tip to /src/Clients/Tridion.AccessManagement.Client.Desktop/LocalHttpEndpoint.cs</remarks>
     internal class InfoShareOpenIdConnectLocalHttpEndpoint : IDisposable

@@ -113,11 +113,19 @@ $hostname=$Matches['hostname']
 #
 #if ($null -eq $global:ishSession)
 #{
-	$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
-	if (([Version]$global:ishSession.ServerVersion).Major -ge 15) {
-		$global:ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+	$webServicesConnectionConfigurationUrl = $webServicesBaseUrl + "connectionconfiguration.xml"
+	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over $webServicesConnectionConfigurationUrl"
+	$connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl
+	$connectionConfigurationXml = [xml]($connectionConfigurationRaw.Replace("ï»¿",""))
+	[version]$infosharesoftwareversion = $connectionConfigurationXml.connectionconfiguration.infosharesoftwareversion
+	if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
+	{
+		$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -WarningAction SilentlyContinue
 	}
-	
+	else # 15 and later, initialize ONE session over -ClientId/-ClientSecret
+	{
+		$global:ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret -WarningAction SilentlyContinue
+	}
 #}
 $ishSession = $global:ishSession
 # TODO [Must] The StateStore is now required for all tests, but it is only done in New-IshSession. 50s performance boost to gain 

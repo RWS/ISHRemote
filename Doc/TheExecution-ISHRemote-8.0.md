@@ -1,4 +1,4 @@
-# The Execution of the plan of ISHRemote v7.1
+# The Execution of the plan of ISHRemote v8.0
 
 This page will try to track work in progress. And because I work on it in free time, it will help trace how I got where I am in the first place plus what is next. Inspired by [ThePlan-ISHRemote-7.0.md](./ThePlan-ISHRemote-7.0.md) and [TheExecution-ISHRemote-7.0.md](./TheExecution-ISHRemote-7.0.md).
 
@@ -193,6 +193,7 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 # Next   
 * Test refresh with short expiration 
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
+    * User provisioning, see [SRQ-23306] Last login date in user overview is not updated when authentication was done through an external identity provider - RWS Jira https://jira.sdl.com/browse/SRQ-23306
 * Automated Test ps5.1 with wstrust, ps7 with both openidconnect
 * Test all protocol types on all platforms via newishsession (and one other smoke test) by calling it 6 times (2 ps times 3 protocols) which colors right after prerequisites
 * Refresh OpenApi.json to released Docs 15.0.0 version

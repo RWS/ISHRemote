@@ -1,6 +1,6 @@
-# Release Notes of ISHRemote v7.1
+# Release Notes of ISHRemote v8.0
 
-High level release notes are on [Github](https://github.com/rws/ISHRemote/releases/tag/v7.1), below the most detailed release notes we have :)
+High level release notes are on [Github](https://github.com/rws/ISHRemote/releases/tag/v8.0), below the most detailed release notes we have :)
 
 Remember
 * All C# source code of the ISHRemote library is online at [master](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of WS-Trust protocol ([InfoShareWcfConnection.cs](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/InfoShareWcfConnection.cs)) in a NET 4.8 and NET 6.0+ style.
@@ -30,8 +30,6 @@ Again, most cmdlets and business logic are fully compatible, except the below:
 
 * Renamed `InfoShareWcfSoapConnection.cs` and moved it to `Connection\InfoShareWcfSoapWithWsTrustConnection.cs`
 * Introduced sibling `Connection\InfoShareOpenApiConnection.cs`
-
-Below is more v8.0 then v7.1, consider bumping?
 * Aligned implementation of `Connection\InfoShareWcfSoapWithWsTrustConnection.cs` with `Connection\InfoShareOpenApiConnection.cs` which should make it easier to extract these `\Connection\` classes if desired. But also removed anything refering to Explicit Issuer (unreachable code since ISHRemote v7.0) an anything regarding `/Internal/` or `/SDL/` realm detection as no longer needed in Tridion Docs 15 (only ISHSTS).
 * Layout of `IshSession` was enriched with `BearerToken` through `ISHRemote.Format.ps1xml`.
 

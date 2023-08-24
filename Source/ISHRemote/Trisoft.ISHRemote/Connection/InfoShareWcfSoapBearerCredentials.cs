@@ -33,6 +33,9 @@ using SecurityToken = System.IdentityModel.Tokens.SecurityToken;
 
 namespace Trisoft.ISHRemote.Connection
 {
+    /// <summary>
+    /// SOAP web services (/ISHWS/OWCF/) with OpenIdConnect authentication need a way to pass the Access/Bearer token. This class wraps the token up in a SAML token which passes nicely over Windows Communication Foundation. Used in InfoShareWcfSoapWithOpenIdConnectConnection class
+    /// </summary>
     internal sealed class BearerCredentials : ClientCredentials
     {
         internal readonly string AccessToken;

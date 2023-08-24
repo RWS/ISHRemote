@@ -28,6 +28,9 @@ using Trisoft.ISHRemote.Interfaces;
 
 namespace Trisoft.ISHRemote.Connection
 {
+    /// <summary>
+    /// Knows how to reliably launch your default web browser (the one that opens any https:// url in any application) across the supported platforms Windows, Linux and MacOS
+    /// </summary>
     public class InfoShareOpenIdConnectSystemBrowser : IBrowser
     {
         /// <summary>

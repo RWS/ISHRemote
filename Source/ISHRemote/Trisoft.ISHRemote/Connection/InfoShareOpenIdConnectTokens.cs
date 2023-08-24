@@ -22,6 +22,9 @@ using System.Threading.Tasks;
 
 namespace Trisoft.ISHRemote.Connection
 {
+    /// <summary>
+    /// Container to hold and refresh your Access/Bearer tokens and more which are eventually pushed in the wire over an HttpClient class
+    /// </summary>
     internal sealed class InfoShareOpenIdConnectTokens
     {
         /// <summary>
