@@ -29,7 +29,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// <remarks>Inherits from <see cref="TrisoftCmdlet"/>.</remarks>
     public abstract class SessionCmdlet : TrisoftCmdlet
     {
-#if NET48
         /// <summary>
         /// Solves the PS51/NET48 problem of OidcClient which continuously threw 
         /// 'Error connecting to https://sts.windows.net/{tenant}/.well-known/openid-configuration. 
@@ -40,10 +39,13 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         protected override void BeginProcessing()
         {
             base.BeginProcessing();
-            WriteWarning("ISHRemote module on PS5.1/NET48 forces Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll");
-            //WriteWarning("IshSession-cmdlets on PS5.1/NET48 force Assembly Redirects over AssemblyResolve handler for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll");
+#if NET48
+            WriteVerbose("ISHRemote module on PS5.1/NET48 forces Assembly Redirects for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll");
+#else
+            WriteVerbose("ISHRemote module on PS7.2+/NET60+ forces Assembly Redirects for IdentityModel.dll");
+#endif
             //AppDomainAssemblyResolveHelper.Redirect(); is superseded with AppDomainModuleAssemblyInitializer based on IModuleAssemblyInitializer
         }
-#endif
+
     }
 }

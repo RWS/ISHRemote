@@ -190,7 +190,8 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
 * Extend New-IshSession/Test-IshSession with -PSCredential also working for client/secret (and ishusername/ishpassword)
   
-# Next   
+# Next
+* Fix all version based tests on PS7, they should not result in empty server version like ` Context Add-IshBackgroundTask IshObjectsGroup Pipeline IshObject since 14SP4/14.0.4 =<`
 * Test refresh with short expiration 
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
     * User provisioning, see [SRQ-23306] Last login date in user overview is not updated when authentication was done through an external identity provider - RWS Jira https://jira.sdl.com/browse/SRQ-23306

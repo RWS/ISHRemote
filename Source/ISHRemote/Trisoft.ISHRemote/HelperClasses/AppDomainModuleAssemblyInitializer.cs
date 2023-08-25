@@ -72,7 +72,7 @@ namespace Trisoft.ISHRemote.HelperClasses
 #if NET48
         private static string binaryNetFrameworkAssembliesPath = Path.Combine(binaryFolderPath, "net48");
 #else
-        private static string binaryNetCoreAssembliesPath = Path.Join(binaryFolderPath, "net60+");
+        private static string binaryNetCoreAssembliesPath = Path.Join(binaryFolderPath, "net6.0");
 #endif
 
         /// <summary>
@@ -84,24 +84,32 @@ namespace Trisoft.ISHRemote.HelperClasses
 #if NET48
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly_NetFramework;
 
-            string filePathSRCSUnsafe = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Runtime.CompilerServices.Unsafe.dll");
-            var assemblySRCSUnsafe = Assembly.LoadFrom(filePathSRCSUnsafe);
-            _forcedLoadedAssemblies.GetOrAdd("System.Runtime.CompilerServices.Unsafe", assemblySRCSUnsafe);
+            var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Runtime.CompilerServices.Unsafe.dll");
+            var assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("System.Runtime.CompilerServices.Unsafe", assembly);
 
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Text.Json.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("System.Text.Json", assembly);
 
-            string filePathSTJson = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Text.Json.dll");
-            var assemblySTJson = Assembly.LoadFrom(filePathSTJson);
-            _forcedLoadedAssemblies.GetOrAdd("System.Text.Json", assemblySTJson);
+             filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Microsoft.Bcl.AsyncInterfaces.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("Microsoft.Bcl.AsyncInterfaces", assembly);
 
-            string filePathIdentityModel = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
-            var assemblyIdentityModel = Assembly.LoadFrom(filePathIdentityModel);
-            _forcedLoadedAssemblies.GetOrAdd("IdentityModel.OidcClient", assemblyIdentityModel);
+             filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Text.Encodings.Web.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("System.Text.Encodings.Web", assembly);
 
-            string filePathMBclAsyncInterfaces = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Microsoft.Bcl.AsyncInterfaces.dll");
-            var assemblyMBclAsyncInterfaces = Assembly.LoadFrom(filePathMBclAsyncInterfaces);
-            _forcedLoadedAssemblies.GetOrAdd("Microsoft.Bcl.AsyncInterfaces", assemblyMBclAsyncInterfaces);
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("IdentityModel", assembly);
+            
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
+
+            var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
+            var assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("IdentityModel", assembly);
 #endif
         }
 
@@ -153,6 +161,11 @@ namespace Trisoft.ISHRemote.HelperClasses
             AssemblyLoadContext assemblyLoadContext,
             AssemblyName assemblyName)
         {
+            var name = assemblyName.Name;
+            Assembly outAssembly = null;
+            _forcedLoadedAssemblies.TryGetValue(name, out outAssembly);
+            return outAssembly;
+
             /*
             // In .NET Core, PowerShell deals with assembly probing so our logic is much simpler
             // We only care about our Engine assembly
@@ -164,7 +177,6 @@ namespace Trisoft.ISHRemote.HelperClasses
             // Now load the Engine assembly through the dependency ALC, and let it resolve further dependencies automatically
             return DependencyAssemblyLoadContext.GetForDirectory(binaryCommonAssembliesFolderPath).LoadFromAssemblyName(assemblyName);
             */
-            return null;
         }
 
 #endif
