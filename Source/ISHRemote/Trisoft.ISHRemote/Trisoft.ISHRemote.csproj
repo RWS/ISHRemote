@@ -95,7 +95,8 @@
   <!-- Generating Module Manifest only once -->
   <Target Name="ModuleManifest" AfterTargets="CopyCmdletDoc" Condition="'$(TargetFramework)' == 'net48'">
     <PropertyGroup>
-      <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">&quot;C:\Program Files\PowerShell\7\pwsh.exe&quot;</PowerShellExe>
+      <PwshExe Condition=" '$(PwshExe)'=='' ">&quot;C:\Program Files\PowerShell\7\pwsh.exe&quot;</PwshExe>
+      <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">&quot;%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe&quot;</PowerShellExe>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
       <ISHRemote48DllFilePath>$(ProjectDir)bin/$(Configuration)/net48/Trisoft.ISHRemote.dll</ISHRemote48DllFilePath>
       <ISHRemote60DllFilePath>$(ProjectDir)bin/$(Configuration)/net6.0/Trisoft.ISHRemote.dll</ISHRemote60DllFilePath>
@@ -104,7 +105,7 @@
       <FormatsToProcessFileName>$(ModuleName).Format.ps1xml</FormatsToProcessFileName>
     </PropertyGroup>
     <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
-    <Exec Command="$(PowerShellExe) -NonInteractive -command &quot;Import-Module $(ISHRemote60DllFilePath) -Force;$cmdletsToExport=(Get-Module -Name Trisoft.ISHRemote).ExportedCommands.Keys;New-ModuleManifest -Path '$(ManifestFilePath)' -FormatsToProcess '$(FormatsToProcessFileName)' -FunctionsToExport @('Get-IshAuxSessionState', 'New-IshAuxCompletionResult', 'Register-IshAuxParameterCompleter') -RootModule '$(RootModuleFileName)' -ModuleVersion '$(ModuleVersion)' -Prerelease '$(Prerelease)' -Guid '$(ModuleGuid)' -Author '$(Authors)' -CompanyName '$(CompanyName)' -Copyright '$(Copyright)' -Description '$(ModuleDescription)' -PowerShellVersion '$(MinPowerShellVersion)' -ClrVersion '$(MinCLRVersion)' -DotNetFrameworkVersion '$(MinDotNetVersion)' -LicenseUri '$(LicenseUri)' -ProjectUri '$(ProjectUri)' -CmdletsToExport @($cmdletsToExport)&quot;" />
+    <Exec Command="$(PowerShellExe) -NoProfile -NonInteractive -command &quot;Import-Module $(ISHRemote48DllFilePath) -Force;$cmdletsToExport=(Get-Module -Name Trisoft.ISHRemote).ExportedCommands.Keys;New-ModuleManifest -Path '$(ManifestFilePath)' -FormatsToProcess '$(FormatsToProcessFileName)' -FunctionsToExport @('Get-IshAuxSessionState', 'New-IshAuxCompletionResult', 'Register-IshAuxParameterCompleter') -RootModule '$(RootModuleFileName)' -ModuleVersion '$(ModuleVersion)' -Guid '$(ModuleGuid)' -Author '$(Authors)' -CompanyName '$(CompanyName)' -Copyright '$(Copyright)' -Description '$(ModuleDescription)' -PowerShellVersion '$(MinPowerShellVersion)' -ClrVersion '$(MinCLRVersion)' -DotNetFrameworkVersion '$(MinDotNetVersion)' -LicenseUri '$(LicenseUri)' -ProjectUri '$(ProjectUri)' -CmdletsToExport @($cmdletsToExport)&quot;" />
   </Target>
 
   <!-- Copy all the required files to folder named ISHRemote which is needed for packaging -->

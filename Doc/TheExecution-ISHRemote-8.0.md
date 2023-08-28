@@ -207,6 +207,7 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 
  
 # Future  
+* GitHub Actions has many issues... had to drop New-ModuleManifest -Prerelease '$(Prerelease)' parameter ... do v7.0 compare, perhaps restore by Find/Replace in files
 * Put Protocol in IshSession print next to ServerVersion (perhaps no AuthContext anymore)          
 * Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs
 
