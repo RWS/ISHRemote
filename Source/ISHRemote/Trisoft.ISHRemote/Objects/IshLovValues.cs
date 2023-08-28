@@ -63,7 +63,7 @@ namespace Trisoft.ISHRemote.Objects
             {
                 _lovValues.Add((ishLovValue.LovId + keySeparator + ishLovValue.IshRef), ishLovValue);
             }
-            //TODO [COULD] Earlier List<> implementation initialized by:  _lovValues = new List<IshLovValue>(ishLovValues ?? new IshLovValue[0]);
+            //TODO [Could] Earlier List<> implementation initialized by:  _lovValues = new List<IshLovValue>(ishLovValues ?? new IshLovValue[0]);
         }
 
         /// <summary>

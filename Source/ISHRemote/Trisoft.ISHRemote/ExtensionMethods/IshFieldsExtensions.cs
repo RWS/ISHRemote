@@ -94,7 +94,6 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                 OpenApiISH30.IshField openApiIshField = new OpenApiISH30.IshField() {  Level = ishField.Level.ToOpenApiISH30Level(), Name = ishField.Name };
                 
                 string fieldValue = ishFields.GetFieldValue(ishField.Name, ishField.Level, ishField.ValueType);
-                // TODO why is the separator on IshSession a string?
                 string[] multiFieldValues = fieldValue.Split(ishSession.Separator.ToCharArray(), StringSplitOptions.None);
 
                 switch (ishTypeFieldDefinition.DataType)
@@ -126,7 +125,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                         break;
 
                     case Enumerations.DataType.ISHType:
-                        // TODO: How do we know what type of cardtype this is?
+                        // TODO [Must] How do we know what type of cardtype this is?
                         ICollection<SetBaseObject> setBaseObjects = GetSetBaseObjectFromReferenceType(multiFieldValues, ishTypeFieldDefinition);
                         setFieldValue = ishTypeFieldDefinition.IsMultiValue ? (SetFieldValue)new SetMultiCardFieldValue()
                         {
@@ -178,7 +177,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
         {
             List<SetBaseObject> setBaseObjects = new List<SetBaseObject>(ids.Count());
 
-            // TODO ReferencyType for a field can have multiple values?
+            // TODO [Should] ReferencyType for a field can have multiple values?
             Enumerations.ISHType ishType = ishTypeFieldDefinition.ReferenceType.First();
 
             foreach (string id in ids)

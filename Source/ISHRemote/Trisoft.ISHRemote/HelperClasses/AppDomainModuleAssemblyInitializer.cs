@@ -103,7 +103,10 @@ namespace Trisoft.ISHRemote.HelperClasses
             filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
             assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("IdentityModel", assembly);
-            
+
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Memory.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("System.Memory", assembly);
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
 
