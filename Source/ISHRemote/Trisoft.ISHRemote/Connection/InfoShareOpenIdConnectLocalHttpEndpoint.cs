@@ -71,8 +71,14 @@ namespace Trisoft.ISHRemote.Connection
         {
             Task<HttpListenerContext> httpListenerContextTask = _httpListener.GetContextAsync();
 
+            int countTimeoutInMilliseconds = 0;
             while (!httpListenerContextTask.IsCompleted)
             {
+                countTimeoutInMilliseconds += 100;
+                if (countTimeoutInMilliseconds > timeoutInSeconds * 1000)
+                {
+                    throw new TaskCanceledException($"Browser login cannceled after {timeoutInSeconds} seconds.");
+                }
                 Thread.Sleep(100);
                 cancellationToken.ThrowIfCancellationRequested();
             }

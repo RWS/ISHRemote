@@ -45,24 +45,33 @@ $ditaMapWithTopicrefFileContent = @"
 </map>
 "@
 
-Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for UserName/Password based tests, so ISHSTS-like...initialization"
+Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for UserName/Password/Client/Secret based tests...initialization"
 $baseUrl = $env:ISH_BASE_URL
 if ([string]::IsNullOrEmpty($baseUrl))
 {
 	$baseUrl = 'https://ish.example.com'
 }
-
 $ishUserName = $env:ISH_USER_NAME
 if ([string]::IsNullOrEmpty($ishUserName))
 {
-	$ishUserName = 'admin'
+	$ishUserName = 'myusername'
 }
-
 $ishPassword = $env:ISH_PASSWORD
 if ([string]::IsNullOrEmpty($ishPassword))
 {
-	$ishPassword = 'admin'
+	$ishPassword = 'mypassword'
 }
+$amClientId = $env:ISH_CLIENT_ID
+if ([string]::IsNullOrEmpty($amClientId))
+{
+	$amClientId = 'myserviceaccountclientid'
+}
+$amClientSecret = $env:ISH_CLIENT_SECRET
+if ([string]::IsNullOrEmpty($amClientSecret))
+{
+	$amClientSecret = 'myserviceaccountclientsecret'
+}
+
 $webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
 #$wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"  # Removed since v7.0
 #$wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"  # Removed since v7.0

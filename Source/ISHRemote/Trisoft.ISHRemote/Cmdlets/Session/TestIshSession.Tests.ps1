@@ -20,14 +20,18 @@ Describe "Test-IshSession" -Tags "Read" {
 	}
 
 	Context "Test-IshSession ClientIdClientSecret so protocol WcfSoapWithOpenIdConnect or OpenApiWithOpenIdConnect" {
-		if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-			It "Parameter WsBaseUrl invalid" {
+		It "Parameter WsBaseUrl invalid" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				Test-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" | Should -Be $false
 			}
-			It "Parameter ClientId invalid" {
+		}
+		It "Parameter ClientId invalid" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				Test-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId "INVALIDCLIENTID" -ClientSecret "INVALIDCLIENTSECRET" | Should -Be $false
 			}
-			It "Parameter ClientSecret invalid" {
+		}
+		It "Parameter ClientSecret invalid" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				Test-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret "INVALIDCLIENTSECRET" | Should -Be $false
 			}
 		}
@@ -77,22 +81,26 @@ Describe "Test-IshSession" -Tags "Read" {
 	}
 
 	Context "Test-IshSession over WcfSoapWithOpenIdConnect returns bool" {
-		if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-			BeforeAll {
+		BeforeAll {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				$ishSessionResult = Test-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
-			It "GetType()" {
+		}
+		It "GetType()" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				$ishSessionResult.GetType().Name | Should -BeExactly "Boolean"
 			}
 		}
 	}
 
 	Context "Test-IshSession over OpenApiWithOpenIdConnect returns bool" {
-		if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-			BeforeAll {
+		BeforeAll {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				$ishSessionResult = Test-IshSession -Protocol OpenApiWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
-			It "GetType()" {
+		}
+		It "GetType()" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				$ishSessionResult.GetType().Name | Should -BeExactly "Boolean"
 			}
 		}

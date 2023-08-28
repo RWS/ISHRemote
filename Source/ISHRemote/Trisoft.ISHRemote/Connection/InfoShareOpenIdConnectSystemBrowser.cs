@@ -68,14 +68,15 @@ namespace Trisoft.ISHRemote.Connection
 
         public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
         {
-            _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser InvokeAsync port[{Port}] path[{_path}]");
+            int timeoutInSeconds = 90;
+            _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser InvokeAsync port[{Port}] path[{_path}] timeoutInSeconds[{timeoutInSeconds}]");
             using (var listener = new InfoShareOpenIdConnectLocalHttpEndpoint(Port, _path))
             {
                 OpenBrowser(options.StartUrl);
 
                 try
                 {
-                    var result = await listener.WaitForCallbackAsync();
+                    var result = await listener.WaitForCallbackAsync(timeoutInSeconds);
 
                     _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser SendHttpRedirectAsync RedirectUrl[{RedirectUrl}]");
                     await listener.SendHttpRedirectAsync(RedirectUrl, cancellationToken);

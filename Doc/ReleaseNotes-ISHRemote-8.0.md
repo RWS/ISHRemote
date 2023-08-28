@@ -20,7 +20,7 @@ Where we used to have only implicit `WcfSoapWithWsTrust` protocol - same as ISHR
     * WS-Federation/WS-Trust over –IshUserName/-IshPassword parameters, typical ISHSTS setups
     * WS-Federation/WS-Trust over implicit ActiveDirectory NetworkCredentials , typical ADFS setups
 * If protocol is not mentioned, it defaults to `WcfSoapWithOpenIdConnect` on Tridion Docs 15.x/15.x.0
-    * Modern Authentication like Publication Manager or Organize Space, etc over System Browser
+    * Modern Authentication like Publication Manager or Organize Space, etc over your favorite Browser
     * Modern Authentication over –ClientId/-ClientSecret coming from Access Management (ISHAM)
     * Note: ISHWS/OWCF web services have feature parity to ISHWS/WCF (and actually also ISHWS/*.ASMX) 
 * If protocol is forced to `OpenApiWithOpenIdConnect`
@@ -29,7 +29,7 @@ Where we used to have only implicit `WcfSoapWithWsTrust` protocol - same as ISHR
 
 ### OpenIdConnect Client Credentials Flow
 
-On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` will create an `IshSession` for usage in all other cmdlets.
+On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
 
 ```powershell
 New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example.com/ISHWS/ -ClientId "c82..." -ClientSecret "ziK...=="
@@ -41,13 +41,15 @@ Below animation illustrates how you need to set up a Service Account resulting i
 
 ### OpenIdConnect Authorization Code Flow with PKCE Flow
 
-On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` will create an `IshSession` for usage in all other cmdlets.
+On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
 
 ```powershell
 New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example.com/ISHWS/ #over-SystemBrowser
 ```
 
 Below animation illustrates how you will authenticate over your (system) browser, potentially reusing your single sign on session. This example federates the authentication from Access Management (ISHAM) to built-in Tridion Docs Identity Provider (ISHID) which could be a different MFA-protected experience in other setups. Do note that ISHID accounts have prepared External Id (`FISHEXTERNALID`) entries on every Tridion Docs User Profile.
+
+![ISHRemote-8.0--ClientSecretOnTridionDocs15.0 1024x512](./Images/ISHRemote-8.0--BrowserAuthorizationCodeFlowUsingISHIDOnTridionDocs15.0.gif)
 
 ### Protocol Overview 
 
@@ -60,6 +62,10 @@ Below animation illustrates how you will authenticate over your (system) browser
 |OpenApiWithOpenIdConnect|Client Credentials (typically ISHAM client/secret)|New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example.com/ISHWS/ -ClientId "c82…" -ClientSecret "ziK…=="|Supported|Supported|
 | |Authorization Code Flow with PKCE (typically System Browser)|New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example.com/ISHWS/ #over-SystemBrowser|Supported|Supported|
 
+
+### User's Last Log On Timestamp Impact
+
+The Tridion Docs User Profile as seen in the Settings > User profile overview (ISHCS/OrganizeSpace) shows the last log on date time (field `FISHLASTLOGINON`) which is only accurate for authentication over Tridion Docs Identity Provider (ISHID or before ISHSTS). When federating authentication the remote Secure Token Service (STS) is responsible. Do note that Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS) does get updated.
 
 
 ## Implementation Details
@@ -90,14 +96,14 @@ Code, especially around communication and authentication protocol, was heavily r
 
 ## Breaking Changes - Platform
 
-All third party libraries regarding WS-Trust, Federation and OpenIdConnect were upgraded to latest available (see `Trisoft.ISHRemote.csproj` history) for details. However, ISHRemote in the end is an assembly library loaded in PowerShell (like `%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe`). Other libraries loaded earlier or later influence ISHRemote, especially the OpenIdConnect connection libraries.
+All third party libraries regarding WS-Trust, Federation and OpenIdConnect were upgraded to latest available (see `Trisoft.ISHRemote.csproj` history) for details. However, ISHRemote in the end is an assembly library loaded in a PowerShell process (like `%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe`). Other libraries loaded earlier or later influence ISHRemote, especially the OpenIdConnect connection libraries.
 
 Classic solution are assembly redirects in app.config. However, updating .config files under `%SystemRoot%\system32\` is not done and requires Administrator privileges.
 
 So chose to explicit load higher required assembly version then already found/loaded through `AppDomainModuleAssemblyInitializer`. Every `New-IshSession` will trigger a warning/verbose message hinting to this magic that influences ISHRemote or where ISHRemote influences others.
 
-```powershell
-WARNING: NewIshSession  ISHRemote module on PS5.1/NET48 forces Assembly Redirects over for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll
+```
+WARNING: NewIshSession  ISHRemote module on PS5.1/NET48 forces Assembly Redirects for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll
 ```
 
 |Assembly|Initial Version Load Request|Redirecting and Loading Version|
@@ -124,8 +130,8 @@ Below is not an official performance compare, but a recurring thing noticed alon
 |--------------------------|-------------------------------------|----------------------|----------------|
 | ISHRemote 6.0.9523.0     | Windows PowerShell 5.1 on .NET 4.8  | WcfSoapWithWsTrust | Tests completed in 353.57s AND Tests Passed: 917, Failed: 0, Skipped: 8 NotRun: 0 |
 | ISHRemote 6.0.9523.0     | PowerShell 7.3.0 on .NET 7.0.0      | WcfSoapWithWsTrust | Tests completed in 305.46s AND Tests Passed: 921, Failed: 0, Skipped: 8 NotRun: 0 |
-| ISHRemote 8.0.10425.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 634.75s AND Tests Passed: 1045, Failed: 0, Skipped: 3 NotRun: 0 |
-| ISHRemote 8.0.10425.0     | PowerShell 7.3.6 on .NET 7.0.0  | WcfSoapWithOpenIdConnect | Tests completed in 538.95s AND Tests Passed: 934, Failed: 0, Skipped: 3 NotRun: 0  |
+| ISHRemote 8.0.10425.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 472.44s AND Tests Passed: 1026, Failed: 0, Skipped: 3 NotRun: 0 |
+| ISHRemote 8.0.10425.0     | PowerShell 7.3.6 on .NET 7.0.0  | WcfSoapWithOpenIdConnect | Tests completed in 457.89s AND Tests Passed: 1026, Failed: 0, Skipped: 3 NotRun: 0  |
 
 
 

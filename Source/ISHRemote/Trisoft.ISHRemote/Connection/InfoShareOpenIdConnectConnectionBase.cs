@@ -108,8 +108,6 @@ namespace Trisoft.ISHRemote.Connection
                 ClientSecret = _connectionParameters.ClientSecret
             };
             TokenResponse response = await _httpClient.RequestClientCredentialsTokenAsync(tokenRequest, cancellationToken).ConfigureAwait(false);
-
-            // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
             if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
                 throw new ApplicationException($"GetTokensOverClientCredentialsAsync Access Error[{response.Error}]");
@@ -168,7 +166,10 @@ namespace Trisoft.ISHRemote.Connection
 
             var oidcClient = new OidcClient(oidcClientOptions);
             var loginResult = await oidcClient.LoginAsync(new LoginRequest());
-
+            if (loginResult.IsError)
+            {
+                throw new ApplicationException($"GetTokensOverSystemBrowserAsync Error[{loginResult.Error}]");
+            }
             var result = new InfoShareOpenIdConnectTokens
             {
                 AccessToken = loginResult.AccessToken,

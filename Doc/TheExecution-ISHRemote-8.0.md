@@ -189,21 +189,22 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * All examples for Get-Help in New-IshSession are over -PSCredentials or -IshUserName/IshPassword but now we have interactive (so system browser) or -ClientId/ClientSecret ... adapt them all or add sentence in first example?
 * Align `Test-IshSession` with `New-IshSession` plus both need tests: `NewIshSession.Tests.ps1` and `TestIshSession.Tests.ps1`
 * Extend New-IshSession/Test-IshSession with -PSCredential also working for client/secret (and ishusername/ishpassword)
-  
+* * Fix all version based tests on PS7, they should not result in empty server version like ` Context Add-IshBackgroundTask IshObjectsGroup Pipeline IshObject since 14SP4/14.0.4 =<`... Don't put Pester code in `Decribe` or `Context` block, use `It` only.
+* Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed. See ReleaseNotes-ISHRemote-8.0.md
+* Refresh OpenApi.json to released Docs 15.0.0 version
+* Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID).
+*   
 # Next
-* Fix all version based tests on PS7, they should not result in empty server version like ` Context Add-IshBackgroundTask IshObjectsGroup Pipeline IshObject since 14SP4/14.0.4 =<`
 * Test refresh with short expiration 
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
     * User provisioning, see [SRQ-23306] Last login date in user overview is not updated when authentication was done through an external identity provider - RWS Jira https://jira.sdl.com/browse/SRQ-23306
 * Automated Test ps5.1 with wstrust, ps7 with both openidconnect
 * Test all protocol types on all platforms via newishsession (and one other smoke test) by calling it 6 times (2 ps times 3 protocols) which colors right after prerequisites
-* Refresh OpenApi.json to released Docs 15.0.0 version
-* Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainAssemblyResolveHelper.cs` or better `AppDomainModuleAssemblyInitializer.cs`
-    > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `SessionCmdlet.cs` and `AppDomainAssemblyResolveHelper.cs` on https://github.com/RWS/ISHRemote/
+* Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainModuleAssemblyInitializer.cs`
+    > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `AppDomainModuleAssemblyInitializer.cs` on https://github.com/RWS/ISHRemote/
     > Another hint is adding `LogSerializer.Enabled = false;` because if you do not attach logging to OidcClient, there seemingly is a bug that still does logging although not configured. see https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
-* Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed.
 * Describe what Tridion Docs User Profile disable means, and when it kicks in.
-* Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID).
+
  
 # Future  
 * Put Protocol in IshSession print next to ServerVersion (perhaps no AuthContext anymore)          
