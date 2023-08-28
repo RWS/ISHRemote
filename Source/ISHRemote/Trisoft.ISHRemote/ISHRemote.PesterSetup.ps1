@@ -125,8 +125,8 @@ $hostname=$Matches['hostname']
 	$webServicesConnectionConfigurationUrl = $webServicesBaseUrl + "connectionconfiguration.xml"
 	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
 	$connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl #Only PS7#-SkipCertificateCheck 
-	$connectionConfigurationXml = [xml]($connectionConfigurationRaw.Replace([char]0xEF+[char]0xBB+[char]0xBF,"")) #Removes incorrect UTF8 BOM in PS5 and PS7
-	[version]$infosharesoftwareversion = $connectionConfigurationXml.connectionconfiguration.infosharesoftwareversion
+	$connectionConfigurationRaw -match "<infosharesoftwareversion>(?<myVersion>.*)</infosharesoftwareversion>"  # Straight string handling avoids UTF8-BOM cross-platform handling
+	[version]$infosharesoftwareversion = $matches['myversion']
 	if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
 	{
 		$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -WarningAction SilentlyContinue
