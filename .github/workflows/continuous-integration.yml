@@ -16,7 +16,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: bjompen/UpdatePWSHAction@version
+    - name: PowerShell Update - 7.2 has issues, updating to 7.3.6 or higher
+      uses: bjompen/UpdatePWSHAction@v1.0.0
       with:
         ReleaseVersion: 'Preview'
 
