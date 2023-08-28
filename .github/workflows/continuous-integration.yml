@@ -16,6 +16,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - uses: bjompen/UpdatePWSHAction@version
+      with:
+        ReleaseVersion: 'Preview'
+
     - uses: actions/checkout@v3
     
     - name: Setup .NET 6.0.x
