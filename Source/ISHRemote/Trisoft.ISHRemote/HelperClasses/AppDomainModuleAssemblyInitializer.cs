@@ -110,6 +110,11 @@ namespace Trisoft.ISHRemote.HelperClasses
             var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
             var assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("IdentityModel", assembly);
+
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.ServiceModel.Primitives.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("System.ServiceModel.Primitives", assembly);
+            
 #endif
         }
 
