@@ -2,9 +2,15 @@
 
   <PropertyGroup>
     <TargetFrameworks>net48;net6.0</TargetFrameworks>
-	<!-- TargetFrameworks>netcoreapp3.1;net48;net6.0</TargetFrameworks -->
+  	<!-- TargetFrameworks>netcoreapp3.1;net48;net6.0</TargetFrameworks -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+
+    <!--
+      GitHub Actions complained with Cannot load System.ServiceModel.Primitives .. 
+      Cannot load System.ServiceModel.Primitives https://github.com/dotnet/wcf/issues/2862 mentions PWSH 7.3.6 minimally required
+    -->
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
 
   <ItemGroup>

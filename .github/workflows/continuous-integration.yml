@@ -132,6 +132,21 @@ jobs:
         Add-Content -Path $filePath -Value '  $ishLngCombination = ''en-us'''
         Add-Content -Path $filePath -Value '}'
 
+    - name: Pester Test Prerequisites on Windows using Windows PowerShell 5.1
+      shell: powershell
+      env:
+        ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
+        ISH_USER_NAME: ${{ secrets.ISH_USER_NAME }}
+        ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
+        ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
+        ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
+      run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: ISHRemote-MainCI-PesterPrerequisiteOnWindowsPowerShell
+        path: Cmdlets.Pester.Tests.xml
+
     - name: Pester Test Cmdlets using Windows PowerShell 5.1
       shell: powershell
       env:
