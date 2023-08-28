@@ -123,7 +123,7 @@ $hostname=$Matches['hostname']
 #if ($null -eq $global:ishSession)
 #{
 	$webServicesConnectionConfigurationUrl = $webServicesBaseUrl + "connectionconfiguration.xml"
-	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
+	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesBaseUrl[$webServicesBaseUrl] webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
 	$connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl -SkipCertificateCheck 
 	$connectionConfigurationXml = [xml]($connectionConfigurationRaw.Replace("ï»¿",""))
 	[version]$infosharesoftwareversion = $connectionConfigurationXml.connectionconfiguration.infosharesoftwareversion
