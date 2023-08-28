@@ -123,9 +123,9 @@ $hostname=$Matches['hostname']
 #if ($null -eq $global:ishSession)
 #{
 	$webServicesConnectionConfigurationUrl = $webServicesBaseUrl + "connectionconfiguration.xml"
-	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesBaseUrl[$webServicesBaseUrl] webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
-	$connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl -SkipCertificateCheck 
-	$connectionConfigurationXml = [xml]($connectionConfigurationRaw.Replace("ï»¿",""))
+	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
+	$connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl #Only PS7#-SkipCertificateCheck 
+	$connectionConfigurationXml = [xml]($connectionConfigurationRaw.Replace([char]0xEF+[char]0xBB+[char]0xBF,"")) #Removes incorrect UTF8 BOM in PS5 and PS7
 	[version]$infosharesoftwareversion = $connectionConfigurationXml.connectionconfiguration.infosharesoftwareversion
 	if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
 	{
