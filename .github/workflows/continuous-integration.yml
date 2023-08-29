@@ -16,10 +16,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: PowerShell Update - 7.2 has issues, updating to 7.3.6 or higher
+    - name: PowerShell Update - 7.2.13/lts has issues, updating to latest stable (like 7.3.6 or higher)
       uses: bjompen/UpdatePWSHAction@v1.0.0
       with:
-        ReleaseVersion: 'Preview'
+        ReleaseVersion: 'Stable'
 
     - uses: actions/checkout@v3
     
@@ -137,7 +137,7 @@ jobs:
         Add-Content -Path $filePath -Value '  $ishLngCombination = ''en-us'''
         Add-Content -Path $filePath -Value '}'
 
-    - name: Pester Test Prerequisites on Windows using Windows PowerShell 5.1
+    - name: Pester Test Prerequisites using Windows PowerShell 5.1
       shell: powershell
       env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}

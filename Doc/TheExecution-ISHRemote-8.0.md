@@ -193,7 +193,10 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed. See ReleaseNotes-ISHRemote-8.0.md
 * Refresh OpenApi.json to released Docs 15.0.0 version
 * Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID).
-*   
+* netstandard2.0 lib which in turn references System.ServiceModel.Primitives 4.10.2 https://github.com/dotnet/wcf/issues/2862 ... problem disappears since PowerShell 7.3.6-stable
+* GitHub Actions has many issues... had to drop New-ModuleManifest -Prerelease '$(Prerelease)' parameter on PS5.1 and added simple find-replace
+
+
 # Next
 * Test refresh with short expiration 
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
@@ -207,9 +210,6 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 
  
 # Future  
-* netstandard2.0 lib which in turn references System.ServiceModel.Primitives 4.10.2 https://github.com/dotnet/wcf/issues/2862
-* GitHub Actions has many issues... had to drop New-ModuleManifest -Prerelease '$(Prerelease)' parameter ... do v7.0 compare, perhaps restore by Find/Replace in files
-* Put Protocol in IshSession print next to ServerVersion (perhaps no AuthContext anymore)          
 * Go to async model, might be big investment, but theoretically is better, inspiration is on https://github.com/IdentityModel/IdentityModel.OidcClient.Samples/blob/main/NetCoreConsoleClient/src/NetCoreConsoleClient/Program.cs
 
 
