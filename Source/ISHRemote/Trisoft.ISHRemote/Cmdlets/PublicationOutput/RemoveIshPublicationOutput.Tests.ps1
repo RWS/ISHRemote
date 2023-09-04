@@ -56,7 +56,7 @@ Describe "Remove-IshPublicationOutput" -Tags "Delete" {
     }
 
     Context "Remove-IshPublicationOutput remove PublicationOutput" {
-        It "Logical level. Force=Yes" {
+        It "Logical level removed with Force=Yes" {
             $ishPubMetadata = $ishPublicationOutputMetadata | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "$($____Pester.CurrentTest.Name) $timestamp"
             $ishPub = Add-IshPublicationOutput -IshSession $ishSession -IshFolder $ishFolderPub -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Metadata $ishPubMetadata
             Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishPub.IshRef -Version $ishPub.version_version_value -LanguageCombination $ishPub.fishpublngcombination -OutputFormat $ishPub.fishoutputformatref_lng_element -Force
