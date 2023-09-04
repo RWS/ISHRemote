@@ -72,6 +72,7 @@ jobs:
         Add-Content -Path $filePath -Value '$baseUrl = $env:ISH_BASE_URL'
         Add-Content -Path $filePath -Value 'if ($baseUrl -like "*.sdlproducts.com*")'
         Add-Content -Path $filePath -Value '{'
+        Add-Content -Path $filePath -Value '  $ishEventTypeToPurge = ''TESTBACKGROUNDTASK''' # before 14SP4 use ''PUSHTRANSLATIONS'''
         Add-Content -Path $filePath -Value '  $ishLngLabel = ''en-us'''
         Add-Content -Path $filePath -Value '  $ishLngTarget1 = ''VLANGUAGEESES'''
         Add-Content -Path $filePath -Value '  $ishLngTarget1Label = ''es-es'''
