@@ -57,8 +57,8 @@ namespace Trisoft.ISHRemote.Objects
             Reply = 510,
             [StringValue("project")]
             Project = 600,
-            [StringValue("assignee")]
-            Assignee = 610
+            [StringValue("projectassignee")]
+            ProjectAssignee = 610
         }
 
         /// <summary>
