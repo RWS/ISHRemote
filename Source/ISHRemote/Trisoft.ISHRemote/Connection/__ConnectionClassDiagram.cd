@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Trisoft.ISHRemote.Connection.IshConnectionConfiguration">
+    <Position X="0.5" Y="1" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAACAAiAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Connection\IshConnectionConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectTokens">
+    <Position X="0.5" Y="3.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAMAAAAAAAAAAA=</HashCode>
+      <FileName>Connection\InfoShareOpenIdConnectTokens.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectConnectionParameters">
+    <Position X="6.25" Y="1.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AABAAIAAAAKAACAAiAACAAAAAAhAAAMAAAAIAAAFBAA=</HashCode>
+      <FileName>Connection\InfoShareOpenIdConnectConnectionParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareWcfSoapWithWsTrustConnectionParameters">
+    <Position X="11.25" Y="1.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAKAAAAACAACAAAgAAAAAAMAAAAIAAIEBAA=</HashCode>
+      <FileName>Connection\InfoShareWcfSoapWithWsTrustConnectionParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectLocalHttpEndpoint">
+    <Position X="0.5" Y="5.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAUAmAIAAAAAAAAAAAgAQAAgAAgQAAAAAAAAIA=</HashCode>
+      <FileName>Connection\InfoShareOpenIdConnectLocalHttpEndpoint.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectSystemBrowser">
+    <Position X="0.5" Y="10" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAgAAAAABKAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Connection\InfoShareOpenIdConnectSystemBrowser.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareWcfSoapWithOpenIdConnectConnection">
+    <Position X="7.75" Y="9" Width="3.25" />
+    <Members>
+      <Field Name="_annotationClient" Hidden="true" />
+      <Field Name="_applicationClient" Hidden="true" />
+      <Field Name="_backgroundTaskClient" Hidden="true" />
+      <Field Name="_baselineClient" Hidden="true" />
+      <Field Name="_documentObjClient" Hidden="true" />
+      <Field Name="_EDTClient" Hidden="true" />
+      <Field Name="_eventMonitorClient" Hidden="true" />
+      <Field Name="_folderClient" Hidden="true" />
+      <Field Name="_issuedToken" Hidden="true" />
+      <Field Name="_listOfValuesClient" Hidden="true" />
+      <Field Name="_metadataBindingClient" Hidden="true" />
+      <Field Name="_outputFormatClient" Hidden="true" />
+      <Field Name="_publicationOutputClient" Hidden="true" />
+      <Field Name="_searchClient" Hidden="true" />
+      <Field Name="_settingsClient" Hidden="true" />
+      <Field Name="_translationJobClient" Hidden="true" />
+      <Field Name="_translationTemplateClient" Hidden="true" />
+      <Field Name="_userClient" Hidden="true" />
+      <Field Name="_userGroupClient" Hidden="true" />
+      <Field Name="_userRoleClient" Hidden="true" />
+      <Method Name="GetAnnotation25Channel" Hidden="true" />
+      <Method Name="GetApplication25Channel" Hidden="true" />
+      <Method Name="GetBackgroundTask25Channel" Hidden="true" />
+      <Method Name="GetBaseline25Channel" Hidden="true" />
+      <Method Name="GetDocumentObj25Channel" Hidden="true" />
+      <Method Name="GetEDT25Channel" Hidden="true" />
+      <Method Name="GetEventMonitor25Channel" Hidden="true" />
+      <Method Name="GetFolder25Channel" Hidden="true" />
+      <Method Name="GetListOfValues25Channel" Hidden="true" />
+      <Method Name="GetMetadataBinding25Channel" Hidden="true" />
+      <Method Name="GetOutputFormat25Channel" Hidden="true" />
+      <Method Name="GetPublicationOutput25Channel" Hidden="true" />
+      <Method Name="GetSearch25Channel" Hidden="true" />
+      <Method Name="GetSettings25Channel" Hidden="true" />
+      <Method Name="GetTranslationJob25Channel" Hidden="true" />
+      <Method Name="GetTranslationTemplate25Channel" Hidden="true" />
+      <Method Name="GetUser25Channel" Hidden="true" />
+      <Method Name="GetUserGroup25Channel" Hidden="true" />
+      <Method Name="GetUserRole25Channel" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>cBgEBIhQ0WAAAJAgQMsQAMGAgBWBxiAA8AQYBgiECog=</HashCode>
+      <FileName>Connection\InfoShareWcfSoapWithOpenIdConnectConnection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareWcfSoapWithWsTrustConnection">
+    <Position X="11.25" Y="9" Width="3.25" />
+    <Members>
+      <Field Name="_annotationClient" Hidden="true" />
+      <Field Name="_applicationClient" Hidden="true" />
+      <Field Name="_backgroundTaskClient" Hidden="true" />
+      <Field Name="_baselineClient" Hidden="true" />
+      <Field Name="_documentObjClient" Hidden="true" />
+      <Field Name="_EDTClient" Hidden="true" />
+      <Field Name="_eventMonitorClient" Hidden="true" />
+      <Field Name="_folderClient" Hidden="true" />
+      <Field Name="_listOfValuesClient" Hidden="true" />
+      <Field Name="_metadataBindingClient" Hidden="true" />
+      <Field Name="_outputFormatClient" Hidden="true" />
+      <Field Name="_publicationOutputClient" Hidden="true" />
+      <Field Name="_searchClient" Hidden="true" />
+      <Field Name="_settingsClient" Hidden="true" />
+      <Field Name="_translationJobClient" Hidden="true" />
+      <Field Name="_translationTemplateClient" Hidden="true" />
+      <Field Name="_userClient" Hidden="true" />
+      <Field Name="_userGroupClient" Hidden="true" />
+      <Field Name="_userRoleClient" Hidden="true" />
+      <Method Name="GetAnnotation25Channel" Hidden="true" />
+      <Method Name="GetApplication25Channel" Hidden="true" />
+      <Method Name="GetBackgroundTask25Channel" Hidden="true" />
+      <Method Name="GetBaseline25Channel" Hidden="true" />
+      <Method Name="GetDocumentObj25Channel" Hidden="true" />
+      <Method Name="GetEDT25Channel" Hidden="true" />
+      <Method Name="GetEventMonitor25Channel" Hidden="true" />
+      <Method Name="GetFolder25Channel" Hidden="true" />
+      <Method Name="GetListOfValues25Channel" Hidden="true" />
+      <Method Name="GetMetadataBinding25Channel" Hidden="true" />
+      <Method Name="GetOutputFormat25Channel" Hidden="true" />
+      <Method Name="GetPublicationOutput25Channel" Hidden="true" />
+      <Method Name="GetSearch25Channel" Hidden="true" />
+      <Method Name="GetSettings25Channel" Hidden="true" />
+      <Method Name="GetTranslationJob25Channel" Hidden="true" />
+      <Method Name="GetTranslationTemplate25Channel" Hidden="true" />
+      <Method Name="GetUser25Channel" Hidden="true" />
+      <Method Name="GetUserGroup25Channel" Hidden="true" />
+      <Method Name="GetUserRole25Channel" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>cBgFVIhQ0WAAQJAgQNsQAJGAsRWBxiBCcAQYBgiECog=</HashCode>
+      <FileName>Connection\InfoShareWcfSoapWithWsTrustConnection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectConnectionBase">
+    <Position X="6.25" Y="5.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAQAAIAAAABAQAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connection\InfoShareOpenIdConnectConnectionBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenApiWithOpenIdConnectConnection">
+    <Position X="4.25" Y="9" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAA0AAEAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Connection\InfoShareOpenApiWithOpenIdConnectConnection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

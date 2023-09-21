@@ -37,13 +37,13 @@ using System.ServiceModel.Security.Tokens;
 using System.ServiceModel.Federation;
 #endif
 
-namespace Trisoft.ISHRemote
+namespace Trisoft.ISHRemote.Connection
 {
     /// <summary>
     /// Dynamic proxy (so without app.config) generation of Service References towards the InfoShare Web Services writen in Windows Communication Foundation (WCF) protected by WS-Trust (aka WS-Federation active) SOAP protocol.
     /// On ISHRemote v1 and earlier, so in turn before InfoShare 15 and earlier, this class was your starting point for dynamic proxy (so without app.config) generation of Service References. The inital class was written in .NET Framework style. Inspired by https://devblogs.microsoft.com/dotnet/wsfederationhttpbinding-in-net-standard-wcf/ this class has pragmas to illustrate .NET Framework and .NET 6.0+ style side-by-side.
     /// </summary>
-    internal sealed class InfoShareWcfConnection : IDisposable
+    internal sealed class InfoShareWcfSoapWithWsTrustConnection : IDisposable
     {
         #region Constants
         /// <summary>
@@ -130,44 +130,29 @@ namespace Trisoft.ISHRemote
         /// </summary>
         private readonly ILogger _logger;
         /// <summary>
-        /// Set when the incoming web service url indicates a different connectionconfiguration.xml regarding security configuration like [InfoShareWSBaseUri]/Internal or [InfoShareWSBaseUri]/SDL
+        /// HttpClient. Incoming reused, probably Ssl/Tls initialized already.
         /// </summary>
-        private readonly bool _stsInternalAuthentication = false;
-#if NET48
-        /// <summary>
-        /// Set when the session must be created by using only local endpoints
-        /// </summary>
-        private readonly bool _explicitIssuer = false;
-#endif
+        private HttpClient _httpClient;
         /// <summary>
         /// Parameters that configure the connection behavior.
         /// </summary>
-        private readonly InfoShareWcfConnectionParameters _connectionParameters;
-        /// <summary>
-        /// The connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
-        /// </summary>
-        private readonly Lazy<XDocument> _connectionConfiguration;
+        private readonly InfoShareWcfSoapWithWsTrustConnectionParameters _connectionParameters;
         /// <summary>
         /// The binding type that is required by the end point of the WS-Trust issuer.
         /// </summary>
-        private readonly Lazy<string> _issuerAuthenticationType;
+        private readonly string _issuerAuthenticationType;
         /// <summary>
         /// The WS-Trust endpoint for the Security Token Service that provides the functionality to issue tokens as specified by the issuerwstrustbindingtype.
         /// </summary>
-        private readonly Lazy<Uri> _issuerWSTrustEndpointUri;
-        /// <summary>
-        /// The WS-Trust metadata exchange endpoint for the Security Token Service that provides the functionality to issue tokens.
-        /// </summary>
-        private readonly Lazy<Uri> _issuerWSTrustMexUri;
+        private readonly Uri _issuerWSTrustEndpointUri;
         /// <summary>
         /// WS STS Realm to issue tokens for
         /// </summary>
-        private readonly Lazy<Uri> _infoShareWSAppliesTo;
+        private readonly Uri _infoShareWSAppliesTo;
         /// <summary>
         /// Service URIs by service.
         /// </summary>
         private readonly Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
-
         /// <summary>
 		/// The token that is used to access the services.
 		/// </summary>
@@ -260,57 +245,38 @@ namespace Trisoft.ISHRemote
         /// Proxy for background task
         /// </summary>
         private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
-#endregion Private Members
+        #endregion Private Members
 
-#region Constructors
+        #region Constructors
         /// <summary>
-        /// Initializes a new instance of <c>InfoShareWcfConnection</c> class.
+        /// Initializes a new instance of <c>InfoShareWcfSoapWithWsTrustConnection</c> class.
         /// </summary>
         /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
-        /// <param name="infoShareWSBaseUri">Base URI for InfoShare WS.</param>
-        /// <param name="parameters">Connection parameters.</param>
-        public InfoShareWcfConnection(ILogger logger, Uri infoShareWSBaseUri, InfoShareWcfConnectionParameters parameters = null)
+        /// <param name="httpClient">Incoming reused, probably Ssl/Tls initialized already.</param>
+        /// <param name="infoShareWcfSoapWithWsTrustConnectionParameters">Connection parameters.</param>
+        public InfoShareWcfSoapWithWsTrustConnection(ILogger logger, HttpClient httpClient, InfoShareWcfSoapWithWsTrustConnectionParameters infoShareWcfSoapWithWsTrustConnectionParameters)
         {
             _logger = logger;
+            _httpClient = httpClient;
+            _connectionParameters = infoShareWcfSoapWithWsTrustConnectionParameters;
+            // Could to more strict _connectionParameters checks
 
-            _logger.WriteDebug($"Incomming  infoShareWSBaseUri[{infoShareWSBaseUri}]");
-            if (infoShareWSBaseUri == null)
-                throw new ArgumentNullException("infoShareWSBaseUri");
-            if (parameters == null)
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection InfoShareWSUrl[{_connectionParameters.InfoShareWSUrl}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");
+
+              // using the ISHWS url from connectionconfiguration.xml instead of the potentially wrongly cased incoming one [TS-10630]
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection using Normalized infoShareWSBaseUri[{_connectionParameters.InfoShareWSUrl}]");
+            this.InfoShareWSBaseUri = _connectionParameters.InfoShareWSUrl;
+            _issuerAuthenticationType = _connectionParameters.AuthenticationType;
+            _infoShareWSAppliesTo = _connectionParameters.InfoShareWSUrl;
+            _issuerWSTrustEndpointUri = _connectionParameters.IssuerUrl;
+#if NET6_0_OR_GREATER
+            if (_issuerWSTrustEndpointUri.ToString().EndsWith("windowsmixed"))
             {
-                parameters = new InfoShareWcfConnectionParameters()
-                {
-                    Credential = null,
-                };
+                throw new PlatformNotSupportedException($"PowerShell7+/NET6+ only supports /wstrust/mixed/username. Windows PowerShell 5.1/NET4.8 supports /wstrust/mixed/username and windowsmixed (aka Windows Authentication). IssuerUrl[{_issuerWSTrustEndpointUri}] PlatformVersion[{Environment.Version}]");
             }
-
-#region Derive parameters from infoShareWSBaseUri and connectionconfiguration.xml
-
-            if (infoShareWSBaseUri.AbsolutePath.Contains("/Internal") || infoShareWSBaseUri.AbsolutePath.Contains("/SDL"))
-            {
-                _stsInternalAuthentication = true;
-                // Enable-ISHIntegrationSTSInternalAuthentication is used directing the web services to a different STS
-                // issuerMetadataAddress = new EndpointAddress(InitializeIssuerMetadataAddress);  // [Should] Once connectionconfiguration.xml/issuer/mex offers the metadata exchange address, the dirty derive code should be replaced
-                _logger.WriteDebug($"InfoShareWcfConnection stsInternalAuthentication[{_stsInternalAuthentication}]");
-                _logger.WriteVerbose($"Detected 'Internal/SDL' Authentication in incoming infoShareWSBaseUri[{infoShareWSBaseUri}]");
-            }
-
-            this.InfoShareWSBaseUri = infoShareWSBaseUri;
-            _connectionParameters = parameters;
-            _connectionConfiguration = new Lazy<XDocument>(LoadConnectionConfiguration);
-            // using the ISHWS url from connectionconfiguration.xml instead of the potentially wrongly cased incoming one [TS-10630]
-            this.InfoShareWSBaseUri = InitializeInfoShareWSBaseUri();
-            _logger.WriteDebug($"Normalized infoShareWSBaseUri[{this.InfoShareWSBaseUri}]");
-            _issuerWSTrustEndpointUri = new Lazy<Uri>(InitializeIssuerWSTrustEndpointUri);
-            _issuerWSTrustMexUri = new Lazy<Uri>(() => { throw new NotSupportedException(); });
-            _issuerAuthenticationType = new Lazy<string>(InitializeIssuerAuthenticationType);
-            _infoShareWSAppliesTo = new Lazy<Uri>(InitializeInfoShareWSAppliesTo);
-
-#endregion
-
-            _logger.WriteDebug($"Resolving Service Uris");
+#endif
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Resolving Service Uris");
             ResolveServiceUris();
-
 
             // The lazy initialization depends on all the initialization above.
             _issuedToken = new Lazy<GenericXmlSecurityToken>(IssueToken);
@@ -349,9 +315,9 @@ namespace Trisoft.ISHRemote
             _commonBinding.ReaderQuotas.MaxDepth = 64;
 #endif
         }
-#endregion
+        #endregion
 
-#region Public Properties
+        #region Public Properties
         /// <summary>
         /// Root uri for the Web Services
         /// </summary>
@@ -369,9 +335,9 @@ namespace Trisoft.ISHRemote
                 return result;
             }
         }
-#endregion Properties
+        #endregion Properties
 
-#region Public Methods
+        #region Public Get..Channel Methods
         /// <summary>
         /// Create a /Wcf/API25/Annotation.svc proxy
         /// </summary>
@@ -1059,24 +1025,13 @@ namespace Trisoft.ISHRemote
 
         #region Private Properties
         /// <summary>
-        /// Gets the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
-        /// </summary>
-        private XDocument ConnectionConfiguration
-        {
-            get
-            {
-                return _connectionConfiguration.Value;
-            }
-        }
-
-        /// <summary>
         /// Gets the binding type that is required by the end point of the WS-Trust issuer.
         /// </summary>
         private string IssuerAuthenticationType
         {
             get
             {
-                return _issuerAuthenticationType.Value;
+                return _issuerAuthenticationType;
             }
         }
 
@@ -1087,7 +1042,7 @@ namespace Trisoft.ISHRemote
         {
             get
             {
-                return _issuerWSTrustEndpointUri.Value;
+                return _issuerWSTrustEndpointUri;
             }
         }
 
@@ -1101,10 +1056,12 @@ namespace Trisoft.ISHRemote
                 return _issuedToken.Value;
             }
         }
-#endregion
+        #endregion
 
-#region Private Methods
-
+        #region Private Methods
+        /// <summary>
+        /// One location to bind relative urls to service names
+        /// </summary>
         private void ResolveServiceUris()
         {
             _serviceUriByServiceName.Add(Annotation25, new Uri(InfoShareWSBaseUri, "Wcf/API25/Annotation.svc"));
@@ -1128,216 +1085,11 @@ namespace Trisoft.ISHRemote
             _serviceUriByServiceName.Add(BackgroundTask25, new Uri(InfoShareWSBaseUri, "Wcf/API25/BackgroundTask.svc"));
         }
 
-#if NET48
         /// <summary>
-        /// Resolve endpoints
-        /// 1. Binding enpoints for the InfoShareWS endpoints
-        /// 2. Look into the issuer elements to extract the issuer binding and endpoint
+        /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
         /// </summary>
-        private void ResolveEndpoints(bool autoAuthenticate)
-        {
-            _logger.WriteDebug("Resolving endpoints");
-            Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
-            var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
-            // Get endpont for http or https depending on the base uri passed
-            var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
-            ApplyTimeout(applicationServiceEndpoint, _connectionParameters.ServiceTimeout);
-            ApplyQuotas(applicationServiceEndpoint);
-            _commonBinding = applicationServiceEndpoint.Binding;
-
-            if (autoAuthenticate)
-            {
-                // Resolve the token
-                var token = IssuedToken;
-            }
-            _logger.WriteDebug("Resolved endpoints");
-        }
-#endif
-
-        /// <summary>
-        /// Issues the token
-        /// Mostly copied from Service References
-        /// </summary>
-        private GenericXmlSecurityToken IssueToken()
-        {
-#if NET48
-            _logger.WriteDebug("Issue Token (NET48)");
-            var issuerEndpoint = FindIssuerEndpoint();
-
-            var requestSecurityToken = new RequestSecurityToken
-            {
-                RequestType = RequestTypes.Issue,
-                AppliesTo = new EndpointReference(_infoShareWSAppliesTo.Value.AbsoluteUri),
-                KeyType = System.IdentityModel.Protocols.WSTrust.KeyTypes.Symmetric
-            };
-            using (var factory = new WSTrustChannelFactory((WS2007HttpBinding)issuerEndpoint.Binding, issuerEndpoint.Address))
-            {
-                ApplyCredentials(factory.Credentials);
-                ApplyTimeout(factory.Endpoint, _connectionParameters.IssueTimeout);
-
-                factory.TrustVersion = TrustVersion.WSTrust13;
-                factory.Credentials.SupportInteractive = false;
-
-                WSTrustChannel channel = null;
-                try
-                {
-                    _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}]");
-                    channel = (WSTrustChannel)factory.CreateChannel();
-                    RequestSecurityTokenResponse requestSecurityTokenResponse;
-                    var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
-                    _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
-                    return genericXmlToken;
-                }
-                catch
-                {
-                    // Fallback to 10.0.X and 11.0.X configuration using relying party per url like /InfoShareWS/API25/Application.svc
-                    requestSecurityToken.AppliesTo = new EndpointReference(_serviceUriByServiceName[Application25].AbsoluteUri);
-                    _logger.WriteDebug($"Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}] as fallback on 10.0.x/11.0.x");
-                    RequestSecurityTokenResponse requestSecurityTokenResponse;
-                    var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
-                    _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
-                    return genericXmlToken;
-                }
-                finally
-                {
-                    if (channel != null)
-                    {
-                        channel.Abort();
-                    }
-                    factory.Abort();
-                }
-            }
-#else
-            _logger.WriteDebug("Issue Token (NET6+)");
-            SecurityTokenProvider tokenProvider = null;
-            try
-            {
-                _logger.WriteDebug($"Issue Token for AppliesTo[{_infoShareWSAppliesTo.Value.AbsoluteUri}]");
-                var issuerWS2007HttpBinding = new WS2007HttpBinding();
-                // Originals of UserName Endpoint STS · Issue #4542 · dotnet/wcf https://github.com/dotnet/wcf/issues/4542
-                issuerWS2007HttpBinding.Security.Mode = SecurityMode.TransportWithMessageCredential;
-                issuerWS2007HttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-                issuerWS2007HttpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-                issuerWS2007HttpBinding.Security.Message.EstablishSecurityContext = false;
-                issuerWS2007HttpBinding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Default;
-
-                var tokenParams = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerWS2007HttpBinding, new EndpointAddress(IssuerWSTrustEndpointUri));
-                tokenParams.KeyType = SecurityKeyType.BearerKey; // "http://schemas.microsoft.com/idfx/keytype/bearer";
-
-                var clientCredentials = new ClientCredentials();
-                clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-                clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-                var trustCredentials = new WSTrustChannelClientCredentials(clientCredentials);
-                var tokenManager = trustCredentials.CreateSecurityTokenManager();
-
-                var tokenRequirement = new SecurityTokenRequirement();
-                EndpointAddress appliesTo = new EndpointAddress(_infoShareWSAppliesTo.Value.AbsoluteUri); //Realm WITHOUT Application.svc!!
-                tokenRequirement.Properties["http://schemas.microsoft.com/ws/2006/05/servicemodel/securitytokenrequirement/IssuedSecurityTokenParameters"] = tokenParams;
-                tokenRequirement.Properties["http://schemas.microsoft.com/ws/2006/05/servicemodel/securitytokenrequirement/TargetAddress"] = appliesTo;
-
-                tokenProvider = tokenManager.CreateSecurityTokenProvider(tokenRequirement);
-                ((ICommunicationObject)tokenProvider).Open();
-                // tokenProvider.SupportsTokenRenewal = false currently??
-                var genericXmlToken = (GenericXmlSecurityToken)tokenProvider.GetToken(_connectionParameters.IssueTimeout);
-                _logger.WriteDebug($"Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
-                return genericXmlToken;
-            }
-            finally
-            {
-                if (tokenProvider != null)
-                {
-                    ((ICommunicationObject)tokenProvider).Close();
-                }
-            }
-#endif
-        }
-
-#if NET48
-        /// <summary>
-        /// Extract the Issuer endpoint and configure the appropriate one
-        /// </summary>
-        private ServiceEndpoint FindIssuerEndpoint()
-        {
-            _logger.WriteDebug("FindIssuerEndpoint");
-            EndpointAddress issuerMetadataAddress = null;
-            EndpointAddress issuerAddress = null;
-            IssuedSecurityTokenParameters protectionTokenParameters = null;
-            if (!_explicitIssuer)
-            {
-                //Based on the scheme dynamically extract the protection token parameters from a Property path string using reflection.
-                //Writing the code requires to much casting. The paths are taken from the powershell scripts
-                if (InfoShareWSBaseUri.Scheme == Uri.UriSchemeHttp)
-                {
-                    dynamic binding = _commonBinding;
-                    protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].ProtectionTokenParameters.BootstrapSecurityBindingElement.ProtectionTokenParameters;
-                }
-                else
-                {
-                    dynamic binding = _commonBinding;
-                    protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].EndpointSupportingTokenParameters.Endorsing[0].BootstrapSecurityBindingElement.EndpointSupportingTokenParameters.Endorsing[0];
-                }
-                issuerMetadataAddress = protectionTokenParameters.IssuerMetadataAddress;
-                issuerAddress = protectionTokenParameters.IssuerAddress;
-                _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
-
-                if (_stsInternalAuthentication)
-                {
-                    // Enable-ISHIntegrationSTSInternalAuthentication is used directing the web services to a different STS
-                    // issuerMetadataAddress = new EndpointAddress(InitializeIssuerMetadataAddress);  // [Should] Once connectionconfiguration.xml/issuer/mex offers the metadata exchange address, the dirty derive code should be replaced
-                    string issuerWSTrustEndpointUri = InitializeIssuerWSTrustEndpointUri().AbsoluteUri;
-                    string issuerWSTrustMetadataEndpointUri = issuerWSTrustEndpointUri.Substring(0, issuerWSTrustEndpointUri.IndexOf("issue/wstrust")) + "issue/wstrust/mex";
-                    issuerMetadataAddress = new EndpointAddress(issuerWSTrustMetadataEndpointUri);
-                    issuerAddress = new EndpointAddress(issuerWSTrustEndpointUri);
-                    _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
-                }
-            }
-            else
-            {
-                issuerMetadataAddress = new EndpointAddress(_issuerWSTrustMexUri.Value);
-                issuerAddress = new EndpointAddress(_issuerWSTrustEndpointUri.Value);
-                _logger.WriteDebug($"FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
-            }
-
-            ServiceEndpointCollection serviceEndpointCollection;
-            try
-            {
-                // Start with the mex endpoint
-                var wsdlImporter = GetWsdlImporter(issuerMetadataAddress.Uri);
-                serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
-            }
-            catch
-            {
-                // Re-try with the wsdl endpoint
-                var wsdlImporter = GetWsdlImporter(new Uri(issuerMetadataAddress.Uri.AbsoluteUri.Replace("/mex", "?wsdl")));
-                serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
-            }
-
-            var issuerWSTrustEndpointAbsolutePath = IssuerWSTrustEndpointUri.AbsolutePath;
-            _logger.WriteDebug($"FindIssuerEndpoint issuerWSTrustEndpointAbsolutePath[{issuerWSTrustEndpointAbsolutePath}]");
-            ServiceEndpoint issuerServiceEndpoint = serviceEndpointCollection.FirstOrDefault(
-                x => x.Address.Uri.AbsolutePath.Equals(issuerWSTrustEndpointAbsolutePath, StringComparison.OrdinalIgnoreCase));
-
-            if (issuerServiceEndpoint == null)
-            {
-                throw new InvalidOperationException(String.Format("WSTrust endpoint not configured: '{0}'.", issuerWSTrustEndpointAbsolutePath));
-            }
-
-            //Update the original binding as if we would do this manually in the configuration
-            if(!_explicitIssuer)
-            { 
-                protectionTokenParameters.IssuerBinding = issuerServiceEndpoint.Binding;
-                protectionTokenParameters.IssuerAddress = issuerServiceEndpoint.Address;
-            }
-
-            return issuerServiceEndpoint;
-        }
-#endif
-
-            /// <summary>
-            /// Returns the connection configuration (loaded from base [InfoShareWSBaseUri]/connectionconfiguration.xml)
-            /// </summary>
-            /// <returns>The connection configuration.</returns>
-            private XDocument LoadConnectionConfiguration()
+        /// <returns>The connection configuration.</returns>
+        private XDocument LoadConnectionConfiguration()
         {
             HttpClientHandler handler = new HttpClientHandler();
             if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1357,88 +1109,185 @@ namespace Trisoft.ISHRemote
         }
 
         /// <summary>
-        /// Returns the binding type that is required by the end point of the WS-Trust issuer.
+        /// Issues the token
+        /// Mostly copied from Service References
         /// </summary>
-        /// <returns>The binding type.</returns>
-        private string InitializeIssuerAuthenticationType()
+        private GenericXmlSecurityToken IssueToken()
         {
-            var authTypeElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/issuer/authenticationtype");
-            if (authTypeElement == null)
-            {
-                throw new InvalidOperationException("Authentication type not found in the connection configuration.");
-            }
-            _logger.WriteDebug($"InitializeIssuerAuthenticationType authType[{authTypeElement.Value}]");
-            return authTypeElement.Value;
-        }
+#if NET48
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Issue Token (NET48)");
+            var issuerEndpoint = FindIssuerEndpoint();
 
-        /// <summary>
-        /// Returns the correctly cased web services endpoint.
-        /// </summary>
-        /// <returns>The InfoShareWS endpoint for the Web Services.</returns>
-        private Uri InitializeInfoShareWSBaseUri()
-        {
-            var uriElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/infosharewsurl");
-            if (uriElement == null)
+            var requestSecurityToken = new RequestSecurityToken
             {
-                throw new InvalidOperationException("infosharews url not found in the connection configuration.");
-            }
-            _logger.WriteDebug($"InitializeInfoShareWSBaseUri uri[{uriElement.Value}]");
-            return new Uri(uriElement.Value);
-        }
+                RequestType = RequestTypes.Issue,
+                AppliesTo = new EndpointReference(_infoShareWSAppliesTo.AbsoluteUri),
+                KeyType = System.IdentityModel.Protocols.WSTrust.KeyTypes.Symmetric
+            };
+            using (var factory = new WSTrustChannelFactory((WS2007HttpBinding)issuerEndpoint.Binding, issuerEndpoint.Address))
+            {
+                ApplyCredentials(factory.Credentials);
+                ApplyTimeout(factory.Endpoint, _connectionParameters.IssueTimeout);
 
-        /// <summary>
-        /// Returns the WS-Trust endpoint for the Security Token Service that provides the functionality to issue tokens as specified by the issuerwstrustbindingtype.
-        /// </summary>
-        /// <returns>The WS-Trust endpoint for the Security Token Service.</returns>
-        private Uri InitializeIssuerWSTrustEndpointUri()
-        {
-            var uriElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/issuer/url");
-            if (uriElement == null)
-            {
-                throw new InvalidOperationException("Issuer url not found in the connection configuration.");
+                factory.TrustVersion = TrustVersion.WSTrust13;
+                factory.Credentials.SupportInteractive = false;
+
+                WSTrustChannel channel = null;
+                try
+                {
+                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}]");
+                    channel = (WSTrustChannel)factory.CreateChannel();
+                    RequestSecurityTokenResponse requestSecurityTokenResponse;
+                    var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
+                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                    return genericXmlToken;
+                }
+                catch
+                {
+                    // Fallback to 10.0.X and 11.0.X configuration using relying party per url like /InfoShareWS/API25/Application.svc
+                    requestSecurityToken.AppliesTo = new EndpointReference(_serviceUriByServiceName[Application25].AbsoluteUri);
+                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{requestSecurityToken.AppliesTo.Uri}] as fallback on 10.0.x/11.0.x");
+                    RequestSecurityTokenResponse requestSecurityTokenResponse;
+                    var genericXmlToken = channel.Issue(requestSecurityToken, out requestSecurityTokenResponse) as GenericXmlSecurityToken;
+                    _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                    return genericXmlToken;
+                }
+                finally
+                {
+                    if (channel != null)
+                    {
+                        channel.Abort();
+                    }
+                    factory.Abort();
+                }
             }
-#if NET6_0_OR_GREATER
-            if (uriElement.Value.ToLower().EndsWith("windowsmixed"))
+#else
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Issue Token (NET6+)");
+            SecurityTokenProvider tokenProvider = null;
+            try
             {
-                throw new PlatformNotSupportedException($"PowerShell7+/NET6+ only supports /wstrust/mixed/username. Windows PowerShell 5.1/NET4.8 supports /wstrust/mixed/username and windowsmixed (aka Windows Authentication). IssuerUrl[{uriElement.Value}] PlatformVersion[{Environment.Version}]");
+                _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token for AppliesTo[{_infoShareWSAppliesTo.AbsoluteUri}]");
+                var issuerWS2007HttpBinding = new WS2007HttpBinding();
+                // Originals of UserName Endpoint STS · Issue #4542 · dotnet/wcf https://github.com/dotnet/wcf/issues/4542
+                issuerWS2007HttpBinding.Security.Mode = SecurityMode.TransportWithMessageCredential;
+                issuerWS2007HttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+                issuerWS2007HttpBinding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+                issuerWS2007HttpBinding.Security.Message.EstablishSecurityContext = false;
+                issuerWS2007HttpBinding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Default;
+
+                var tokenParams = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerWS2007HttpBinding, new EndpointAddress(IssuerWSTrustEndpointUri));
+                tokenParams.KeyType = SecurityKeyType.BearerKey; // "http://schemas.microsoft.com/idfx/keytype/bearer";
+
+                var clientCredentials = new ClientCredentials();
+                clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                var trustCredentials = new WSTrustChannelClientCredentials(clientCredentials);
+                var tokenManager = trustCredentials.CreateSecurityTokenManager();
+
+                var tokenRequirement = new SecurityTokenRequirement();
+                EndpointAddress appliesTo = new EndpointAddress(_infoShareWSAppliesTo.AbsoluteUri); //Realm WITHOUT Application.svc!!
+                tokenRequirement.Properties["http://schemas.microsoft.com/ws/2006/05/servicemodel/securitytokenrequirement/IssuedSecurityTokenParameters"] = tokenParams;
+                tokenRequirement.Properties["http://schemas.microsoft.com/ws/2006/05/servicemodel/securitytokenrequirement/TargetAddress"] = appliesTo;
+
+                tokenProvider = tokenManager.CreateSecurityTokenProvider(tokenRequirement);
+                ((ICommunicationObject)tokenProvider).Open();
+                // tokenProvider.SupportsTokenRenewal = false currently??
+                var genericXmlToken = (GenericXmlSecurityToken)tokenProvider.GetToken(_connectionParameters.IssueTimeout);
+                _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection Issue Token received ValidFrom[{genericXmlToken.ValidFrom}] ValidTo[{genericXmlToken.ValidTo}]");
+                return genericXmlToken;
+            }
+            finally
+            {
+                if (tokenProvider != null)
+                {
+                    ((ICommunicationObject)tokenProvider).Close();
+                }
             }
 #endif
-            _logger.WriteVerbose($"Connecting to IssuerWSTrustUrl[{uriElement.Value}]");
-            _logger.WriteDebug($"InitializeIssuerWSTrustEndpointUri uri[{uriElement.Value}]");
-            return new Uri(uriElement.Value);
-        }
-
-        /// <summary>
-        /// Returns the WS STS Realm to issue tokens for.
-        /// </summary>
-        /// <returns>The WS STS Realm to issue tokens for.</returns>
-        private Uri InitializeInfoShareWSAppliesTo()
-        {
-            var uriElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/infosharewsurl");
-            if (uriElement == null)
-            {
-                throw new InvalidOperationException("infosharewsurl url not found in the connection configuration.");
-            }
-            _logger.WriteDebug($"InitializeInfoShareWSAppliesTo uri[{uriElement.Value}]");
-            return new Uri(uriElement.Value);
-        }
-
-        /// <summary>
-        /// Returns the Author STS Realm to issue tokens for.
-        /// </summary>
-        /// <returns>The Author STS Realm to issue tokens for.</returns>
-        private Uri InitializeInfoShareWebAppliesTo()
-        {
-            var uriElement = ConnectionConfiguration.XPathSelectElement("/connectionconfiguration/infoshareauthorurl");
-            if (uriElement == null)
-            {
-                throw new InvalidOperationException("infoshareauthorurl url not found in the connection configuration.");
-            }
-            _logger.WriteDebug($"InitializeInfoShareWebAppliesTo uri[{uriElement.Value}]");
-            return new Uri(uriElement.Value);
         }
 
 #if NET48
+        /// <summary>
+        /// Resolve endpoints
+        /// 1. Binding enpoints for the InfoShareWS endpoints
+        /// 2. Look into the issuer elements to extract the issuer binding and endpoint
+        /// </summary>
+        private void ResolveEndpoints(bool autoAuthenticate)
+        {
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Resolving endpoints");
+            Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
+            var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
+            // Get endpont for http or https depending on the base uri passed
+            var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
+            ApplyTimeout(applicationServiceEndpoint, _connectionParameters.ServiceTimeout);
+            ApplyQuotas(applicationServiceEndpoint);
+            _commonBinding = applicationServiceEndpoint.Binding;
+
+            if (autoAuthenticate)
+            {
+                // Resolve the token
+                var token = IssuedToken;
+            }
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection Resolved endpoints");
+        }
+
+        /// <summary>
+        /// Extract the Issuer endpoint and configure the appropriate one
+        /// </summary>
+        private ServiceEndpoint FindIssuerEndpoint()
+        {
+            _logger.WriteDebug("InfoShareWcfSoapWithWsTrustConnection FindIssuerEndpoint");
+            EndpointAddress issuerMetadataAddress = null;
+            EndpointAddress issuerAddress = null;
+            IssuedSecurityTokenParameters protectionTokenParameters = null;
+
+
+            //Based on the scheme dynamically extract the protection token parameters from a Property path string using reflection.
+            //Writing the code requires to much casting. The paths are taken from the powershell scripts
+            if (InfoShareWSBaseUri.Scheme == Uri.UriSchemeHttp)
+            {
+                dynamic binding = _commonBinding;
+                protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].ProtectionTokenParameters.BootstrapSecurityBindingElement.ProtectionTokenParameters;
+            }
+            else
+            {
+                dynamic binding = _commonBinding;
+                protectionTokenParameters = (IssuedSecurityTokenParameters)binding.Elements[0].EndpointSupportingTokenParameters.Endorsing[0].BootstrapSecurityBindingElement.EndpointSupportingTokenParameters.Endorsing[0];
+            }
+            issuerMetadataAddress = protectionTokenParameters.IssuerMetadataAddress;
+            issuerAddress = protectionTokenParameters.IssuerAddress;
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection FindIssuerEndpoint issuerMetadataAddress[{issuerMetadataAddress}] issuerAddress[{issuerAddress}]");
+
+
+            ServiceEndpointCollection serviceEndpointCollection;
+            try
+            {
+                // Start with the mex endpoint
+                var wsdlImporter = GetWsdlImporter(issuerMetadataAddress.Uri);
+                serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
+            }
+            catch
+            {
+                // Re-try with the wsdl endpoint
+                var wsdlImporter = GetWsdlImporter(new Uri(issuerMetadataAddress.Uri.AbsoluteUri.Replace("/mex", "?wsdl")));
+                serviceEndpointCollection = wsdlImporter.ImportAllEndpoints();
+            }
+
+            var issuerWSTrustEndpointAbsolutePath = IssuerWSTrustEndpointUri.AbsolutePath;
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection FindIssuerEndpoint issuerWSTrustEndpointAbsolutePath[{issuerWSTrustEndpointAbsolutePath}]");
+            ServiceEndpoint issuerServiceEndpoint = serviceEndpointCollection.FirstOrDefault(
+                x => x.Address.Uri.AbsolutePath.Equals(issuerWSTrustEndpointAbsolutePath, StringComparison.OrdinalIgnoreCase));
+
+            if (issuerServiceEndpoint == null)
+            {
+                throw new InvalidOperationException(String.Format("WSTrust endpoint not configured: '{0}'.", issuerWSTrustEndpointAbsolutePath));
+            }
+            
+            protectionTokenParameters.IssuerBinding = issuerServiceEndpoint.Binding;
+            protectionTokenParameters.IssuerAddress = issuerServiceEndpoint.Address;
+            return issuerServiceEndpoint;
+        }
+
         /// <summary>
         /// Find the wsdl importer
         /// </summary>
@@ -1446,7 +1295,7 @@ namespace Trisoft.ISHRemote
         /// <returns>A wsdl importer</returns>
         private WsdlImporter GetWsdlImporter(Uri wsdlUri)
         {
-            _logger.WriteDebug($"GetWsdlImporter wsdlUri[{wsdlUri}]");
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection GetWsdlImporter wsdlUri[{wsdlUri}]");
             WSHttpBinding mexBinding = null;
             if (wsdlUri.Scheme == Uri.UriSchemeHttp)
             {
@@ -1470,7 +1319,6 @@ namespace Trisoft.ISHRemote
             var metadataSet = mexClient.GetMetadata(wsdlUri, MetadataExchangeClientMode.HttpGet);
             return new WsdlImporter(metadataSet);
         }
-#endif
 
         /// <summary>
         /// Initializes client credentials 
@@ -1480,9 +1328,9 @@ namespace Trisoft.ISHRemote
         {
             if (IssuerAuthenticationType == "UserNameMixed")
             {
-                if(_connectionParameters.Credential == null)
+                if (_connectionParameters.Credential == null)
                 {
-                    throw new InvalidOperationException($"Authentication endpoint {_issuerWSTrustEndpointUri.Value} requires credentials");
+                    throw new InvalidOperationException($"Authentication endpoint {_issuerWSTrustEndpointUri} requires credentials");
                 }
                 clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
@@ -1502,14 +1350,14 @@ namespace Trisoft.ISHRemote
                 endpoint.Binding.SendTimeout = timeout.Value;
             }
         }
-#if NET48
+
         /// <summary>
         /// Applies quotas to endpoint
         /// </summary>
         /// <param name="endpoint">The endpoint</param>
         private void ApplyQuotas(ServiceEndpoint endpoint)
         {
-            _logger.WriteDebug($"ApplyQuotas on serviceEndpoint[{endpoint.Address.Uri}]");
+            _logger.WriteDebug($"InfoShareWcfSoapWithWsTrustConnection ApplyQuotas on serviceEndpoint[{endpoint.Address.Uri}]");
             CustomBinding customBinding = (CustomBinding)endpoint.Binding;
             var textMessageEncoding = customBinding.Elements.Find<TextMessageEncodingBindingElement>();
             textMessageEncoding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
@@ -1524,9 +1372,9 @@ namespace Trisoft.ISHRemote
         }
 #endif
 
-#endregion
+        #endregion
 
-#region IDisposable Methods
+        #region IDisposable Methods
         /// <summary>
         /// Disposes the object
         /// </summary>
@@ -1616,6 +1464,6 @@ namespace Trisoft.ISHRemote
         {
             Dispose();
         }
-#endregion
+        #endregion
     }
 }

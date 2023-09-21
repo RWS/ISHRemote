@@ -29,6 +29,33 @@ namespace Trisoft.ISHRemote.Objects
     public class Enumerations
     {
         /// <summary>
+        /// <para type="description">IshSession Protocol tries to connect the communication protocol like ASMX (Soap11), WCF (Soap12), OpenAPI (rest) with the authentication protocol like WS-Trust (WCF-only), AuthenticationContext (Asxm-only), etc. Offering shorthand for working combinations.</para>
+        /// </summary>
+        public enum Protocol
+        {
+            /// <summary>
+            /// <para type="description">Will try to find the best match, most likely based on the target systems software version.</para>
+            /// </summary>
+            Autodetect = 0,
+            // <summary>
+            // <para type="description">Asmx (Soap11) endpoints exist since InfoShare 2.7.0, always authenticated through first parameter AuthenticationContext which only works for internal user profiles (so holding a password in the CMS).</para>
+            // </summary>
+            //AsmxSoapWithAuthenticationContext = 270,
+            /// <summary>
+            /// <para type="description">Wcf (Soap12) endpoints exist since InfoShare 10.0.0, always authenticated over WS-Federation/WS-Trust which works for internal and external user profiles.</para>
+            /// </summary>
+            WcfSoapWithWsTrust = 1000,
+            /// <summary>
+            /// <para type="description">Wcf (Soap12) endpoints exist since InfoShare 15.0.0 as public Api, always authenticated over OpenIDConnect/OAuth20 which works for internal and external user profiles.</para>
+            /// </summary>
+            WcfSoapWithOpenIdConnect = 1500,
+            /// <summary>
+            /// <para type="description">OpenApi (rest) endpoints exist since InfoShare 15.0.0 as private Api, always authenticated over OpenIDConnect/OAuth20 which works for internal and external user profiles.</para>
+            /// </summary>
+            OpenApiWithOpenIdConnect = 1600
+        }
+
+        /// <summary>
         /// <para type="description">Which card or table level should the field be present on. The int assignment allows sorting so Logical before Version before Language.</para>
         /// </summary>
         public enum Level
@@ -748,6 +775,35 @@ namespace Trisoft.ISHRemote.Objects
                     return BaselineSourceEnumeration.ExpandFirstVersion;
                 default:
                     return BaselineSourceEnumeration.Manual;
+            }
+        }
+
+        /// <summary>
+        /// OpenApi (dd 20211228) expects DDOCTYPE value instead of more generic enumeration of folder types.
+        /// </summary>
+        internal static string ToDDOCTYPEValue(IshFolderType ishFolderType)
+        {
+            switch (ishFolderType)
+            {
+                case IshFolderType.ISHModule:
+                    return "VDOCTYPEMAP";
+                case IshFolderType.ISHMasterDoc:
+                    return "VDOCTYPEMASTER";
+                case IshFolderType.ISHLibrary:
+                    return "VDOCTYPELIB";
+                case IshFolderType.ISHTemplate:
+                    return "VDOCTYPETEMPLATE";
+                case IshFolderType.ISHIllustration:
+                    return "VDOCTYPEILLUSTRATION";
+                case IshFolderType.ISHPublication:
+                    return "VDOCTYPEPUBLICATION";
+                case IshFolderType.ISHReference:
+                    return "VDOCTYPEREFERENCE";
+                case IshFolderType.ISHQuery:
+                    return "VDOCTYPEQUERY";
+                case IshFolderType.ISHNone:
+                default:
+                    return "VDOCTYPENONE";
             }
         }
     }

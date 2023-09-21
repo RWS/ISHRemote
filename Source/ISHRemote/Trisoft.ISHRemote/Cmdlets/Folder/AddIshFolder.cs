@@ -21,6 +21,7 @@ using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
+using Trisoft.ISHRemote.ExtensionMethods;
 
 namespace Trisoft.ISHRemote.Cmdlets.Folder
 {
@@ -157,13 +158,82 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             WriteDebug($"Adding ParentFolderId[{ParentFolderId}] FolderType[{folderType}] FolderName[{folderName}] {++current}/{IshFolder.Length}");
                             if (ShouldProcess(folderName))
                             {
-                                var folderId = IshSession.Folder25.Create(
-                                   ParentFolderId,
-                                   folderName,
-                                   ownedBy,
-                                   readAccess,
-                                   EnumConverter.ToFolderType<Folder25ServiceReference.IshFolderType>(folderType));
-                                foldersToRetrieve.Add(folderId);
+                                long folderId = 0;
+                                switch (IshSession.Protocol)
+                                {
+                                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                                        ICollection<OpenApiISH30.SetFieldValue> fieldValues = new List<OpenApiISH30.SetFieldValue>();
+
+                                        //FNAME
+                                        var fieldFolderName = new OpenApiISH30.SetStringFieldValue()
+                                        {
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FNAME" },
+                                            Value = folderName
+                                        };
+                                        fieldValues.Add(fieldFolderName);
+
+                                        //FDOCUMENTTYPE (aka Folder Type)
+                                        var fieldFolderType = new OpenApiISH30.SetLovFieldValue()
+                                        {
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FDOCUMENTTYPE" },
+                                            Value = new OpenApiISH30.SetLovValue() { Id = "VDOCTYPEILLUSTRATION" }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                        };
+                                        fieldValues.Add(fieldFolderType);
+
+                                        //READ-ACCESS
+                                        var fieldReadAccess = new OpenApiISH30.SetMultiCardFieldValue()
+                                        {
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "READ-ACCESS" },
+                                            Value = new List<OpenApiISH30.SetBaseObject>()
+                                        };
+                                        // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                        foreach (string readaccessItem in readAccessString.Split(IshSession.Separator.ToCharArray()))
+                                        {
+                                            fieldReadAccess.Value.Add(new OpenApiISH30.SetUserGroup() { Id = readaccessItem });
+                                        }
+                                        fieldValues.Add(fieldReadAccess);
+
+                                        //FUSERGROUP (aka Owned by)
+                                        var fieldWriteAccess = new OpenApiISH30.SetMultiCardFieldValue()
+                                        {
+                                            IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FUSERGROUP" },
+                                            Value = new List<OpenApiISH30.SetBaseObject>()
+                                        };
+                                        // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                        foreach (string writeaccessItem in ownedBy.Split(IshSession.Separator.ToCharArray()))
+                                        {
+                                            fieldReadAccess.Value.Add(new OpenApiISH30.SetUserGroup() { Id = writeaccessItem });
+                                        }
+                                        fieldValues.Add(fieldWriteAccess);
+
+                                        var response = IshSession.OpenApiISH30Service.CreateFolderAsync(new OpenApiISH30.CreateFolder()
+                                        {
+                                            ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
+                                            Fields = fieldValues
+                                        }).GetAwaiter().GetResult();
+                                        folderId = Convert.ToInt64(response.Id);  // TODO [Question] Why is folder id a string and not typed as long in the FolderDescriptor model?
+
+                                        // Ivo's pitch, but worried about ValueType, so testing a manual collection first.
+                                        //IshSession.OpenApi30Service.CreateFolderAsync(new OpenApiISH30.CreateFolder()
+                                        //{
+                                        //    ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
+                                        //    //Fields = setFieldValueCollection
+                                        //    Fields = ishFolder.IshFields.ToOpenApiISH30SetFieldValues(IshSession)
+                                        //});
+
+                                        foldersToRetrieve.Add(folderId);
+                                        break;
+                                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                                        folderId = IshSession.Folder25.Create(
+                                            ParentFolderId,
+                                            folderName,
+                                            ownedBy,
+                                            readAccess,
+                                            EnumConverter.ToFolderType<Folder25ServiceReference.IshFolderType>(folderType));
+                                        foldersToRetrieve.Add(folderId);
+                                        break;
+                                }
                             }
                         }
                         returnFields = (IshFolder[0] == null) ? new IshFields() : IshFolder[0].IshFields;
@@ -176,13 +246,71 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                         WriteDebug($"Adding ParentFolderId[{ParentFolderId}] FolderType[{FolderType}] FolderName[{FolderName}]");
                         if (ShouldProcess(FolderName))
                         {
-                            var folderId = IshSession.Folder25.Create(
-                                 ParentFolderId,
-                                 FolderName,
-                                 ownedBy,
-                                 readAccess,
-                                 EnumConverter.ToFolderType<Folder25ServiceReference.IshFolderType>(FolderType));
-                            foldersToRetrieve.Add(folderId);
+                            long folderId = 0;
+                            switch (IshSession.Protocol)
+                            {
+                                case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                                    /*
+                                    ICollection<OpenApiISH30.SetFieldValue> fieldValues = new List<OpenApiISH30.SetFieldValue>();
+
+                                    //FNAME
+                                    var fieldFolderName = new OpenApiISH30.SetStringFieldValue()
+                                    {
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FNAME" },
+                                        Value = FolderName
+                                    };
+                                    fieldValues.Add(fieldFolderName);
+
+                                    //FDOCUMENTTYPE (aka Folder Type)
+                                    var fieldFolderType = new OpenApiISH30.SetLovFieldValue()
+                                    {
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FDOCUMENTTYPE" },
+                                        Value = new OpenApiISH30.SetLovValue() { Id = Enumerations.ToDDOCTYPEValue(FolderType) }  // TODO [Question] expects very raw DDOCTYPE lov value like VDOCTYPEILLUSTRATION, instead of still ugly but current API25 ISHIllustration
+                                    };
+                                    fieldValues.Add(fieldFolderType);
+
+                                    //READ-ACCESS
+                                    var fieldReadAccess = new OpenApiISH30.SetMultiLovFieldValue()
+                                    {
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "READ-ACCESS" },
+                                        Value = new List<OpenApiISH30.SetLovValue>()
+                                    };
+                                    // Convert multi-value fields of ISHRemote models via IshSession.Separator
+                                    foreach (string readaccessItem in readAccess)
+                                    {
+                                        fieldReadAccess.Value.Add(new OpenApiISH30.SetLovValue() { Id = readaccessItem });
+                                    }
+                                    fieldValues.Add(fieldReadAccess);
+
+                                    //FUSERGROUP (aka Owned by)
+                                    var ownedByValue = String.IsNullOrEmpty(ownedBy) ? null : new OpenApiISH30.SetUserGroup() { Id = ownedBy };
+                                    var fieldWriteAccess = new OpenApiISH30.SetCardFieldValue()
+                                    {
+                                        IshField = new OpenApiISH30.IshField() { Level = OpenApiISH30.Level.None, Name = "FUSERGROUP" },
+                                        Value = ownedByValue
+                                    };
+                                    fieldValues.Add(fieldWriteAccess);
+
+                                    var response = IshSession.OpenApiISH30Service.CreateFolderAsync(new OpenApiISH30.CreateFolder()
+                                    {
+                                        ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
+                                        Fields = fieldValues
+                                    }).GetAwaiter().GetResult();
+                                    folderId = Convert.ToInt64(response.Id);  // TODO [Question] Why is folder id a string and not typed as long in the FolderDescriptor model?
+                                    foldersToRetrieve.Add(folderId);
+                                    break;
+                                    */
+                                case Enumerations.Protocol.WcfSoapWithWsTrust:
+                                case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                                    folderId = IshSession.Folder25.Create(
+                                        ParentFolderId,
+                                        FolderName,
+                                        ownedBy,
+                                        readAccess,
+                                        EnumConverter.ToFolderType<Folder25ServiceReference.IshFolderType>(FolderType));
+                                    foldersToRetrieve.Add(folderId);
+                                    break;
+                            }
                         }
                         returnFields = new IshFields();
                     }
@@ -192,23 +320,86 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
 
                     // Add the required fields (needed for pipe operations)
                     IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
-                    string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(foldersToRetrieve.ToArray(), requestedMetadata.ToXml());
-                    
-                    IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
-                    returnedFolders.AddRange(retrievedFolders.Folders);
+                    switch (IshSession.Protocol)
+                    {
+                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                            /*
+                            ICollection<OpenApiISH30.RequestedField> fieldValues = new List<OpenApiISH30.RequestedField>();
+                            fieldValues.Add(new OpenApiISH30.RequestedField()
+                            {
+                                IshField = new OpenApiISH30.IshField()
+                                {
+                                    Name = "FITTLE",
+                                    Level = OpenApiISH30.Level.Logical
+                                }
+                            });
+                            //ICollection<OpenApiISH30.FilterFieldValue> filterFieldValues = new List<OpenApiISH30.FilterFieldValue>();
+                            //fieldValues.Add(new OpenApiISH30.CardFilterFieldValue()  // Looks a lot like SetFieldVAlue, so strongly typed
+                            //{
+                            //    IshField = new OpenApiISH30.IshField()
+                            //    {
+                            //        Name = "FITTLE",
+                            //        Level = OpenApiISH30.Level.Logical,
+                            //        Type = nameof(OpenApiISH30.IshField)
+                            //    },
+                            //    Type = nameof(OpenApiISH30.RequestedField)
+                            //});
+                            var responseGet = IshSession.OpenApiISH30Service.GetFolderListAsync(new OpenApiISH30.GetFolderList()
+                            {
+                                Ids = foldersToRetrieve.ConvertAll<string>(x => x.ToString()),
+                                FieldGroup = OpenApiISH30EnumerationsExtensions.ToOpenApiISH30FieldGroup(IshSession.DefaultRequestedMetadata),
+                                
+                            }).GetAwaiter().GetResult();
+                            returnedFolders.AddRange(new IshFolders(responseGet, IshSession.Separator).Folders);
+                            break;
+                            */
+                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                            string xmlIshFolders = IshSession.Folder25.RetrieveMetadataByIshFolderRefs(foldersToRetrieve.ToArray(), requestedMetadata.ToXml());
+                            IshFolders retrievedFolders = new IshFolders(xmlIshFolders);
+                            returnedFolders.AddRange(retrievedFolders.Folders);
+                            break;
+                    }
                 }
 
                 // 3b. Write it
                 WriteVerbose("returned object count[" + returnedFolders.Count + "]");
                 WriteObject(IshSession, ISHType, returnedFolders.ConvertAll(x => (IshBaseObject)x), true);
             }
-
             catch (TrisoftAutomationException trisoftAutomationException)
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
             }
+            catch (OpenApiISH30.ApiException<OpenApiISH30.InfoShareProblemDetails> exception)
+            {
+                if (exception.Result != null)
+                {
+                    WriteWarning($"Status[{exception.Result.Status}] Title[{exception.Result.Title}] EventName[{exception.Result.EventName}] Detail[{exception.Result.Detail}]");
+                    foreach (var error in exception.Result.Errors)
+                    {
+                        string warning = $"ErrorEventName[{error.EventName}] ErrorDetail[{error.Detail}]";
+                        foreach (var relatedInfo in error.RelatedInfo)
+                        {
+                            var schemaValidationError = relatedInfo as OpenApiISH30.SchemaValidationError;
+                            warning += $" on ErrorPath[{schemaValidationError.Path}]";
+                        }
+                        WriteWarning(warning);
+                    }
+                }
+                ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (AggregateException aggregateException)
+            {
+                var flattenedAggregateException = aggregateException.Flatten();
+                WriteWarning(flattenedAggregateException.ToString());
+                ThrowTerminatingError(new ErrorRecord(flattenedAggregateException, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
             catch (Exception exception)
             {
+                if (exception.InnerException != null)
+                {
+                    WriteWarning(exception.InnerException.ToString());
+                }
                 ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
             }
         }

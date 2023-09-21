@@ -1,6 +1,6 @@
 BeforeAll {
 	$cmdletName = "Compare-IshTypeFieldDefinition"
-	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 on PSVersion[" + $psversionTable.PSVersion + "] over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
 	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
 	
 	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
