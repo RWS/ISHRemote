@@ -200,22 +200,25 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                         }
                     }
 
-                    // Delete logical cards which do not have any languages anymore
-                    foreach (string logicalId in logicalIdsVersionsCollection.AllKeys)
+                    if ((IshSession.ServerIshVersion.MajorVersion < 15) || ((IshSession.ServerIshVersion.MajorVersion == 15) && (IshSession.ServerIshVersion.MinorVersion < 1)))
                     {
-                        bool logicalIdFound = false;
-                        foreach (var retrievedObject in retrievedObjects)
+                        // Delete logical cards which do not have any languages anymore
+                        foreach (string logicalId in logicalIdsVersionsCollection.AllKeys)
                         {
-                            if (retrievedObject.IshRef == logicalId)
+                            bool logicalIdFound = false;
+                            foreach (var retrievedObject in retrievedObjects)
                             {
-                                logicalIdFound = true;
+                                if (retrievedObject.IshRef == logicalId)
+                                {
+                                    logicalIdFound = true;
+                                }
                             }
-                        }
-                        if (!logicalIdFound)
-                        {
-                            if (ShouldProcess(logicalId + "==="))
+                            if (!logicalIdFound)
                             {
-                                IshSession.PublicationOutput25.Delete(logicalId, "", "", "", "");
+                                if (ShouldProcess(logicalId + "==="))
+                                {
+                                    IshSession.PublicationOutput25.Delete(logicalId, "", "", "", "");
+                                }
                             }
                         }
                     }
