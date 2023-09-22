@@ -1,6 +1,6 @@
 BeforeAll {
 	$cmdletName = "Add-IshBackgroundTask"
-	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
+	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 on PSVersion[" + $psversionTable.PSVersion + "] over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
 	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
 
 	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
@@ -39,14 +39,18 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 		$createdLngRefs = $ishObjects | select -ExpandProperty LngRef
 	}
 	Context "Add-IshBackgroundTask IshObjectsGroup Parameter IshObject with implicit IshSession since 14SP4/14.0.4" {
-		if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-			It "Parameter IshObject invalid" {
+		It "Parameter IshObject invalid" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject "INVALIDISHOBJECT" } | Should -Throw
 			}
-			It "Parameter EventType null" {
+		}
+		It "Parameter EventType null" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				{ Add-IshBackgroundTask -EventType $null -IshObject  $ishObjects } | Should -Throw
 			}
-			It "Pipeline IshObject Single" {
+		}
+		It "Pipeline IshObject Single" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject $ishObjectTopic1_1
 				$ishObjectTopic1_1.Count | Should -BeExactly 1
 				$ishBackgroundTaskIshObjectsParameter.Count | Should -BeExactly 1
@@ -54,7 +58,9 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				$ishBackgroundTaskIshObjectsParameter.EventType | Should -BeExactly $ishEventTypeToPurge
 				$ishBackgroundTaskIshObjectsParameter.userid | Should -BeExactly $ishSession.UserName
 			}
-			It "Pipeline IshObject Multiple" {
+		}
+		It "Pipeline IshObject Multiple" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject $ishObjects
 				$ishBackgroundTaskIshObjectsParameter.Count | Should -BeExactly 1
 				$ishBackgroundTaskIshObjectsParameter.GetType() | Should -BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask

@@ -45,27 +45,36 @@ $ditaMapWithTopicrefFileContent = @"
 </map>
 "@
 
-Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for UserName/Password based tests, so ISHSTS-like...initialization"
+Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for UserName/Password/Client/Secret based tests...initialization"
 $baseUrl = $env:ISH_BASE_URL
 if ([string]::IsNullOrEmpty($baseUrl))
 {
 	$baseUrl = 'https://ish.example.com'
 }
-
 $ishUserName = $env:ISH_USER_NAME
 if ([string]::IsNullOrEmpty($ishUserName))
 {
-	$ishUserName = 'admin'
+	$ishUserName = 'myusername'
 }
-
 $ishPassword = $env:ISH_PASSWORD
 if ([string]::IsNullOrEmpty($ishPassword))
 {
-	$ishPassword = 'admin'
+	$ishPassword = 'mypassword'
 }
+$amClientId = $env:ISH_CLIENT_ID
+if ([string]::IsNullOrEmpty($amClientId))
+{
+	$amClientId = 'myserviceaccountclientid'
+}
+$amClientSecret = $env:ISH_CLIENT_SECRET
+if ([string]::IsNullOrEmpty($amClientSecret))
+{
+	$amClientSecret = 'myserviceaccountclientsecret'
+}
+
 $webServicesBaseUrl = "$baseUrl/ISHWS/"  # must have trailing slash for tests to succeed
-$wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"
-$wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
+#$wsTrustIssuerUrl = "$baseUrl/ISHSTS/issue/wstrust/mixed/username"  # Removed since v7.0
+#$wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"  # Removed since v7.0
 
 Write-Verbose "Running ISHRemote.PesterSetup.ps1 variables for System Setup initialization"
 $folderTestRootPath = "\General\__ISHRemote"  # requires leading FolderPathSeparator for tests to succeed
@@ -98,6 +107,8 @@ if (Test-Path -Path $debugPesterSetupFilePath -PathType Leaf)
 	# $wsTrustIssuerMexUrl = "$baseUrl/ISHSTS/issue/wstrust/mex"
 	# $ishUserName = 'myusername'
 	# $ishPassword = 'mypassword'
+	# $amClientId = 'myserviceaccountclientid'
+	# $amClientSecret = 'myserviceaccountclientsecret'
 }
 #endregion
 
@@ -111,7 +122,19 @@ $hostname=$Matches['hostname']
 #
 #if ($null -eq $global:ishSession)
 #{
-	$global:ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+	$webServicesConnectionConfigurationUrl = $webServicesBaseUrl + "connectionconfiguration.xml"
+	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
+	$connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl #Only PS7#-SkipCertificateCheck 
+	$connectionConfigurationRaw -match "<infosharesoftwareversion>(?<myVersion>.*)</infosharesoftwareversion>"  # Straight string handling avoids UTF8-BOM cross-platform handling
+	[version]$infosharesoftwareversion = $matches['myversion']
+	if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
+	{
+		$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -WarningAction SilentlyContinue
+	}
+	else # 15 and later, initialize ONE session over -ClientId/-ClientSecret
+	{
+		$global:ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret -WarningAction SilentlyContinue
+	}
 #}
 $ishSession = $global:ishSession
 # TODO [Must] The StateStore is now required for all tests, but it is only done in New-IshSession. 50s performance boost to gain 

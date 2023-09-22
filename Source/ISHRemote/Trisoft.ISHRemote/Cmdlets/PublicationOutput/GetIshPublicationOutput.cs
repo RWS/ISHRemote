@@ -48,6 +48,16 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Retrieving publication outputs</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
+    /// $metadataFilter = Set-IshMetadataFilterField -Level Version -Name VERSION -FilterOperator Equal -Value 14 |
+    ///                   Set-IshMetadataFilterField -Level Lng -Name FISHPUBLNGCOMBINATION -FilterOperator Equal -Value "en" |
+    ///                   Set-IshMetadataFilterField -Level Lng -Name FISHOUTPUTFORMATREF -FilterOperator Equal -ValueType Element -Value VOUTPUTFORMATDITADELIVERY # see Find-IshOutputFormat Id column
+    /// $publicationOutput = Get-IshPublicationOutput -LogicalId @("GUID-03081B9A-11E4-4862-845B-27339E0C400D", "GUID-F66C1BB5-076D-455C-B055-DAC5D61AB3D9") -MetadataFilter $metadataFilter
+    /// </code>
+    /// <para>Retrieve specific ParameterGroup identified IshObjects, similar to what Publish-IshPublicationOutput would push to the pipeline for usage downstream on Get-IshPublicationOutputData.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshPublicationOutput", SupportsShouldProcess = false)]
     [OutputType(typeof(IshPublicationOutput))]
     public sealed class GetIshPublicationOutput : PublicationOutputCmdlet

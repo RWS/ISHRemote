@@ -11,7 +11,7 @@
         <TableHeaders>
           <TableColumnHeader>
             <Label>Url</Label>
-            <Width>80</Width>
+            <Width>76</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>UserName</Label>
@@ -24,6 +24,10 @@
           <TableColumnHeader>
             <Label>ServerVersion</Label>
             <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Bear</Label>
+            <Width>4</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Ctxt</Label>
@@ -44,6 +48,9 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>ServerVersion</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>AccessToken</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>AuthenticationContext</PropertyName>
