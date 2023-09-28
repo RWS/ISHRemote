@@ -192,13 +192,15 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * * Fix all version based tests on PS7, they should not result in empty server version like ` Context Add-IshBackgroundTask IshObjectsGroup Pipeline IshObject since 14SP4/14.0.4 =<`... Don't put Pester code in `Decribe` or `Context` block, use `It` only.
 * Update github ticket that Access Management part of Tridion Docs 15/15.0.0 has an improvement where unattended *Service accounts* have to be explicitly created. Note that interactive logins are still allowed. See ReleaseNotes-ISHRemote-8.0.md
 * Refresh OpenApi.json to released Docs 15.0.0 version
-* Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID).
+* Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID). (see Confluence blog post titled _[automation] How many active/named users in Tridion Docs?_)
 * netstandard2.0 lib which in turn references System.ServiceModel.Primitives 4.10.2 https://github.com/dotnet/wcf/issues/2862 ... problem disappears since PowerShell 7.3.6-stable
 * GitHub Actions has many issues... had to drop New-ModuleManifest -Prerelease '$(Prerelease)' parameter on PS5.1 and added simple find-replace
 
 
 # Next
 * Test refresh with short expiration 
+    * $ishSession.OpenApiISH30Service.GetApplicationVersionAsync() results in `You cannot call a method on a null-valued expression.`
+    * Get-IshVersion (over WcfSoapWithOpenIdConnect) results in `The HTTP status code of the response was not expected (401).`
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
     * User provisioning, see [SRQ-23306] Last login date in user overview is not updated when authentication was done through an external identity provider - RWS Jira https://jira.sdl.com/browse/SRQ-23306
 * Automated Test ps5.1 with wstrust, ps7 with both openidconnect

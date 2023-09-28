@@ -82,6 +82,10 @@ jobs:
         Add-Content -Path $filePath -Value '  $ishLngTarget2Label = ''de-de'''
         Add-Content -Path $filePath -Value '  $ishLngCombination = ''en-us'''
         Add-Content -Path $filePath -Value '}'
+        Add-Content -Path $filePath -Value ('# Just verifying Github Actions Variables')
+        Add-Content -Path $filePath -Value ('# GITHUB_WORKFLOW = '''+$env:GITHUB_WORKFLOW+'''')
+        Add-Content -Path $filePath -Value ('# GITHUB_RUN_NUMBER = '''+$env:GITHUB_RUN_NUMBER+'''')
+        Add-Content -Path $filePath -Value ('# GITHUB_RUN_ATTEMPT = '''+$env:GITHUB_RUN_ATTEMPT+'''')
 
     - name: Pester Test Prerequisites on Windows using PowerShell 7.x
       shell: pwsh
