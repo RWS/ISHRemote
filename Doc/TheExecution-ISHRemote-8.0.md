@@ -195,6 +195,7 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Describe when Last Log On is valid. Always on Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS). On Tridion Docs User Profile, so visible in Organize Space or through `Find-IShUser` cmdlet, only if you used Tridion Docs Identity Provider (ISHID). (see Confluence blog post titled _[automation] How many active/named users in Tridion Docs?_)
 * netstandard2.0 lib which in turn references System.ServiceModel.Primitives 4.10.2 https://github.com/dotnet/wcf/issues/2862 ... problem disappears since PowerShell 7.3.6-stable
 * GitHub Actions has many issues... had to drop New-ModuleManifest -Prerelease '$(Prerelease)' parameter on PS5.1 and added simple find-replace
+* Github Actions, preview build number not ever increasing, trying to fix it using `GITHUB_RUN_ATTEMPT`
 
 
 # Next
