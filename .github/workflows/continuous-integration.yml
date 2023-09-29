@@ -11,7 +11,7 @@ on:
     branches: [ master ]
 
 env:
-  ISHGITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+  ISHGITHUB_RUN_NUMBER: ${{ github.run_number }}
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
           echo "GITHUB_WORKFLOW[$env:GITHUB_WORKFLOW]"
           echo "GITHUB_RUN_NUMBER[$env:GITHUB_RUN_NUMBER]"
           echo "GITHUB_RUN_ATTEMPT[$env:GITHUB_RUN_ATTEMPT]"
-          echo "ISHGITHUB_RUN_ATTEMPT[$env:ISHGITHUB_RUN_ATTEMPT]"
+          echo "ISHGITHUB_RUN_NUMBER[$env:ISHGITHUB_RUN_NUMBER]"
 
     - uses: actions/checkout@v3
     

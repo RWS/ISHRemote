@@ -14,12 +14,12 @@
     <VersionMinor>0</VersionMinor>
     <VersionPatch>0</VersionPatch>
     <VersionBuild>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</VersionBuild>
-    <VersionSuffix Condition="'$(ISHGITHUB_RUN_ATTEMPT)' == ''">localpreview-$(VersionMajor).0</VersionSuffix>
-    <VersionSuffix Condition="'$(ISHGITHUB_RUN_ATTEMPT)' != ''">cipreview-$(VersionMajor).$(ISHGITHUB_RUN_ATTEMPT)</VersionSuffix>
+    <VersionSuffix Condition="'$(ISHGITHUB_RUN_NUMBER)' == ''">localpreview-$(VersionMajor).0</VersionSuffix>
+    <VersionSuffix Condition="'$(ISHGITHUB_RUN_NUMBER)' != ''">cipreview-$(VersionMajor).$(ISHGITHUB_RUN_NUMBER)</VersionSuffix>
 
     <AssemblyVersion>$(VersionMajor).0.0.0</AssemblyVersion>
-    <FileVersion Condition="'$(ISHGITHUB_RUN_ATTEMPT)' == ''">$(VersionMajor).$(VersionMinor).$(VersionBuild).0</FileVersion>
-  	<FileVersion Condition="'$(ISHGITHUB_RUN_ATTEMPT)' != ''">$(VersionMajor).$(VersionMinor).$(VersionBuild).$(ISHGITHUB_RUN_ATTEMPT)</FileVersion>
+    <FileVersion Condition="'$(ISHGITHUB_RUN_NUMBER)' == ''">$(VersionMajor).$(VersionMinor).$(VersionBuild).0</FileVersion>
+  	<FileVersion Condition="'$(ISHGITHUB_RUN_NUMBER)' != ''">$(VersionMajor).$(VersionMinor).$(VersionBuild).$(ISHGITHUB_RUN_NUMBER)</FileVersion>
     <InformationalVersion>$(FileVersion)-$(VersionSuffix)</InformationalVersion>
 
     <PackageVersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</PackageVersionPrefix>
@@ -39,8 +39,8 @@
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
 	  <ModuleVersion>$(Major).$(Minor).$(Patch)</ModuleVersion>
     <ModuleBuildVersion>$(Major).$(Minor).$(Build).$(Patch)</ModuleBuildVersion>
-    <Prerelease Condition="'$(ISHGITHUB_RUN_ATTEMPT)' == ''">preview002</Prerelease>
-    <Prerelease Condition="'$(ISHGITHUB_RUN_ATTEMPT)' != ''">preview$([System.String]::Format('{0:D3}', $([System.UInt16]::Parse($(ISHGITHUB_RUN_ATTEMPT)))))</Prerelease>
+    <Prerelease Condition="'$(ISHGITHUB_RUN_NUMBER)' == ''">preview002</Prerelease>
+    <Prerelease Condition="'$(ISHGITHUB_RUN_NUMBER)' != ''">preview$([System.String]::Format('{0:D3}', $([System.UInt16]::Parse($(ISHGITHUB_RUN_NUMBER)))))</Prerelease>
     <ModuleName>$(ProductName)</ModuleName>
     <ModuleTitle>Tridion Docs Content Manager $(ProductName)</ModuleTitle>
     <ModuleDescription>Business automation module on top of Tridion Docs Content Manager (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare)</ModuleDescription>
