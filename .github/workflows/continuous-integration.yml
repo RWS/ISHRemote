@@ -183,8 +183,9 @@ jobs:
       if: ${{ always() }}
 
     - name: "Info: How to publish to Internal/Nexus Repositories"
+      shell: pwsh
       run: |
-        echo "1. Login to Github, navigate to $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+        echo "1. Login to Github, navigate to $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
         echo "2. Download ISHRemote-MainCI-Module artefact"
         echo "3. Extract to ..."
         echo "4. PowerShell session, execute Publish-Module ..."
