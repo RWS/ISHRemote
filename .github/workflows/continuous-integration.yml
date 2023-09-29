@@ -10,12 +10,24 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  ISHGITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+
 jobs:
   build:
 
     runs-on: windows-latest
 
     steps:
+    - name: "Info: My Github Workflows Setup"
+      run: |
+        echo "My Github Workflows Setup Information..."
+        echo "GITHUB_ACTIONS[$GITHUB_ACTIONS]"
+        echo "GITHUB_WORKFLOW[$GITHUB_WORKFLOW]"
+        echo "GITHUB_RUN_NUMBER[$GITHUB_RUN_NUMBER]"
+        echo "GITHUB_RUN_ATTEMPT[$GITHUB_RUN_ATTEMPT]"
+        echo "ISHGITHUB_RUN_ATTEMPT[$ISHGITHUB_RUN_ATTEMPT]"
+
     - name: PowerShell Update - 7.2.13/lts has issues, updating to latest stable (like 7.3.6 or higher)
       uses: bjompen/UpdatePWSHAction@v1.0.0
       with:
@@ -82,10 +94,6 @@ jobs:
         Add-Content -Path $filePath -Value '  $ishLngTarget2Label = ''de-de'''
         Add-Content -Path $filePath -Value '  $ishLngCombination = ''en-us'''
         Add-Content -Path $filePath -Value '}'
-        Add-Content -Path $filePath -Value ('# Just verifying Github Actions Variables')
-        Add-Content -Path $filePath -Value ('# GITHUB_WORKFLOW = '''+$env:GITHUB_WORKFLOW+'''')
-        Add-Content -Path $filePath -Value ('# GITHUB_RUN_NUMBER = '''+$env:GITHUB_RUN_NUMBER+'''')
-        Add-Content -Path $filePath -Value ('# GITHUB_RUN_ATTEMPT = '''+$env:GITHUB_RUN_ATTEMPT+'''')
 
     - name: Pester Test Prerequisites on Windows using PowerShell 7.x
       shell: pwsh
@@ -171,3 +179,10 @@ jobs:
         name: ISHRemote-MainCI-PesterOnWindowsPowerShell
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
+
+    - name: "Info: How to publish to Internal/Nexus Repositories"
+      run: |
+        echo "1. Login to Github, navigate to $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+        echo "2. Download ISHRemote-MainCI-Module artefact"
+        echo "3. Extract to ..."
+        echo "4. PowerShell session, execute Publish-Module ..."
