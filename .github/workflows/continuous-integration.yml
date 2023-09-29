@@ -19,19 +19,21 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: "Info: My Github Workflows Setup"
-      run: |
-        echo "My Github Workflows Setup Information..."
-        echo "GITHUB_ACTIONS[$GITHUB_ACTIONS]"
-        echo "GITHUB_WORKFLOW[$GITHUB_WORKFLOW]"
-        echo "GITHUB_RUN_NUMBER[$GITHUB_RUN_NUMBER]"
-        echo "GITHUB_RUN_ATTEMPT[$GITHUB_RUN_ATTEMPT]"
-        echo "ISHGITHUB_RUN_ATTEMPT[$ISHGITHUB_RUN_ATTEMPT]"
-
     - name: PowerShell Update - 7.2.13/lts has issues, updating to latest stable (like 7.3.6 or higher)
       uses: bjompen/UpdatePWSHAction@v1.0.0
       with:
         ReleaseVersion: 'Stable'
+
+    - name: "Info: My Github Workflows Setup"
+      shell: pwsh
+      run: |
+          echo "My Github Workflows Setup Information..."
+          echo ("PSVersionTable info PSEdition["+$PSVersionTable.PSEdition+"] PSVersion["+$PSVersionTable.PSVersion+"]")
+          echo "GITHUB_ACTIONS[$env:GITHUB_ACTIONS]"
+          echo "GITHUB_WORKFLOW[$env:GITHUB_WORKFLOW]"
+          echo "GITHUB_RUN_NUMBER[$env:GITHUB_RUN_NUMBER]"
+          echo "GITHUB_RUN_ATTEMPT[$env:GITHUB_RUN_ATTEMPT]"
+          echo "ISHGITHUB_RUN_ATTEMPT[$env:ISHGITHUB_RUN_ATTEMPT]"
 
     - uses: actions/checkout@v3
     
