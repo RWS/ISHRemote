@@ -12,6 +12,9 @@ on:
 
 env:
   ISHGITHUB_RUN_NUMBER: ${{ github.run_number }}
+  ISHGITHUB_SERVER_URL: ${{ github.server_url }}
+  ISHGITHUB_REPOSITORY: ${{ github.repository }}
+  ISHGITHUB_RUN_ID: ${{ github.run_id }}
 
 jobs:
   build:
@@ -185,7 +188,11 @@ jobs:
     - name: "Info: How to publish to Internal/Nexus Repositories"
       shell: pwsh
       run: |
-        echo "1. Login to Github, navigate to $env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
-        echo "2. Download ISHRemote-MainCI-Module artefact"
-        echo "3. Extract to ..."
-        echo "4. PowerShell session, execute Publish-Module ..."
+        echo "Either the steps below or in-house https://jenkins-docs.web.sdldev.net/job/Publish-ISHRemote/ job that downloads and publishes to Nexus"
+        echo "1. Login to Github, navigate to $env:ISHGITHUB_SERVER_URL/$env:ISHGITHUB_REPOSITORY/actions/runs/$env:ISHGITHUB_RUN_ID"
+        echo "2. Download ISHRemote-MainCI-Module artefact to C:\TEMP\ISHRemote\ISHRemote-MainCI-Module.zip"
+        echo "3. In a PowerShell Session..."
+        echo "3a. Remove-Item -Path C:\TEMP\ISHRemote\ToPublish -Recurse -Force"
+        echo "3b. Expand-Archive -Path C:\TEMP\ISHRemote\ISHRemote-MainCI-Module.zip -DestinationPath C:\TEMP\ISHRemote\ToPublish\ -Force"
+        echo "3c. Publish-Module -Path C:\TEMP\ISHRemote\ToPublish\ISHRemote.psd1 -Repository $psRepository -NuGetApiKey $nuGetApiKey -Force"
+        echo "3d. Find-Module -Name ISHRemote -Repository $psRepository -AllowPrerelease"
