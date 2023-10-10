@@ -113,17 +113,32 @@ Describe "Compare-IshTypeFieldDefinition" -Tags "Read" {
 		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique" {
 			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique).Count -ge 460 | Should -Be $true
 		}
-		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeRightUnique" {
-			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should -Be 11
-		}
-		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique/ExcludeRightUnique" {
-			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 10
-		}
+        if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)
+        {
+		    It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeRightUnique" {
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should -Be 9
+		    }
+		    It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique/ExcludeRightUnique" {
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 8
+		    }
+            It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 1
+		    }
+        }
+        else
+        {
+            It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeRightUnique" {
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should -Be 11
+		    }
+		    It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique/ExcludeRightUnique" {
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 10
+		    }
+            It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 0
+		    }
+        }
 		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
 			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 0
-		}
-		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
-			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 0
 		}
 	}
 }
