@@ -113,7 +113,7 @@ Describe "Compare-IshTypeFieldDefinition" -Tags "Read" {
 		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique" {
 			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique).Count -ge 460 | Should -Be $true
 		}
-        if((([Version]$ishSession.ServerVersion).Major -ge 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)
+        if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)
         {
 		    It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeRightUnique" {
 			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should -Be 9
