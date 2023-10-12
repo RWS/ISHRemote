@@ -43,17 +43,11 @@ namespace Trisoft.ISHRemote.Objects
         /// </summary>
         public IshTypeFieldSetup(ILogger logger, string xmlIshFieldSetup)
         {
-            var hasIshEventFieldDefinitions = false;
-            var hasIshBackgroundTaskFieldDefinitions = false;
             _logger = logger;
             _ishTypeFieldDefinitions = new SortedDictionary<string, IshTypeFieldDefinition>();
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xmlIshFieldSetup);
 
-            if (xmlDocument.SelectSingleNode("//ishtypedefinition[@name='ISHEvent']") != null)
-                hasIshEventFieldDefinitions = true;
-            if (xmlDocument.SelectSingleNode("//ishtypedefinition[@name='ISHBackgroundTask']") != null)
-                hasIshBackgroundTaskFieldDefinitions = true;
             foreach (XmlNode xmlIshTypeDefinition in xmlDocument.SelectNodes("ishfieldsetup/ishtypedefinition"))
             {
                 var name = xmlIshTypeDefinition.Attributes?.GetNamedItem("name").Value;
@@ -73,10 +67,12 @@ namespace Trisoft.ISHRemote.Objects
                     _logger.WriteWarning($"IshType '{name}' is not supported");
                 }
             }
-
-            if (!hasIshBackgroundTaskFieldDefinitions)
+            
+            if (_ishTypeFieldDefinitions.Values.SingleOrDefault(ishTypeFieldDefinition =>
+                    ishTypeFieldDefinition.ISHType == Enumerations.ISHType.ISHBackgroundTask) == null)
             { AddIshBackgroundTaskTableFieldSetup(); }
-            if (!hasIshEventFieldDefinitions)
+            if (_ishTypeFieldDefinitions.Values.SingleOrDefault(ishTypeFieldDefinition =>
+                    ishTypeFieldDefinition.ISHType == Enumerations.ISHType.ISHEvent) == null)
             { AddIshEventTableFieldSetup(); }
         }
 
