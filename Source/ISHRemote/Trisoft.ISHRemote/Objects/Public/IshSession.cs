@@ -204,6 +204,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
                         IssuerUrl = owcfConnectionConfiguration.IssuerUrl,
                         Timeout = _timeout,
+                        SystemBrowserTimeout = new TimeSpan(0, 0, 10),//new TimeSpan(0, 1, 0),
                         ClientAppId = _clientAppId,
                         ClientId = _clientId,
                         ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
@@ -218,6 +219,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
                         IssuerUrl = owcfConnectionConfiguration.IssuerUrl,
                         Timeout = _timeout,
+                        SystemBrowserTimeout = new TimeSpan(0, 0, 10),//new TimeSpan(0, 1, 0),
                         ClientAppId = _clientAppId,
                         ClientId = _clientId,
                         ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)

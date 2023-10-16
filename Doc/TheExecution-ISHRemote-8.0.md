@@ -197,11 +197,31 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * GitHub Actions has many issues... had to drop New-ModuleManifest -Prerelease '$(Prerelease)' parameter on PS5.1 and added simple find-replace
 * Github Actions, preview build number not ever increasing, trying to fix it using `GITHUB_RUN_ATTEMPT`
 
+# Expedite ISHRemote v8 - Must Have Section
+* Validate unhappy paths by manual and automated testing.
+* Authentication over System Browser, so Authorization Code Flow with Proof Key for Code Exchange (PKCE), will give you 60 seconds. Any slower and you will see the `New-IShSession`/`Test-IShSession` cmdlets respond with `TaskCanceledException` exception stating `Browser login canceled after 60 seconds.`
 
-# Next
+* Authentication over Client Credentials Flow with non-existing `-ClientId` will . Please make sure you activate a client/secret on your Access Management User Profile (ISHAM).
+* Authentication over Client Credentials Flow with expired `-ClientId`/`-ClientSecret` combination will . Please recycle expired client/secret on your Access Management User Profile (ISHAM).
+* Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, but not mapped in the CMS to a User Profile over `FISHEXTERNALID` will . Please make sure that the client (which you can find on the Access Management User Profile) is added in Organize Space on one CMS User Profile in the comma-seperated External Id field.
+* Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, and mapped in the CMS to a User Profile over `FISHEXTERNALID` which is disabled will . Please make sure in Organize Space that the one CMS User Profile holding the client in the External Id field is an enabled profile.
+* Authentication over either Client Credentials or System Browser was succesful but the Bearer Token expired, the Refresh . Please create a `New-IShSession`.
+
+* Strongly wondering to roll back from Task.Run to simply GetAwaiter().GetResult() as the latter allows loggin to happen!
+
+* Help
+    * $ishSessionA = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"  --> `-PSCredential Admin` only works for `-Protocol WcfSoapWithWsTrust` so it is an outdated sample ... all New-IshSession should be reviewed.
+
+* Known Issues
+    * Refresh Token is not used to refresh the Bearer Token in the background, it is used to refresh when the next cmdlet is triggered before expiration. (already in release notes, can be removed or needs updating)
+
+
+# Next - Should Have Section
 * Test refresh with short expiration 
     * $ishSession.OpenApiISH30Service.GetApplicationVersionAsync() results in `You cannot call a method on a null-valued expression.`
     * Get-IshVersion (over WcfSoapWithOpenIdConnect) results in `The HTTP status code of the response was not expected (401).`
+    
+    
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
     * User provisioning, see [SRQ-23306] Last login date in user overview is not updated when authentication was done through an external identity provider - RWS Jira https://jira.sdl.com/browse/SRQ-23306
 * Automated Test ps5.1 with wstrust, ps7 with both openidconnect
@@ -209,7 +229,8 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainModuleAssemblyInitializer.cs`
     > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `AppDomainModuleAssemblyInitializer.cs` on https://github.com/RWS/ISHRemote/
     > Another hint is adding `LogSerializer.Enabled = false;` because if you do not attach logging to OidcClient, there seemingly is a bug that still does logging although not configured. see https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
-* Describe what Tridion Docs User Profile disable means, and when it kicks in.
+* OpenAPI, add wires for streamed downloading of Get-IshPublicationOutputData (15.0.0 only, measure performance difference)
+* OpenAPI, add wires for Folder cmdlets
 
  
 # Future  

@@ -107,6 +107,10 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         public TimeSpan ServiceTimeout { get { return Timeout; } }
         /// <summary>
+        /// Timeout to control the wait of the interactive system browser localhost redirect flow
+        /// </summary>
+        public TimeSpan SystemBrowserTimeout { get; set; }
+        /// <summary>
         /// If True, certificate validation for HTTPS and the Service will be skipped
         /// </summary>
         public bool IgnoreSslPolicyErrors { get; set; } = false;

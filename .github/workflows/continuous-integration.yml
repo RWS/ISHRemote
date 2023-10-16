@@ -37,6 +37,9 @@ jobs:
           echo "GITHUB_RUN_NUMBER[$env:GITHUB_RUN_NUMBER]"
           echo "GITHUB_RUN_ATTEMPT[$env:GITHUB_RUN_ATTEMPT]"
           echo "ISHGITHUB_RUN_NUMBER[$env:ISHGITHUB_RUN_NUMBER]"
+          echo "ISHGITHUB_SERVER_URL[$env:ISHGITHUB_SERVER_URL]"
+          echo "ISHGITHUB_REPOSITORY[$env:ISHGITHUB_REPOSITORY]"
+          echo "ISHGITHUB_RUN_ID[$env:ISHGITHUB_RUN_ID]"
 
     - uses: actions/checkout@v3
     
@@ -49,8 +52,6 @@ jobs:
       run: dotnet restore Source/ISHRemote/ISHRemote.sln
     
     - name: Build Solution
-      env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
     
     - name: Setup PowerShell PSScriptAnalyzer
@@ -185,6 +186,29 @@ jobs:
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
 
+    - name: "Publish to PowerShellGallery as Prerelease"
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      if: ${{ success() && contains(github.event.head_commit.message, '[PushToPSGalleryAsPreview]') }}
+      shell: pwsh
+      run: |
+        $manifestFilePath = Get-ChildItem "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/ISHRemote.psd1
+        $psModuleInfo = Test-ModuleManifest -Path $manifestFilePath.FullName
+        $manifestFileVersion = $psModuleInfo.Version
+        $manifestFileUpdateVersion = $psModuleInfo.PrivateData.PSData['Prerelease']
+        $fullVersion =  "$manifestFileVersion-$manifestFileUpdateVersion"
+        $remoteModule = Find-Module -Name ISHRemote -Repository PSGallery -AllowPrerelease
+        if($remoteModule.Version -ne $fullVersion)
+        {
+          echo "Publishing module with version[$fullVersion]!"
+          # Publish-Module -Path "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/" -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force -ErrorAction:Continue -WhatIf 
+        }
+        else
+        {
+          echo "Skipping publish of module with version[$fullVersion]!"
+        }
+        Publish-Module -path ./jtAz -NuGetApiKey          
+
     - name: "Info: How to publish to Internal/Nexus Repositories"
       shell: pwsh
       run: |
@@ -196,3 +220,4 @@ jobs:
         echo "3b. Expand-Archive -Path C:\TEMP\ISHRemote\ISHRemote-MainCI-Module.zip -DestinationPath C:\TEMP\ISHRemote\ToPublish\ -Force"
         echo "3c. Publish-Module -Path C:\TEMP\ISHRemote\ToPublish\ISHRemote.psd1 -Repository $psRepository -NuGetApiKey $nuGetApiKey -Force"
         echo "3d. Find-Module -Name ISHRemote -Repository $psRepository -AllowPrerelease"
+

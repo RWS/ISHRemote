@@ -25,7 +25,7 @@ Where we used to have only implicit `WcfSoapWithWsTrust` protocol - same as ISHR
     * Note: ISHWS/OWCF web services have feature parity to ISHWS/WCF (and actually also ISHWS/*.ASMX) 
 * If protocol is forced to `OpenApiWithOpenIdConnect`
     * You mostly get fully operational WcfSoapWithOpenIdConnect 
-    * You also get an OpenAPI 3.0 experimental proxy on your IShSession object (the future)
+    * You also get an OpenAPI 3.0 experimental proxy on your IShSession object (experimental, might look different in the future)
 
 ### OpenIdConnect Client Credentials Flow
 
@@ -84,7 +84,7 @@ Code, especially around communication and authentication protocol, was heavily r
 
 * Renamed `InfoShareWcfSoapConnection.cs` and moved it to `Connection\InfoShareWcfSoapWithWsTrustConnection.cs`
 * Aligned implementation of new `Connection\InfoShareWcfSoapWithOpenIdConnectConnection.cs` with `Connection\InfoShareWcfSoapWithWsTrustConnection.cs` which should make it easier to extract these `\Connection\` classes if desired. But also removed anything refering to Explicit Issuer (unreachable code since ISHRemote v7.0) an anything regarding `/Internal/` or `/SDL/` realm detection as no longer needed in Tridion Docs 15 (only ISHSTS).
-* Introduced _future_ `InfoShareOpenApiWithOpenIdConnectConnection` which offers an NSwag generated proxy to private OpenAPI of Tridion Docs 15.0 Organize Space for experimentation.
+* Introduced _ experimental future_ `InfoShareOpenApiWithOpenIdConnectConnection` which offers an NSwag generated proxy to private OpenAPI of Tridion Docs 15.0 Organize Space for experimentation.
 * Layout of `IshSession` was enriched with `BearerToken` through `ISHRemote.Format.ps1xml`.
 * Multi-platform code using pragma (e.g. `#if NET48`) for local redirect listener and system browser are
     * `IshConnectionConfiguration`:	Web Service discovery happens over ‘https://ish.example.com/ISHWS/connectionconfiguration.xml’, especially the ServerVersion drives protocol detection and available API functions/behavior. Just like Publication Manager would do.
@@ -119,6 +119,8 @@ WARNING: NewIshSession  ISHRemote module on PS5.1/NET48 forces Assembly Redirect
 
 ## Known Issues
 
+* Aborting the `New-IShSession`/`Test-IShSession` cmdlets using `Ctrl-C` in a PowerShell is not possible, you have to await the non-configurable 60 seconds timeout potentially resulting in `GetTokensOverSystemBrowserAsync Error[Browser login cannceled after 60 seconds.]`. Typically happens if you did not authenticate in the System Browser.
+* Refresh Token is not used to refresh the Bearer Token in the background, it is used to refresh when the next cmdlet is triggered before expiration.
 * On the Github Actions container-based build I received error `Could not load file or assembly 'System.ServiceModel.Primitives, Version=4.10.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The system cannot find the file specified.`. This PowerShell 7.2.x issue is seemingly resolved since 7.3.6 as mentioned [here](https://github.com/dotnet/wcf/issues/2862) and has to do with loading .NET Standard libaries in platform libraries (like Trisoft.ISHRemote.dll). Therefor extended the `continuous-integration.yml` to upgrade to PowerShell Preview using [pwshupdater](https://github.com/marketplace/actions/pwshupdater).
 
 ## Quality Assurance

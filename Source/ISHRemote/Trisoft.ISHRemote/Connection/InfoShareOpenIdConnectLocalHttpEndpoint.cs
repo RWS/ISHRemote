@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,7 +77,7 @@ namespace Trisoft.ISHRemote.Connection
                 countTimeoutInMilliseconds += 100;
                 if (countTimeoutInMilliseconds > timeoutInSeconds * 1000)
                 {
-                    throw new TaskCanceledException($"Browser login cannceled after {timeoutInSeconds} seconds.");
+                    throw new TaskCanceledException($"Browser login canceled after {timeoutInSeconds} seconds.");
                 }
                 Thread.Sleep(100);
                 cancellationToken.ThrowIfCancellationRequested();

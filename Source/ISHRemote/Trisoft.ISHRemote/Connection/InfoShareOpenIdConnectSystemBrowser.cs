@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,14 +37,16 @@ namespace Trisoft.ISHRemote.Connection
         /// Logger
         /// </summary>
         private readonly ILogger _logger;
-        public string RedirectUrl = "https://www.rws.com"; 
+        public string RedirectUrl = "https://www.rws.com";
+        public TimeSpan SystemBrowserTimeout = new TimeSpan(0,1,30);
         public int Port { get; }
         private readonly string _path;
 
-        public InfoShareOpenIdConnectSystemBrowser(ILogger logger, string redirectUrl, int? port = null, string path = null)
+        public InfoShareOpenIdConnectSystemBrowser(ILogger logger, string redirectUrl, TimeSpan systemBrowserTimeout, int? port = null, string path = null)
         {
             _logger = logger;
             RedirectUrl = redirectUrl;
+            SystemBrowserTimeout = systemBrowserTimeout;
             _path = path;
 
             if (!port.HasValue)
@@ -68,15 +70,14 @@ namespace Trisoft.ISHRemote.Connection
 
         public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
         {
-            int timeoutInSeconds = 90;
-            _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser InvokeAsync port[{Port}] path[{_path}] timeoutInSeconds[{timeoutInSeconds}]");
+            _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser InvokeAsync port[{Port}] path[{_path}] systemBrowserTimeout[{SystemBrowserTimeout}]");
             using (var listener = new InfoShareOpenIdConnectLocalHttpEndpoint(Port, _path))
             {
                 OpenBrowser(options.StartUrl);
 
                 try
                 {
-                    var result = await listener.WaitForCallbackAsync(timeoutInSeconds);
+                    var result = await listener.WaitForCallbackAsync(Convert.ToInt32(SystemBrowserTimeout.TotalSeconds));
 
                     _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser SendHttpRedirectAsync RedirectUrl[{RedirectUrl}]");
                     await listener.SendHttpRedirectAsync(RedirectUrl, cancellationToken);

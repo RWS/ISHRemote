@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -127,7 +127,7 @@ namespace Trisoft.ISHRemote.Connection
         {
             _logger.WriteDebug($"GetTokensOverSystemBrowserAsync from Authority[{_connectionParameters.IssuerUrl.ToString()}] using ClientAppId[{_connectionParameters.ClientAppId}] Scope[{_connectionParameters.Scope}]");
 
-            var browser = new InfoShareOpenIdConnectSystemBrowser(_logger, _connectionParameters.RedirectUri);
+            var browser = new InfoShareOpenIdConnectSystemBrowser(_logger, _connectionParameters.RedirectUri, _connectionParameters.SystemBrowserTimeout);
 
             string redirectUri = string.Format($"http://127.0.0.1:{browser.Port}");
 
