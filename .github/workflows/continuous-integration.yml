@@ -189,25 +189,27 @@ jobs:
     - name: "Publish to PowerShellGallery as Prerelease"
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      if: ${{ success() && contains(github.event.head_commit.message, '[PushToPSGalleryAsPreview]') }}
+      if: ${{ success() && contains(github.event.head_commit.message, '[PublishToPSGalleryAsPreview]') }}
       shell: pwsh
       run: |
-        $manifestFilePath = Get-ChildItem "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/ISHRemote.psd1
-        $psModuleInfo = Test-ModuleManifest -Path $manifestFilePath.FullName
-        $manifestFileVersion = $psModuleInfo.Version
-        $manifestFileUpdateVersion = $psModuleInfo.PrivateData.PSData['Prerelease']
-        $fullVersion =  "$manifestFileVersion-$manifestFileUpdateVersion"
+        $packageRootFolderPath = "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/"
+        $manifestFilePath = Join-Path -Path $packageRootFolderPath -ChildPath "ISHRemote.psd1"
+        $manifestFileInfo = Get-ChildItem $manifestFilePath
+        if ($manifestFileInfo -eq $null) { echo "File[$manifestFilePath] not found" }
+        $moduleManifest = Test-ModuleManifest -Path $manifestFileInfo.FullName
+        $moduleManifestFileVersion = $moduleManifest.Version
+        $moduleManifestFileUpdateVersion = $moduleManifest.PrivateData.PSData['Prerelease']
+        $fullVersion =  "$moduleManifestFileVersion-$moduleManifestFileUpdateVersion"
         $remoteModule = Find-Module -Name ISHRemote -Repository PSGallery -AllowPrerelease
         if($remoteModule.Version -ne $fullVersion)
         {
-          echo "Publishing module with version[$fullVersion]!"
-          # Publish-Module -Path "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/" -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force -ErrorAction:Continue -WhatIf 
+          echo ("Found earlier module[ISHRemote] of version["+($remoteModule.Version)+"]. Publishing module with version[$fullVersion]!")
+          # Publish-Module -Path $packageRootFolderPath -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force -WhatIf #-ErrorAction:Continue
         }
         else
         {
-          echo "Skipping publish of module with version[$fullVersion]!"
+          echo ("Found recent module[ISHRemote] of version["+($remoteModule.Version)+"]. Skipping publish of module with version[$fullVersion]!")
         }
-        Publish-Module -path ./jtAz -NuGetApiKey          
 
     - name: "Info: How to publish to Internal/Nexus Repositories"
       shell: pwsh
