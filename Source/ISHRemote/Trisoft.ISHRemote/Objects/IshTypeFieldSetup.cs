@@ -68,11 +68,9 @@ namespace Trisoft.ISHRemote.Objects
                 }
             }
 
-            if (_ishTypeFieldDefinitions.Values.Count(ishTypeFieldDefinition =>
-                    ishTypeFieldDefinition.ISHType == Enumerations.ISHType.ISHBackgroundTask) == 0)
+            if (_ishTypeFieldDefinitions.Values.All(ishTypeFieldDefinition => ishTypeFieldDefinition.ISHType != Enumerations.ISHType.ISHBackgroundTask))
             { AddIshBackgroundTaskTableFieldSetup(); }
-            if (_ishTypeFieldDefinitions.Values.Count(ishTypeFieldDefinition =>
-                    ishTypeFieldDefinition.ISHType == Enumerations.ISHType.ISHEvent) == 0)
+            if (_ishTypeFieldDefinitions.Values.All(ishTypeFieldDefinition => ishTypeFieldDefinition.ISHType != Enumerations.ISHType.ISHEvent))
             { AddIshEventTableFieldSetup(); }
         }
 
