@@ -186,7 +186,7 @@ jobs:
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
 
-    - name: "Publish to PowerShellGallery as Prerelease"
+    - name: "Publish to PowerShellGallery if commit holds [PublishToPSGalleryAsPreview]"
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       if: ${{ success() && contains(github.event.head_commit.message, '[PublishToPSGalleryAsPreview]') }}
@@ -204,7 +204,7 @@ jobs:
         if($remoteModule.Version -ne $fullVersion)
         {
           echo ("Found earlier module[ISHRemote] of version["+($remoteModule.Version)+"]. Publishing module with version[$fullVersion]!")
-          # Publish-Module -Path $packageRootFolderPath -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force -WhatIf #-ErrorAction:Continue
+          Publish-Module -Path $packageRootFolderPath -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force -WhatIf #-ErrorAction:Continue
         }
         else
         {
