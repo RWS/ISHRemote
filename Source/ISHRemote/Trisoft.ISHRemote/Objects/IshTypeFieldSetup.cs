@@ -67,12 +67,10 @@ namespace Trisoft.ISHRemote.Objects
                     _logger.WriteWarning($"IshType '{name}' is not supported");
                 }
             }
-            
-            if (_ishTypeFieldDefinitions.Values.SingleOrDefault(ishTypeFieldDefinition =>
-                    ishTypeFieldDefinition.ISHType == Enumerations.ISHType.ISHBackgroundTask) == null)
+
+            if (_ishTypeFieldDefinitions.Values.All(ishTypeFieldDefinition => ishTypeFieldDefinition.ISHType != Enumerations.ISHType.ISHBackgroundTask))
             { AddIshBackgroundTaskTableFieldSetup(); }
-            if (_ishTypeFieldDefinitions.Values.SingleOrDefault(ishTypeFieldDefinition =>
-                    ishTypeFieldDefinition.ISHType == Enumerations.ISHType.ISHEvent) == null)
+            if (_ishTypeFieldDefinitions.Values.All(ishTypeFieldDefinition => ishTypeFieldDefinition.ISHType != Enumerations.ISHType.ISHEvent))
             { AddIshEventTableFieldSetup(); }
         }
 
