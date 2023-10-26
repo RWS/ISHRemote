@@ -1,12 +1,12 @@
 /*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -285,11 +285,11 @@ namespace Trisoft.ISHRemote.Connection
             var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
             // Get endpont for http or https depending on the base uri passed
             var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
-            
+
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Text ReaderQuotas");
             XmlDictionaryReaderQuotas readerQuotas = new XmlDictionaryReaderQuotas();
             readerQuotas.MaxStringContentLength = Int32.MaxValue;
-            readerQuotas.MaxNameTableCharCount = Int32.MaxValue; 
+            readerQuotas.MaxNameTableCharCount = Int32.MaxValue;
             readerQuotas.MaxArrayLength = Int32.MaxValue;
             readerQuotas.MaxBytesPerRead = Int32.MaxValue;
             readerQuotas.MaxDepth = 64;
@@ -337,11 +337,11 @@ namespace Trisoft.ISHRemote.Connection
         /// Root uri for the Web Services
         /// </summary>
         public Uri InfoShareWSBaseUri { get; private set; }
-        
+
         /// <summary>
         /// Gets or sets when access token should be refreshed (relative to its expiration time).
         /// </summary>
-        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(1);
+        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(3);
 
         /// <summary>
         /// Checks whether the token is issued and still valid
@@ -350,24 +350,7 @@ namespace Trisoft.ISHRemote.Connection
         {
             get
             {
-                // we have the actual issued token which we can check for expiring
-                if (_connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime() >= DateTime.UtcNow)
-                {
-                    //_logger.WriteDebug($"Access Token is valid ({_connectionParameters.InfoShareOpenIdConnectTokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime()} >= {DateTime.UtcNow})");
-                    return true;
-                }
-                else if (_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime() >= DateTime.UtcNow)
-                {
-                    //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.InfoShareOpenIdConnectTokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
-                    _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
-                    _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return (DateTime.Now.Add(RefreshBeforeExpiration) < _connectionParameters.Tokens.AccessTokenExpiration);
             }
         }
         #endregion Properties
@@ -386,7 +369,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
             }
-            return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -396,7 +379,7 @@ namespace Trisoft.ISHRemote.Connection
             }
 
             _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_annotationClient.ChannelFactory.Credentials);
-            var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+            var bearerCredentials = GetBearerCredentials();
             _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
             _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -424,7 +407,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
             }
-            return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -433,7 +416,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
 
                 _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_applicationClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _applicationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -463,16 +446,16 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
             }
-            return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
-            
+
                 _documentObjClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_documentObjClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _documentObjClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -502,7 +485,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
             }
-            return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -511,7 +494,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
 
                 _folderClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_folderClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _folderClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -541,7 +524,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
             }
-            return _userClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _userClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -550,7 +533,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[User25]));
 
                 _userClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _userClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -580,7 +563,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
             }
-            return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -589,7 +572,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
 
                 _userRoleClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userRoleClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _userRoleClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -619,7 +602,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
             }
-            return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -628,7 +611,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
 
                 _userGroupClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userGroupClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _userGroupClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -658,7 +641,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
             }
-            return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -667,7 +650,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
 
                 _listOfValuesClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_listOfValuesClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _listOfValuesClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -697,7 +680,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
             }
-            return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -706,7 +689,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
 
                 _publicationOutputClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_publicationOutputClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _publicationOutputClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -736,7 +719,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
             }
-            return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -745,7 +728,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
 
                 _outputFormatClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_outputFormatClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _outputFormatClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -775,7 +758,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
             }
-            return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -784,7 +767,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
 
                 _settingsClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_settingsClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _settingsClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -814,7 +797,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
             }
-            return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -823,7 +806,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
 
                 _EDTClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_EDTClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _EDTClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -853,7 +836,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
             }
-            return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -862,7 +845,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
 
                 _eventMonitorClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_eventMonitorClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _eventMonitorClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -892,7 +875,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
             }
-            return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -901,7 +884,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
 
                 _baselineClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_baselineClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _baselineClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -931,7 +914,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
             }
-            return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -940,7 +923,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
 
                 _metadataBindingClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_metadataBindingClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _metadataBindingClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -970,7 +953,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
             }
-            return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -979,7 +962,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
 
                 _searchClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_searchClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _searchClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1009,7 +992,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
             }
-            return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -1018,7 +1001,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
 
                 _translationJobClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_translationJobClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _translationJobClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1048,7 +1031,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
             }
-            return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -1057,7 +1040,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
 
                 _translationTemplateClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_translationTemplateClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _translationTemplateClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1088,7 +1071,7 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
             }
-            return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(_issuedToken);
+            return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
             if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
@@ -1097,7 +1080,7 @@ namespace Trisoft.ISHRemote.Connection
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
 
                 _backgroundTaskClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_backgroundTaskClient.ChannelFactory.Credentials);
-                var bearerCredentials = new BearerCredentials(_connectionParameters.Tokens.AccessToken);
+                var bearerCredentials = GetBearerCredentials();
                 _backgroundTaskClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
                 _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1238,7 +1221,62 @@ namespace Trisoft.ISHRemote.Connection
             var metadataSet = mexClient.GetMetadata(wsdlUri, MetadataExchangeClientMode.HttpGet);
             return new WsdlImporter(metadataSet);
         }
+
+        private GenericXmlSecurityToken GetIssuedToken()
+        {
+            return WrapJwt(GetAccessToken());
+        }
+#else
+        private BearerCredentials GetBearerCredentials()
+        {
+            BearerCredentials bearerCredentials = new BearerCredentials(GetAccessToken());
+            return bearerCredentials;
+        }
 #endif
+
+        private string GetAccessToken()
+        {
+            _logger.WriteVerbose($"Token expiration: {_connectionParameters.Tokens.AccessTokenExpiration}");
+
+            // Check if the token is expired
+            if (DateTime.Now.AddMinutes(1) > _connectionParameters.Tokens.AccessTokenExpiration)
+            {
+                // Token is expired
+                _logger.WriteWarning("Token is expired.");
+
+                if (!string.IsNullOrEmpty(_connectionParameters.ClientId) && !string.IsNullOrEmpty(_connectionParameters.ClientSecret))
+                {
+                    // For client credentials flow, getting a new token
+                    _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
+                }
+                else
+                {
+                    // Authorization code flow, getting a new token
+                    _connectionParameters.Tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
+                }
+            }
+
+            // Refresh the token before it expires
+            if (DateTime.Now.Add(RefreshBeforeExpiration) > _connectionParameters.Tokens.AccessTokenExpiration)
+            {
+                // Refresh the token
+                _logger.WriteWarning("Refresh the token");
+
+                if (!string.IsNullOrEmpty(_connectionParameters.ClientId) && !string.IsNullOrEmpty(_connectionParameters.ClientSecret))
+                {
+                    // For client credentials flow, getting a new token
+                    _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
+                }
+                else
+                {
+                    // For authentication code flow, refreshing the token.
+                    _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
+                }
+            }
+
+            return _connectionParameters.Tokens.AccessToken;
+        }
+
         #endregion
 
         #region IDisposable Methods
