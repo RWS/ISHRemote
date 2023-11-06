@@ -41,7 +41,7 @@ namespace Trisoft.ISHRemote.Objects
         /// <summary>
         /// Creates a management object to work with the ISHType and FieldDefinitions.
         /// </summary>
-        public IshTypeFieldSetup(ILogger logger, string xmlIshFieldSetup)
+        public IshTypeFieldSetup(ILogger logger, string xmlIshFieldSetup, IshVersion ishVersion)
         {
             _logger = logger;
             _ishTypeFieldDefinitions = new SortedDictionary<string, IshTypeFieldDefinition>();
@@ -71,7 +71,7 @@ namespace Trisoft.ISHRemote.Objects
             if (_ishTypeFieldDefinitions.Values.All(ishTypeFieldDefinition => ishTypeFieldDefinition.ISHType != Enumerations.ISHType.ISHBackgroundTask))
             { AddIshBackgroundTaskTableFieldSetup(); }
             if (_ishTypeFieldDefinitions.Values.All(ishTypeFieldDefinition => ishTypeFieldDefinition.ISHType != Enumerations.ISHType.ISHEvent))
-            { AddIshEventTableFieldSetup(); }
+            { AddIshEventTableFieldSetup(ishVersion); }
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Trisoft.ISHRemote.Objects
             }
         }
 
-        private void AddIshEventTableFieldSetup()
+        private void AddIshEventTableFieldSetup(IshVersion ishVersion)
         {
             _logger.WriteDebug($"IshTypeFieldSetup ishType[ISHEvent]");
             var ishTypeFieldDefinitions = new List<IshTypeFieldDefinition>
@@ -157,7 +157,6 @@ namespace Trisoft.ISHRemote.Objects
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, true, false, false, false, true, false, false, "PARENTPROGRESSID", Enumerations.DataType.Number, "", "", "The column 'PARENTPROGRESSID' contains the unique identifier of the parent event. The system allows one-level hierarchical aggregation."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, true, true, false, false, true, true, false, "MAXIMUMPROGRESS", Enumerations.DataType.Number, "", "", "Number indicating the maximum progress of the eventThis number depends on how the background task is reporting progress. This can be a percentage or the total number of objects to process or something more abstract."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, true, true, false, false, true, true, false, "CURRENTPROGRESS", Enumerations.DataType.Number, "", "", "Number indicating the current progress of the event."),
-                new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, false, true, false, false, "DATETIMEKIND", Enumerations.DataType.String, "", "", "The kind of the date time (LOCAL, UTC) in the creation and modification date of the event progress."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, false, false, false, false, true, true, false, "PROGRESSID", Enumerations.DataType.Number, "", "", "The unique identifier of the event progress level."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, true, true, "DETAILID", Enumerations.DataType.Number, "", "", "The unique identifier of the event detail level."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, true, false, "CREATIONDATE", Enumerations.DataType.DateTime, "", "", "The date time that the event detail was created."),
@@ -170,8 +169,13 @@ namespace Trisoft.ISHRemote.Objects
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, false, false, "THREADID", Enumerations.DataType.Number, "", "", "The thread id within the operating system process id on the system identified by hostname that submitted this event detail."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, true, false, false, false, true, true, false, "EVENTDATATYPE", Enumerations.DataType.Number, "", "", "The event data type that indicates the content data type of the referenced blob under this event detail. Possible values are: None(0), String(1), List(2), Xml(3), SendEventData(10), LogObject (20), StatusReport(21), CommandOutput(30), DITAOTLogFile (31) and Other(99)."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, true, false, "EVENTDATASIZE", Enumerations.DataType.Number, "", "", "The event data size contains the data size of the referenced blob under this detailid."),
-                new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, false, false, "DATETIMEKIND", Enumerations.DataType.String, "", "", "The kind of the date time (LOCAL, UTC) in the creation of the event detail.")
             };
+            if ((ishVersion.MajorVersion == 15 && ishVersion.MinorVersion >= 1) || ishVersion.MajorVersion >= 16)
+            {
+                ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, false, true, false, false, "DATETIMEKIND", Enumerations.DataType.String, "", "", "The kind of the date time (LOCAL, UTC) in the creation and modification date of the event progress."));
+                ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, false, false, "DATETIMEKIND", Enumerations.DataType.String, "", "", "The kind of the date time (LOCAL, UTC) in the creation of the event detail."));
+            }
+
             foreach (var ishTypeFieldDefinition in ishTypeFieldDefinitions)
             {
                 _ishTypeFieldDefinitions.Add(ishTypeFieldDefinition.Key, ishTypeFieldDefinition);

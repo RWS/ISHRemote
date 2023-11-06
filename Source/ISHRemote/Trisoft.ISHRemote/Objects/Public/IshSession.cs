@@ -292,7 +292,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                             case Enumerations.Protocol.WcfSoapWithWsTrust:
                             case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                                 _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
-                                _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null));
+                                _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null), ServerIshVersion);
                                 break;
                         }
                         _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
