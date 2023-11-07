@@ -28,6 +28,7 @@ namespace Trisoft.ISHRemote.Objects
     /// </summary>
     internal class IshTypeFieldSetup
     {
+        private readonly IshVersion _ishVersion;
         private readonly ILogger _logger;
         /// <summary>
         /// Lookup dictionary based on field identifier (like ISHType, Level, Name concatenation)
@@ -44,6 +45,7 @@ namespace Trisoft.ISHRemote.Objects
         public IshTypeFieldSetup(ILogger logger, string xmlIshFieldSetup, IshVersion ishVersion)
         {
             _logger = logger;
+            _ishVersion = ishVersion;
             _ishTypeFieldDefinitions = new SortedDictionary<string, IshTypeFieldDefinition>();
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xmlIshFieldSetup);
@@ -71,7 +73,7 @@ namespace Trisoft.ISHRemote.Objects
             if (_ishTypeFieldDefinitions.Values.All(ishTypeFieldDefinition => ishTypeFieldDefinition.ISHType != Enumerations.ISHType.ISHBackgroundTask))
             { AddIshBackgroundTaskTableFieldSetup(); }
             if (_ishTypeFieldDefinitions.Values.All(ishTypeFieldDefinition => ishTypeFieldDefinition.ISHType != Enumerations.ISHType.ISHEvent))
-            { AddIshEventTableFieldSetup(ishVersion); }
+            { AddIshEventTableFieldSetup(); }
         }
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace Trisoft.ISHRemote.Objects
             }
         }
 
-        private void AddIshEventTableFieldSetup(IshVersion ishVersion)
+        private void AddIshEventTableFieldSetup()
         {
             _logger.WriteDebug($"IshTypeFieldSetup ishType[ISHEvent]");
             var ishTypeFieldDefinitions = new List<IshTypeFieldDefinition>
@@ -170,7 +172,7 @@ namespace Trisoft.ISHRemote.Objects
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, true, false, false, false, true, true, false, "EVENTDATATYPE", Enumerations.DataType.Number, "", "", "The event data type that indicates the content data type of the referenced blob under this event detail. Possible values are: None(0), String(1), List(2), Xml(3), SendEventData(10), LogObject (20), StatusReport(21), CommandOutput(30), DITAOTLogFile (31) and Other(99)."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, true, false, "EVENTDATASIZE", Enumerations.DataType.Number, "", "", "The event data size contains the data size of the referenced blob under this detailid."),
             };
-            if ((ishVersion.MajorVersion == 15 && ishVersion.MinorVersion >= 1) || ishVersion.MajorVersion >= 16)
+            if ((_ishVersion.MajorVersion == 15 && _ishVersion.MinorVersion >= 1) || _ishVersion.MajorVersion >= 16)
             {
                 ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, false, true, false, false, "DATETIMEKIND", Enumerations.DataType.String, "", "", "The kind of the date time (LOCAL, UTC) in the creation and modification date of the event progress."));
                 ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, false, false, "DATETIMEKIND", Enumerations.DataType.String, "", "", "The kind of the date time (LOCAL, UTC) in the creation of the event detail."));

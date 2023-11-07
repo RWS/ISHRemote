@@ -282,7 +282,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// <param name="referenceLov">Lists the referenced list of values name (e.g. USERNAME or DBACKGROUNDTASKSTATUS)</param>
         /// <param name="referenceMetadataBinding">Lists the sourceref for the MetadataBinding (e.g. CitiesConnector)</param>
         /// <param name="description">Free text description, anything which can help an implementor</param>
-        /// <param name="referenceType">List of referenced ISHType (e.g. ISHUser)</param>
+        /// <param name="referenceType">A list of ISHType (e.g. ISHUser) to specify the type of object to which the field is referenced. Default value indicates an empty list of reference types which means no reference to an object.</param>
         internal IshTypeFieldDefinition(ILogger logger, Enumerations.ISHType ishType, Enumerations.Level level,
             bool isMandatory, bool isMultiValue, bool allowOnRead, bool allowOnCreate, bool allowOnUpdate, bool allowOnSearch, bool allowOnSmartTagging, bool isSystem, bool isBasic, bool isDescriptive,
             string name, Enumerations.DataType dataType, string referenceLov, string referenceMetadataBinding, string description, List<Enumerations.ISHType> referenceType = null)
