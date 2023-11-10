@@ -15,17 +15,12 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Management.Automation;
-using System.Xml;
-using System.Xml.Linq;
-using Trisoft.ISHRemote.Objects;
-using Trisoft.ISHRemote.Objects.Public;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
+using Trisoft.ISHRemote.Objects;
+using Trisoft.ISHRemote.Objects.Public;
 
 namespace Trisoft.ISHRemote.Cmdlets.Settings
 {
@@ -100,7 +95,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                     {
                         // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
                         WriteVerbose($"Importing Settings25.RetrieveFieldSetupByIshType in IshSession.ServerVersion[{IshSession.ServerVersion}]");
-                        IshTypeFieldSetup ishTypeFieldSetup = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null));
+                        IshTypeFieldSetup ishTypeFieldSetup = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null), IshSession.ServerIshVersion);
                         if (IshSession.ServerIshVersion.MajorVersion == 13 || (IshSession.ServerIshVersion.MajorVersion == 14 && IshSession.ServerIshVersion.RevisionVersion < 4))
                         {
                             // Loading/Merging Settings ISHMetadataBinding for 13/13.0.0 up till 14SP4/14.0.4 setup
@@ -148,7 +143,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                         WriteDebug($"Importing using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
                         // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
                         WriteVerbose($"Importing Settings25.RetrieveFieldSetupByIshType in IshSession.ServerVersion[{IshSession.ServerVersion}]");
-                        IshTypeFieldSetup ishTypeFieldSetup = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null));
+                        IshTypeFieldSetup ishTypeFieldSetup = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null), IshSession.ServerIshVersion);
                         if (IshSession.ServerIshVersion.MajorVersion == 13 || (IshSession.ServerIshVersion.MajorVersion == 14 && IshSession.ServerIshVersion.RevisionVersion < 4))
                         {
                             // Loading/Merging Settings ISHMetadataBinding for 13/13.0.0 up till 14SP4/14.0.4 setup
