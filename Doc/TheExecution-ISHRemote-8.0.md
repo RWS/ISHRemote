@@ -196,18 +196,18 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * netstandard2.0 lib which in turn references System.ServiceModel.Primitives 4.10.2 https://github.com/dotnet/wcf/issues/2862 ... problem disappears since PowerShell 7.3.6-stable
 * GitHub Actions has many issues... had to drop New-ModuleManifest -Prerelease '$(Prerelease)' parameter on PS5.1 and added simple find-replace
 * Github Actions, preview build number not ever increasing, trying to fix it using `GITHUB_RUN_ATTEMPT`
+* Rolled back from Task.Run contruction to simply GetAwaiter().GetResult() as the latter allows logging to happen!
+* Using `New-IshSession` parameter `-PSCredential` on 14SP4/14.0.4 or earlier works like before, as it means username/password authentication over protocol `WcfSoapWithWsTrust`.  However, using `-PSCredential` on 15/15.0.0 means that you are using protocol `WcfSoapOverOpenIdConnect`, so expecting a client/secret. If you then provide username/password, you will get error `GetTokensOverClientCredentialsAsync Access Error[invalid_client]`. Note that you can force by adding `-Protocol WcfSoapWithWsTrust` to the `New-IshSession` cmdlet.
+* Authentication over System Browser, so Authorization Code Flow with Proof Key for Code Exchange (PKCE), will give you 60 seconds. Any slower and you will see the `New-IShSession`/`Test-IShSession` cmdlets respond with `TaskCanceledException` exception stating `Browser login canceled after 60 seconds.`
+* * Authentication over either Client Credentials or System Browser was succesful but the Bearer Token expired, the Refresh . Please create a `New-IShSession`. ... Every cmdlet will re-authenticate.
 
 # Expedite ISHRemote v8 - Must Have Section
 * Validate unhappy paths by manual and automated testing.
-* Authentication over System Browser, so Authorization Code Flow with Proof Key for Code Exchange (PKCE), will give you 60 seconds. Any slower and you will see the `New-IShSession`/`Test-IShSession` cmdlets respond with `TaskCanceledException` exception stating `Browser login canceled after 60 seconds.`
-
 * Authentication over Client Credentials Flow with non-existing `-ClientId` will . Please make sure you activate a client/secret on your Access Management User Profile (ISHAM).
 * Authentication over Client Credentials Flow with expired `-ClientId`/`-ClientSecret` combination will . Please recycle expired client/secret on your Access Management User Profile (ISHAM).
 * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, but not mapped in the CMS to a User Profile over `FISHEXTERNALID` will . Please make sure that the client (which you can find on the Access Management User Profile) is added in Organize Space on one CMS User Profile in the comma-seperated External Id field.
 * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, and mapped in the CMS to a User Profile over `FISHEXTERNALID` which is disabled will . Please make sure in Organize Space that the one CMS User Profile holding the client in the External Id field is an enabled profile.
-* Authentication over either Client Credentials or System Browser was succesful but the Bearer Token expired, the Refresh . Please create a `New-IShSession`.
 
-* Strongly wondering to roll back from Task.Run to simply GetAwaiter().GetResult() as the latter allows loggin to happen!
 
 * Help
     * $ishSessionA = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"  --> `-PSCredential Admin` only works for `-Protocol WcfSoapWithWsTrust` so it is an outdated sample ... all New-IshSession should be reviewed.
@@ -224,6 +224,7 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
     
 * Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
     * User provisioning, see [SRQ-23306] Last login date in user overview is not updated when authentication was done through an external identity provider - RWS Jira https://jira.sdl.com/browse/SRQ-23306
+    *  ClientCredential Testing only `IShSession.RefreshTokenSkewTime`, requires `IShSession.AccessTokenExpirationDateTime` 60 min .... skew=5m .... 55m--> refresh ... Test... IShSession.SkewTime=59:50 (defaults to 5min)
 * Automated Test ps5.1 with wstrust, ps7 with both openidconnect
 * Test all protocol types on all platforms via newishsession (and one other smoke test) by calling it 6 times (2 ps times 3 protocols) which colors right after prerequisites
 * Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainModuleAssemblyInitializer.cs`

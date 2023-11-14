@@ -27,18 +27,6 @@ Where we used to have only implicit `WcfSoapWithWsTrust` protocol - same as ISHR
     * You mostly get fully operational WcfSoapWithOpenIdConnect 
     * You also get an OpenAPI 3.0 experimental proxy on your IShSession object (experimental, might look different in the future)
 
-### OpenIdConnect Client Credentials Flow
-
-On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
-
-```powershell
-New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example.com/ISHWS/ -ClientId "c82..." -ClientSecret "ziK...=="
-```
-
-Below animation illustrates how you need to set up a Service Account resulting in Client Id and Client Secret connected to Tridion Docs User Profile for authorization.
-
-![ISHRemote-8.0--ClientSecretOnTridionDocs15.0 1024x512](./Images/ISHRemote-8.0--ClientSecretOnTridionDocs15.0.gif)
-
 ### OpenIdConnect Authorization Code Flow with PKCE Flow
 
 On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
@@ -50,6 +38,18 @@ New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example
 Below animation illustrates how you will authenticate over your (system) browser, potentially reusing your single sign on session. This example federates the authentication from Access Management (ISHAM) to built-in Tridion Docs Identity Provider (ISHID) which could be a different MFA-protected experience in other setups. Do note that ISHID accounts have prepared External Id (`FISHEXTERNALID`) entries on every Tridion Docs User Profile.
 
 ![ISHRemote-8.0--ClientSecretOnTridionDocs15.0 1024x512](./Images/ISHRemote-8.0--BrowserAuthorizationCodeFlowUsingISHIDOnTridionDocs15.0.gif)
+
+### OpenIdConnect Client Credentials Flow
+
+On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
+
+```powershell
+New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example.com/ISHWS/ -ClientId "c82..." -ClientSecret "ziK...=="
+```
+
+Below animation illustrates how you need to set up a Service Account resulting in Client Id and Client Secret connected to Tridion Docs User Profile for authorization.
+
+![ISHRemote-8.0--ClientSecretOnTridionDocs15.0 1024x512](./Images/ISHRemote-8.0--ClientSecretOnTridionDocs15.0.gif)
 
 ### Protocol Overview 
 
@@ -120,7 +120,8 @@ WARNING: NewIshSession  ISHRemote module on PS5.1/NET48 forces Assembly Redirect
 ## Known Issues
 
 * Aborting the `New-IShSession`/`Test-IShSession` cmdlets using `Ctrl-C` in a PowerShell is not possible, you have to await the non-configurable 60 seconds timeout potentially resulting in `GetTokensOverSystemBrowserAsync Error[Browser login cannceled after 60 seconds.]`. Typically happens if you did not authenticate in the System Browser.
-* Refresh Token is not used to refresh the Bearer Token in the background, it is used to refresh when the next cmdlet is triggered before expiration.
+* Refresh Token is not used to refresh the Bearer Token in the background (seperate thread), it is only used to refresh when the next cmdlet is triggered before expiration.
+* Using `New-IshSession` parameter `-PSCredential` on 14SP4/14.0.4 or earlier works like before, as it means username/password authentication over protocol `WcfSoapWithWsTrust`.  However, using `-PSCredential` on 15/15.0.0 means that you are using protocol `WcfSoapOverOpenIdConnect`, so expecting a client/secret. If you then provide username/password, you will get error `GetTokensOverClientCredentialsAsync Access Error[invalid_client]`. Note that you can force by adding `-Protocol WcfSoapWithWsTrust` to the `New-IshSession` cmdlet.
 * On the Github Actions container-based build I received error `Could not load file or assembly 'System.ServiceModel.Primitives, Version=4.10.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The system cannot find the file specified.`. This PowerShell 7.2.x issue is seemingly resolved since 7.3.6 as mentioned [here](https://github.com/dotnet/wcf/issues/2862) and has to do with loading .NET Standard libaries in platform libraries (like Trisoft.ISHRemote.dll). Therefor extended the `continuous-integration.yml` to upgrade to PowerShell Preview using [pwshupdater](https://github.com/marketplace/actions/pwshupdater).
 
 ## Quality Assurance

@@ -325,7 +325,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <summary>
         /// Checks whether the token is issued and still valid
         /// </summary>
-        public bool IsValid
+        public bool IsTokenAlmostExpired
         {
             get
             {

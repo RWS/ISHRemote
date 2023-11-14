@@ -204,7 +204,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
                         IssuerUrl = owcfConnectionConfiguration.IssuerUrl,
                         Timeout = _timeout,
-                        SystemBrowserTimeout = new TimeSpan(0, 0, 10),//new TimeSpan(0, 1, 0),
+                        SystemBrowserTimeout = new TimeSpan(0, 1, 0),
                         ClientAppId = _clientAppId,
                         ClientId = _clientId,
                         ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
@@ -219,7 +219,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         InfoShareWSUrl = owcfConnectionConfiguration.InfoShareWSUrl,
                         IssuerUrl = owcfConnectionConfiguration.IssuerUrl,
                         Timeout = _timeout,
-                        SystemBrowserTimeout = new TimeSpan(0, 0, 10),//new TimeSpan(0, 1, 0),
+                        SystemBrowserTimeout = new TimeSpan(0, 1, 0),
                         ClientAppId = _clientAppId,
                         ClientId = _clientId,
                         ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
@@ -478,7 +478,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
+                VerifyConnectionValidity();
                 switch (Protocol)
                 {
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
@@ -498,7 +498,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
+                VerifyConnectionValidity();
                 switch (Protocol)
                 {
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
@@ -604,13 +604,8 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-
-                if (_infoShareOpenApiWithOpenIdConnectConnection != null)
-                {
-                    return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30ServiceProxy();
-                }
-                return null;
+                VerifyConnectionValidity();
+                return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30ServiceProxy();
             }
         }
         #endregion
@@ -621,21 +616,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_annotation25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_annotation25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _annotation25 = _infoShareWcfSoapWithWsTrustConnection.GetAnnotation25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_annotation25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _annotation25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetAnnotation25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _annotation25;
             }
@@ -645,22 +639,22 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_application25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_application25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _application25 = _infoShareWcfSoapWithWsTrustConnection.GetApplication25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_application25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _application25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetApplication25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
+                
                 return _application25;
             }
         }
@@ -669,21 +663,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_user25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_user25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _user25 = _infoShareWcfSoapWithWsTrustConnection.GetUser25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_user25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _user25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUser25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _user25;
             }
@@ -693,21 +686,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_userRole25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_userRole25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _userRole25 = _infoShareWcfSoapWithWsTrustConnection.GetUserRole25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_userRole25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _userRole25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserRole25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _userRole25;
             }
@@ -717,21 +709,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_userGroup25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_userGroup25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _userGroup25 = _infoShareWcfSoapWithWsTrustConnection.GetUserGroup25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_userGroup25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _userGroup25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserGroup25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _userGroup25;
             }
@@ -741,21 +732,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_documentObj25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_documentObj25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _documentObj25 = _infoShareWcfSoapWithWsTrustConnection.GetDocumentObj25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_documentObj25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _documentObj25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetDocumentObj25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _documentObj25;
             }
@@ -765,21 +755,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_publicationOutput25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_publicationOutput25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _publicationOutput25 = _infoShareWcfSoapWithWsTrustConnection.GetPublicationOutput25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_publicationOutput25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _publicationOutput25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetPublicationOutput25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _publicationOutput25;
             }
@@ -789,21 +778,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_settings25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_settings25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _settings25 = _infoShareWcfSoapWithWsTrustConnection.GetSettings25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_settings25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _settings25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSettings25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _settings25;
             }
@@ -813,21 +801,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_eventMonitor25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_eventMonitor25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _eventMonitor25 = _infoShareWcfSoapWithWsTrustConnection.GetEventMonitor25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_eventMonitor25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _eventMonitor25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEventMonitor25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _eventMonitor25;
             }
@@ -837,21 +824,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_baseline25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_baseline25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _baseline25 = _infoShareWcfSoapWithWsTrustConnection.GetBaseline25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_baseline25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _baseline25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBaseline25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _baseline25;
             }
@@ -861,21 +847,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_metadataBinding25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_metadataBinding25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _metadataBinding25 = _infoShareWcfSoapWithWsTrustConnection.GetMetadataBinding25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_metadataBinding25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _metadataBinding25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetMetadataBinding25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _metadataBinding25;
             }
@@ -885,21 +870,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_folder25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_folder25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _folder25 = _infoShareWcfSoapWithWsTrustConnection.GetFolder25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_folder25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _folder25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetFolder25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _folder25;
             }
@@ -909,21 +893,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_listOfValues25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_listOfValues25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _listOfValues25 = _infoShareWcfSoapWithWsTrustConnection.GetListOfValues25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_listOfValues25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _listOfValues25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetListOfValues25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _listOfValues25;
             }
@@ -933,21 +916,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_outputFormat25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_outputFormat25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _outputFormat25 = _infoShareWcfSoapWithWsTrustConnection.GetOutputFormat25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_outputFormat25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _outputFormat25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetOutputFormat25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _outputFormat25;
             }
@@ -957,21 +939,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_EDT25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_EDT25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _EDT25 = _infoShareWcfSoapWithWsTrustConnection.GetEDT25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_EDT25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _EDT25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEDT25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _EDT25;
             }
@@ -981,21 +962,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_translationJob25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_translationJob25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _translationJob25 = _infoShareWcfSoapWithWsTrustConnection.GetTranslationJob25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_translationJob25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _translationJob25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationJob25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _translationJob25;
             }
@@ -1005,21 +985,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_translationTemplate25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_translationTemplate25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _translationTemplate25 = _infoShareWcfSoapWithWsTrustConnection.GetTranslationTemplate25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_translationTemplate25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _translationTemplate25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationTemplate25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _translationTemplate25;
             }
@@ -1029,21 +1008,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_search25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_search25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _search25 = _infoShareWcfSoapWithWsTrustConnection.GetSearch25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_search25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _search25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSearch25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _search25;
             }
@@ -1053,21 +1031,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         {
             get
             {
-                VerifyTokenValidity();
-                if (_backgroundTask25 == null)
+                VerifyConnectionValidity();
+                switch (_protocol)
                 {
-                    switch (_protocol)
-                    {
-                        case Enumerations.Protocol.WcfSoapWithWsTrust:
+                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                        if ((_backgroundTask25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                             _backgroundTask25 = _infoShareWcfSoapWithWsTrustConnection.GetBackgroundTask25Channel();
-                            break;
-                        case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                        case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        break;
+                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                        if ((_backgroundTask25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                             _backgroundTask25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBackgroundTask25Channel();
-                            break;
-                        default:
-                            throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
-                    }
+                        break;
+                    default:
+                        throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
                 }
                 return _backgroundTask25;
             }
@@ -1075,12 +1052,12 @@ namespace Trisoft.ISHRemote.Objects.Public
 
 #endregion
 
-        private void VerifyTokenValidity()
+        private void VerifyConnectionValidity()
         {
             switch (_protocol)
             {
                 case Enumerations.Protocol.WcfSoapWithWsTrust:
-                    if (!_infoShareWcfSoapWithWsTrustConnection.IsValid)
+                    if (!_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired)
                     {
                         // Not valid...
                         // ...dispose connection
@@ -1110,11 +1087,11 @@ namespace Trisoft.ISHRemote.Objects.Public
                     }
                     break;
                 case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                    if (!_infoShareWcfSoapWithOpenIdConnectConnection.IsValid)
+                    if (_infoShareWcfSoapWithOpenIdConnectConnection == null)
                     {
                         // Not valid...
                         // ...dispose connection
-                        _infoShareWcfSoapWithOpenIdConnectConnection.Dispose();
+                        //_infoShareWcfSoapWithOpenIdConnectConnection.Dispose();
                         // ...discard all channels
                         _annotation25 = null;
                         _application25 = null;
@@ -1140,17 +1117,17 @@ namespace Trisoft.ISHRemote.Objects.Public
                     }
                     break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                    if (!_infoShareOpenApiWithOpenIdConnectConnection.IsValid)
+                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
                     {
                         // ... discard OpenApiISH30Service
                         // ...and re-create connection
                         CreateOpenApiWithOpenIdConnectConnection();
                     }
-                    if (!_infoShareWcfSoapWithOpenIdConnectConnection.IsValid)
+                    if (_infoShareWcfSoapWithOpenIdConnectConnection == null)
                     {
                         // Not valid...
                         // ...dispose connection
-                        _infoShareWcfSoapWithOpenIdConnectConnection.Dispose();
+                        //_infoShareWcfSoapWithOpenIdConnectConnection.Dispose();
                         // ...discard all channels
                         _annotation25 = null;
                         _application25 = null;

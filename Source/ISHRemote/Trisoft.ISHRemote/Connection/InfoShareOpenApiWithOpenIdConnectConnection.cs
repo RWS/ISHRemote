@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -88,8 +88,6 @@ namespace Trisoft.ISHRemote.Connection
                 // Don't think this will happen
                 _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection reusing AccessToken[{ _connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{ _connectionParameters.Tokens.AccessTokenExpiration}]");
             }
-            _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
             _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection using Normalized infoShareWSBaseUri[{infoShareWSUrlForOpenApi}]"); 
             _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
             _openApiISH30Service.BaseUrl = new Uri(infoShareWSUrlForOpenApi, "api").ToString();
@@ -98,45 +96,15 @@ namespace Trisoft.ISHRemote.Connection
 
         #region Public Properties
         /// <summary>
-        /// Gets or sets when access token should be refreshed (relative to its expiration time).
-        /// </summary>
-        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(1);
-
-        /// <summary>
-        /// Create a /Wcf/API25/Annotation.svc proxy
+        /// Create an OpenAPI InfoShare 3.0 proxy
+        /// HttpClient with OpenIdConnect authentication need a way to pass the Access/Bearer token.
+        /// This method wraps the token up in an authentication/bearer token.
         /// </summary>
         /// <returns>The proxy</returns>
         public OpenApiISH30Service GetOpenApiISH30ServiceProxy()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessToken());
             return _openApiISH30Service;
-        }
-
-        /// <summary>
-        /// Checks whether the token is issued and still valid
-        /// </summary>
-        public bool IsValid
-        {
-            get
-            {
-                // we have the actual issued token which we can check for expiring
-                if (_connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime() >= DateTime.UtcNow)
-                {
-                    //_logger.WriteDebug($"Access Token is valid ({_connectionParameters.InfoShareOpenIdConnectTokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToUniversalTime()} >= {DateTime.UtcNow})");
-                    return true;
-                }
-                else if (_connectionParameters.Tokens.AccessTokenExpiration.ToUniversalTime() >= DateTime.UtcNow)
-                {
-                    //_logger.WriteDebug($"Access Token refresh  ({_connectionParameters.InfoShareOpenIdConnectTokens.AccessTokenExpiration.ToUniversalTime()} >= {DateTime.UtcNow})");
-                    _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
-                    _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _connectionParameters.Tokens.AccessToken);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
         }
         #endregion
 
