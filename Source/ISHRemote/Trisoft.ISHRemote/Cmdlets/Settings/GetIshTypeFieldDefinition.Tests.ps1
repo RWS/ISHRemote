@@ -60,15 +60,15 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 			Get-IshTypeFieldDefinition -IshSession $ishSession
 			$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
 		}
-		It "Table ISHBackgroundTask (since 13.0.2)" {
+		It "Table ISHBackgroundTask" {
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'Task').Count | Should -Be 15
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'History').Count | Should -Be 8
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnRead -EQ $true).Count | Should -Be 23 # all columns are allowed to be read
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should -Be 23 # all columns are explicit api parameters and cannot be set over metadata
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsMultiValue -EQ $false).Count | Should -Be 23 # all columns are single value
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsSystem -EQ $true).Count | Should -Be 23 # all columns are system columns
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'History').Count | Should -Be 9
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnRead -EQ $true).Count | Should -Be 24 # all columns are allowed to be read
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should -Be 20 # all columns are explicit api parameters and cannot be set over metadata
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsMultiValue -EQ $false).Count | Should -Be 24 # all columns are single value
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsSystem -EQ $true).Count | Should -Be 24 # all columns are system columns
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'STATUS').DataSource | Should -Be 'DBACKGROUNDTASKSTATUS'
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').DataSource | Should -Be 'USERNAME'
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').DataSource | Should -Be 'ISHUser'
 		}
 		It "Table ISHEvent" {
             if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)

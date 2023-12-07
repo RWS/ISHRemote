@@ -124,10 +124,10 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
 			$ishBackgroundTask.status.Length -ge 1 | Should -Be $true
 			$ishBackgroundTask.status_task_element.StartsWith('VBACKGROUNDTASKSTATUS') | Should -Be $true 
-			(($ishBackgroundTask.IshField.Count -eq 13) -or ($ishBackgroundTask.IshField.Count -eq 19)) | Should -Be $true
+			(($ishBackgroundTask.IshField.Count -eq 13) -or ($ishBackgroundTask.IshField.Count -eq 20)) | Should -Be $true
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
-			(($ishBackgroundTask.IshField.Count -eq 18) -or ($ishBackgroundTask.IshField.Count -eq 26)) | Should -Be $true
+			(($ishBackgroundTask.IshField.Count -eq 18) -or ($ishBackgroundTask.IshField.Count -eq 27)) | Should -Be $true
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 		}
 		It "Parameter ModifiedSince is now" {
