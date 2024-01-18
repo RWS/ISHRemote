@@ -73,8 +73,7 @@ namespace Trisoft.ISHRemote.Connection
                 }
                 else if ((!string.IsNullOrEmpty(_connectionParameters.ClientId)) && (!string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
-                    // Raw method without OidcClient works
-                    //_connectionParameters.BearerToken = GetTokensOverClientCredentialsRaw();
+                    // Raw method without OidcClient, see GetTokensOverClientCredentialsRaw();
                     _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection ClientId[{_connectionParameters.ClientId}] ClientSecret[{new string('*', _connectionParameters.ClientSecret.Length)}]");
                     _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
                 }
