@@ -4,7 +4,7 @@
 	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
 	
 	Write-Host ("Running "+$cmdletName+" Test Data and Variables initialization")
-	$ishSession = $null  # Resetting generic $ishSession
+	# No longer resetting generic incoming $ishSession to $null to allow version checks, all *-IshSession cmdlets should use $localIShSession
 }
 
 Describe "New-IshSession" -Tags "Read" {
@@ -24,20 +24,28 @@ Describe "New-IshSession" -Tags "Read" {
 	}
 
 	Context "New-IshSession ClientIdClientSecret so protocol WcfSoapWithOpenIdConnect or OpenApiWithOpenIdConnect" {
-			It "Parameter WsBaseUrl invalid" {
-				if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-					{ New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -ClientId "INVALIDCLIENTID" -ClientSecret "INVALIDCLIENTSECRET" } | Should -Throw "Invalid URI: The hostname could not be parsed."
-				}
+		It "Parameter WsBaseUrl invalid" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$exception = { New-IshSession -WsBaseUrl "http:///INVALIDWSBASEURL" -ClientId "INVALIDCLIENTID" -ClientSecret "INVALIDCLIENTSECRET" } | Should -Throw -PassThru
+				$exception -like "*Invalid URI: The hostname could not be parsed.*" | Should -Be $true
 			}
-			It "Parameter ClientId invalid" {
-				if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-					{ New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId "INVALIDCLIENTID" -ClientSecret "INVALIDCLIENTSECRET" } | Should -Throw
-				}
+		}
+		It "Parameter ClientId invalid" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$exception = { New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId "INVALIDCLIENTID" -ClientSecret "INVALIDCLIENTSECRET" } | Should -Throw -PassThru
+				$exception -like "*invalid_client*" | Should -Be $true
 			}
-			It "Parameter ClientSecret invalid" {
-				if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-					{ New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret "INVALIDCLIENTSECRET" } | Should -Throw
-				}
+		}
+		It "Parameter ClientSecret invalid" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$exception = { New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret "INVALIDCLIENTSECRET" } | Should -Throw -PassThru
+				$exception -like "*invalid_client*" | Should -Be $true
+			}
+		}
+		It "Parameter ClientSecret expired" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$exception = { New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret "INVALIDCLIENTSECRETEXPIRED" } | Should -Throw -PassThru
+				$exception -like "*invalid_client*" | Should -Be $true
 			}
 		}
 	}
@@ -80,230 +88,230 @@ Describe "New-IshSession" -Tags "Read" {
 
 	Context "New-IshSession over WcfSoapWithWsTrust returns IshSession object" {
 		BeforeAll {
-			$ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			$localIShSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		}
 		It "Protocol" {
-			$ishSession.Protocol | Should -BeExactly "WcfSoapWithWsTrust"
+			$localIShSession.Protocol | Should -BeExactly "WcfSoapWithWsTrust"
 		}
 		It "GetType()" {
-			$ishSession.GetType().Name | Should -BeExactly "IshSession"
+			$localIShSession.GetType().Name | Should -BeExactly "IshSession"
 		}
 		It "IshSession.AuthenticationContext" {
-			$ishSession.AuthenticationContext | Should -Not -BeNullOrEmpty
+			$localIShSession.AuthenticationContext | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.BlobBatchSize" {
-			$ishSession.BlobBatchSize -gt 0 | Should -Be $true
+			$localIShSession.BlobBatchSize -gt 0 | Should -Be $true
 		}
 		It "IshSession.ChunkSize" {
-			$ishSession.ChunkSize -gt 0 | Should -Be $true
+			$localIShSession.ChunkSize -gt 0 | Should -Be $true
 		}
 		It "IshSession.ClientVersion" {
-			$ishSession.ClientVersion | Should -Not -BeNullOrEmpty
+			$localIShSession.ClientVersion | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.ClientVersion not 0.0.0.0" {
-			$ishSession.ClientVersion | Should -Not -Be "0.0.0.0"
+			$localIShSession.ClientVersion | Should -Not -Be "0.0.0.0"
 		}
 		It "IshSession.FolderPathSeparator" {
-			$ishSession.FolderPathSeparator | Should -Be "\"
+			$localIShSession.FolderPathSeparator | Should -Be "\"
 		}
 		It "IshSession.IshUserName" {
-			$ishSession.IshUserName | Should -Not -BeNullOrEmpty
+			$localIShSession.IshUserName | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.UserName" {
-			$ishSession.UserName | Should -Not -BeNullOrEmpty
+			$localIShSession.UserName | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.ClientAppId" {
-			$ishSession.ClientAppId | Should -Not -BeNullOrEmpty
+			$localIShSession.ClientAppId | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.ClientId" {
-			$ishSession.ClientId | Should -BeNullOrEmpty
+			$localIShSession.ClientId | Should -BeNullOrEmpty
 		}
 		It "IshSession.AccessToken" {
-			$ishSession.AccessToken | Should -BeNullOrEmpty
+			$localIShSession.AccessToken | Should -BeNullOrEmpty
 		}
 		It "IshSession.IshTypeFieldDefinition" {
-			$ishSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
+			$localIShSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.IshTypeFieldDefinition.Count" {
-			$ishSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
+			$localIShSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
 		}
 		It "IshSession.IshTypeFieldDefinition.GetType().Name" {
-			$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
-			$ishSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
-			$ishSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
-			$ishSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
-			$ishSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
+			$localIShSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
+			$localIShSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
+			$localIShSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
+			$localIShSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
+			$localIShSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.MetadataBatchSize" {
-			$ishSession.MetadataBatchSize -gt 0 | Should -Be $true
+			$localIShSession.MetadataBatchSize -gt 0 | Should -Be $true
 		}
 		It "IshSession.Separator" {
-			$ishSession.Separator | Should -Be ", "
+			$localIShSession.Separator | Should -Be ", "
 		}
 		It "IshSession.ServerVersion empty (ISHWS down?)" {
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
+			$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.ServerVersion not 0.0.0.0" {
-			$ishSession.ServerVersion | Should -Not -Be "0.0.0.0"
+			$localIShSession.ServerVersion | Should -Not -Be "0.0.0.0"
 		}
 		It "IshSession.ServerVersion contains 4 dot-seperated parts" {
-			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
+			$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
 		It "IshSession.Timeout defaults to 30m" {
-			$ishSession.Timeout.TotalMinutes | Should -Be 30
+			$localIShSession.Timeout.TotalMinutes | Should -Be 30
 		}
 		It "IshSession.StrictMetadataPreference" {
-			$ishSession.StrictMetadataPreference | Should -Be "Continue"
+			$localIShSession.StrictMetadataPreference | Should -Be "Continue"
 		}
 		It "IshSession.PipelineObjectPreference" {
-			$ishSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
+			$localIShSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
 		}
 		It "IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$localIShSession.DefaultRequestedMetadata | Should -Be "Basic"
 		}
 		It "IshSession.WebServicesBaseUrl" {
-			$ishSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
+			$localIShSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
 		}
 	}
 
 	Context "New-IshSession over WcfSoapWithOpenIdConnect returns IshSession object" {
 		BeforeAll {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+				$localIShSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
 		}
 		It "Protocol" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Protocol | Should -BeExactly "WcfSoapWithOpenIdConnect"
+				$localIShSession.Protocol | Should -BeExactly "WcfSoapWithOpenIdConnect"
 			}
 		}
 		It "GetType()" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.GetType().Name | Should -BeExactly "IshSession"
+				$localIShSession.GetType().Name | Should -BeExactly "IshSession"
 			}
 		}
 		It "IshSession.AuthenticationContext" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.AuthenticationContext | Should -Not -BeNullOrEmpty
+				$localIShSession.AuthenticationContext | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.BlobBatchSize" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.BlobBatchSize -gt 0 | Should -Be $true
+				$localIShSession.BlobBatchSize -gt 0 | Should -Be $true
 			}
 		}
 		It "IshSession.ChunkSize" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ChunkSize -gt 0 | Should -Be $true
+				$localIShSession.ChunkSize -gt 0 | Should -Be $true
 			}
 		}
 		It "IshSession.ClientVersion" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ClientVersion | Should -Not -BeNullOrEmpty
+				$localIShSession.ClientVersion | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ClientVersion not 0.0.0.0" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ClientVersion | Should -Not -Be "0.0.0.0"
+				$localIShSession.ClientVersion | Should -Not -Be "0.0.0.0"
 			}
 		}
 		It "IshSession.FolderPathSeparator" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.FolderPathSeparator | Should -Be "\"
+				$localIShSession.FolderPathSeparator | Should -Be "\"
 			}
 		}
 		It "IshSession.IshUserName" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.IshUserName | Should -Not -BeNullOrEmpty
+				$localIShSession.IshUserName | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.UserName" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.UserName | Should -Not -BeNullOrEmpty
+				$localIShSession.UserName | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ClientAppId" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ClientAppId | Should -Not -BeNullOrEmpty
+				$localIShSession.ClientAppId | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ClientId" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ClientId | Should -Not -BeNullOrEmpty
+				$localIShSession.ClientId | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.AccessToken" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.AccessToken | Should -Not -BeNullOrEmpty
+				$localIShSession.AccessToken | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.IshTypeFieldDefinition" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.IshTypeFieldDefinition.Count" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
+				$localIShSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
 			}
 		}
 		It "IshSession.IshTypeFieldDefinition.GetType().Name" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
-				$ishSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
-				$ishSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
-				$ishSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
-				$ishSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
+				$localIShSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.MetadataBatchSize" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.MetadataBatchSize -gt 0 | Should -Be $true
+				$localIShSession.MetadataBatchSize -gt 0 | Should -Be $true
 			}
 		}
 		It "IshSession.Separator" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Separator | Should -Be ", "
+				$localIShSession.Separator | Should -Be ", "
 			}
 		}
 		It "IshSession.ServerVersion empty (ISHWS down?)" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
+				$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ServerVersion not 0.0.0.0" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ServerVersion | Should -Not -Be "0.0.0.0"
+				$localIShSession.ServerVersion | Should -Not -Be "0.0.0.0"
 			}
 		}
 		It "IshSession.ServerVersion contains 4 dot-seperated parts" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ServerVersion.Split(".").Length | Should -Be 4
+				$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 			}
 		}
 		It "IshSession.Timeout defaults to 30m" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Timeout.TotalMinutes | Should -Be 30
+				$localIShSession.Timeout.TotalMinutes | Should -Be 30
 			}
 		}
 		It "IshSession.StrictMetadataPreference" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.StrictMetadataPreference | Should -Be "Continue"
+				$localIShSession.StrictMetadataPreference | Should -Be "Continue"
 			}
 		}
 		It "IshSession.PipelineObjectPreference" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
+				$localIShSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
 			}
 		}
 		It "IshSession.DefaultRequestedMetadata" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+				$localIShSession.DefaultRequestedMetadata | Should -Be "Basic"
 			}
 		}
 		It "IshSession.WebServicesBaseUrl" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
+				$localIShSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
 			}
 		}
 	}
@@ -311,141 +319,141 @@ Describe "New-IshSession" -Tags "Read" {
 	Context "New-IshSession over OpenApiWithOpenIdConnect returns IshSession object" {
 		BeforeAll {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession = New-IshSession -Protocol OpenApiWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+				$localIShSession = New-IshSession -Protocol OpenApiWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
 		}
 		It "Protocol" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Protocol | Should -BeExactly "OpenApiWithOpenIdConnect"
+				$localIShSession.Protocol | Should -BeExactly "OpenApiWithOpenIdConnect"
 			}
 		}
 		It "GetType()" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.GetType().Name | Should -BeExactly "IshSession"
+				$localIShSession.GetType().Name | Should -BeExactly "IshSession"
 			}
 		}
 		It "IshSession.AuthenticationContext" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.AuthenticationContext | Should -Not -BeNullOrEmpty
+				$localIShSession.AuthenticationContext | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.BlobBatchSize" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.BlobBatchSize -gt 0 | Should -Be $true
+				$localIShSession.BlobBatchSize -gt 0 | Should -Be $true
 			}
 		}
 		It "IshSession.ChunkSize" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ChunkSize -gt 0 | Should -Be $true
+				$localIShSession.ChunkSize -gt 0 | Should -Be $true
 			}
 		}
 		It "IshSession.ClientVersion" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ClientVersion | Should -Not -BeNullOrEmpty
+				$localIShSession.ClientVersion | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ClientVersion not 0.0.0.0" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ClientVersion | Should -Not -Be "0.0.0.0"
+				$localIShSession.ClientVersion | Should -Not -Be "0.0.0.0"
 			}
 		}
 		It "IshSession.FolderPathSeparator" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.FolderPathSeparator | Should -Be "\"
+				$localIShSession.FolderPathSeparator | Should -Be "\"
 			}
 		}
 		It "IshSession.IshUserName" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.IshUserName | Should -Not -BeNullOrEmpty
+				$localIShSession.IshUserName | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.UserName" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.UserName | Should -Not -BeNullOrEmpty
+				$localIShSession.UserName | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ClientAppId" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ClientAppId | Should -Not -BeNullOrEmpty
+				$localIShSession.ClientAppId | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ClientId" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ClientId | Should -Not -BeNullOrEmpty
+				$localIShSession.ClientId | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.AccessToken" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.AccessToken | Should -Not -BeNullOrEmpty
+				$localIShSession.AccessToken | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.IshTypeFieldDefinition" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.IshTypeFieldDefinition.Count" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
+				$localIShSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
 			}
 		}
 		It "IshSession.IshTypeFieldDefinition.GetType().Name" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
-				$ishSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
-				$ishSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
-				$ishSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
-				$ishSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
+				$localIShSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.MetadataBatchSize" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.MetadataBatchSize -gt 0 | Should -Be $true
+				$localIShSession.MetadataBatchSize -gt 0 | Should -Be $true
 			}
 		}
 		It "IshSession.Separator" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Separator | Should -Be ", "
+				$localIShSession.Separator | Should -Be ", "
 			}
 		}
 		It "IshSession.ServerVersion empty (ISHWS down?)" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
+				$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ServerVersion not 0.0.0.0" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ServerVersion | Should -Not -Be "0.0.0.0"
+				$localIShSession.ServerVersion | Should -Not -Be "0.0.0.0"
 			}
 		}
 		It "IshSession.ServerVersion contains 4 dot-seperated parts" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ServerVersion.Split(".").Length | Should -Be 4
+				$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 			}
 		}
 		It "IshSession.Timeout defaults to 30m" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Timeout.TotalMinutes | Should -Be 30
+				$localIShSession.Timeout.TotalMinutes | Should -Be 30
 			}
 		}
 		It "IshSession.StrictMetadataPreference" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.StrictMetadataPreference | Should -Be "Continue"
+				$localIShSession.StrictMetadataPreference | Should -Be "Continue"
 			}
 		}
 		It "IshSession.PipelineObjectPreference" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
+				$localIShSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
 			}
 		}
 		It "IshSession.DefaultRequestedMetadata" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+				$localIShSession.DefaultRequestedMetadata | Should -Be "Basic"
 			}
 		}
 		It "IshSession.WebServicesBaseUrl" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
+				$localIShSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
 			}
 		}
 	}
@@ -454,32 +462,32 @@ Describe "New-IshSession" -Tags "Read" {
 		It "WsBaseUrl without ending slash" {
 			# .NET throws unhandy "Reference to undeclared entity 'raquo'." error
 			$webServicesBaseUrlWithoutEndingSlash = $webServicesBaseUrl.Substring(0,$webServicesBaseUrl.Length-1)
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should -Not -Throw
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should -Not -Throw
 		}
 	}
 
 	Context "New-IshSession Timeout" {
 		It "Parameter Timeout Invalid" {
-			{ $ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout "INVALIDTIMEOUT" } | Should -Throw
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout "INVALIDTIMEOUT" } | Should -Throw
 		}
 		It "IshSession.Timeout set to 30s" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-TimeSpan -Seconds 60) -WarningAction Ignore -ErrorAction Ignore
-			$ishSession.Timeout.TotalMilliseconds  | Should -Be "60000"
+			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-TimeSpan -Seconds 60) -WarningAction Ignore -ErrorAction Ignore
+			$localIShSession.Timeout.TotalMilliseconds  | Should -Be "60000"
 		}
 		It "IshSession.Timeout on INVALID url set to 1ms execution" {
 			# TaskCanceledException: A task was canceled.
 			{
 				$invalidWebServicesBaseUrl = $webServicesBaseUrl -replace "://", "://INVALID"
-				$ishSession = New-IshSession -WsBaseUrl $invalidWebServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-Object TimeSpan(0,0,0,0,1))
+				New-IshSession -WsBaseUrl $invalidWebServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-Object TimeSpan(0,0,0,0,1))
 			} | Should -Throw
 		}
 	}
 
 	Context "New-IshSession IgnoreSslPolicyErrors" {
 		It "Parameter IgnoreSslPolicyErrors specified positive flow" {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
+			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore
+			$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
+			$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
 		It "Parameter IgnoreSslPolicyErrors specified negative flow like host IPv4 address" {
 			# replace hostname like machinename.somedomain.com to ipaddress only as often certificates are valid for machinename/localhost as well
@@ -493,9 +501,9 @@ Describe "New-IshSession" -Tags "Read" {
 			foreach ($ipv4Address in $ipv4Addresses)
 			{
 				$webServicesBaseUrlWithIpAddress = $webServicesBaseUrl.Replace($hostname,$ipv4Address.IPAddressToString)
-				$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-				$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-				$ishSession.ServerVersion.Split(".").Length | Should -Be 4
+				$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+				$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
+				$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 			}
 		}
 		It "Parameter IgnoreSslPolicyErrors specified negative flow like hostname (segment-one-url)" -Skip {
@@ -506,10 +514,10 @@ Describe "New-IshSession" -Tags "Read" {
 			$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position-1)
 			$computername = $hostname.Substring(0,$hostname.IndexOf("."))
 			$webServicesBaseUrlToComputerName = $webServicesBaseUrl.Replace($hostname,$computername)
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToComputerName -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
-			$ishSession.Dispose()
+			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToComputerName -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+			$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
+			$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
+			$localIShSession.Dispose()
 		}
 		<# It "Parameter IgnoreSslPolicyErrors specified negative flow (Resolve-DnsName)" -Skip {
 			# replace hostname like example.com with ip-address
@@ -519,192 +527,302 @@ Describe "New-IshSession" -Tags "Read" {
 			$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position)
 			$ipAddress = Resolve-DnsName –Name $hostname  # only available on Windows Server 2012 R2 and Windows 8.1
 			$webServicesBaseUrlToIpAddress = $webServicesBaseUrl.Replace($hostname,$ipAddress)
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-			$ishSession.ServerVersion.Split(".").Length | Should -Be 4
-			$ishSession.Dispose()
+			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+			$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
+			$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
+			$localIShSession.Dispose()
 		} #>
 	}
 
 	Context "New-IshSession over WcfSoapWithWsTrust returns IshSession ServiceReferences" {
 		BeforeAll {
-			$ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			$localIShSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		}
 		It "IshSession.OpenApiISH30Service" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				 $ishSession.OpenApiISH30Service | Should -BeNullOrEmpty
+				 $localIShSession.OpenApiISH30Service | Should -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Annotation25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 14) { # new service since 14/14.0.0
-				 $ishSession.Annotation25 | Should -Not -BeNullOrEmpty
+				 $localIShSession.Annotation25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Application25" {
-			$ishSession.Application25 | Should -Not -BeNullOrEmpty
+			$localIShSession.Application25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.BackgroundTask25" { # new service since 13SP2/13.0.2
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { 
-				$ishSession.BackgroundTask25 | Should -Not -BeNullOrEmpty
+				$localIShSession.BackgroundTask25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Baseline25" {
-			$ishSession.Baseline25 | Should -Not -BeNullOrEmpty
+			$localIShSession.Baseline25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.DocumentObj25" {
-			$ishSession.DocumentObj25 | Should -Not -BeNullOrEmpty
+			$localIShSession.DocumentObj25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.EDT25" {
-			$ishSession.EDT25 | Should -Not -BeNullOrEmpty
+			$localIShSession.EDT25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.EventMonitor25" {
-			$ishSession.EventMonitor25 | Should -Not -BeNullOrEmpty
+			$localIShSession.EventMonitor25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.Folder25" {
-			$ishSession.Folder25 | Should -Not -BeNullOrEmpty
+			$localIShSession.Folder25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.ListOfValues25" {
-			$ishSession.ListOfValues25 | Should -Not -BeNullOrEmpty
+			$localIShSession.ListOfValues25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.MetadataBinding25" {
-			$ishSession.MetadataBinding25 | Should -Not -BeNullOrEmpty
+			$localIShSession.MetadataBinding25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.OutputFormat25" {
-			$ishSession.OutputFormat25 | Should -Not -BeNullOrEmpty
+			$localIShSession.OutputFormat25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.PublicationOutput25" {
-			$ishSession.PublicationOutput25 | Should -Not -BeNullOrEmpty
+			$localIShSession.PublicationOutput25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.Search25" {
-			$ishSession.Search25 | Should -Not -BeNullOrEmpty
+			$localIShSession.Search25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.Settings25" {
-			$ishSession.Settings25 | Should -Not -BeNullOrEmpty
+			$localIShSession.Settings25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.TranslationJob25" {
-			$ishSession.TranslationJob25 | Should -Not -BeNullOrEmpty
+			$localIShSession.TranslationJob25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.TranslationTemplate25" {
-			$ishSession.TranslationTemplate25 | Should -Not -BeNullOrEmpty
+			$localIShSession.TranslationTemplate25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.User25" {
-			$ishSession.User25 | Should -Not -BeNullOrEmpty
+			$localIShSession.User25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.UserGroup25" {
-			$ishSession.UserGroup25 | Should -Not -BeNullOrEmpty
+			$localIShSession.UserGroup25 | Should -Not -BeNullOrEmpty
 		}
 		It "IshSession.UserRole25" {
-			$ishSession.UserRole25 | Should -Not -BeNullOrEmpty
+			$localIShSession.UserRole25 | Should -Not -BeNullOrEmpty
 		}
 	}
 
 	Context "New-IshSession over WcfSoapWithOpenIdConnect returns IshSession ServiceReferences" {
 		BeforeAll {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+				$localIShSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
 		}
 		It "IshSession.OpenApiISH30Service" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.OpenApiISH30Service | Should -BeNullOrEmpty
+				$localIShSession.OpenApiISH30Service | Should -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Annotation25" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 14) { # new service since 14/14.0.0
-				$ishSession.Annotation25 | Should -Not -BeNullOrEmpty
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.Annotation25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Application25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Application25 | Should -Not -BeNullOrEmpty
+				$localIShSession.Application25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.BackgroundTask25" { # new service since 13SP2/13.0.2
-			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { 
-				$ishSession.BackgroundTask25 | Should -Not -BeNullOrEmpty
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.BackgroundTask25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Baseline25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Baseline25 | Should -Not -BeNullOrEmpty
+				$localIShSession.Baseline25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.DocumentObj25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.DocumentObj25 | Should -Not -BeNullOrEmpty
+				$localIShSession.DocumentObj25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.EDT25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.EDT25 | Should -Not -BeNullOrEmpty
+				$localIShSession.EDT25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.EventMonitor25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.EventMonitor25 | Should -Not -BeNullOrEmpty
+				$localIShSession.EventMonitor25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Folder25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Folder25 | Should -Not -BeNullOrEmpty
+				$localIShSession.Folder25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.ListOfValues25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.ListOfValues25 | Should -Not -BeNullOrEmpty
+				$localIShSession.ListOfValues25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.MetadataBinding25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.MetadataBinding25 | Should -Not -BeNullOrEmpty
+				$localIShSession.MetadataBinding25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.OutputFormat25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.OutputFormat25 | Should -Not -BeNullOrEmpty
+				$localIShSession.OutputFormat25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.PublicationOutput25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.PublicationOutput25 | Should -Not -BeNullOrEmpty
+				$localIShSession.PublicationOutput25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Search25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Search25 | Should -Not -BeNullOrEmpty
+				$localIShSession.Search25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Settings25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.Settings25 | Should -Not -BeNullOrEmpty
+				$localIShSession.Settings25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.TranslationJob25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.TranslationJob25 | Should -Not -BeNullOrEmpty
+				$localIShSession.TranslationJob25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.TranslationTemplate25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.TranslationTemplate25 | Should -Not -BeNullOrEmpty
+				$localIShSession.TranslationTemplate25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.User25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.User25 | Should -Not -BeNullOrEmpty
+				$localIShSession.User25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.UserGroup25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.UserGroup25 | Should -Not -BeNullOrEmpty
+				$localIShSession.UserGroup25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.UserRole25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$ishSession.UserRole25 | Should -Not -BeNullOrEmpty
+				$localIShSession.UserRole25 | Should -Not -BeNullOrEmpty
 			}
 		}
 	}
+
+	Context "New-IshSession over OpenApiWithOpenIdConnect returns IshSession ServiceReferences" {
+		BeforeAll {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession = New-IshSession -Protocol OpenApiWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+			}
+		}
+		It "IshSession.OpenApiISH30Service" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$json = $localIShSession.OpenApiISH30Service.GetApplicationVersionAsync()
+				$json.Result | Should -Be $ishSession.ServerVersion
+			}
+		}
+		It "IshSession.Annotation25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.Annotation25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.Application25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.Application25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.BackgroundTask25" { # new service since 13SP2/13.0.2
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.BackgroundTask25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.Baseline25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.Baseline25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.DocumentObj25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.DocumentObj25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.EDT25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.EDT25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.EventMonitor25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.EventMonitor25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.Folder25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.Folder25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.ListOfValues25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.ListOfValues25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.MetadataBinding25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.MetadataBinding25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.OutputFormat25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.OutputFormat25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.PublicationOutput25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.PublicationOutput25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.Search25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.Search25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.Settings25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.Settings25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.TranslationJob25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.TranslationJob25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.TranslationTemplate25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.TranslationTemplate25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.User25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.User25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.UserGroup25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.UserGroup25 | Should -Not -BeNullOrEmpty
+			}
+		}
+		It "IshSession.UserRole25" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				$localIShSession.UserRole25 | Should -Not -BeNullOrEmpty
+			}
+		}
+	}
+}
 
 AfterAll {
 	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")

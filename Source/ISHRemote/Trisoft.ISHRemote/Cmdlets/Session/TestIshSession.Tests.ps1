@@ -35,6 +35,11 @@ Describe "Test-IshSession" -Tags "Read" {
 				Test-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret "INVALIDCLIENTSECRET" | Should -Be $false
 			}
 		}
+		It "Parameter ClientSecret expired" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				Test-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret "INVALIDCLIENTSECRETEXPIRED" | Should -Be $false
+			}
+		}
 	}
 
 	Context "Test-IshSession Interactive so protocol WcfSoapWithWsTrust, WcfSoapWithOpenIdConnect or OpenApiWithOpenIdConnect" {
