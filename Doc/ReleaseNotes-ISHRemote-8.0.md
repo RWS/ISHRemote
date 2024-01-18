@@ -83,9 +83,9 @@ All cmdlets and business logic are fully compatible.
 Code, especially around communication and authentication protocol, was heavily refactored.
 
 * Renamed `InfoShareWcfSoapConnection.cs` and moved it to `Connection\InfoShareWcfSoapWithWsTrustConnection.cs`
-* Aligned implementation of new `Connection\InfoShareWcfSoapWithOpenIdConnectConnection.cs` with `Connection\InfoShareWcfSoapWithWsTrustConnection.cs` which should make it easier to extract these `\Connection\` classes if desired. But also removed anything refering to Explicit Issuer (unreachable code since ISHRemote v7.0) an anything regarding `/Internal/` or `/SDL/` realm detection as no longer needed in Tridion Docs 15 (only ISHSTS).
-* Introduced _ experimental future_ `InfoShareOpenApiWithOpenIdConnectConnection` which offers an NSwag generated proxy to private OpenAPI of Tridion Docs 15.0 Organize Space for experimentation.
-* Layout of `IshSession` was enriched with `BearerToken` through `ISHRemote.Format.ps1xml`.
+* Aligned implementation of new `Connection\InfoShareWcfSoapWithOpenIdConnectConnection.cs` with `Connection\InfoShareWcfSoapWithWsTrustConnection.cs` which should make it easier to extract these `\Connection\` classes if desired. But also removed anything refering to Explicit Issuer (unreachable code since ISHRemote v7.0) and anything regarding `/Internal/` or `/SDL/` realm detection as no longer needed in Tridion Docs 15 (only ISHSTS).
+* Introduced _experimental future_ `InfoShareOpenApiWithOpenIdConnectConnection` which offers an NSwag generated proxy to private OpenAPI of Tridion Docs 15/15.0.0 Organize Space for experimentation.
+* Layout of `IshSession` was enriched with `AccessToken` through `ISHRemote.Format.ps1xml`.
 * Multi-platform code using pragma (e.g. `#if NET48`) for local redirect listener and system browser are
     * `IshConnectionConfiguration`:	Web Service discovery happens over ‘https://ish.example.com/ISHWS/connectionconfiguration.xml’, especially the ServerVersion drives protocol detection and available API functions/behavior. Just like Publication Manager would do.
     * `InfoShareOpenIdConnectSystemBrowser`: Knows how to reliably launch your default web browser (the one that opens any https:// url in any application) across the supported platforms Windows, Linux and MacOS.
@@ -100,10 +100,11 @@ All third party libraries regarding WS-Trust, Federation and OpenIdConnect were 
 
 Classic solution are assembly redirects in app.config. However, updating .config files under `%SystemRoot%\system32\` is not done and requires Administrator privileges.
 
-So chose to explicit load higher required assembly version then already found/loaded through `AppDomainModuleAssemblyInitializer`. Every `New-IshSession` will trigger a warning/verbose message hinting to this magic that influences ISHRemote or where ISHRemote influences others.
+So chose to explicitly load higher required assembly version then already found/loaded through `AppDomainModuleAssemblyInitializer`. Every `New-IshSession` will trigger a verbose message hinting to this magic that influences ISHRemote or where ISHRemote influences others.
 
 ```
-WARNING: NewIshSession  ISHRemote module on PS5.1/NET48 forces Assembly Redirects for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll
+VERBOSE: NewIshSession  ISHRemote module on PS5.1/NET48 forces Assembly Redirects for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.
+Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll
 ```
 
 |Assembly|Initial Version Load Request|Redirecting and Loading Version|
@@ -119,8 +120,14 @@ WARNING: NewIshSession  ISHRemote module on PS5.1/NET48 forces Assembly Redirect
 
 ## Known Issues
 
-* Aborting the `New-IShSession`/`Test-IShSession` cmdlets using `Ctrl-C` in a PowerShell is not possible, you have to await the non-configurable 60 seconds timeout potentially resulting in `GetTokensOverSystemBrowserAsync Error[Browser login cannceled after 60 seconds.]`. Typically happens if you did not authenticate in the System Browser.
-* Refresh Token is not used to refresh the Bearer Token in the background (seperate thread), it is only used to refresh when the next cmdlet is triggered before expiration.
+* Aborting the `New-IShSession`/`Test-IShSession` cmdlets using `Ctrl-C` in PowerShell is not possible, you have to await the non-configurable 60 seconds timeout potentially resulting in `GetTokensOverSystemBrowserAsync Error[Browser login cannceled after 60 seconds.]`. Typically happens if you did not authenticate in the System Browser.
+* Several Authentication known issues...
+    * Authentication over System Browser, so Authorization Code Flow with Proof Key for Code Exchange (PKCE), will give you 60 seconds. Any slower and you will see the `New-IShSession`/`Test-IShSession` cmdlets respond with `TaskCanceledException` exception stating `Browser login canceled after 60 seconds.`
+    * Authentication over Client Credentials Flow with non-existing `-ClientId` will error out with `GetTokensOverClientCredentialsAsync Access Error[invalid_client]; either invalid ClientId/ClientSecret combination or expired ClientSecret.`. Please make sure you activate a client/secret on your Access Management User Profile (ISHAM).
+    * Authentication over Client Credentials Flow with expired `-ClientId`/`-ClientSecret` combination will error out with `GetTokensOverClientCredentialsAsync Access Error[invalid_client]; either invalid ClientId/ClientSecret combination or expired ClientSecret.`. Please recycle expired client/secret on your Access Management User Profile (ISHAM).
+    * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, but not mapped in the CMS to a User Profile over `FISHEXTERNALID` will `[-14] The access is denied because no profile match was found. 0`. Please make sure that the client (which you can find on the Access Management User Profile) is added in Organize Space on one CMS User Profile in the comma-seperated External Id field.
+    * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, and mapped in the CMS to a User Profile over `FISHEXTERNALID` which is disabled will error out with `[-6] Your account has been disabled. Please see your system administrator.`. Please make sure in Organize Space that the one CMS User Profile holding the client in the External Id field is an enabled profile.
+    * Refresh Token is not used to refresh the Access Token in the background (seperate thread), it is only used to refresh when the next cmdlet is triggered before expiration. Authentication over either Client Credentials or System Browser was succesful but the Access Token expired. You do not need to create a `New-IShSession`, every cmdlet will attempt to get a token (either refresh or re-logon if required) based on the cmdlets (implicit) `-IShSession` parameter. 
 * Using `New-IshSession` parameter `-PSCredential` on 14SP4/14.0.4 or earlier works like before, as it means username/password authentication over protocol `WcfSoapWithWsTrust`.  However, using `-PSCredential` on 15/15.0.0 means that you are using protocol `WcfSoapOverOpenIdConnect`, so expecting a client/secret. If you then provide username/password, you will get error `GetTokensOverClientCredentialsAsync Access Error[invalid_client]`. Note that you can force by adding `-Protocol WcfSoapWithWsTrust` to the `New-IshSession` cmdlet.
 * On the Github Actions container-based build I received error `Could not load file or assembly 'System.ServiceModel.Primitives, Version=4.10.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The system cannot find the file specified.`. This PowerShell 7.2.x issue is seemingly resolved since 7.3.6 as mentioned [here](https://github.com/dotnet/wcf/issues/2862) and has to do with loading .NET Standard libaries in platform libraries (like Trisoft.ISHRemote.dll). Therefor extended the `continuous-integration.yml` to upgrade to PowerShell Preview using [pwshupdater](https://github.com/marketplace/actions/pwshupdater).
 
