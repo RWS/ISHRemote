@@ -82,7 +82,14 @@ Describe "Get-IshSetting" -Tags "Read" {
 			$ishFields = Get-IshSetting -IshSession $ishSession -RequestedMetadata $requestedMetadata
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 			$ishFields.GetType().Name | Should -BeExactly "Object[]"
-			$ishFields.Length | Should -Be 14
+			if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)
+            {
+                $ishFields.Length | Should -Be 13
+            }
+            else
+            {
+                $ishFields.Length | Should -Be 14
+            }
 			(Get-IshMetadataField -IshSession $ishSession -IshField $ishFields -Name "NAME" -Level None) | Should -Be "Configuration card"
 		}
 		It "Parameter IshSession.DefaultRequestedMetadata=Basic" {
