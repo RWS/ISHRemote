@@ -51,6 +51,7 @@ Describe "Add-IshBaseline" -Tags "Create" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " F")
 			$ishObjectF = Add-IshBaseline -IshSession $ishSession -Name $baselineName | 
 						Get-IshBaseline -IshSession $ishSession -RequestedMetadata (Set-IshRequestedMetadataField -IshSession $ishSession -Name "NAME")
+			Start-Sleep -Milliseconds 1000  # Attempts to avoid active Crawler INDEX_MESSAGE processing resulting in [-140] The object is used by another user. [140;ObjectInUse]
 			Remove-IshBaseline -IshSession $ishSession -IshObject @($ishObjectA,$ishObjectB,$ishObjectC,$ishObjectD,$ishObjectE,$ishObjectF)
 			Start-Sleep -Milliseconds 1000  # Avoids uniquesness error which only up to the second " Cannot insert duplicate key row in object 'dbo.CARD' with unique index 'CARD_NAME_I1'. The duplicate key value is (...A12/10/2016 16:47:16)."
 		}
