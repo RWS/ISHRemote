@@ -34,37 +34,22 @@ Have a look at the [Automating tasks in Tridion Docs using PowerShell](https://y
 
 # Install & Update
 
-## Prerequisites
+Below the shorthand, more details are on [Installation-ISHRemote-8.0.md](./Doc/Installation-ISHRemote-8.0.md). This link will guide you on package managers like `PowerShellGet` and newer `PSResourceGet`; cmdlets to install, update and uninstall.
 
-Either
-* Windows PowerShell 5.1 (FullCLR) and .NET Framework 4.8
-* PowerShell 7.2+ (CoreCLR) and .NET 6.0+
+## Install on PowerShell 7.4+ (CoreCLR) powered by .NET 8.0+
 
-## Install
-Open a PowerShell, then you can find and install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator. The `-Force` will make you bypass some security/trust questions.
+Open a PowerShell, then install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator.
+```powershell
+Install-PSResource -Name ISHRemote -Repository PSGallery -Scope CurrentUser
+```
+
+## Install on Windows PowerShell 5.1 (FullCLR) powered by .NET Framework 4.8
+
+Open a Windows PowerShell, then install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator. The `-Force` will make you bypass some security/trust questions.
 
 ```powershell
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
 Install-Module ISHRemote -Repository PSGallery -Scope CurrentUser -Force 
-```
-
-![ISHRemote-0.7--InstallModuleFromPSGallery 1024x512](./Doc/Images/ISHRemote-0.7--InstallModuleFromPSGallery.gif)
-
-## Update
-
-Open a PowerShell and run.
-
-```powershell
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12  # as PSGallery switched to HTTPS over Tls12 and higher
-Update-Module ISHRemote
-```
- 
-## Uninstall
-
-Open a PowerShell and run.
-
-```powershell
-Uninstall-Module ISHRemote -AllVersion 
 ```
 
 # Backlog & Feedback
@@ -96,7 +81,6 @@ If you get error `New-IshSession : The communication object, System.ServiceModel
 * Respect PowerShell concepts
     * parameters are Single not plural, so IshObject over IshObjects or FilePath over FilePaths
     * implement `-WhatIf`/`-Confirm` flags for write operations
-* ISHRemote-build project holds the artefacts for in-house testing, signing, and publishing the library
 
 ## Documentation Standards
 
@@ -126,7 +110,7 @@ Rought steps to release...
 1. The folder content of `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Release\` will be published
     1. Check all files, especially `Scripts` that you have all files.
     1. Check version number of `ISHRemote.dll`
-1. Execute steps regarding signing and publishing from `SignAndPublish.ps1` available on internal repository https://stash.sdl.com/users/ddemeyer/repos/ishremote-build/
+1. Publishing a Github Actions build to PowerShellGallery can be done by submitting a label like `[PublishToPSGalleryAsPreview]` or `[PublishToPSGalleryAsRelease]` in the commit message. See [continuous-integration.yml](/.github/workflows/continuous-integration.yml)
 1. Check availability of latest version on https://www.powershellgallery.com/packages/ISHRemote/
 1. Github releases
     1. Edit and release the notes on https://github.com/sdl/ISHRemote/releases/
@@ -138,6 +122,7 @@ Rought steps to release...
 Since Visual Studio 2022, we use `\ISHRemote\Trisoft.ISHRemote\Properties\launchSettings.json` which theoretically also works on Visual Studio Code. Don't forget to set the matching Framework for debugging the library, either `net48` or `net6.0`, for the matching PowerShell version in the start debugging dropdown.
 - Debugging the binary assembly in PowerShell 5.1 you need to use `"executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"`
 - Debugging the binary assembly in PowerShell 7.3+ you need to use `"executablePath": "%ProgramFiles%\\PowerShell\\7\\pwsh.exe"`. Using the *Windows Store* PowerShell often results in error `Unable to attach to CoreCLR. A debug component is not installed.` while debugging.
+
 ## Debugging PowerShell in Visual Studio Code
 
 Setting up your Visual Studio Code is explained on the internet, see [Scripting Guys](https://rkeithhill.wordpress.com/2017/02/19/scripting-guys-blog-posts-on-using-visual-studio-code-for-powershell-development/) who in turn link to

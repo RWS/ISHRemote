@@ -2,6 +2,8 @@
 
 High level release notes are on [Github](https://github.com/rws/ISHRemote/releases/tag/v8.0), below the most detailed release notes we have :)
 
+**Before I forget, all people with a Github account, could you spare a moment to STAR this repository - see top-right Star icon on https://github.com/RWS/ISHRemote/ Appreciated!**
+
 ## General
 
 This release inherits the v0.1 to v0.14 up to v7.0 development branch and features. Most cmdlets and business logic are fully compatible even around authentication (`New-IshSession` and `Test-IshSession` ). In short, we expect it all to work still :)
@@ -137,7 +139,7 @@ Added more Invoke-Pester 5.3.0 Tests, see Github actions for the Windows PowerSh
 * the skipped are about SslPolicyErrors testing
 * the failed are about IMetadata bound fields (issue #58)
 
-Below is not an official performance compare, but a recurring thing noticed along the way. Using the same client machine, same ISHRemote build and same backend but different PowerShell hosts we noticed a considerable speed up of the Pester tests.
+Below is not an official performance compare, but a recurring thing noticed along the way. Using the same client machine, same ISHRemote build and same backend but different PowerShell hosts we noticed a considerable speed up of the Pester tests. However, adding (complicated) tests along the way and knowing that ISHRemote as client library greatly depends on the server-side load, we have to take these numbers at face value.
 
 | Name                     | Client Platform                     | Protocol       | Test Results         |
 |--------------------------|-------------------------------------|----------------------|----------------|
@@ -145,6 +147,8 @@ Below is not an official performance compare, but a recurring thing noticed alon
 | ISHRemote 6.0.9523.0     | PowerShell 7.3.0 on .NET 7.0.0      | WcfSoapWithWsTrust | Tests completed in 305.46s AND Tests Passed: 921, Failed: 0, Skipped: 8 NotRun: 0 |
 | ISHRemote 8.0.10425.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 472.44s AND Tests Passed: 1026, Failed: 0, Skipped: 3 NotRun: 0 |
 | ISHRemote 8.0.10425.0     | PowerShell 7.3.6 on .NET 7.0.0  | WcfSoapWithOpenIdConnect | Tests completed in 457.89s AND Tests Passed: 1026, Failed: 0, Skipped: 3 NotRun: 0  |
+| ISHRemote 8.0.10919.0     | PowerShell 7.4.0 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 449.72s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
+| ISHRemote 8.0.10919.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 437.21s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
 
 
 
