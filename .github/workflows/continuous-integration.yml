@@ -211,30 +211,30 @@ jobs:
           echo ("Found recent module[ISHRemote] of version["+($remoteModule.Version)+"]. Skipping publish of module with version[$fullVersion]!")
         }
 
-        - name: "Publish to PowerShellGallery if commit holds [PublishToPSGalleryAsRelease]"
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        if: ${{ success() && contains(github.event.head_commit.message, '[PublishToPSGalleryAsRelease]') }}
-        shell: pwsh
-        run: |
-          $packageRootFolderPath = "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/"
-          $manifestFilePath = Join-Path -Path $packageRootFolderPath -ChildPath "ISHRemote.psd1"
-          $manifestFileInfo = Get-ChildItem $manifestFilePath
-          if ($manifestFileInfo -eq $null) { echo "File[$manifestFilePath] not found" }
-          (Get-Content -Raw -Path $ManifestFilePath).Replace('Prerelease = ','# Prerelease = ') | Set-Content -Path $ManifestFilePath
-          $moduleManifest = Test-ModuleManifest -Path $manifestFileInfo.FullName
-          $moduleManifestFileVersion = $moduleManifest.Version
-          $fullVersion =  "$moduleManifestFileVersion"
-          $remoteModule = Find-Module -Name ISHRemote -Repository PSGallery
-          if($remoteModule.Version -ne $fullVersion)
-          {
-            echo ("Found earlier module[ISHRemote] of version["+($remoteModule.Version)+"]. Publishing module with version[$fullVersion]!")
-            Publish-Module -Path $packageRootFolderPath -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force -WhatIf #-ErrorAction:Continue
-          }
-          else
-          {
-            echo ("Found recent module[ISHRemote] of version["+($remoteModule.Version)+"]. Skipping publish of module with version[$fullVersion]!")
-          }
+    - name: "Publish to PowerShellGallery if commit holds [PublishToPSGalleryAsRelease]"
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      if: ${{ success() && contains(github.event.head_commit.message, '[PublishToPSGalleryAsRelease]') }}
+      shell: pwsh
+      run: |
+        $packageRootFolderPath = "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/"
+        $manifestFilePath = Join-Path -Path $packageRootFolderPath -ChildPath "ISHRemote.psd1"
+        $manifestFileInfo = Get-ChildItem $manifestFilePath
+        if ($manifestFileInfo -eq $null) { echo "File[$manifestFilePath] not found" }
+        (Get-Content -Raw -Path $ManifestFilePath).Replace('Prerelease = ','# Prerelease = ') | Set-Content -Path $ManifestFilePath
+        $moduleManifest = Test-ModuleManifest -Path $manifestFileInfo.FullName
+        $moduleManifestFileVersion = $moduleManifest.Version
+        $fullVersion =  "$moduleManifestFileVersion"
+        $remoteModule = Find-Module -Name ISHRemote -Repository PSGallery
+        if($remoteModule.Version -ne $fullVersion)
+        {
+          echo ("Found earlier module[ISHRemote] of version["+($remoteModule.Version)+"]. Publishing module with version[$fullVersion]!")
+          Publish-Module -Path $packageRootFolderPath -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force -WhatIf #-ErrorAction:Continue
+        }
+        else
+        {
+          echo ("Found recent module[ISHRemote] of version["+($remoteModule.Version)+"]. Skipping publish of module with version[$fullVersion]!")
+        }
 
     - name: "Info: How to publish to Internal/Nexus Repositories"
       shell: pwsh
