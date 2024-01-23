@@ -81,3 +81,28 @@ Register-IshAuxParameterCompleter -CommandName 'Set-IshMetadataField' -Parameter
 Register-IshAuxParameterCompleter -CommandName 'Set-IshMetadataFilterField' -ParameterName 'Name' -ScriptBlock $fieldName
 Register-IshAuxParameterCompleter -CommandName 'Set-IshRequestedMetadataField' -ParameterName 'Name' -ScriptBlock $fieldName
 Register-IshAuxParameterCompleter -CommandName 'Set-IshRequiredCurrentMetadataField' -ParameterName 'Name' -ScriptBlock $fieldName
+
+
+Write-Debug ("[" + $MyInvocation.MyCommand + "] Parameter binding for *-*FieldName (field names)")
+$fieldName = {
+	param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+	$ishSession = Get-IshAuxSessionState -Name "ISHRemoteSessionStateIshSession"
+	if (($null -ne $fakeBoundParameter['IshSession']) -And ($fakeBoundParameter['IshSession'].GetType().Name -eq 'IshSession') -And ($fakeBoundParameter['IshSession'].IshTypeFieldDefinition.Count -gt 0))
+	{
+		# Explicit -IshSession takes precedence over SessionState one
+		$ishSession = $fakeBoundParameter['IshSession']
+	}
+	if ($ishSession -ne $null)
+	{
+		# TODO [Could] Expand parameter could take -Level into account to filter even more
+		$ishSession.IshTypeFieldDefinition |
+		Where-Object { ($_.ISHType -eq 'ISHConfiguration') -and ($_.Name -like "$wordToComplete*") } |
+		Sort-Object -Unique Name |
+		
+		# Creation with ToolTips is often too slow, causing Ctrl-Space actions to fall back to file system suggestion
+		# ForEach-Object { New-IshAuxCompletionResult -CompletionText $_.Name -ToolTip ($_.Name + " (" + $_.Type + ") - " + $_.Description ) }
+		ForEach-Object { New-IshAuxCompletionResult -CompletionText $_.Name }
+	}
+}
+Register-IshAuxParameterCompleter -CommandName 'Get-IshSetting' -ParameterName 'FieldName' -ScriptBlock $fieldName
+Register-IshAuxParameterCompleter -CommandName 'Set-IshSetting' -ParameterName 'FieldName' -ScriptBlock $fieldName
