@@ -42,6 +42,19 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 			$ishBaselineItem.ModifiedOn | Should -Not -BeNullOrEmpty
 			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should -Not -BeNullOrEmpty		
 		}
+		It "ModifiedOn and CreatedOn Sortable Date Converstion #157" {
+			# Note that this test will always pass from day 13 to day 31 of the month because of the parsing fall back, 
+			# but it should catch issues on day 1 to 12 as those could be parsed as months.
+			$day = (Get-Date).Day
+			$month = (Get-Date).Month
+			$bi = (Get-IshBaselineItem -IshObject $ishObject)
+			# Where ModifiedOn is Sunday, August 6, 2023 5:23:45 PM
+			(Get-Date -Date $bi[0].ModifiedOn).Day | Should -Be $day  
+			(Get-Date -Date $bi[0].ModifiedOn).Month | Should -Be $month
+			# Where ModifiedOnAsSortableDateTime is  2023-08-06T17:23:45 which is in the future at the time of writing
+			$bi[0].ModifiedOnAsSortableDateTime.Substring(5,2) | Should -Be $month
+			$bi[0].ModifiedOnAsSortableDateTime.Substring(8,2) | Should -Be $day
+		}
 	}
 	Context "Get-IshBaselineItem IshObjectsGroup" {
 		BeforeAll {

@@ -45,6 +45,15 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// </code>
     /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet. Finding publication outputs</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/"
+    /// $transportPackageZipeFileName = "ish1120329-1-66560-20240123210247030.zip, ish1120329-2-66560-20240123210247030.zip"
+    /// $metadataFilter = Set-IshMetadataFilterField -Name FISHDITADLVRDEPLOYERIDS -Level Lng -FilterOperator In -Value $transportPackageZipeFileName
+    /// $publicationOutputs = Find-IshPublicationOutput -MetadataFilter $metadataFilter
+    /// </code>
+    /// <para>Transport Package file names are the ZIP files deployed from the CMS into the Deployer service of the Content Delivery stack. When analysis leads to ZIP file names, you can use the above construct to find the actuall PublicatoinOutput that was being published and deployed.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Find, "IshPublicationOutput", SupportsShouldProcess = false)]
     [OutputType(typeof(IshPublicationOutput))]
     public sealed class FindIshPublicationOutput : PublicationOutputCmdlet
