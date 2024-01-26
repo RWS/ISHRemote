@@ -48,8 +48,11 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 			$day = (Get-Date).Day
 			$month = (Get-Date).Month
 			$bi = (Get-IshBaselineItem -IshObject $ishObject)
+			# Neutral parsing could lead to DateTime.Min ... 
+			# Can happen with ([System.Globalization.CultureInfo]::CurrentCulture).DateTimeFormat.ShortDatePattern = "MM/dd/yyyy"
+			$bi[0].ModifiedOn | Should -Not -Be "0001-01-01T00:00:00"
+			$bi[0].ModifiedOnAsSortableDateTime | Should -Not -Be "0001-01-01T00:00:00.0000000"
 			# Where ModifiedOn is Sunday, August 6, 2023 5:23:45 PM
-			$bi[0].ModifiedOn | Should -Be $bi[0].ModifiedOnAsSortableDateTime #DEBUG!!!
 			(Get-Date -Date $bi[0].ModifiedOn).Day | Should -Be $day  
 			(Get-Date -Date $bi[0].ModifiedOn).Month | Should -Be $month
 			# Where ModifiedOnAsSortableDateTime is  2023-08-06T17:23:45 which is in the future at the time of writing

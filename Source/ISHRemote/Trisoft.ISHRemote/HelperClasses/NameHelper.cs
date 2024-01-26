@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -101,19 +101,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                     case Enumerations.DataType.DateTime:
                         //var formatStrings = new string[] { "dd/MM/yyyy HH:mm:ss", "yyyy-MM-dd hh:mm:ss", "dd/MM/yyy" };
                         DateTime dateTime;
-                        if (DateTime.TryParseExact(ishField.Value, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            propertyValue = dateTime.ToString("s");
-                        }
-                        else if (DateTime.TryParseExact(ishField.Value, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            propertyValue = dateTime.ToString("s");
-                        }
-                        else if (DateTime.TryParseExact(ishField.Value, "yyyy - MM - ddTHH:mm: ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
-                        {
-                            propertyValue = dateTime.ToString("s");
-                        }
-                        else if (DateTime.TryParse(ishField.Value, out dateTime))
+                        if (TryParseDateTimeExact(ishField.Value, out dateTime))
                         {
                             propertyValue = dateTime.ToString("s");
                         }
@@ -132,6 +120,41 @@ namespace Trisoft.ISHRemote.HelperClasses
             }
 
             return new PSNoteProperty("zzzNameHelperError", $"ISHType[{ishTypes}] Level[{ishField.Level.ToString()}] Name[{ishField.Name}] is unknown");
+        }
+
+        /// <summary>
+        /// Single sourcing the fallback mechanism of historical API date formats used on the various CMS APIs
+        /// This function should be used to avoid generic DateTime parsing based on environemnt variables that are different from classic dd/MM/yyyy.
+        /// ([System.Globalization.CultureInfo]::CurrentCulture).DateTimeFormat.ShortDatePattern = "dd/MM/yyyy"
+        /// </summary>
+        /// <param name="someDateTimeValue">Incoming API potential DateTime string</param>
+        /// <param name="outDateTime">DateTime object holding a succesful parse.</param>
+        /// <returns></returns>
+        public static bool TryParseDateTimeExact(string someDateTimeValue, out DateTime outDateTime)
+        {
+            DateTime dateTime;
+            if (DateTime.TryParseExact(someDateTimeValue, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+            {
+                outDateTime = dateTime;
+                return true;
+            }
+            else if (DateTime.TryParseExact(someDateTimeValue, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+            {
+                outDateTime = dateTime;
+                return true;
+            }
+            else if (DateTime.TryParseExact(someDateTimeValue, "yyyy - MM - ddTHH:mm: ss", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+            {
+                outDateTime = dateTime;
+                return true;
+            }
+            else if (DateTime.TryParse(someDateTimeValue, out dateTime))
+            {
+                outDateTime = dateTime;
+                return true;
+            }
+            outDateTime = DateTime.MinValue;
+            return false;
         }
 
         // Potentially make FileNameHelper static methods public here...

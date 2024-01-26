@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,9 +76,9 @@ namespace Trisoft.ISHRemote.Objects.Public
             Author = xmlIshBaselineItem.Attributes["author"].Value;
             Source = Enumerations.ToBaselineSourceEnumeration(xmlIshBaselineItem.Attributes["source"].Value);
             DateTime createdOn;
-            CreatedOn = DateTime.TryParse(xmlIshBaselineItem.Attributes["created"].Value, out createdOn) ? createdOn : DateTime.MinValue;
+            CreatedOn = NameHelper.TryParseDateTimeExact(xmlIshBaselineItem.Attributes["created"].Value, out createdOn) ? createdOn : DateTime.MinValue;
             DateTime modifiedOn;
-            ModifiedOn = DateTime.TryParse(xmlIshBaselineItem.Attributes["modified"].Value, out modifiedOn) ? modifiedOn : DateTime.MinValue;
+            ModifiedOn = = NameHelper.TryParseDateTimeExact(xmlIshBaselineItem.Attributes["modified"].Value, out modifiedOn) ? modifiedOn : DateTime.MinValue;
         }
 
         /// <summary>
