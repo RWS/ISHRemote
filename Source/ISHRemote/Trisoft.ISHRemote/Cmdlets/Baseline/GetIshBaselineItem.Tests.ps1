@@ -49,6 +49,7 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 			$month = (Get-Date).Month
 			$bi = (Get-IshBaselineItem -IshObject $ishObject)
 			# Where ModifiedOn is Sunday, August 6, 2023 5:23:45 PM
+			$bi[0].ModifiedOn | Should -Be $bi[0].ModifiedOnAsSortableDateTime #DEBUG!!!
 			(Get-Date -Date $bi[0].ModifiedOn).Day | Should -Be $day  
 			(Get-Date -Date $bi[0].ModifiedOn).Month | Should -Be $month
 			# Where ModifiedOnAsSortableDateTime is  2023-08-06T17:23:45 which is in the future at the time of writing
