@@ -78,7 +78,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             DateTime createdOn;
             CreatedOn = NameHelper.TryParseDateTimeExact(xmlIshBaselineItem.Attributes["created"].Value, out createdOn) ? createdOn : DateTime.MinValue;
             DateTime modifiedOn;
-            ModifiedOn = = NameHelper.TryParseDateTimeExact(xmlIshBaselineItem.Attributes["modified"].Value, out modifiedOn) ? modifiedOn : DateTime.MinValue;
+            ModifiedOn = NameHelper.TryParseDateTimeExact(xmlIshBaselineItem.Attributes["modified"].Value, out modifiedOn) ? modifiedOn : DateTime.MinValue;
         }
 
         /// <summary>
