@@ -599,7 +599,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _chunkSize = value; }
         }
 
-        #region OpenApi internal/3.0 Services
+        #region OpenApi Services
         public OpenApiISH30Service OpenApiISH30Service
         {
             get
@@ -1087,6 +1087,12 @@ namespace Trisoft.ISHRemote.Objects.Public
                     }
                     break;
                 case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
+                    {
+                        // ... discard OpenApiISH30Service
+                        // ...and re-create connection
+                        CreateOpenApiWithOpenIdConnectConnection();
+                    }
                     if (_infoShareWcfSoapWithOpenIdConnectConnection == null)
                     {
                         // Not valid...

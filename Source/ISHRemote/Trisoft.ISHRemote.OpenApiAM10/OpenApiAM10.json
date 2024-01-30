@@ -1,0 +1,3662 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+      "title": "Access Management API",
+      "description": "Access Management provides implementers with a simplified approach to identity management and gives administrators a central location for ongoing management of access to applications. ",
+      "version": "v1"
+  },
+  "servers": [
+      {
+          "url": "/ISHAM"
+      }
+  ],
+  "paths": {
+      "/api/v1/ApiResources": {
+          "get": {
+              "tags": [
+                  "ApiResources"
+              ],
+              "summary": "Gets a list of all API resources in the system.",
+              "operationId": "ApiResources_Get",
+              "responses": {
+                  "200": {
+                      "description": "Returns a list of API resources.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/ApiResource"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/ApiResources/{id}": {
+          "get": {
+              "tags": [
+                  "ApiResources"
+              ],
+              "summary": "Gets the API resource with the given ID.",
+              "operationId": "ApiResources_GetById",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the API resource to retrieve.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the requested API resource.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ApiResource"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The API resource does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/Applications": {
+          "get": {
+              "tags": [
+                  "Applications"
+              ],
+              "summary": "Gets a list of all applications in the system.",
+              "operationId": "Applications_Get",
+              "responses": {
+                  "200": {
+                      "description": "Returns a list of applications.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/Application"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "post": {
+              "tags": [
+                  "Applications"
+              ],
+              "summary": "Creates a new application.",
+              "operationId": "Applications_Create",
+              "requestBody": {
+                  "description": "The application to create.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Application"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Application"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Application"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Application"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "201": {
+                      "description": "The application was created successfully. The Location header contains the URL to the new item.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/Application"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/Applications/{id}": {
+          "get": {
+              "tags": [
+                  "Applications"
+              ],
+              "summary": "Gets the application with the given ID.",
+              "operationId": "Applications_GetById",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the application to retrieve.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the requested application.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/Application"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The application does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "put": {
+              "tags": [
+                  "Applications"
+              ],
+              "summary": "Updates an existing application.",
+              "operationId": "Applications_Update",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the application to update.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "description": "The new data of the application.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Application"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Application"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Application"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/Application"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Returns the updated application.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/Application"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The application does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "Applications"
+              ],
+              "summary": "Permanently deletes an existing application.",
+              "operationId": "Applications_Delete",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the application to delete.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "The application was successfully deleted."
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The application does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/AuditLogs": {
+          "get": {
+              "tags": [
+                  "AuditLogs"
+              ],
+              "summary": "Gets a list of audit log entries matching the given filter.",
+              "operationId": "AuditLogs_GetByFilter",
+              "parameters": [
+                  {
+                      "name": "UserName",
+                      "in": "query",
+                      "schema": {
+                          "maxLength": 256,
+                          "type": "string"
+                      }
+                  },
+                  {
+                      "name": "FromDate",
+                      "in": "query",
+                      "schema": {
+                          "type": "string",
+                          "format": "date-time"
+                      },
+                      "example": "2024-01-17 00:00:00.000"
+                  },
+                  {
+                      "name": "ToDate",
+                      "in": "query",
+                      "schema": {
+                          "type": "string",
+                          "format": "date-time"
+                      },
+                      "example": "2024-01-17 23:59:59.999"
+                  },
+                  {
+                      "name": "EntityType",
+                      "in": "query",
+                      "schema": {
+                          "maxItems": 10,
+                          "type": "array",
+                          "items": {
+                              "type": "string"
+                          }
+                      }
+                  },
+                  {
+                      "name": "EntityName",
+                      "in": "query",
+                      "schema": {
+                          "maxLength": 256,
+                          "type": "string"
+                      }
+                  },
+                  {
+                      "name": "Action",
+                      "in": "query",
+                      "schema": {
+                          "maxItems": 5,
+                          "type": "array",
+                          "items": {
+                              "$ref": "#/components/schemas/EntityActionType"
+                          }
+                      }
+                  },
+                  {
+                      "name": "Limit",
+                      "in": "query",
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns a list of audit log entries.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/AuditLog"
+                                  }
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/AuditLog"
+                                  }
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/AuditLog"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "Not Found",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/AuditLogs/{id}": {
+          "get": {
+              "tags": [
+                  "AuditLogs"
+              ],
+              "summary": "Gets the audit log entry with the given ID.",
+              "operationId": "AuditLogs_GetById",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the audit log entry to retrieve.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the requested audit log entry.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/AuditLogEntry"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/AuditLogEntry"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/AuditLogEntry"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The audit log entry does not exist.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/IdentityProviders/availableIdpTypes": {
+          "get": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Gets a list of available identity provider types.",
+              "operationId": "IdentityProviders_GetAvailableIdpTypes",
+              "responses": {
+                  "200": {
+                      "description": "Returns the list of available identity provider types.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/IdentityProviderTypeOption"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/IdentityProviders": {
+          "get": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Gets a list of all identity providers in the system.",
+              "operationId": "IdentityProviders_Get",
+              "responses": {
+                  "200": {
+                      "description": "Returns a list of identity providers.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/IdentityProvider"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "post": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Creates a new identity provider.",
+              "operationId": "IdentityProviders_Create",
+              "requestBody": {
+                  "description": "The identity provider to create.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/IdentityProvider"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/IdentityProvider"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/IdentityProvider"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/IdentityProvider"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "201": {
+                      "description": "The identity provider was created successfully. The Location header contains the URL to the new item.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/IdentityProvider"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/IdentityProviders/{id}": {
+          "get": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Gets the identity provider with the given ID.",
+              "operationId": "IdentityProviders_GetById",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the identity provider to retrieve.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the requested identity provider.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/IdentityProvider"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The identity provider does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "put": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Updates an existing identity provider.",
+              "operationId": "IdentityProviders_Update",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the identity provider to update.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "description": "The new data of the identity provider.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/IdentityProvider"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/IdentityProvider"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/IdentityProvider"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/IdentityProvider"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Returns the updated identity provider.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/IdentityProvider"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The identity provider does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Permanently deletes an existing identity provider.",
+              "operationId": "IdentityProviders_Delete",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the identity provider to delete.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "The identity provider was successfully deleted."
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The identity provider does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/IdentityProviders/icon/{name}": {
+          "get": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Gets the icon for a given identity provider.",
+              "description": "If no icon has been specified for the identity provider, a default icon is returned.",
+              "operationId": "IdentityProviders_GetIcon",
+              "parameters": [
+                  {
+                      "name": "name",
+                      "in": "path",
+                      "description": "The name of the identity provider to get an icon for.",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the icon as an image."
+                  },
+                  "302": {
+                      "description": "Redirects to a local image."
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred."
+                  }
+              }
+          }
+      },
+      "/api/v1/IdentityProviders/loginOptions": {
+          "get": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Gets a list of all login possibilities currently available.",
+              "operationId": "IdentityProviders_GetLoginOptions",
+              "responses": {
+                  "200": {
+                      "description": "Returns the list of login options.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/LoginOption"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/IdentityProviders/getParametersForIdentityProviderType/{providerType}": {
+          "get": {
+              "tags": [
+                  "IdentityProviders"
+              ],
+              "summary": "Gets a list of parameters specific to a given type of identity provider.",
+              "operationId": "IdentityProviders_GetParametersForIdentityProviderType",
+              "parameters": [
+                  {
+                      "name": "providerType",
+                      "in": "path",
+                      "description": "The type of identity provider to retrieve the parameters for.",
+                      "required": true,
+                      "schema": {
+                          "$ref": "#/components/schemas/IdentityProviderType"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the list of parameters for the given type.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/IdentityProviderParameters"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "Not Found",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/ServiceAccounts": {
+          "get": {
+              "tags": [
+                  "ServiceAccounts"
+              ],
+              "summary": "Gets a list of all service accounts in the system.",
+              "operationId": "ServiceAccounts_Get",
+              "responses": {
+                  "200": {
+                      "description": "Returns a list of service accounts.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/ServiceAccount"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "post": {
+              "tags": [
+                  "ServiceAccounts"
+              ],
+              "summary": "Creates a new service account.",
+              "operationId": "ServiceAccounts_Create",
+              "requestBody": {
+                  "description": "The data of the service account to create.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ServiceAccount"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ServiceAccount"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ServiceAccount"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ServiceAccount"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "201": {
+                      "description": "The service account was created successfully. The Location header contains the URL to the new item.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ServiceAccount"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/ServiceAccounts/{id}": {
+          "get": {
+              "tags": [
+                  "ServiceAccounts"
+              ],
+              "summary": "Gets the service account with the given ID.",
+              "operationId": "ServiceAccounts_GetById",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the service account to retrieve.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the requested service account.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ServiceAccount"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The service account does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "put": {
+              "tags": [
+                  "ServiceAccounts"
+              ],
+              "summary": "Updates an existing service account.",
+              "operationId": "ServiceAccounts_Update",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the service account to update.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "description": "The new data of the service account.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ServiceAccount"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ServiceAccount"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ServiceAccount"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ServiceAccount"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Returns the updated service account.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ServiceAccount"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The service account does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "ServiceAccounts"
+              ],
+              "summary": "Permanently deletes an existing service account.",
+              "operationId": "ServiceAccounts_Delete",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the service account to delete.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "The service account was successfully deleted."
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The service account does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/ServiceAccounts/{serviceAccountId}/generateClientSecret": {
+          "post": {
+              "tags": [
+                  "ServiceAccounts"
+              ],
+              "summary": "Generates a new client secret that can be used to log in as a given service account.",
+              "operationId": "ServiceAccounts_GenerateClientSecret",
+              "parameters": [
+                  {
+                      "name": "serviceAccountId",
+                      "in": "path",
+                      "description": "The ID of the service account.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the new client secret.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/UserClientSecret"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The service account does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/ServiceAccounts/{serviceAccountId}/clientSecrets/{secretId}": {
+          "put": {
+              "tags": [
+                  "ServiceAccounts"
+              ],
+              "summary": "Updates an existing client secret.",
+              "operationId": "ServiceAccounts_UpdateClientSecret",
+              "parameters": [
+                  {
+                      "name": "serviceAccountId",
+                      "in": "path",
+                      "description": "The ID of the service account.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  },
+                  {
+                      "name": "secretId",
+                      "in": "path",
+                      "description": "The ID of the secret to update.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "description": "The new data of the client secret.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/UserClientSecret"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/UserClientSecret"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/UserClientSecret"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/UserClientSecret"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Returns the updated client secret.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/UserClientSecret"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The service account or client secret does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "ServiceAccounts"
+              ],
+              "summary": "Permanently deletes an existing client secret from a service account.",
+              "operationId": "ServiceAccounts_DeleteClientSecret",
+              "parameters": [
+                  {
+                      "name": "serviceAccountId",
+                      "in": "path",
+                      "description": "The ID of the service account.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  },
+                  {
+                      "name": "secretId",
+                      "in": "path",
+                      "description": "The ID of the secret to delete.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "The client secret was successfully deleted."
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The service account or client secret does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/System/getLoginStatus": {
+          "get": {
+              "tags": [
+                  "System"
+              ],
+              "summary": "Gets the login status of the current user.",
+              "operationId": "System_GetLoginStatus",
+              "responses": {
+                  "200": {
+                      "description": "Returns either None, LoggedIn, or Anonymous (if there are no IDPs yet or the configuration forces an anonymous state).",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/LoginStatus"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/LoginStatus"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/LoginStatus"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/System/userInfo": {
+          "get": {
+              "tags": [
+                  "System"
+              ],
+              "summary": "Gets information about the current user.",
+              "operationId": "System_GetUserInfo",
+              "responses": {
+                  "200": {
+                      "description": "Returns information about the current user.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/UserInfo"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/UserInfo"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/UserInfo"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/System/supportedCultures": {
+          "get": {
+              "tags": [
+                  "System"
+              ],
+              "summary": "Gets a list of all supported languages and a list of all supported regions.",
+              "operationId": "System_GetSupportedCultures",
+              "responses": {
+                  "200": {
+                      "description": "Returns an object with a list of all supported languages and a separate list of supported regions.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/SupportedCultures"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/SupportedCultures"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/SupportedCultures"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "text/plain": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          },
+                          "text/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/Users": {
+          "get": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Gets a list of all users in the system.",
+              "operationId": "Users_Get",
+              "responses": {
+                  "200": {
+                      "description": "Returns a list of users.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "$ref": "#/components/schemas/User"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/Users/{id}": {
+          "get": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Gets the user with the given ID.",
+              "operationId": "Users_GetById",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the user to retrieve.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the requested user.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/User"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The user does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "put": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Updates an existing user.",
+              "operationId": "Users_Update",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the user to update.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "description": "The new data of the user.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/User"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/User"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/User"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/User"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Returns the updated user.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/User"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The user does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "delete": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Permanently deletes an existing user.",
+              "description": "Note that deleted users will automatically be recreated if they log into Access Management afterwards.\r\nTo completely remove users, first remove them from the external identity provider.",
+              "operationId": "Users_Delete",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the user to delete.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "The user was successfully deleted."
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The user does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/Users/{id}/deactivate": {
+          "put": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Deactivates a user, so they can no longer log in.",
+              "operationId": "Users_DeactivateUser",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the user to deactivate.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "The user was successfully deactivated."
+                  },
+                  "404": {
+                      "description": "The user does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/Users/{id}/activate": {
+          "put": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Re-activates a deactivated user so they can log in again.",
+              "operationId": "Users_ActivateUser",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "description": "The ID of the user to activate.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "The user was successfully activated."
+                  },
+                  "404": {
+                      "description": "The user does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/api/v1/Users/{userId}/generateClientSecret": {
+          "post": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Generates a new client secret that can be used to log in as a given user.\r\n(Client secrets for users are deprecated. Please use service accounts instead.)",
+              "operationId": "Users_GenerateClientSecret",
+              "parameters": [
+                  {
+                      "name": "userId",
+                      "in": "path",
+                      "description": "The ID of the user.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Returns the new client secret.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/UserClientSecret"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The user does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              },
+              "deprecated": true
+          }
+      },
+      "/api/v1/Users/{userId}/clientSecrets/{secretId}": {
+          "put": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Updates an existing client secret.\r\n(Client secrets for users are deprecated. Please use service accounts instead.)",
+              "operationId": "Users_UpdateClientSecret",
+              "parameters": [
+                  {
+                      "name": "userId",
+                      "in": "path",
+                      "description": "The ID of the user.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  },
+                  {
+                      "name": "secretId",
+                      "in": "path",
+                      "description": "The ID of the secret to update.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "description": "The new data of the client secret.",
+                  "content": {
+                      "application/json-patch+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/UserClientSecret"
+                          }
+                      },
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/UserClientSecret"
+                          }
+                      },
+                      "text/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/UserClientSecret"
+                          }
+                      },
+                      "application/*+json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/UserClientSecret"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Returns the updated client secret.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/UserClientSecret"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The user or client secret does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              },
+              "deprecated": true
+          },
+          "delete": {
+              "tags": [
+                  "Users"
+              ],
+              "summary": "Permanently deletes an existing client secret from a user.\r\n(Client secrets for users are deprecated. Please use service accounts instead.)",
+              "operationId": "Users_DeleteClientSecret",
+              "parameters": [
+                  {
+                      "name": "userId",
+                      "in": "path",
+                      "description": "The ID of the user.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  },
+                  {
+                      "name": "secretId",
+                      "in": "path",
+                      "description": "The ID of the secret to delete.",
+                      "required": true,
+                      "schema": {
+                          "type": "integer",
+                          "format": "int32"
+                      }
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "The client secret was successfully deleted."
+                  },
+                  "400": {
+                      "description": "A validation error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "The user or client secret does not exist.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "An unexpected error occurred.",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                              }
+                          }
+                      }
+                  }
+              },
+              "deprecated": true
+          }
+      }
+  },
+  "components": {
+      "schemas": {
+          "ApiResource": {
+              "required": [
+                  "key",
+                  "name"
+              ],
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "key": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "pattern": "^[a-zA-Z0-9-_.]*$",
+                      "type": "string"
+                  },
+                  "name": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "roles": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApiResourceRole"
+                      },
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "ApiResourceLink": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "ApiResourceRole": {
+              "required": [
+                  "key",
+                  "name"
+              ],
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "key": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "name": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "apiResource": {
+                      "$ref": "#/components/schemas/ApiResource"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "ApiResourceRoleLink": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "Application": {
+              "required": [
+                  "allowedAuthenticationFlowType",
+                  "clientId",
+                  "name",
+                  "redirectUrls"
+              ],
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "description": "Autogenerated Id.Readonly on Update",
+                      "format": "int32",
+                      "readOnly": true
+                  },
+                  "createdBy": {
+                      "$ref": "#/components/schemas/UserLink"
+                  },
+                  "modifiedBy": {
+                      "$ref": "#/components/schemas/UserLink"
+                  },
+                  "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true
+                  },
+                  "modifiedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true
+                  },
+                  "clientId": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "name": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "redirectUrls": {
+                      "type": "array",
+                      "items": {
+                          "type": "string"
+                      }
+                  },
+                  "allowedAuthenticationFlowType": {
+                      "$ref": "#/components/schemas/AuthenticationFlowType"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "ApplicationLink": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "AuditLog": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "description": "Autogenerated Id.",
+                      "format": "int32",
+                      "readOnly": true
+                  },
+                  "user": {
+                      "$ref": "#/components/schemas/Link"
+                  },
+                  "date": {
+                      "type": "string",
+                      "format": "date-time"
+                  },
+                  "entityType": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "entity": {
+                      "$ref": "#/components/schemas/Link"
+                  },
+                  "action": {
+                      "$ref": "#/components/schemas/EntityActionType"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "AuditLogEntry": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "description": "Autogenerated Id.",
+                      "format": "int32",
+                      "readOnly": true
+                  },
+                  "user": {
+                      "$ref": "#/components/schemas/Link"
+                  },
+                  "date": {
+                      "type": "string",
+                      "format": "date-time"
+                  },
+                  "entityType": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "entityId": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "entityData": {
+                      "nullable": true
+                  },
+                  "action": {
+                      "$ref": "#/components/schemas/EntityActionType"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "AuthenticationFlowType": {
+              "enum": [
+                  "AuthorizationCodeWithPkce",
+                  "AuthorizationCode",
+                  "Implicit"
+              ],
+              "type": "string"
+          },
+          "ClaimBasedAccessControlEntry": {
+              "type": "object",
+              "properties": {
+                  "applications": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApplicationLink"
+                      },
+                      "nullable": true
+                  },
+                  "apiResources": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApiResourceLink"
+                      },
+                      "nullable": true
+                  },
+                  "apiResourceRoles": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApiResourceRoleLink"
+                      },
+                      "nullable": true
+                  },
+                  "claimType": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "description": "Gets or sets Claim type coming from the IdP.",
+                      "nullable": true
+                  },
+                  "claimValue": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "description": "Gets or sets Claim value coming from the IdP.",
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false,
+              "description": "Represents idp claim access control for applications , resources and roles."
+          },
+          "EntityActionType": {
+              "enum": [
+                  "Deleted",
+                  "Updated",
+                  "Added",
+                  "Activated",
+                  "Deactivated"
+              ],
+              "type": "string"
+          },
+          "ErrorMessage": {
+              "type": "object",
+              "properties": {
+                  "code": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "message": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "localizedMessage": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "target": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "details": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ErrorMessage"
+                      },
+                      "nullable": true
+                  },
+                  "innerError": {
+                      "$ref": "#/components/schemas/IInnerError"
+                  },
+                  "stackTrace": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "innerException": {
+                      "$ref": "#/components/schemas/ErrorMessage"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "ErrorResponse": {
+              "type": "object",
+              "properties": {
+                  "errorMessage": {
+                      "$ref": "#/components/schemas/ErrorMessage"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "IInnerError": {
+              "type": "object",
+              "properties": {
+                  "code": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "innerError": {
+                      "$ref": "#/components/schemas/IInnerError"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "IdentityProvider": {
+              "required": [
+                  "key",
+                  "name",
+                  "parameters",
+                  "type"
+              ],
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "description": "Autogenerated Id.",
+                      "format": "int32",
+                      "readOnly": true
+                  },
+                  "createdBy": {
+                      "$ref": "#/components/schemas/UserLink"
+                  },
+                  "modifiedBy": {
+                      "$ref": "#/components/schemas/UserLink"
+                  },
+                  "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true
+                  },
+                  "modifiedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true
+                  },
+                  "key": {
+                      "maxLength": 64,
+                      "minLength": 1,
+                      "pattern": "^[a-zA-Z0-9_]*$",
+                      "type": "string",
+                      "description": "Provider name.Readonly on Update"
+                  },
+                  "name": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Provider display name."
+                  },
+                  "isEnabled": {
+                      "type": "boolean",
+                      "description": "Specifies if provider is enabled.",
+                      "default": true
+                  },
+                  "description": {
+                      "maxLength": 2048,
+                      "type": "string",
+                      "description": "Provider description.",
+                      "nullable": true
+                  },
+                  "type": {
+                      "$ref": "#/components/schemas/IdentityProviderType"
+                  },
+                  "iconUrl": {
+                      "type": "string",
+                      "description": "The external URL of the icon to use for this provider.",
+                      "nullable": true
+                  },
+                  "iconViewUrl": {
+                      "type": "string",
+                      "description": "The URL to view the icon for this provider.",
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "accessControlList": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ClaimBasedAccessControlEntry"
+                      },
+                      "description": "Access Control List",
+                      "nullable": true
+                  },
+                  "forwardedClaims": {
+                      "type": "array",
+                      "items": {
+                          "type": "string"
+                      },
+                      "description": "Forwarded Claims",
+                      "nullable": true
+                  },
+                  "parameters": {
+                      "$ref": "#/components/schemas/IdentityProviderParameters"
+                  },
+                  "redirectUrl": {
+                      "type": "string",
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "postLogoutRedirectUrl": {
+                      "type": "string",
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "validateUrl": {
+                      "type": "string",
+                      "description": "Gets or sets the URL to use to validate that this Tridion.AccessManagement.Model.V1.IdentityProvider is configured correctly.",
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false,
+              "description": "Represents the identity provider."
+          },
+          "IdentityProviderLink": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false,
+              "description": "Readonly on Update"
+          },
+          "IdentityProviderParameters": {
+              "type": "object",
+              "anyOf": [
+                  {
+                      "$ref": "#/components/schemas/LdapParameters"
+                  },
+                  {
+                      "$ref": "#/components/schemas/OpenIdParameters"
+                  },
+                  {
+                      "$ref": "#/components/schemas/SamlParameters"
+                  },
+                  {
+                      "$ref": "#/components/schemas/WindowsParameters"
+                  }
+              ],
+              "properties": {
+                  "$type": {
+                      "type": "string",
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false,
+              "discriminator": {
+                  "propertyName": "$type"
+              }
+          },
+          "IdentityProviderType": {
+              "enum": [
+                  "OpenIdConnect",
+                  "SAML2P",
+                  "LDAP",
+                  "Windows"
+              ],
+              "type": "string",
+              "description": "Readonly on Update",
+              "readOnly": true
+          },
+          "IdentityProviderTypeOption": {
+              "type": "object",
+              "properties": {
+                  "typeId": {
+                      "$ref": "#/components/schemas/IdentityProviderType"
+                  },
+                  "name": {
+                      "type": "string",
+                      "description": "Localized human readable name.",
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false,
+              "description": "Represents the Identity provider type option description."
+          },
+          "LdapParameters": {
+              "required": [
+                  "fullNameClaim",
+                  "port",
+                  "searchAccount",
+                  "searchAccountPassword",
+                  "serverAddress",
+                  "userBaseDn",
+                  "usernameClaim",
+                  "useSsl"
+              ],
+              "type": "object",
+              "allOf": [
+                  {
+                      "$ref": "#/components/schemas/IdentityProviderParameters"
+                  }
+              ],
+              "properties": {
+                  "separator": {
+                      "maxLength": 1,
+                      "type": "string",
+                      "description": "Separator to join IdP name and username.",
+                      "nullable": true
+                  },
+                  "usernameClaim": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Provider claim type to use for username."
+                  },
+                  "fullNameClaim": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Provider claim type to use for Full name."
+                  },
+                  "serverAddress": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "port": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "useSsl": {
+                      "type": "boolean"
+                  },
+                  "searchAccount": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "searchAccountPassword": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "format": "password"
+                  },
+                  "userBaseDn": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "groupBaseDn": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "groupMemberAttribute": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "additionalAttributes": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "Link": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "name": {
+                      "type": "string",
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "LoginOption": {
+              "required": [
+                  "name"
+              ],
+              "type": "object",
+              "properties": {
+                  "name": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "key": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "loginTriggerUrl": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "iconUrl": {
+                      "type": "string",
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "LoginStatus": {
+              "enum": [
+                  "None",
+                  "Anonymous",
+                  "LoggedIn"
+              ],
+              "type": "string"
+          },
+          "OpenIdParameters": {
+              "required": [
+                  "authority",
+                  "clientId",
+                  "fullNameClaim",
+                  "usernameClaim"
+              ],
+              "type": "object",
+              "allOf": [
+                  {
+                      "$ref": "#/components/schemas/IdentityProviderParameters"
+                  }
+              ],
+              "properties": {
+                  "separator": {
+                      "maxLength": 1,
+                      "type": "string",
+                      "description": "Separator to join IdP name and username.",
+                      "nullable": true
+                  },
+                  "usernameClaim": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Provider claim type to use for username."
+                  },
+                  "fullNameClaim": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Provider claim type to use for Full name."
+                  },
+                  "authority": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "format": "uri"
+                  },
+                  "clientId": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "clientSecret": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "format": "password",
+                      "nullable": true
+                  },
+                  "endSessionEndpoint": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "format": "uri",
+                      "nullable": true
+                  },
+                  "responseType": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "default": "id_token",
+                      "nullable": true
+                  },
+                  "sendIdTokenHintDuringLogout": {
+                      "type": "boolean"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "SamlParameters": {
+              "required": [
+                  "certificates",
+                  "fullNameClaim",
+                  "issuerName",
+                  "serviceProviderName",
+                  "singleLogoutServiceUrl",
+                  "singleSignOnServiceUrl",
+                  "usernameClaim"
+              ],
+              "type": "object",
+              "allOf": [
+                  {
+                      "$ref": "#/components/schemas/IdentityProviderParameters"
+                  }
+              ],
+              "properties": {
+                  "separator": {
+                      "maxLength": 1,
+                      "type": "string",
+                      "description": "Separator to join IdP name and username.",
+                      "nullable": true
+                  },
+                  "usernameClaim": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Provider claim type to use for username."
+                  },
+                  "fullNameClaim": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Provider claim type to use for Full name."
+                  },
+                  "issuerName": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "serviceProviderName": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "singleSignOnServiceUrl": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "format": "uri"
+                  },
+                  "singleLogoutServiceUrl": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "format": "uri"
+                  },
+                  "certificates": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                          "type": "string"
+                      }
+                  }
+              },
+              "additionalProperties": false
+          },
+          "ServiceAccount": {
+              "required": [
+                  "name"
+              ],
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "description": "Autogenerated Id.",
+                      "format": "int32",
+                      "readOnly": true
+                  },
+                  "createdBy": {
+                      "$ref": "#/components/schemas/UserLink"
+                  },
+                  "modifiedBy": {
+                      "$ref": "#/components/schemas/UserLink"
+                  },
+                  "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true
+                  },
+                  "modifiedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true
+                  },
+                  "name": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "clientId": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "lastLoginAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "clientSecrets": {
+                      "maxItems": 2,
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/UserClientSecret"
+                      },
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "accessControlEntry": {
+                      "$ref": "#/components/schemas/ServiceAccountBasedAccessControlEntry"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "ServiceAccountBasedAccessControlEntry": {
+              "type": "object",
+              "properties": {
+                  "apiResources": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApiResourceLink"
+                      },
+                      "nullable": true
+                  },
+                  "apiResourceRoles": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApiResourceRoleLink"
+                      },
+                      "nullable": true
+                  },
+                  "applications": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApplicationLink"
+                      },
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "SupportedCulture": {
+              "type": "object",
+              "properties": {
+                  "displayName": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "name": {
+                      "type": "string",
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "SupportedCultures": {
+              "type": "object",
+              "properties": {
+                  "languages": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/SupportedCulture"
+                      },
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "regions": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/SupportedCulture"
+                      },
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "User": {
+              "required": [
+                  "identityProvider",
+                  "identityProviderKey",
+                  "name",
+                  "subject"
+              ],
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "description": "Autogenerated Id.",
+                      "format": "int32",
+                      "readOnly": true
+                  },
+                  "createdBy": {
+                      "$ref": "#/components/schemas/UserLink"
+                  },
+                  "modifiedBy": {
+                      "$ref": "#/components/schemas/UserLink"
+                  },
+                  "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true
+                  },
+                  "modifiedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true
+                  },
+                  "name": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                  },
+                  "email": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "format": "email",
+                      "nullable": true
+                  },
+                  "language": {
+                      "maxLength": 20,
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "region": {
+                      "maxLength": 20,
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "subject": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Readonly on Update"
+                  },
+                  "identityProvider": {
+                      "$ref": "#/components/schemas/IdentityProviderLink"
+                  },
+                  "identityProviderKey": {
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Readonly on Update"
+                  },
+                  "clientId": {
+                      "maxLength": 256,
+                      "type": "string",
+                      "description": "Readonly on Update",
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "isEnabled": {
+                      "type": "boolean",
+                      "default": true
+                  },
+                  "lastLoginAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "clientSecrets": {
+                      "maxItems": 2,
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/UserClientSecret"
+                      },
+                      "nullable": true,
+                      "readOnly": true
+                  },
+                  "accessControlEntry": {
+                      "$ref": "#/components/schemas/UserBasedAccessControlEntry"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "UserBasedAccessControlEntry": {
+              "type": "object",
+              "properties": {
+                  "applications": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApplicationLink"
+                      },
+                      "nullable": true
+                  },
+                  "apiResources": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApiResourceLink"
+                      },
+                      "nullable": true
+                  },
+                  "apiResourceRoles": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/ApiResourceRoleLink"
+                      },
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false,
+              "description": "Represents user access control for applications , resources and roles."
+          },
+          "UserClientSecret": {
+              "required": [
+                  "clientSecret",
+                  "expiresAt"
+              ],
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "description": "Autogenerated Id.",
+                      "format": "int32",
+                      "readOnly": true
+                  },
+                  "clientSecret": {
+                      "maxLength": 4000,
+                      "minLength": 1,
+                      "type": "string",
+                      "readOnly": true
+                  },
+                  "expiresAt": {
+                      "type": "string",
+                      "format": "date-time"
+                  },
+                  "lastLoginAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "UserInfo": {
+              "type": "object",
+              "properties": {
+                  "name": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "subject": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "avatar": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "roles": {
+                      "type": "array",
+                      "items": {
+                          "type": "string"
+                      },
+                      "nullable": true
+                  },
+                  "isAnonymous": {
+                      "type": "boolean"
+                  },
+                  "locale": {
+                      "$ref": "#/components/schemas/UserLocaleInfo"
+                  }
+              },
+              "additionalProperties": false
+          },
+          "UserLink": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "integer",
+                      "format": "int32"
+                  },
+                  "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "readOnly": true
+                  }
+              },
+              "additionalProperties": false,
+              "readOnly": true
+          },
+          "UserLocaleInfo": {
+              "type": "object",
+              "properties": {
+                  "localeId": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "languageId": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "languageCode": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "fullDateTimeFormat": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "shortDateTimeFormat": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "longDateFormat": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "longTimeFormat": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "shortDateFormat": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "shortTimeFormat": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "amDesignator": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "pmDesignator": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "dayNames": {
+                      "nullable": true
+                  },
+                  "shortDayNames": {
+                      "nullable": true
+                  },
+                  "shortestDayNames": {
+                      "nullable": true
+                  },
+                  "firstDayOfWeek": {
+                      "type": "string",
+                      "nullable": true
+                  },
+                  "monthNames": {
+                      "nullable": true
+                  },
+                  "shortMonthNames": {
+                      "nullable": true
+                  }
+              },
+              "additionalProperties": false
+          },
+          "WindowsParameters": {
+              "type": "object",
+              "allOf": [
+                  {
+                      "$ref": "#/components/schemas/IdentityProviderParameters"
+                  }
+              ],
+              "additionalProperties": false
+          }
+      }
+  },
+  "tags": [
+      {
+          "name": "ApiResources",
+          "description": "API resources represent the services and roles that can be associated with an identity provider or user."
+      },
+      {
+          "name": "Applications",
+          "description": "Applications that are secured by Access Management."
+      },
+      {
+          "name": "AuditLogs",
+          "description": "Audit logs store information about every action taken in Access Management."
+      },
+      {
+          "name": "IdentityProviders",
+          "description": "Identity providers allow you to log in with an account from an external system."
+      },
+      {
+          "name": "ServiceAccounts",
+          "description": "Service accounts are used to run various services and applications."
+      },
+      {
+          "name": "System",
+          "description": "System-level operations that are not directly related to specific entities."
+      },
+      {
+          "name": "Users",
+          "description": "Non-service users within the system."
+      }
+  ]
+}

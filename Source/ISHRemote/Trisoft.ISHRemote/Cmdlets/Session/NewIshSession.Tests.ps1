@@ -614,7 +614,8 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 		It "IshSession.OpenApiISH30Service" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$localIShSession.OpenApiISH30Service | Should -BeNullOrEmpty
+				$json = $localIShSession.OpenApiISH30Service.GetApplicationVersionAsync()
+				$json.Result | Should -Be $ishSession.ServerVersion
 			}
 		}
 		It "IshSession.Annotation25" {

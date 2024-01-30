@@ -33,7 +33,6 @@ using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using System.Threading.Tasks;
 using System.Threading;
-using Trisoft.ISHRemote.OpenApiISH30;
 using System.Security.Claims;
 using System.Text;
 using System.Xml;

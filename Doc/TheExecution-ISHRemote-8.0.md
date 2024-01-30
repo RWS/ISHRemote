@@ -207,13 +207,8 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Authentication over Client Credentials Flow with expired `-ClientId`/`-ClientSecret` combination will . Please recycle expired client/secret on your Access Management User Profile (ISHAM).
 * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, but not mapped in the CMS to a User Profile over `FISHEXTERNALID` will . Please make sure that the client (which you can find on the Access Management User Profile) is added in Organize Space on one CMS User Profile in the comma-seperated External Id field.
 * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, and mapped in the CMS to a User Profile over `FISHEXTERNALID` which is disabled will . Please make sure in Organize Space that the one CMS User Profile holding the client in the External Id field is an enabled profile.
-
-
 * Help
     * $ishSessionA = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"  --> `-PSCredential Admin` only works for `-Protocol WcfSoapWithWsTrust` so it is an outdated sample ... all New-IshSession should be reviewed.
-
-* Known Issues
-    * Refresh Token is not used to refresh the Bearer Token in the background, it is used to refresh when the next cmdlet is triggered before expiration. (already in release notes, can be removed or needs updating)
 
 
 # Next - Should Have Section
