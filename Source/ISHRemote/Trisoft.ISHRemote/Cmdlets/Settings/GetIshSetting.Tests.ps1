@@ -84,7 +84,7 @@ Describe "Get-IshSetting" -Tags "Read" {
 			$ishFields.GetType().Name | Should -BeExactly "Object[]"
 			if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)
             {
-                $ishFields.Length | Should -Be 13
+                $ishFields.Length | Should -Be 12
             }
             else
             {
