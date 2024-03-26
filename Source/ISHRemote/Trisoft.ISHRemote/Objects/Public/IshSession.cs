@@ -24,6 +24,7 @@ using System.Security;
 using Trisoft.ISHRemote.Connection;
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Interfaces;
+using Trisoft.ISHRemote.OpenApiAM10;
 using Trisoft.ISHRemote.OpenApiISH30;
 
 namespace Trisoft.ISHRemote.Objects.Public
@@ -274,7 +275,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _logger.WriteVerbose($"CreateOpenApiWithOpenIdConnectConnection");
             _infoShareOpenApiWithOpenIdConnectConnection = new InfoShareOpenApiWithOpenIdConnectConnection(_logger, _httpClient, _infoShareOpenIdConnectConnectionParameters);
             _logger.WriteDebug("CreateOpenApiWithOpenIdConnectConnection openApi30Service.GetApplicationVersionAsync");
-            _serverVersion = new IshVersion(_infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30ServiceProxy().GetApplicationVersionAsync().GetAwaiter().GetResult());
+            _serverVersion = new IshVersion(_infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30Client().GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -600,12 +601,20 @@ namespace Trisoft.ISHRemote.Objects.Public
         }
 
         #region OpenApi Services
-        public OpenApiISH30Service OpenApiISH30Service
+        public OpenApiISH30Client OpenApiISH30Client
         {
             get
             {
                 VerifyConnectionValidity();
-                return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30ServiceProxy();
+                return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30Client();
+            }
+        }
+        public OpenApiAM10Client OpenApiAM10Client
+        {
+            get
+            {
+                VerifyConnectionValidity();
+                return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiAM10Client();
             }
         }
         #endregion

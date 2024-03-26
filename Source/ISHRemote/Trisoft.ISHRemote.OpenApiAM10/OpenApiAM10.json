@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-      "title": "Access Management API",
+      "title": "Access Management API v1.0.0",
       "description": "Access Management provides implementers with a simplified approach to identity management and gives administrators a central location for ongoing management of access to applications. ",
       "version": "v1"
   },
@@ -17,7 +17,7 @@
                   "ApiResources"
               ],
               "summary": "Gets a list of all API resources in the system.",
-              "operationId": "ApiResources_Get",
+              "operationId": "ApiResourcesGet",
               "responses": {
                   "200": {
                       "description": "Returns a list of API resources.",
@@ -61,7 +61,7 @@
                   "ApiResources"
               ],
               "summary": "Gets the API resource with the given ID.",
-              "operationId": "ApiResources_GetById",
+              "operationId": "ApiResourcesGetById",
               "parameters": [
                   {
                       "name": "id",
@@ -124,7 +124,7 @@
                   "Applications"
               ],
               "summary": "Gets a list of all applications in the system.",
-              "operationId": "Applications_Get",
+              "operationId": "ApplicationsGet",
               "responses": {
                   "200": {
                       "description": "Returns a list of applications.",
@@ -166,7 +166,7 @@
                   "Applications"
               ],
               "summary": "Creates a new application.",
-              "operationId": "Applications_Create",
+              "operationId": "ApplicationsCreate",
               "requestBody": {
                   "description": "The application to create.",
                   "content": {
@@ -232,7 +232,7 @@
                   "Applications"
               ],
               "summary": "Gets the application with the given ID.",
-              "operationId": "Applications_GetById",
+              "operationId": "ApplicationsGetById",
               "parameters": [
                   {
                       "name": "id",
@@ -293,7 +293,7 @@
                   "Applications"
               ],
               "summary": "Updates an existing application.",
-              "operationId": "Applications_Update",
+              "operationId": "ApplicationsUpdate",
               "parameters": [
                   {
                       "name": "id",
@@ -379,7 +379,7 @@
                   "Applications"
               ],
               "summary": "Permanently deletes an existing application.",
-              "operationId": "Applications_Delete",
+              "operationId": "ApplicationsDelete",
               "parameters": [
                   {
                       "name": "id",
@@ -435,7 +435,7 @@
                   "AuditLogs"
               ],
               "summary": "Gets a list of audit log entries matching the given filter.",
-              "operationId": "AuditLogs_GetByFilter",
+              "operationId": "AuditLogsGetByFilter",
               "parameters": [
                   {
                       "name": "UserName",
@@ -601,7 +601,7 @@
                   "AuditLogs"
               ],
               "summary": "Gets the audit log entry with the given ID.",
-              "operationId": "AuditLogs_GetById",
+              "operationId": "AuditLogsGetById",
               "parameters": [
                   {
                       "name": "id",
@@ -704,7 +704,7 @@
                   "IdentityProviders"
               ],
               "summary": "Gets a list of available identity provider types.",
-              "operationId": "IdentityProviders_GetAvailableIdpTypes",
+              "operationId": "IdentityProvidersGetAvailableIdpTypes",
               "responses": {
                   "200": {
                       "description": "Returns the list of available identity provider types.",
@@ -738,7 +738,7 @@
                   "IdentityProviders"
               ],
               "summary": "Gets a list of all identity providers in the system.",
-              "operationId": "IdentityProviders_Get",
+              "operationId": "IdentityProvidersGet",
               "responses": {
                   "200": {
                       "description": "Returns a list of identity providers.",
@@ -780,7 +780,7 @@
                   "IdentityProviders"
               ],
               "summary": "Creates a new identity provider.",
-              "operationId": "IdentityProviders_Create",
+              "operationId": "IdentityProvidersCreate",
               "requestBody": {
                   "description": "The identity provider to create.",
                   "content": {
@@ -846,7 +846,7 @@
                   "IdentityProviders"
               ],
               "summary": "Gets the identity provider with the given ID.",
-              "operationId": "IdentityProviders_GetById",
+              "operationId": "IdentityProvidersGetById",
               "parameters": [
                   {
                       "name": "id",
@@ -907,7 +907,7 @@
                   "IdentityProviders"
               ],
               "summary": "Updates an existing identity provider.",
-              "operationId": "IdentityProviders_Update",
+              "operationId": "IdentityProvidersUpdate",
               "parameters": [
                   {
                       "name": "id",
@@ -993,7 +993,7 @@
                   "IdentityProviders"
               ],
               "summary": "Permanently deletes an existing identity provider.",
-              "operationId": "IdentityProviders_Delete",
+              "operationId": "IdentityProvidersDelete",
               "parameters": [
                   {
                       "name": "id",
@@ -1050,7 +1050,7 @@
               ],
               "summary": "Gets the icon for a given identity provider.",
               "description": "If no icon has been specified for the identity provider, a default icon is returned.",
-              "operationId": "IdentityProviders_GetIcon",
+              "operationId": "IdentityProvidersGetIcon",
               "parameters": [
                   {
                       "name": "name",
@@ -1081,7 +1081,7 @@
                   "IdentityProviders"
               ],
               "summary": "Gets a list of all login possibilities currently available.",
-              "operationId": "IdentityProviders_GetLoginOptions",
+              "operationId": "IdentityProvidersGetLoginOptions",
               "responses": {
                   "200": {
                       "description": "Returns the list of login options.",
@@ -1125,7 +1125,7 @@
                   "IdentityProviders"
               ],
               "summary": "Gets a list of parameters specific to a given type of identity provider.",
-              "operationId": "IdentityProviders_GetParametersForIdentityProviderType",
+              "operationId": "IdentityProvidersGetParametersForIdentityProviderType",
               "parameters": [
                   {
                       "name": "providerType",
@@ -1187,7 +1187,7 @@
                   "ServiceAccounts"
               ],
               "summary": "Gets a list of all service accounts in the system.",
-              "operationId": "ServiceAccounts_Get",
+              "operationId": "ServiceAccountsGet",
               "responses": {
                   "200": {
                       "description": "Returns a list of service accounts.",
@@ -1229,7 +1229,7 @@
                   "ServiceAccounts"
               ],
               "summary": "Creates a new service account.",
-              "operationId": "ServiceAccounts_Create",
+              "operationId": "ServiceAccountsCreate",
               "requestBody": {
                   "description": "The data of the service account to create.",
                   "content": {
@@ -1295,7 +1295,7 @@
                   "ServiceAccounts"
               ],
               "summary": "Gets the service account with the given ID.",
-              "operationId": "ServiceAccounts_GetById",
+              "operationId": "ServiceAccountsGetById",
               "parameters": [
                   {
                       "name": "id",
@@ -1356,7 +1356,7 @@
                   "ServiceAccounts"
               ],
               "summary": "Updates an existing service account.",
-              "operationId": "ServiceAccounts_Update",
+              "operationId": "ServiceAccountsUpdate",
               "parameters": [
                   {
                       "name": "id",
@@ -1442,7 +1442,7 @@
                   "ServiceAccounts"
               ],
               "summary": "Permanently deletes an existing service account.",
-              "operationId": "ServiceAccounts_Delete",
+              "operationId": "ServiceAccountsDelete",
               "parameters": [
                   {
                       "name": "id",
@@ -1498,7 +1498,7 @@
                   "ServiceAccounts"
               ],
               "summary": "Generates a new client secret that can be used to log in as a given service account.",
-              "operationId": "ServiceAccounts_GenerateClientSecret",
+              "operationId": "ServiceAccountsGenerateClientSecret",
               "parameters": [
                   {
                       "name": "serviceAccountId",
@@ -1561,7 +1561,7 @@
                   "ServiceAccounts"
               ],
               "summary": "Updates an existing client secret.",
-              "operationId": "ServiceAccounts_UpdateClientSecret",
+              "operationId": "ServiceAccountsUpdateClientSecret",
               "parameters": [
                   {
                       "name": "serviceAccountId",
@@ -1657,7 +1657,7 @@
                   "ServiceAccounts"
               ],
               "summary": "Permanently deletes an existing client secret from a service account.",
-              "operationId": "ServiceAccounts_DeleteClientSecret",
+              "operationId": "ServiceAccountsDeleteClientSecret",
               "parameters": [
                   {
                       "name": "serviceAccountId",
@@ -1723,7 +1723,7 @@
                   "System"
               ],
               "summary": "Gets the login status of the current user.",
-              "operationId": "System_GetLoginStatus",
+              "operationId": "SystemGetLoginStatus",
               "responses": {
                   "200": {
                       "description": "Returns either None, LoggedIn, or Anonymous (if there are no IDPs yet or the configuration forces an anonymous state).",
@@ -1774,7 +1774,7 @@
                   "System"
               ],
               "summary": "Gets information about the current user.",
-              "operationId": "System_GetUserInfo",
+              "operationId": "SystemGetUserInfo",
               "responses": {
                   "200": {
                       "description": "Returns information about the current user.",
@@ -1825,7 +1825,7 @@
                   "System"
               ],
               "summary": "Gets a list of all supported languages and a list of all supported regions.",
-              "operationId": "System_GetSupportedCultures",
+              "operationId": "SystemGetSupportedCultures",
               "responses": {
                   "200": {
                       "description": "Returns an object with a list of all supported languages and a separate list of supported regions.",
@@ -1876,7 +1876,7 @@
                   "Users"
               ],
               "summary": "Gets a list of all users in the system.",
-              "operationId": "Users_Get",
+              "operationId": "UsersGet",
               "responses": {
                   "200": {
                       "description": "Returns a list of users.",
@@ -1920,7 +1920,7 @@
                   "Users"
               ],
               "summary": "Gets the user with the given ID.",
-              "operationId": "Users_GetById",
+              "operationId": "UsersGetById",
               "parameters": [
                   {
                       "name": "id",
@@ -1981,7 +1981,7 @@
                   "Users"
               ],
               "summary": "Updates an existing user.",
-              "operationId": "Users_Update",
+              "operationId": "UsersUpdate",
               "parameters": [
                   {
                       "name": "id",
@@ -2068,7 +2068,7 @@
               ],
               "summary": "Permanently deletes an existing user.",
               "description": "Note that deleted users will automatically be recreated if they log into Access Management afterwards.\r\nTo completely remove users, first remove them from the external identity provider.",
-              "operationId": "Users_Delete",
+              "operationId": "UsersDelete",
               "parameters": [
                   {
                       "name": "id",
@@ -2124,7 +2124,7 @@
                   "Users"
               ],
               "summary": "Deactivates a user, so they can no longer log in.",
-              "operationId": "Users_DeactivateUser",
+              "operationId": "UsersDeactivateUser",
               "parameters": [
                   {
                       "name": "id",
@@ -2170,7 +2170,7 @@
                   "Users"
               ],
               "summary": "Re-activates a deactivated user so they can log in again.",
-              "operationId": "Users_ActivateUser",
+              "operationId": "UsersActivateUser",
               "parameters": [
                   {
                       "name": "id",
@@ -2216,7 +2216,7 @@
                   "Users"
               ],
               "summary": "Generates a new client secret that can be used to log in as a given user.\r\n(Client secrets for users are deprecated. Please use service accounts instead.)",
-              "operationId": "Users_GenerateClientSecret",
+              "operationId": "UsersGenerateClientSecret",
               "parameters": [
                   {
                       "name": "userId",
@@ -2280,7 +2280,7 @@
                   "Users"
               ],
               "summary": "Updates an existing client secret.\r\n(Client secrets for users are deprecated. Please use service accounts instead.)",
-              "operationId": "Users_UpdateClientSecret",
+              "operationId": "UsersUpdateClientSecret",
               "parameters": [
                   {
                       "name": "userId",
@@ -2377,7 +2377,7 @@
                   "Users"
               ],
               "summary": "Permanently deletes an existing client secret from a user.\r\n(Client secrets for users are deprecated. Please use service accounts instead.)",
-              "operationId": "Users_DeleteClientSecret",
+              "operationId": "UsersDeleteClientSecret",
               "parameters": [
                   {
                       "name": "userId",

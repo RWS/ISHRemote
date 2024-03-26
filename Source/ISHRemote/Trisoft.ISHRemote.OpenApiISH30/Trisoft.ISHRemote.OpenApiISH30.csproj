@@ -12,17 +12,19 @@
     <OpenApiReference Include="OpenApiISH30.json">
       <CodeGenerator>NSwagCSharp</CodeGenerator>
       <Namespace>Trisoft.ISHRemote.OpenApiISH30</Namespace>
-      <ClassName>OpenApiISH30{controller}Service</ClassName>
+      <ClassName>OpenApiISH30{controller}Client</ClassName>
+      <Options>/ExceptionClass:OpenApiISH30{controller}Exception /OperationGenerationMode:SingleClientFromOperationId /GenerateClientClasses:true /UseBaseUrl:true /GenerateBaseUrlProperty:true /UseHttpClientCreationMethod:true</Options>
+      <!-- Options sourced from https://stevetalkscode.co.uk/openapireference-commands -->
     </OpenApiReference>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.10">
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.20.0">
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="14.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

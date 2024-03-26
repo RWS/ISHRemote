@@ -25,10 +25,10 @@
     <PackageVersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</PackageVersionPrefix>
     <PackageVersionSuffix>$(VersionMajor).$(VersionMinor).$(VersionPatch)</PackageVersionSuffix>
 
-    <Authors>RWS Group for and on behalf of its affiliates and subsidiaries</Authors>
-    <Owners>RWS Group for and on behalf of its affiliates and subsidiaries</Owners>
-    <CompanyName>RWS Group for and on behalf of its affiliates and subsidiaries</CompanyName>
-    <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) All Rights Reserved by the RWS Group for and on behalf of its affiliates and subsidiaries.</Copyright>
+    <Authors>RWS Holdings plc including its subsidiaries and affiliated companies</Authors>
+    <Owners>RWS Holdings plc including its subsidiaries and affiliated companies</Owners>
+    <CompanyName>RWS Holdings plc including its subsidiaries and affiliated companies</CompanyName>
+    <Copyright>Copyright (c) $([System.DateTime]::Now.ToString('yyyy')) RWS Holdings plc including its subsidiaries and affiliated companies. All rights reserved.</Copyright>
   </PropertyGroup>
 
   <!-- PowerShell Module properties -->
@@ -44,7 +44,7 @@
     <ModuleName>$(ProductName)</ModuleName>
     <ModuleTitle>Tridion Docs Content Manager $(ProductName)</ModuleTitle>
     <ModuleDescription>Business automation module on top of Tridion Docs Content Manager (Knowledge Center Content Manager, LiveContent Architect, Trisoft InfoShare)</ModuleDescription>
-    <ModuleCompany>RWS Group for and on behalf of its affiliates and subsidiaries</ModuleCompany>
+    <ModuleCompany>RWS Holdings plc including its subsidiaries and affiliated companies</ModuleCompany>
     <ModuleProduct>Tridion Docs Content Manager $(ProductName)</ModuleProduct>
     <ModuleGuid>0314ffdb-6083-4c4d-aa01-8bfaac51a7e4</ModuleGuid>
     <MinPowerShellVersion>5.1</MinPowerShellVersion>
