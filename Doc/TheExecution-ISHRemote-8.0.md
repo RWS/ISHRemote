@@ -202,6 +202,7 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * * Authentication over either Client Credentials or System Browser was succesful but the Bearer Token expired, the Refresh . Please create a `New-IShSession`. ... Every cmdlet will re-authenticate.
 
 # Expedite ISHRemote v8 - Must Have Section
+* Again NET48 versus NET6.0 assembly reference issues, this time `System.ComponentModel.Annotations` at runtime in NET48 calling AM10 get users... considering making these assist library multi-target to tune the dependencies instead of standard2.0 ... but csproj `ProjectReference` within a solution cannot handle multi-target... so consider local nuget build, see https://weblog.west-wind.com/posts/2022/Sep/11/Referencing-a-Local-Private-NuGet-Package-in-your-Solution
 * Validate unhappy paths by manual and automated testing.
 * Authentication over Client Credentials Flow with non-existing `-ClientId` will . Please make sure you activate a client/secret on your Access Management User Profile (ISHAM).
 * Authentication over Client Credentials Flow with expired `-ClientId`/`-ClientSecret` combination will . Please recycle expired client/secret on your Access Management User Profile (ISHAM).

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net48;net6.0</TargetFrameworks>
@@ -41,9 +41,18 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.csproj" />
-    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.csproj" />
+  <!--
+  As Build SDK ProjectReference is not aware of picking the right TargetFrameworks in the linked projects.
+  Decided to attempt project duplication, to in turn allow each Trisoft.ISHRemote.OpenApi*.csproj to point
+  to assembly versions that work for PowerShell.exe 5.1 and pwsh 7.4+
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET48.csproj" />
+    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET48.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET60.csproj" />
+    <ProjectReference Include="..\Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET60.csproj" />
   </ItemGroup>
     
   <ItemGroup>

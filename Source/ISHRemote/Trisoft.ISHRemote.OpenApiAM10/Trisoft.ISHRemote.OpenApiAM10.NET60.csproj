@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="OpenApiAM10.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <OpenApiReference Include="OpenApiAM10.json">
+      <CodeGenerator>NSwagCSharp</CodeGenerator>
+      <Namespace>Trisoft.ISHRemote.OpenApiAM10</Namespace>
+      <ClassName>OpenApiAM10{controller}Client</ClassName>
+      <Options>/ExceptionClass:OpenApiAM10{controller}Exception /OperationGenerationMode:SingleClientFromOperationId /GenerateClientClasses:true /UseBaseUrl:true /GenerateBaseUrlProperty:true /UseHttpClientCreationMethod:true</Options>
+      <!-- Options sourced from https://stevetalkscode.co.uk/openapireference-commands -->
+    </OpenApiReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="14.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>

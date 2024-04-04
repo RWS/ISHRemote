@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65,6 +65,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// * System.Text.Json requested 5.0.0.0 but we now return 5.0.0.2
         /// * IdentityModel.OidcClient requested but we now return
         /// * Microsoft.Bcl.AsyncInterfaces requested 5.0.0.0 but we now return 6.0.0.0
+        /// * System.ComponentModel.Annotations requested 4.2.0.0 but we now return 5.0.0.0
         /// </summary>
         internal static void Redirect()
         {
@@ -89,6 +90,10 @@ namespace Trisoft.ISHRemote.HelperClasses
                 string filePathMBclAsyncInterfaces = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Microsoft.Bcl.AsyncInterfaces.dll");
                 var assemblyMBclAsyncInterfaces = Assembly.LoadFrom(filePathMBclAsyncInterfaces);
                 _forcedLoadedAssemblies.GetOrAdd("Microsoft.Bcl.AsyncInterfaces", assemblyMBclAsyncInterfaces);
+
+                string filePathSCMAnnotations = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.ComponentModel.Annotations.dll");
+                var assemblySCMAnnotations = Assembly.LoadFrom(filePathSCMAnnotations);
+                _forcedLoadedAssemblies.GetOrAdd("System.ComponentModel.Annotations", assemblySCMAnnotations);
 
                 _isAppDomainAssemblyResolveHelperRegistered = true;
             }

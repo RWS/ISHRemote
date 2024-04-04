@@ -1,19 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="OpenApiAM10.json" />
+    <None Remove="OpenApiISH30.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="OpenApiAM10.json">
+    <OpenApiReference Include="OpenApiISH30.json">
       <CodeGenerator>NSwagCSharp</CodeGenerator>
-      <Namespace>Trisoft.ISHRemote.OpenApiAM10</Namespace>
-      <ClassName>OpenApiAM10{controller}Client</ClassName>
-      <Options>/ExceptionClass:OpenApiAM10{controller}Exception /OperationGenerationMode:SingleClientFromOperationId /GenerateClientClasses:true /UseBaseUrl:true /GenerateBaseUrlProperty:true /UseHttpClientCreationMethod:true</Options>
+      <Namespace>Trisoft.ISHRemote.OpenApiISH30</Namespace>
+      <ClassName>OpenApiISH30{controller}Client</ClassName>
+      <Options>/ExceptionClass:OpenApiISH30{controller}Exception /OperationGenerationMode:SingleClientFromOperationId /GenerateClientClasses:true /UseBaseUrl:true /GenerateBaseUrlProperty:true /UseHttpClientCreationMethod:true</Options>
       <!-- Options sourced from https://stevetalkscode.co.uk/openapireference-commands -->
     </OpenApiReference>
   </ItemGroup>

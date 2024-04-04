@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-      "title": "Access Management API v1.0.0",
+      "title": "Access Management API v1.0.0 (20240404)",
       "description": "Access Management provides implementers with a simplified approach to identity management and gives administrators a central location for ongoing management of access to applications. ",
       "version": "v1"
   },
