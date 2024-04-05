@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,6 +50,7 @@ namespace Trisoft.ISHRemote.HelperClasses
     /// * System.Text.Json requested 5.0.0.0 but we now return 5.0.0.2
     /// * IdentityModel.OidcClient requested but we now return
     /// * Microsoft.Bcl.AsyncInterfaces requested 5.0.0.0 but we now return 6.0.0.0
+    /// * System.ComponentModel.Annotations requested 4.2.0.0 but we now return 4.2.1.0 (for NET48/OpenApi clients)
     /// </summary>
     /// <remarks>Focus was to getting this working on NETFramework, more implementation is required to align with
     /// proposed solution of https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/
@@ -107,6 +108,10 @@ namespace Trisoft.ISHRemote.HelperClasses
             filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Memory.dll");
             assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("System.Memory", assembly);
+
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.ComponentModel.Annotations.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("System.ComponentModel.Annotations", assembly);
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
 

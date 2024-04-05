@@ -538,9 +538,14 @@ Describe "New-IshSession" -Tags "Read" {
 		BeforeAll {
 			$localIShSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		}
-		It "IshSession.OpenApiISH30Service" {
+		It "IshSession.OpenApiISH30Client" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				 $localIShSession.OpenApiISH30Service | Should -BeNullOrEmpty
+				 $localIShSession.OpenApiISH30Client | Should -BeNullOrEmpty
+			}
+		}
+		It "IshSession.OpenApiAM10Client" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				 $localIShSession.OpenApiAM10Client | Should -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Annotation25" {
@@ -612,10 +617,16 @@ Describe "New-IshSession" -Tags "Read" {
 				$localIShSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
 		}
-		It "IshSession.OpenApiISH30Service" {
+		It "IshSession.OpenApiISH30Client" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$json = $localIShSession.OpenApiISH30Service.GetApplicationVersionAsync()
+				$json = $localIShSession.OpenApiISH30Client.GetApplicationVersionAsync()
 				$json.Result | Should -Be $ishSession.ServerVersion
+			}
+		}
+		It "IshSession.OpenApiAM10Client" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				 $json = $localIShSession.OpenApiAM10Client.IdentityProvidersGetAsync()
+				 $json.Result.Count -ge 1 | Should -Be $true
 			}
 		}
 		It "IshSession.Annotation25" {
@@ -721,10 +732,16 @@ Describe "New-IshSession" -Tags "Read" {
 				$localIShSession = New-IshSession -Protocol OpenApiWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
 		}
-		It "IshSession.OpenApiISH30Service" {
+		It "IshSession.OpenApiISH30Client" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$json = $localIShSession.OpenApiISH30Service.GetApplicationVersionAsync()
+				$json = $localIShSession.OpenApiISH30Client.GetApplicationVersionAsync()
 				$json.Result | Should -Be $ishSession.ServerVersion
+			}
+		}
+		It "IshSession.OpenApiAM10Client" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+				 $json = $localIShSession.OpenApiAM10Client.IdentityProvidersGetAsync()
+				 $json.Result.Count -ge 1 | Should -Be $true
 			}
 		}
 		It "IshSession.Annotation25" {
