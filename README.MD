@@ -34,7 +34,7 @@ Have a look at the [Automating tasks in Tridion Docs using PowerShell](https://y
 
 # Install & Update
 
-Below the shorthand, more details are on [Installation-ISHRemote-8.0.md](./Doc/Installation-ISHRemote-8.0.md). This link will guide you on package managers like `PowerShellGet` and newer `PSResourceGet`; cmdlets to install, update and uninstall.
+Below the TLDR; more details are on [Installation-ISHRemote-8.0.md](./Doc/Installation-ISHRemote-8.0.md). This link will guide you on package managers like `PowerShellGet` and newer `PSResourceGet`; cmdlets to install, update and uninstall.
 
 ## Install on PowerShell 7.4+ (CoreCLR) powered by .NET 8.0+
 
@@ -62,6 +62,7 @@ Any feedback is welcome. Please log a GitHub issue, make sure you submit your ve
 # Known Issues & FAQ
 
 ## Execution Known Issues
+* If you get `You cannot call a method on a null-valued expression.` or `The HTTP status code of the response was not expected (401).`, probably while using `$ishSession.OpenApiISH30Client` it means your token expired and requires a refresh.
 * If you get `New-IshSession : Reference to undeclared entity 'raquo'. Line 98, position 121.`, most likely you specified an unexisting "Web Services API" url. Make sure your url ends with an ending slash `/`.
 * If a test fails with `The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.`,
   it probably means you didn't provide enough (mandatory) parameters to the WCF/SVC code so passing null parameters. Typically an `-IshPassword` is missing or using an existing username.
@@ -105,7 +106,7 @@ In `ISHRemote.PesterSetup.Debug.ps1` override the global variables used for test
 ## Release Build and Publish To PowerShell Gallery
 
 Rought steps to release...
-1. Use Visual Studio to build a `Debug` build. Run an `Invoke-Pester` (minimally v5.3.0) on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
+1. Use Visual Studio to build a `Debug` build. Run an `Invoke-Pester` (minimally Pester v5.3.0) on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
 1. Use Visual Studio to build a `Release` build. Change `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\ISHRemote.PesterSetup.ps1` to forcefully load `\bin\release\` (instead of `\bin\debug\`). Run an `Invoke-Pester` on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
 1. The folder content of `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Release\` will be published
     1. Check all files, especially `Scripts` that you have all files.
@@ -116,6 +117,17 @@ Rought steps to release...
     1. Edit and release the notes on https://github.com/sdl/ISHRemote/releases/
     1. Start new release notes, under a new version number like `v0.14-beta`
 1. Close version milestone on https://github.com/sdl/ISHRemote/milestone/
+
+## Building Libraries in Visual Studio
+
+Since #180 where the `Trisoft.ISHRemote.csproj` multi-target/conditional ProjectReference was introduced, you might get a lot of Build errors looking like `error CS0234: The type or namespace name 'Reflection' does not exist in the namespace 'System' (are you missing an assembly reference?) [D:\a\ISHRemote\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET60.csproj]` or `error CS0518: Predefined type 'System.String' is not defined or imported`. The simple answer is build again, it will eventually restore all project dependencies.
+In [continuous-integration.yml](/.github/workflows/continuous-integration.yml) this issue was solved by explicit restores for the multi-target/conditional ProjectReferences.
+
+    dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET48.csproj
+    dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET60.csproj
+    dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET48.csproj
+    dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET60.csproj
+    dotnet restore Source/ISHRemote/ISHRemote.sln
 
 ## Debugging PowerShell in Visual Studio
 

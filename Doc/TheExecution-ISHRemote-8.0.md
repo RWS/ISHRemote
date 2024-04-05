@@ -2,14 +2,10 @@
 
 This page will try to track work in progress. And because I work on it in free time, it will help trace how I got where I am in the first place plus what is next. Inspired by [ThePlan-ISHRemote-7.0.md](./ThePlan-ISHRemote-7.0.md) and [TheExecution-ISHRemote-7.0.md](./TheExecution-ISHRemote-7.0.md).
 
-Remember
-* https://mecdev12qa01.global.sdl.corp/ISHWSSQL2017/Api/api-docs/index.html requires pre-authentication
-* https://mecdev12qa01.global.sdl.corp/ISHCSSQL2017/OrganizeSpace/OApi/api-docs/index.html forces authentication
-
 
 
 # On Tridion Docs 14SP4/14.0.4 and earlier
-`New-IShSession` offered 3 parameter groups on Tridion Docs 14SP4/14.0.4 and earlier depending on the WS-Federation/WS-Trust configuration. That configuration is decided by `\InfoShareWS\connectionconfiguration.xml` for ISHRemote and repurposed from the Client Tools.
+`New-IShSession` offered 3 parameter groups on Tridion Docs 14SP4/14.0.4 and earlier depending on the WS-Federation/WS-Trust configuration. That configuration is decided by `/InfoShareWS/connectionconfiguration.xml` for ISHRemote and repurposed from the Client Tools.
 * ActiveDirectory, so only `-WsBaseUrl`, where an empty/non-provided `-IShUserName` indicated fall back to `NetworkCredentials` which is also known as Windows Authentication.
 * PSCredential, so `-WsBaseUrl` and `-PSCredential`, where PowerShell will prompt for a username/password combination.
 * UserNamePassword, so `-WsBaseUrl`, `-IShUserName` and `-IShPassword`. The classic authentication on Tridion Docs User Profiles.
@@ -44,9 +40,7 @@ Used on protocols `WcfSoapWithWsTrust` only for `UserNameMixed` variation; while
 
 
 
-
 # Protocol and Parameter Group Scenarios
-
 On Tridion Docs 14SPx/14.0.x and earlier, it is always `WcfSoapWithWsTrust`. Full functionality on PowerShell 5.1 regarding `WindowsMixed` and `UserNameMixed` while PowerShell 7.2+ is limited to authentication over `UserNameMixed` provided by `ISHSTS`-only. 
 Starting from Tridion Docs 15/15.0.0 most customers will use `WcfSoapWithOpenIdConnect`. Legacy variation `WcfSoapWithWsTrust` can still be selected as well. Experimenting on Tridion Docs 15/15.0.0 is possible for cmdlets having a side-by-side implementation when using `Protocol` `OpenApiWithOpenIdConnect`; when the OpenAPI implementation is not there, a fall back to `WcfSoapWithOpenIdConnect` will happen.
 
@@ -93,17 +87,16 @@ ISHRemote as an interactive user where you can actively provide credentials. Eve
 
 
 
-
 # Problem: ISHRemote to combine ISHWS and ISHAM Data Sources
 
 
-## Add public proxy OpenApiAM20Service next to OpenApiISH30Service
-The `IshSession` object will need a public `OpenApiISH30Service` served by NSwag generated `Trisoft.ISHRemote.OpenApi.OpenApiISH30Service`. This proxy, just like pre-authenticated WCF SOAP WS-Trust proxies `DocumentObj25`, will be used by cmdlets but can be used to open functionality that is not supported by the cmdlets yet.
+## Add public proxy OpenApiAM20Client next to OpenApiISH30Client
+The `IshSession` object will need a public `OpenApiISH30Client` served by NSwag generated `Trisoft.ISHRemote.OpenApi.OpenApiISH30Client`. This proxy, just like pre-authenticated WCF SOAP WS-Trust proxies `DocumentObj25`, will be used by cmdlets but can be used to open functionality that is not supported by the cmdlets yet.
 
-Imagine `IshSession` object offering a public `OpenApiAM20Service` served by NSwag generated `Trisoft.ISHRemote.OpenApi.OpenApiAM20Service`. This pre-authenticated proxy can open functionality that is not supported by cmdlets yet. Pre-authenticated as Tridion Docs User Profiles holding the **Administrator** User Role are administrator on Access Management (ISHAM) anyway.
+Imagine `IshSession` object offering a public `OpenApiAM20Client` served by NSwag generated `Trisoft.ISHRemote.OpenApi.OpenApiAM20Client`. This pre-authenticated proxy can open functionality that is not supported by cmdlets yet. Pre-authenticated as Tridion Docs User Profiles holding the **Administrator** User Role are administrator on Access Management (ISHAM) anyway.
 
 
-## IDEA: Add cmdlet Sync-IShUser
+## IDEA: Add cmdlet Sync-IShUser [BACKLOG]
 By supporting `-WhatIf` one could see which changes will be applied either way, still returning objects that would get changed. By parameters similar to `Compare-IshTypeFieldDefinition` you could do left-hand vs right-hand side validation.
 
 ### User Profiles update from Tridion Docs to Access Management
@@ -133,27 +126,31 @@ Typical cmdlet behavior - `Sync-IShUser -IShUser <selection> -ToAccessManagement
 Theoretical option, no user scenario yet. Perhaps there is Access Management Service user that - over *ClientID* does not have a match with a Tridion Docs User Profile - usage would result in a missing profile match error anyway.
 
 
-## IDEA: Add IShSession Smart mode parameter to aggregate data sources
+## IDEA: Add IShSession Smart mode parameter to aggregate data sources [BACKLOG]
 Would a **smart** mode on the session make sense? So imagine `Find-IShUser` or `Get-IShUser`...
 * Currently IShUser objects holds ISHWS information. So **LastLogin** is only filled in when the `PASSWORD` on this Tridion Docs User Profile was used, more and more scenarios over Access Management (ISHAM) will leave it empty.
 * Returning any ClientId and Secret (first characters) could help analysis.
 
 
-## IDEA: Add Access Management cmdlets 
+## IDEA: Add Access Management cmdlets [BACKLOG]
 Either some basic cmdlets in **ISHRemote** that return an object model that can be used as input for other cmdlets. So `Get-AMUser` returns Access Management `AMUser`s, where the `ClientId` field could be used to `Find-IshUser`. And `Set-AMUser` accepting `IShUser` where the `FISHEXTERNALID` could be used to update Access Management user profiles.
 
 Add (nested binary module) AMRemote that could offer cmdlets like
 * `New-AMSession`, similar to `New-IShSession`, that returns an `AMSession` object with OpenApi proxy.
 * `Get-AMUser`, `Set-AMUser` and `Remove-AMUser`. It would be nice if ISHRemote and AMRemote would understand each others object model. That is why just adding some cmdlets in ISHRemote is so much easier than a clean AMRemote PowerShell automation library.
 
+
+
 # Compatiblity
 ISHRemote compatibility is on its Cmdlets and parameters groups wherever possible across ISHRemote major and minor versions. On the inside refactoring is required to introduce Wcf Soap with OpenIdConnect authentication or later even OpenApi with OpenIdConnect authentication. So in practice people that link to the ISHRemote assembly in their program code will find feature parity but might not find code compatibility.
 Refer to __ConnectionClassDiagram restructering but also example code. Explain the relations among these files, so WcfSoapBearerToken as workaround mentioned by Duende, delivering reused WcfSoap proxies that are compatible (which is cool!)
 
+
+
 # Done
 * Merging in #115 branch that was AsmxSoapWithAuthenticationContext plus OpenApiWithOpenIdConnect efforts
 * Update spec.json
-* Rename protocol and ishSession.OpenApi30Service -> ishSession.OpenApiISH30Service so ishSession.OpenApiAM20Service
+* Rename protocol and ishSession.OpenApi30Client -> ishSession.OpenApiISH30Client so ishSession.OpenApiAM20Client
 * Parameter group `New-IShSession` ActiveDirectory/Interactive does not have `-Timeout` parameter.
 * Cmdlets `New-IshSession` and `Test-IshSession` received parameter `-Protocol`, `-ClientId` and `-ClientSecret` so when protocol is set to `OpenApiWithOpenIdConnect` it is the preferred route, fall back to `WcfSoapWithWsTrust` when OpenApi calls are unavailable. 
 * Case Files
@@ -199,34 +196,35 @@ For whoever stumbles on this transitive package dependency of `System.Runtime.Co
 * Rolled back from Task.Run contruction to simply GetAwaiter().GetResult() as the latter allows logging to happen!
 * Using `New-IshSession` parameter `-PSCredential` on 14SP4/14.0.4 or earlier works like before, as it means username/password authentication over protocol `WcfSoapWithWsTrust`.  However, using `-PSCredential` on 15/15.0.0 means that you are using protocol `WcfSoapOverOpenIdConnect`, so expecting a client/secret. If you then provide username/password, you will get error `GetTokensOverClientCredentialsAsync Access Error[invalid_client]`. Note that you can force by adding `-Protocol WcfSoapWithWsTrust` to the `New-IshSession` cmdlet.
 * Authentication over System Browser, so Authorization Code Flow with Proof Key for Code Exchange (PKCE), will give you 60 seconds. Any slower and you will see the `New-IShSession`/`Test-IShSession` cmdlets respond with `TaskCanceledException` exception stating `Browser login canceled after 60 seconds.`
-* * Authentication over either Client Credentials or System Browser was succesful but the Bearer Token expired, the Refresh . Please create a `New-IShSession`. ... Every cmdlet will re-authenticate.
+* Authentication over either Client Credentials or System Browser was succesful but the Bearer Token expired, the Refresh . Please create a `New-IShSession`. ... Every cmdlet will re-authenticate.
+* Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainModuleAssemblyInitializer.cs` [POSTPONED]
+    > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `AppDomainModuleAssemblyInitializer.cs` on https://github.com/RWS/ISHRemote/
+    > Another hint is adding `LogSerializer.Enabled = false;` because if you do not attach logging to OidcClient, there seemingly is a bug that still does logging although not configured. see https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
+* Again NET48 versus NET6.0 assembly reference issues, this time `System.ComponentModel.Annotations` at runtime in NET48 calling AM10 get users... considering making these assist library multi-target to tune the dependencies instead of standard2.0 failed ... but csproj `ProjectReference` within a solution cannot handle multi-target... so split each OpenApi generated assembly in a `NET48` and `NET60` variant so it allows `ISHRemote.csproj` conditional `ProjectReference` and allows to tune the NuGet library versions per platform.
+* Validate unhappy paths by manual and automated testing.
+    * Authentication over Client Credentials Flow with non-existing `-ClientId` will . Please make sure you activate a client/secret on your Access Management User Profile (ISHAM).
+    * Authentication over Client Credentials Flow with expired `-ClientId`/`-ClientSecret` combination will . Please recycle expired client/secret on your Access Management User Profile (ISHAM).
+    * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, but not mapped in the CMS to a User Profile over `FISHEXTERNALID` will . Please make sure that the client (which you can find on the Access Management User Profile) is added in Organize Space on one CMS User Profile in the comma-seperated External Id field.
+    * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, and mapped in the CMS to a User Profile over `FISHEXTERNALID` which is disabled will . Please make sure in Organize Space that the one CMS User Profile holding the client in the External Id field is an enabled profile.
+
+
 
 # Expedite ISHRemote v8 - Must Have Section
-* Again NET48 versus NET6.0 assembly reference issues, this time `System.ComponentModel.Annotations` at runtime in NET48 calling AM10 get users... considering making these assist library multi-target to tune the dependencies instead of standard2.0 ... but csproj `ProjectReference` within a solution cannot handle multi-target... so consider local nuget build, see https://weblog.west-wind.com/posts/2022/Sep/11/Referencing-a-Local-Private-NuGet-Package-in-your-Solution
-* Validate unhappy paths by manual and automated testing.
-* Authentication over Client Credentials Flow with non-existing `-ClientId` will . Please make sure you activate a client/secret on your Access Management User Profile (ISHAM).
-* Authentication over Client Credentials Flow with expired `-ClientId`/`-ClientSecret` combination will . Please recycle expired client/secret on your Access Management User Profile (ISHAM).
-* Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, but not mapped in the CMS to a User Profile over `FISHEXTERNALID` will . Please make sure that the client (which you can find on the Access Management User Profile) is added in Organize Space on one CMS User Profile in the comma-seperated External Id field.
-* Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, and mapped in the CMS to a User Profile over `FISHEXTERNALID` which is disabled will . Please make sure in Organize Space that the one CMS User Profile holding the client in the External Id field is an enabled profile.
 * Help
     * $ishSessionA = New-IshSession -WsBaseUrl "https://example.com/ISHWSPROD/" -PSCredential "Admin"  --> `-PSCredential Admin` only works for `-Protocol WcfSoapWithWsTrust` so it is an outdated sample ... all New-IshSession should be reviewed.
 
 
 # Next - Should Have Section
+* Submit above [BACKLOG] entries as Github issues
 * Test refresh with short expiration 
-    * $ishSession.OpenApiISH30Service.GetApplicationVersionAsync() results in `You cannot call a method on a null-valued expression.`
+    * $ishSession.OpenApiISH30Client.GetApplicationVersionAsync() results in `You cannot call a method on a null-valued expression.`
     * Get-IshVersion (over WcfSoapWithOpenIdConnect) results in `The HTTP status code of the response was not expected (401).`
-    
-    
-* Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy
+* Extend perequisites test regarding client I'd and secret, an expired and valid set... Perhaps over isham20proxy. Since 15.1 the ClientSecret expiration can be more than one year which in practice makes this test less important.
     * User provisioning, see [SRQ-23306] Last login date in user overview is not updated when authentication was done through an external identity provider - RWS Jira https://jira.sdl.com/browse/SRQ-23306
     *  ClientCredential Testing only `IShSession.RefreshTokenSkewTime`, requires `IShSession.AccessTokenExpirationDateTime` 60 min .... skew=5m .... 55m--> refresh ... Test... IShSession.SkewTime=59:50 (defaults to 5min)
 * Automated Test ps5.1 with wstrust, ps7 with both openidconnect
 * Test all protocol types on all platforms via newishsession (and one other smoke test) by calling it 6 times (2 ps times 3 protocols) which colors right after prerequisites
-* Once branch #152 is merged, update ticket https://github.com/IdentityModel/Documentation/issues/13 with a hint to `AppDomainModuleAssemblyInitializer.cs`
-    > Took me a while to find this nugget to resolve my problem. It is unfortunate that `OidcClient` doesn't work without these assemblyBinding redirects. For people who have this issue but do not have access to a `.config` file like I had with `powershell.exe.config` (v5.1 on .NET 4.8) - have a look at `AppDomainModuleAssemblyInitializer.cs` on https://github.com/RWS/ISHRemote/
-    > Another hint is adding `LogSerializer.Enabled = false;` because if you do not attach logging to OidcClient, there seemingly is a bug that still does logging although not configured. see https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
-* OpenAPI, add wires for streamed downloading of Get-IshPublicationOutputData (15.0.0 only, measure performance difference)
+* OpenAPI, add wires for streamed downloading of Get-IshPublicationOutputData (15.0.0 only, measure performance difference) [BACKLOG]
 * OpenAPI, add wires for Folder cmdlets
 
  

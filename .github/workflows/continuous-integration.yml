@@ -48,8 +48,13 @@ jobs:
       with:
         dotnet-version: 6.0.x
     
-    - name: Restore project and dependencies
-      run: dotnet restore Source/ISHRemote/ISHRemote.sln
+    - name: Explicit restore of multi-target/conditional ProjectReference and dependencies
+      run: |
+        dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET48.csproj
+        dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET60.csproj
+        dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET48.csproj
+        dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET60.csproj
+        dotnet restore Source/ISHRemote/ISHRemote.sln
     
     - name: Build Solution
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
