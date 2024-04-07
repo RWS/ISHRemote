@@ -67,7 +67,19 @@ Below animation illustrates how you need to set up a Service Account resulting i
 
 ### User's Last Log On Timestamp Impact
 
-The Tridion Docs User Profile as seen in the Settings > User profile overview (ISHCS/OrganizeSpace) shows the last log on date time (field `FISHLASTLOGINON`) which is only accurate for authentication over Tridion Docs Identity Provider (ISHID or before ISHSTS). When federating authentication the remote Secure Token Service (STS) is responsible. Do note that Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS) does get updated.
+Since Tridion Docs 15/15.0.0, the Tridion Docs User Profile as seen in the Settings > User profile overview (ISHCS/OrganizeSpace) shows the last log on date time (field `FISHLASTLOGINON`) which is only accurate for authentication over Tridion Docs Identity Provider (ISHID or before ISHSTS). When federating authentication the remote Secure Token Service (STS) is responsible. Do note that Access Management (ISHAM) User Profiles, even when logged in over Tridion Docs Identity Provider (ISHID) or any other federated Secure Token Service (STS) does get updated.
+
+### Experimental OpenAPI REST API Proxies
+
+Since Tridion Docs 15/15.0.0 an OpenAPI REST API v3.0 was added on route for a full functional parity successor of the public SOAP v2.5 API on which ISHRemote originated. The outstanding challenge is that over time the internals of ISHRemote cmdlets will be rewired from SOAP to REST - in this ISHRemote release most cmdlets are SOAP as you can derive from protocols `WcfSoapWithWsTrust` and `WcfSoapWithOpenIdConnect`.
+
+If there is a new implementation, it can be selected over protocol `OpenApiWithOpenIdConnect`. If not, it will fall back to `WcfSoapWithOpenIdConnect`. The first step of side-by-side implementation is having access to authenticated proxies. Hence the introduction of _experimental future_ `InfoShareOpenApiWithOpenIdConnectConnection` which offers NSwag generated proxies to OpenAPI REST API of Tridion Docs 15/15.0.0 and matching Access Management 1.0 API.
+
+    $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -Protocol OpenApiWithOpenIdConnect
+    $json = $ishSession.OpenApiISH30Client.GetApplicationVersionAsync()
+    $json.Result
+    $json = $ishSession.OpenApiAM10Client.IdentityProvidersGetAsync()
+    $json.Result
 
 
 ## Implementation Details
@@ -86,7 +98,6 @@ Code, especially around communication and authentication protocol, was heavily r
 
 * Renamed `InfoShareWcfSoapConnection.cs` and moved it to `Connection\InfoShareWcfSoapWithWsTrustConnection.cs`
 * Aligned implementation of new `Connection\InfoShareWcfSoapWithOpenIdConnectConnection.cs` with `Connection\InfoShareWcfSoapWithWsTrustConnection.cs` which should make it easier to extract these `\Connection\` classes if desired. But also removed anything refering to Explicit Issuer (unreachable code since ISHRemote v7.0) and anything regarding `/Internal/` or `/SDL/` realm detection as no longer needed in Tridion Docs 15 (only ISHSTS).
-* Introduced _experimental future_ `InfoShareOpenApiWithOpenIdConnectConnection` which offers an NSwag generated proxy to private OpenAPI of Tridion Docs 15/15.0.0 Organize Space for experimentation.
 * Layout of `IshSession` was enriched with `AccessToken` through `ISHRemote.Format.ps1xml`.
 * Multi-platform code using pragma (e.g. `#if NET48`) for local redirect listener and system browser are
     * `IshConnectionConfiguration`:	Web Service discovery happens over ‘https://ish.example.com/ISHWS/connectionconfiguration.xml’, especially the ServerVersion drives protocol detection and available API functions/behavior. Just like Publication Manager would do.
@@ -118,6 +129,7 @@ Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll
 |PS5.1/NET4.8.1|System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a|{System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a}|
 |PS5.1/NET4.8.1|System.Text.Encodings.Web, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51|{System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51}|
 |PS5.1/NET4.8.1|_Only on Github Actions container, extended AppDomainModuleAssemblyInitializer to resolve CI/CD issues_|{System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51}|
+|PS5.1/NET4.8.1|System.ComponentModel.Annotations, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a  _for NET48/OpenApi clients_|System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral|
 |PS7.3.6/NET6.0|IdentityModel, Version=6.1.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f|{IdentityModel, Version=6.1.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f}|
 
 ## Known Issues
@@ -130,12 +142,12 @@ Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll
     * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, but not mapped in the CMS to a User Profile over `FISHEXTERNALID` will `[-14] The access is denied because no profile match was found. 0`. Please make sure that the client (which you can find on the Access Management User Profile) is added in Organize Space on one CMS User Profile in the comma-seperated External Id field.
     * Authentication over Client Credentials Flow with valid `-ClientId`/`-ClientSecret` combination, and mapped in the CMS to a User Profile over `FISHEXTERNALID` which is disabled will error out with `[-6] Your account has been disabled. Please see your system administrator.`. Please make sure in Organize Space that the one CMS User Profile holding the client in the External Id field is an enabled profile.
     * Refresh Token is not used to refresh the Access Token in the background (seperate thread), it is only used to refresh when the next cmdlet is triggered before expiration. Authentication over either Client Credentials or System Browser was succesful but the Access Token expired. You do not need to create a `New-IShSession`, every cmdlet will attempt to get a token (either refresh or re-logon if required) based on the cmdlets (implicit) `-IShSession` parameter. 
-* Using `New-IshSession` parameter `-PSCredential` on 14SP4/14.0.4 or earlier works like before, as it means username/password authentication over protocol `WcfSoapWithWsTrust`.  However, using `-PSCredential` on 15/15.0.0 means that you are using protocol `WcfSoapOverOpenIdConnect`, so expecting a client/secret. If you then provide username/password, you will get error `GetTokensOverClientCredentialsAsync Access Error[invalid_client]`. Note that you can force by adding `-Protocol WcfSoapWithWsTrust` to the `New-IshSession` cmdlet.
+* Using `New-IshSession` parameter `-PSCredential` on 14SP4/14.0.4 or earlier works like before, as it means username/password authentication over protocol `WcfSoapWithWsTrust`.  However, using `-PSCredential` on 15/15.0.0+ means that you are using protocol `WcfSoapOverOpenIdConnect`, so expecting a client/secret. If you then provide username/password, you will get error `GetTokensOverClientCredentialsAsync Access Error[invalid_client]`. Note that you can force by adding `-Protocol WcfSoapWithWsTrust` to the `New-IshSession` cmdlet.
 * On the Github Actions container-based build I received error `Could not load file or assembly 'System.ServiceModel.Primitives, Version=4.10.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The system cannot find the file specified.`. This PowerShell 7.2.x issue is seemingly resolved since 7.3.6 as mentioned [here](https://github.com/dotnet/wcf/issues/2862) and has to do with loading .NET Standard libaries in platform libraries (like Trisoft.ISHRemote.dll). Therefor extended the `continuous-integration.yml` to upgrade to PowerShell Preview using [pwshupdater](https://github.com/marketplace/actions/pwshupdater).
 
 ## Quality Assurance
 
-Added more Invoke-Pester 5.3.0 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7+ hosts where
+Added more Invoke-Pester 5.3.0 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7.2+ hosts where
 * the skipped are about SslPolicyErrors testing
 * the failed are about IMetadata bound fields (issue #58)
 

@@ -5,13 +5,9 @@ VisualStudioVersion = 17.0.32802.463
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trisoft.ISHRemote", "Trisoft.ISHRemote\Trisoft.ISHRemote.csproj", "{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trisoft.ISHRemote.OpenApiAM10.NET60", "Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET60.csproj", "{98DB32A3-E4B8-4FF4-B8EB-F6D25AD7FF1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trisoft.ISHRemote.OpenApiISH30", "Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.csproj", "{75C9855E-4ED9-4C28-8F1C-3B819C19CDAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trisoft.ISHRemote.OpenApiISH30.NET48", "Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET48.csproj", "{64DD5938-82FE-4486-B6EC-9D8271715ED5}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trisoft.ISHRemote.OpenApiISH30.NET60", "Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET60.csproj", "{247EF7C4-018C-4972-BC8C-A9B595A59EB9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trisoft.ISHRemote.OpenApiAM10.NET48", "Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.NET48.csproj", "{896F5D8D-D254-4796-80BA-DA3F647DCC74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trisoft.ISHRemote.OpenApiAM10", "Trisoft.ISHRemote.OpenApiAM10\Trisoft.ISHRemote.OpenApiAM10.csproj", "{3716E171-5FF6-4270-8790-EC92D10A5FA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,22 +19,14 @@ Global
 		{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A86D41D8-600D-4FF2-BFF6-19C3D26CBB69}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98DB32A3-E4B8-4FF4-B8EB-F6D25AD7FF1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98DB32A3-E4B8-4FF4-B8EB-F6D25AD7FF1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98DB32A3-E4B8-4FF4-B8EB-F6D25AD7FF1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98DB32A3-E4B8-4FF4-B8EB-F6D25AD7FF1A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64DD5938-82FE-4486-B6EC-9D8271715ED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64DD5938-82FE-4486-B6EC-9D8271715ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64DD5938-82FE-4486-B6EC-9D8271715ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64DD5938-82FE-4486-B6EC-9D8271715ED5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{247EF7C4-018C-4972-BC8C-A9B595A59EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{247EF7C4-018C-4972-BC8C-A9B595A59EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{247EF7C4-018C-4972-BC8C-A9B595A59EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{247EF7C4-018C-4972-BC8C-A9B595A59EB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{896F5D8D-D254-4796-80BA-DA3F647DCC74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{896F5D8D-D254-4796-80BA-DA3F647DCC74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{896F5D8D-D254-4796-80BA-DA3F647DCC74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{896F5D8D-D254-4796-80BA-DA3F647DCC74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75C9855E-4ED9-4C28-8F1C-3B819C19CDAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75C9855E-4ED9-4C28-8F1C-3B819C19CDAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75C9855E-4ED9-4C28-8F1C-3B819C19CDAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75C9855E-4ED9-4C28-8F1C-3B819C19CDAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3716E171-5FF6-4270-8790-EC92D10A5FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3716E171-5FF6-4270-8790-EC92D10A5FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3716E171-5FF6-4270-8790-EC92D10A5FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3716E171-5FF6-4270-8790-EC92D10A5FA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
