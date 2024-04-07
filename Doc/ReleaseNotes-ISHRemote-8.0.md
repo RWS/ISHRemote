@@ -87,6 +87,8 @@ If there is a new implementation, it can be selected over protocol `OpenApiWithO
 * Cmdlets `New-IshSession` and `Test-IshSession` received parameter `-Protocol`, `-ClientId` and `-ClientSecret`. #152 Thanks @ddemeyer 
 * Cmdlets `New-IshSession` and `Test-IshSession` received parameter `-Timeout` and `-IgnoreSslPolicyErrors` on parameter group `Interactive` (renamed `ActiveDirectory` to cover System Browser flow next to NetworkCredentials flow). #152 Thanks @ddemeyer 
 * Help of cmdlet `New-IshSession` was still suggesting obsolete parameter `-WsTrustIssuerUrl` in examples
+* Experimental OpenAPI REST API Proxies #180 Thanks @ddemeyer
+* Third-party version bump to latest available across platforms #180 Thanks @ddemeyer
 
 ## Breaking Changes - Cmdlets
 
