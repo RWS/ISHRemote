@@ -63,19 +63,6 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// </summary>
         private static readonly ConcurrentDictionary<string, Assembly> _forcedLoadedAssemblies = new ConcurrentDictionary<string, Assembly>();
 
-        private static string binaryFolderPath = Path.GetFullPath(
-            Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                ".."));
-
-        private static string binaryCommonAssembliesFolderPath = Path.Combine(binaryFolderPath, "Common");
-
-#if NET48
-        private static string binaryNetFrameworkAssembliesPath = Path.Combine(binaryFolderPath, "net48");
-#else
-        private static string binaryNetCoreAssembliesPath = Path.Join(binaryFolderPath, "net6.0");
-#endif
-
         /// <summary>
         /// Early registration of my AssemblyResolve call.
         /// </summary>
@@ -130,8 +117,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         private static Assembly ResolveAssembly_NetFramework(object sender, ResolveEventArgs args)
         {
             var name = new AssemblyName(args.Name).Name;
-            Assembly outAssembly = null;
-            _forcedLoadedAssemblies.TryGetValue(name, out outAssembly);
+            _forcedLoadedAssemblies.TryGetValue(name, out Assembly outAssembly);
             return outAssembly;
 
             /*
@@ -171,8 +157,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             AssemblyName assemblyName)
         {
             var name = assemblyName.Name;
-            Assembly outAssembly = null;
-            _forcedLoadedAssemblies.TryGetValue(name, out outAssembly);
+            _forcedLoadedAssemblies.TryGetValue(name, out Assembly outAssembly);
             return outAssembly;
 
             /*

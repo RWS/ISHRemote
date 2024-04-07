@@ -95,11 +95,15 @@ namespace Trisoft.ISHRemote.Connection
                 _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection reusing AccessToken[{ _connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{ _connectionParameters.Tokens.AccessTokenExpiration}]");
             }
             _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection OpenApiISH30Client using infoShareWSBaseUri[{infoShareWSUrlForOpenApi}]");
-            _openApiISH30Client = new OpenApiISH30Client(_httpClient);
-            _openApiISH30Client.BaseUrl = new Uri(infoShareWSUrlForOpenApi, "api").ToString();
+            _openApiISH30Client = new OpenApiISH30Client(_httpClient)
+            {
+                BaseUrl = new Uri(infoShareWSUrlForOpenApi, "api").ToString()
+            };
             _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection OpenApiAM10Client using IssuerUrl[{_connectionParameters.IssuerUrl}]");
-            _openApiAM10Client = new OpenApiAM10Client(_httpClient);
-            _openApiAM10Client.BaseUrl = _connectionParameters.IssuerUrl.ToString();
+            _openApiAM10Client = new OpenApiAM10Client(_httpClient)
+            {
+                BaseUrl = _connectionParameters.IssuerUrl.ToString()
+            };
         }
         #endregion
 

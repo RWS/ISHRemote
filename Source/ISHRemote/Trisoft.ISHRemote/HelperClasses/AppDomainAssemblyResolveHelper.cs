@@ -105,8 +105,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         internal static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             var name = new AssemblyName(args.Name).Name;
-            Assembly outAssembly = null;
-            _forcedLoadedAssemblies.TryGetValue(name, out outAssembly);
+            _forcedLoadedAssemblies.TryGetValue(name, out Assembly outAssembly);
             return outAssembly;
         }
     }
