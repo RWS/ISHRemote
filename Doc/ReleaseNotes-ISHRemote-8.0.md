@@ -162,7 +162,7 @@ Below is not an official performance compare, but a recurring thing noticed alon
 | ISHRemote 8.0.10425.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 472.44s AND Tests Passed: 1026, Failed: 0, Skipped: 3 NotRun: 0 |
 | ISHRemote 8.0.10425.0     | PowerShell 7.3.6 on .NET 7.0.0  | WcfSoapWithOpenIdConnect | Tests completed in 457.89s AND Tests Passed: 1026, Failed: 0, Skipped: 3 NotRun: 0  |
 | ISHRemote 8.0.10919.0     | PowerShell 7.4.0 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 449.72s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
-| ISHRemote 8.0.10919.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 437.21s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
+| ISHRemote 8.0.11207.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 464.79s AND Tests Passed: 1062, Failed: 0, Skipped: 3 NotRun: 0 |
 
 
 

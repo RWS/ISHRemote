@@ -128,10 +128,18 @@ Describe "Get-IshEvent" -Tags "Create" {
 			$ishSession.DefaultRequestedMetadata = "Basic"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
 			$ishEvent.status.Length -gt 0 | Should -Be $true
-			$ishEvent.IshField.Count | Should -Be 9
+			if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16) {
+				$ishEvent.IshField.Count | Should -Be 10
+			} else {
+				$ishEvent.IshField.Count | Should -Be 9
+			}
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
-			$ishEvent.IshField.Count | Should -Be 10
+			if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16) {
+				$ishEvent.IshField.Count | Should -Be 12
+			} else {
+				$ishEvent.IshField.Count | Should -Be 10
+			}
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 		}
 		It "Parameter ModifiedSince is now" {
