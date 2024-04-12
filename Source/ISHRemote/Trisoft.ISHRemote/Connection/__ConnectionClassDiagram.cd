@@ -17,7 +17,7 @@
   <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectConnectionParameters">
     <Position X="6.25" Y="1.25" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>AABAAIAAAAKAACAAiAACAAAAAAhAAAMAAAAIAAAFBAA=</HashCode>
+      <HashCode>AABAAIAAAAKAACAAiAACAABAAAhAAAMAAAAIAAAFBAA=</HashCode>
       <FileName>Connection\InfoShareOpenIdConnectConnectionParameters.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -39,13 +39,13 @@
   <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectSystemBrowser">
     <Position X="0.5" Y="10" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAACAAAAAgAAAAABKAAAAAAQAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAACAAAAAgAAAABBKAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>Connection\InfoShareOpenIdConnectSystemBrowser.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Trisoft.ISHRemote.Connection.InfoShareWcfSoapWithOpenIdConnectConnection">
-    <Position X="7.75" Y="9" Width="3.25" />
+    <Position X="7.75" Y="10" Width="3.25" />
     <Members>
       <Field Name="_annotationClient" Hidden="true" />
       <Field Name="_applicationClient" Hidden="true" />
@@ -88,13 +88,13 @@
       <Method Name="GetUserRole25Channel" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>cBgEBIhQ0WAAAJAgQMsQAMGAgBWBxiAA8AQYBgiECog=</HashCode>
+      <HashCode>cBgEBIxQ0WAAAJAgQMMQAIGAgBWBxiAA8AQYBgiECog=</HashCode>
       <FileName>Connection\InfoShareWcfSoapWithOpenIdConnectConnection.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Trisoft.ISHRemote.Connection.InfoShareWcfSoapWithWsTrustConnection">
-    <Position X="11.25" Y="9" Width="3.25" />
+    <Position X="11.25" Y="10" Width="3.25" />
     <Members>
       <Field Name="_annotationClient" Hidden="true" />
       <Field Name="_applicationClient" Hidden="true" />
@@ -136,7 +136,7 @@
       <Method Name="GetUserRole25Channel" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>cBgFVIhQ0WAAQJAgQNsQAJGAsRWBxiBCcAQYBgiECog=</HashCode>
+      <HashCode>cBgFVIhQ0WAAQJAgQNMQAJGAsRWBxiBCcAQYBgiECog=</HashCode>
       <FileName>Connection\InfoShareWcfSoapWithWsTrustConnection.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -144,14 +144,14 @@
   <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenIdConnectConnectionBase">
     <Position X="6.25" Y="5.75" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAQAAIAAAABAQAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAEAAAAQAAMAAAABAQAEAAIAEAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connection\InfoShareOpenIdConnectConnectionBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Trisoft.ISHRemote.Connection.InfoShareOpenApiWithOpenIdConnectConnection">
-    <Position X="4.25" Y="9" Width="3.25" />
+    <Position X="4.25" Y="10" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAA0AAEAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAgAAAAAEAQAAAgAAAAA=</HashCode>
       <FileName>Connection\InfoShareOpenApiWithOpenIdConnectConnection.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
