@@ -51,6 +51,7 @@ namespace Trisoft.ISHRemote.HelperClasses
     /// * IdentityModel.OidcClient requested but we now return
     /// * Microsoft.Bcl.AsyncInterfaces requested 5.0.0.0 but we now return 6.0.0.0
     /// * System.ComponentModel.Annotations requested 4.2.0.0 but we now return 4.2.1.0 (for NET48/OpenApi clients)
+    /// * ...see code below
     /// </summary>
     /// <remarks>Focus was to getting this working on NETFramework, more implementation is required to align with
     /// proposed solution of https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/
@@ -99,6 +100,10 @@ namespace Trisoft.ISHRemote.HelperClasses
             filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.ComponentModel.Annotations.dll");
             assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("System.ComponentModel.Annotations", assembly);
+
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Microsoft.Extensions.Logging.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("Microsoft.Extensions.Logging", assembly);
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
 

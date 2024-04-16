@@ -132,6 +132,7 @@ Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll
 |PS5.1/NET4.8.1|System.Text.Encodings.Web, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51|{System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51}|
 |PS5.1/NET4.8.1|_Only on Github Actions container, extended AppDomainModuleAssemblyInitializer to resolve CI/CD issues_|{System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51}|
 |PS5.1/NET4.8.1|System.ComponentModel.Annotations, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a  _for NET48/OpenApi clients_|System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral|
+|PS5.1/NET4.8.1|Microsoft.Extensions.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60|Microsoft.Extensions.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60|
 |PS7.3.6/NET6.0|IdentityModel, Version=6.1.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f|{IdentityModel, Version=6.1.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f}|
 
 ## Known Issues
