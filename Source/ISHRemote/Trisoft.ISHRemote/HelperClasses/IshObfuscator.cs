@@ -36,17 +36,15 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// <summary>
         /// To replace words up to 20 characters with a fixed replacement word
         /// </summary>
-        private static string[] _shortWordSubstitutions = { "", "a", "be", "the", "easy", "would", "summer", "healthy", "zucchini", "breakfast", "chimpanzee",
+        private static readonly string[] _shortWordSubstitutions = { "", "a", "be", "the", "easy", "would", "summer", "healthy", "zucchini", "breakfast", "chimpanzee",
             "alternative", "professional", "extraordinary", "representative", "confidentiality", "extraterrestrial", "telecommunication",
             "bioinstrumentation", "psychophysiological", "internationalization" };
         /// <summary>
         /// To replace words > 20 chars .. a part of this very long word can be taken
         /// </summary>
-        private static string _longWordSubstitution = string.Concat(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 100000));
+        private static readonly string _longWordSubstitution = string.Concat(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 100000));
 
         #endregion
-
-        #region Public xml obfuscation methods
 
         /// <summary>
         /// Obfuscates the given xml file. 
@@ -149,46 +147,6 @@ namespace Trisoft.ISHRemote.HelperClasses
         }
 
         /// <summary>
-        /// Obfuscates the given image file. 
-        /// For that, a new image is created with the same format, width and height and a yellow background (and the filename in text in the image if it is wide enough to put it there).
-        /// When the obfuscation succeeds a file is created at the location given in outputFileLocation
-        /// </summary>
-        /// <param name="inputFileLocation">The location of the input file</param>
-        /// <param name="outputFileLocation">The location for the output file</param>
-        public static void ObfuscateImage(string inputFileLocation, string outputFileLocation)
-        {
-#if NET6_0_OR_GREATER
-            if (!OperatingSystem.IsWindows())
-            {
-                throw new PlatformNotSupportedException($"Obfuscate Image is only supported on Windows platform (through NET6+ extension), obfuscating image inputFile[{inputFileLocation}] is skipped. [OS:{Environment.OSVersion}]");
-            }
-#endif
-            int width;
-            int height;
-            ImageFormat format;
-            PixelFormat pixelFormat;
-            var fileInfo = new FileInfo(inputFileLocation);
-            using (Stream stream = File.OpenRead(inputFileLocation))
-            {
-                using (Image sourceImage = Image.FromStream(stream, false, false))
-                {
-                    width = sourceImage.Width;
-                    height = sourceImage.Height;
-                    format = sourceImage.RawFormat;
-                    pixelFormat = sourceImage.PixelFormat;
-                }
-            }
-            // Creating the image with the pixelformat gives an error, so not passing it to CreateImageWithText, which means color depth will be different
-            var newImage = CreateImageWithText(fileInfo.Name, width, height);
-            newImage.Save(outputFileLocation, format);
-        }
-
-        #endregion
-
-
-        #region Private methods
-
-        /// <summary>
         /// Writes an xml declaration with the correct encoding
         /// </summary>
         /// <param name="encoding">Encoding</param>
@@ -288,6 +246,45 @@ namespace Trisoft.ISHRemote.HelperClasses
             }
         }
 
+// Overall build should treat warnings as errors, hence:
+// Disabling warning regarding 'This call site is reachable on Windows all versions.' 
+#pragma warning disable CA1416
+
+        /// <summary>
+        /// Obfuscates the given image file. 
+        /// For that, a new image is created with the same format, width and height and a yellow background (and the filename in text in the image if it is wide enough to put it there).
+        /// When the obfuscation succeeds a file is created at the location given in outputFileLocation
+        /// </summary>
+        /// <param name="inputFileLocation">The location of the input file</param>
+        /// <param name="outputFileLocation">The location for the output file</param>
+        public static void ObfuscateImage(string inputFileLocation, string outputFileLocation)
+        {
+#if NET6_0_OR_GREATER
+            if (!OperatingSystem.IsWindows())
+            {
+                throw new PlatformNotSupportedException($"Obfuscate Image is only supported on Windows platform (through NET6+ extension), obfuscating image inputFile[{inputFileLocation}] is skipped. [OS:{Environment.OSVersion}]");
+            }
+#endif
+            int width;
+            int height;
+            ImageFormat format;
+            PixelFormat pixelFormat;
+            var fileInfo = new FileInfo(inputFileLocation);
+            using (Stream stream = File.OpenRead(inputFileLocation))
+            {
+                using (Image sourceImage = Image.FromStream(stream, false, false))
+                {
+                    width = sourceImage.Width;
+                    height = sourceImage.Height;
+                    format = sourceImage.RawFormat;
+                    pixelFormat = sourceImage.PixelFormat;
+                }
+            }
+            // Creating the image with the pixelformat gives an error, so not passing it to CreateImageWithText, which means color depth will be different
+            var newImage = CreateImageWithText(fileInfo.Name, width, height);
+            newImage.Save(outputFileLocation, format);
+        }
+
         /// <summary>
         /// Creates an image with the given width and height and having the given text 
         /// </summary>
@@ -338,9 +335,11 @@ namespace Trisoft.ISHRemote.HelperClasses
             drawing.Dispose();
 
             return img;
-
         }
-        #endregion
+
+// Restoring warning regarding 'This call site is reachable on Windows all versions.' 
+#pragma warning restore CA1416
+
     }
 }
 

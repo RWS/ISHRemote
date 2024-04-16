@@ -55,7 +55,12 @@ Describe "Get-IshUser" -Tags "Create" {
 			$ishObject = Get-IshUser -IshSession $ishSession
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 			$ishObject.GetType().Name | Should -BeExactly "IshUser"
-			$ishObject.IshField.Length | Should -Be 25
+			if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16) {
+				$ishObject.IshField.Length | Should -Be 27
+			}
+			else {
+				$ishObject.IshField.Length | Should -Be 25
+			}
 		}
 		It "Parameter IshSession.DefaultRequestedMetadata=All on My-Metadata" {
 			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata

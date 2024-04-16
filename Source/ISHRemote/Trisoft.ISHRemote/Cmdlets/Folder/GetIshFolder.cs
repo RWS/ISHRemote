@@ -69,6 +69,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// </code>
     /// <para>Get folders recursively with filtering on folder type</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
+    /// $imageCount = 0
+    /// $xmlCount = 0
+    /// Get-IshFolder -FolderPath "General\Myfolder" -FolderTypeFilter @("ISHIllustration", "ISHModule", "ISHMasterDoc", "ISHLibrary") -Recurse | 
+    /// Get-IshFolderContent -VersionFilter "" | 
+    /// ForEach-Object -Process { 
+    ///   if ($_.IshType -in @("ISHIllustration")) { ++$imageCount }
+    ///   if ($_.IshType -in @("ISHModule", "ISHMasterDoc", "ISHLibrary")) { ++$xmlCount }
+    /// }
+    /// Write-Host ("imageCount["+$imageCount+"]")
+    /// Write-Host ("xmlCount["+$xmlCount+"]")
+    /// </code>
+    /// <para>Various statistics can be gathered by crawling across many API calls. This sample recursively goes over some subfolder, and retrieves all content objects in the folder and aggregates to a rough count. The ForEach-Object construct is important as it only keeps the essence, the counters, and avoids keeping all objects retrieved over the API in memory - potentially running out of client-side/PowerShell memory.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshFolder", SupportsShouldProcess = false)]
     [OutputType(typeof(IshFolder))]
     public sealed class GetIshFolder : FolderCmdlet

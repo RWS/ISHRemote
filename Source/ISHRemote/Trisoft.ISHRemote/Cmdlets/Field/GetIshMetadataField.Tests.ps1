@@ -8,6 +8,29 @@ BeforeAll {
 
 Describe "Get-IshMetadataField" -Tags "Read" {
 	BeforeAll {
+		# Helper function that iteratively tries to find one BackgroundTask entry depending on availability 
+		# Get one, start recent, expand from minutes to hour to day until you have one
+		function GetBackgroundTasks {
+			param (
+				$ishSession,
+				$userFilter
+			)
+			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-5)) -UserFilter $userFilter)
+			if ($ishBackgroundTasks.Count -eq 0) {
+				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter)
+			}
+			if ($ishBackgroundTasks.Count -eq 0) {
+				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter)
+			}
+			if ($ishBackgroundTasks.Count -eq 0) {
+				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter)
+			}
+			if ($ishBackgroundTasks.Count -eq 0) {
+				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter)
+			}
+			return $ishBackgroundTasks
+		}
+
 		$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FNAME" |
 							Set-IshRequestedMetadataField -IshSession $ishSession -Name "FDOCUMENTTYPE" |
 							Set-IshRequestedMetadataField -IshSession $ishSession -Name "READ-ACCESS" -ValueType Element
@@ -85,8 +108,7 @@ Describe "Get-IshMetadataField" -Tags "Read" {
 			{ Get-IshMetadataField -IshSession $ishSession -Name "FNAME" -IshBackgroundTask "INVALIDBACKGROUNDTASK" } | Should -Throw
 		}
 		It "Pipeline IshBackgroundTask Multiple" {
-			#TODO test possibly is slow (or fails) when there are no EventMonitor entries
-			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince (Get-Date).AddMonths(-3) | Get-IshMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level Task).Count -ge 0 | Should -Be $true
+			((GetBackgroundTasks -ishSession $ishSession -userFilter All)[0] | Get-IshMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level Task).Count -ge 0 | Should -Be $true
 		}
 	}
 	Context "Get-IshMetadataField IshFields.ToXml() for API Testing" {

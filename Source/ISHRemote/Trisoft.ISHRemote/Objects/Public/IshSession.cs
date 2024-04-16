@@ -24,6 +24,7 @@ using System.Security;
 using Trisoft.ISHRemote.Connection;
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Interfaces;
+using Trisoft.ISHRemote.OpenApiAM10;
 using Trisoft.ISHRemote.OpenApiISH30;
 
 namespace Trisoft.ISHRemote.Objects.Public
@@ -137,8 +138,10 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
             handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
-            _httpClient = new HttpClient(handler);
-            _httpClient.Timeout = _timeout;
+            _httpClient = new HttpClient(handler)
+            {
+                Timeout = _timeout
+            };
             // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
@@ -274,7 +277,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _logger.WriteVerbose($"CreateOpenApiWithOpenIdConnectConnection");
             _infoShareOpenApiWithOpenIdConnectConnection = new InfoShareOpenApiWithOpenIdConnectConnection(_logger, _httpClient, _infoShareOpenIdConnectConnectionParameters);
             _logger.WriteDebug("CreateOpenApiWithOpenIdConnectConnection openApi30Service.GetApplicationVersionAsync");
-            _serverVersion = new IshVersion(_infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30ServiceProxy().GetApplicationVersionAsync().GetAwaiter().GetResult());
+            _serverVersion = new IshVersion(_infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30Client().GetApplicationVersionAsync().GetAwaiter().GetResult());
         }
 
         internal IshTypeFieldSetup IshTypeFieldSetup
@@ -301,8 +304,10 @@ namespace Trisoft.ISHRemote.Objects.Public
                     {
                         _logger.WriteDebug($"Loading TriDKXmlSetupFullExport_12_00_01...");
                         var triDKXmlSetupHelper = new TriDKXmlSetupHelper(_logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
-                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition);
-                        _ishTypeFieldSetup.StrictMetadataPreference = Enumerations.StrictMetadataPreference.Off;    // Otherwise custom metadata fields are always removed as they are unknown for the default TriDKXmlSetup Resource
+                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition)
+                        {
+                            StrictMetadataPreference = Enumerations.StrictMetadataPreference.Off    // Otherwise custom metadata fields are always removed as they are unknown for the default TriDKXmlSetup Resource
+                        };
                     }
 
                     if (_serverVersion.MajorVersion == 13 || (_serverVersion.MajorVersion == 14 && _serverVersion.RevisionVersion < 4))
@@ -599,13 +604,21 @@ namespace Trisoft.ISHRemote.Objects.Public
             set { _chunkSize = value; }
         }
 
-        #region OpenApi internal/3.0 Services
-        public OpenApiISH30Service OpenApiISH30Service
+        #region OpenApi Services
+        public OpenApiISH30Client OpenApiISH30Client
         {
             get
             {
                 VerifyConnectionValidity();
-                return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30ServiceProxy();
+                return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiISH30Client();
+            }
+        }
+        public OpenApiAM10Client OpenApiAM10Client
+        {
+            get
+            {
+                VerifyConnectionValidity();
+                return _infoShareOpenApiWithOpenIdConnectConnection.GetOpenApiAM10Client();
             }
         }
         #endregion
@@ -1087,6 +1100,12 @@ namespace Trisoft.ISHRemote.Objects.Public
                     }
                     break;
                 case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
+                    {
+                        // ... discard OpenApiISH30Service
+                        // ...and re-create connection
+                        CreateOpenApiWithOpenIdConnectConnection();
+                    }
                     if (_infoShareWcfSoapWithOpenIdConnectConnection == null)
                     {
                         // Not valid...
@@ -1159,18 +1178,9 @@ namespace Trisoft.ISHRemote.Objects.Public
 
         public void Dispose()
         {
-            if (_infoShareWcfSoapWithWsTrustConnection != null)
-            {
-                _infoShareWcfSoapWithWsTrustConnection.Dispose();
-            }
-            if (_infoShareWcfSoapWithOpenIdConnectConnection != null) 
-            {
-                _infoShareWcfSoapWithOpenIdConnectConnection.Dispose( );
-            }
-            if (_infoShareOpenApiWithOpenIdConnectConnection != null) 
-            {
-                _infoShareOpenApiWithOpenIdConnectConnection.Dispose( );
-            }
+            _infoShareWcfSoapWithWsTrustConnection?.Dispose();
+            _infoShareWcfSoapWithOpenIdConnectConnection?.Dispose( );
+            _infoShareOpenApiWithOpenIdConnectConnection?.Dispose( );
         }
         public void Close()
         {

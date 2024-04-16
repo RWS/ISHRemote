@@ -27,6 +27,7 @@ using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using Trisoft.ISHRemote.Interfaces;
 using Trisoft.ISHRemote.OpenApiISH30;
+using Trisoft.ISHRemote.OpenApiAM10;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using IdentityModel.OidcClient.Infrastructure;
@@ -36,10 +37,16 @@ namespace Trisoft.ISHRemote.Connection
     internal sealed class InfoShareOpenApiWithOpenIdConnectConnection : InfoShareOpenIdConnectConnectionBase, IDisposable
     {
         #region Private Members
+
+        
+        /// <summary>
+        /// OpenApi Access Management Web Service v1.0 NSwag generated client
+        /// </summary>
+        private readonly OpenApiAM10Client _openApiAM10Client;
         /// <summary>
         /// OpenApi InfoShare Web Service v3.0 NSwag generated client
         /// </summary>
-        private OpenApiISH30Service _openApiISH30Service;
+        private readonly OpenApiISH30Client _openApiISH30Client;
         /// <summary>
         /// Tracking standard dispose pattern
         /// </summary>
@@ -87,9 +94,16 @@ namespace Trisoft.ISHRemote.Connection
                 // Don't think this will happen
                 _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection reusing AccessToken[{ _connectionParameters.Tokens.AccessToken}] AccessTokenExpiration[{ _connectionParameters.Tokens.AccessTokenExpiration}]");
             }
-            _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection using Normalized infoShareWSBaseUri[{infoShareWSUrlForOpenApi}]"); 
-            _openApiISH30Service = new Trisoft.ISHRemote.OpenApiISH30.OpenApiISH30Service(_httpClient);
-            _openApiISH30Service.BaseUrl = new Uri(infoShareWSUrlForOpenApi, "api").ToString();
+            _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection OpenApiISH30Client using infoShareWSBaseUri[{infoShareWSUrlForOpenApi}]");
+            _openApiISH30Client = new OpenApiISH30Client(_httpClient)
+            {
+                BaseUrl = new Uri(infoShareWSUrlForOpenApi, "api").ToString()
+            };
+            _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection OpenApiAM10Client using IssuerUrl[{_connectionParameters.IssuerUrl}]");
+            _openApiAM10Client = new OpenApiAM10Client(_httpClient)
+            {
+                BaseUrl = _connectionParameters.IssuerUrl.ToString()
+            };
         }
         #endregion
 
@@ -100,10 +114,21 @@ namespace Trisoft.ISHRemote.Connection
         /// This method wraps the token up in an authentication/bearer token.
         /// </summary>
         /// <returns>The proxy</returns>
-        public OpenApiISH30Service GetOpenApiISH30ServiceProxy()
+        public OpenApiISH30Client GetOpenApiISH30Client()
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessToken());
-            return _openApiISH30Service;
+            return _openApiISH30Client;
+        }
+        /// <summary>
+        /// Create an OpenAPI Access Management 1.0 proxy
+        /// HttpClient with OpenIdConnect authentication need a way to pass the Access/Bearer token.
+        /// This method wraps the token up in an authentication/bearer token.
+        /// </summary>
+        /// <returns>The proxy</returns>
+        public OpenApiAM10Client GetOpenApiAM10Client()
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessToken());
+            return _openApiAM10Client;
         }
         #endregion
 
@@ -114,9 +139,13 @@ namespace Trisoft.ISHRemote.Connection
             {
                 if (disposing)
                 {
-                    if (_openApiISH30Service != null)
+                    if (_openApiISH30Client != null)
                     {
-                        ((IDisposable)_openApiISH30Service).Dispose();
+                        ((IDisposable)_openApiISH30Client).Dispose();
+                    }
+                    if (_openApiAM10Client != null)
+                    {
+                        ((IDisposable)_openApiAM10Client).Dispose();
                     }
                 }
                 disposedValue = true;

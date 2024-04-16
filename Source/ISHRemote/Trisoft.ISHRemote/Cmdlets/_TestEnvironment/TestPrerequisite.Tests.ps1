@@ -34,15 +34,15 @@ Describe "Test-Prerequisite" -Tags "Read" {
 		}
 	}
 
-	Context "IshSession (<16.0.0) - Validating overwrites of ISHRemote.PesterSetup.Debug.ps1" {
+	Context "IshSession (-lt 16) - Validating overwrites of ISHRemote.PesterSetup.Debug.ps1" {
 		BeforeAll {
 			$ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			$ishUser = Get-IshUser
 		}
 		It "IshSession.Protocol WcfSoapWithWsTrust" {
 			$IshSession.Protocol | Should -Be 'WcfSoapWithWsTrust'
 		}
 		It "Current IShSession user should be part of VUSERGROUPSYSTEMMANAGEMENT UserGroup" {
-			$ishUser = Get-IshUser
 			$ishUser.fusergroup_none_element -like "*VUSERGROUPSYSTEMMANAGEMENT*" | Should -Be $true
 		}
 		It "IshSession.AuthenticationContext" {
@@ -62,7 +62,7 @@ Describe "Test-Prerequisite" -Tags "Read" {
 		}
 	}
 
-	Context "IshSession (=15.0.0) - Validating overwrites of ISHRemote.PesterSetup.Debug.ps1" {
+	Context "IshSession (-eq 15) - Validating overwrites of ISHRemote.PesterSetup.Debug.ps1" {
 		BeforeAll {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			$ishUser = Get-IshUser
@@ -70,6 +70,11 @@ Describe "Test-Prerequisite" -Tags "Read" {
 		It "IshSession.Protocol WcfSoapWithOpenIdConnect" {
 			if (([Version]$ishSession.ServerVersion).Major -eq 15) { 
 				$IshSession.Protocol | Should -Be 'WcfSoapWithOpenIdConnect'
+			}
+		}
+		It "Current IShSession user over ClientId/ClientSecret should match UserName parameter so all tests run under the same account" {
+			if (([Version]$ishSession.ServerVersion).Major -eq 15) { 
+				$ishUser.UserName | Should -Be $ishUserName
 			}
 		}
 		It "Current IShSession user should be part of VUSERGROUPSYSTEMMANAGEMENT UserGroup" {

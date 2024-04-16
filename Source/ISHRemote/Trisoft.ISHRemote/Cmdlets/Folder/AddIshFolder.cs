@@ -206,7 +206,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                                         }
                                         fieldValues.Add(fieldWriteAccess);
 
-                                        var response = IshSession.OpenApiISH30Service.CreateFolderAsync(new OpenApiISH30.CreateFolder()
+                                        var response = IshSession.OpenApiISH30Client.CreateFolderAsync(new OpenApiISH30.CreateFolder()
                                         {
                                             ParentId = ParentFolderId.ToString(),  // TODO [Question] Why is folder id a string and not typed as long in the CreateFolder model? BaseObject is string, so exceptional folder long is string.
                                             Fields = fieldValues
@@ -370,7 +370,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
             }
-            catch (OpenApiISH30.ApiException<OpenApiISH30.InfoShareProblemDetails> exception)
+            catch (OpenApiISH30.OpenApiISH30Exception<OpenApiISH30.InfoShareProblemDetails> exception)
             {
                 if (exception.Result != null)
                 {

@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,6 +50,8 @@ namespace Trisoft.ISHRemote.HelperClasses
     /// * System.Text.Json requested 5.0.0.0 but we now return 5.0.0.2
     /// * IdentityModel.OidcClient requested but we now return
     /// * Microsoft.Bcl.AsyncInterfaces requested 5.0.0.0 but we now return 6.0.0.0
+    /// * System.ComponentModel.Annotations requested 4.2.0.0 but we now return 4.2.1.0 (for NET48/OpenApi clients)
+    /// * ...see code below
     /// </summary>
     /// <remarks>Focus was to getting this working on NETFramework, more implementation is required to align with
     /// proposed solution of https://devblogs.microsoft.com/powershell/resolving-powershell-module-assembly-dependency-conflicts/
@@ -61,19 +63,6 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// Storing forcefully loaded assemblies in the dictionary at the time of writing on Windows11/NET4.8.1
         /// </summary>
         private static readonly ConcurrentDictionary<string, Assembly> _forcedLoadedAssemblies = new ConcurrentDictionary<string, Assembly>();
-
-        private static string binaryFolderPath = Path.GetFullPath(
-            Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                ".."));
-
-        private static string binaryCommonAssembliesFolderPath = Path.Combine(binaryFolderPath, "Common");
-
-#if NET48
-        private static string binaryNetFrameworkAssembliesPath = Path.Combine(binaryFolderPath, "net48");
-#else
-        private static string binaryNetCoreAssembliesPath = Path.Join(binaryFolderPath, "net6.0");
-#endif
 
         /// <summary>
         /// Early registration of my AssemblyResolve call.
@@ -107,6 +96,14 @@ namespace Trisoft.ISHRemote.HelperClasses
             filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.Memory.dll");
             assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("System.Memory", assembly);
+
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"System.ComponentModel.Annotations.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("System.ComponentModel.Annotations", assembly);
+
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Microsoft.Extensions.Logging.dll");
+            assembly = Assembly.LoadFrom(filePath);
+            _forcedLoadedAssemblies.GetOrAdd("Microsoft.Extensions.Logging", assembly);
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
 
@@ -125,8 +122,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         private static Assembly ResolveAssembly_NetFramework(object sender, ResolveEventArgs args)
         {
             var name = new AssemblyName(args.Name).Name;
-            Assembly outAssembly = null;
-            _forcedLoadedAssemblies.TryGetValue(name, out outAssembly);
+            _forcedLoadedAssemblies.TryGetValue(name, out Assembly outAssembly);
             return outAssembly;
 
             /*
@@ -166,8 +162,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             AssemblyName assemblyName)
         {
             var name = assemblyName.Name;
-            Assembly outAssembly = null;
-            _forcedLoadedAssemblies.TryGetValue(name, out outAssembly);
+            _forcedLoadedAssemblies.TryGetValue(name, out Assembly outAssembly);
             return outAssembly;
 
             /*
