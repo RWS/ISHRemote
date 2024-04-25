@@ -11,7 +11,7 @@
   <!-- .NET Local and Continuous Integration Package and Assembly properties -->
   <PropertyGroup>
     <VersionMajor>8</VersionMajor>
-    <VersionMinor>0</VersionMinor>
+    <VersionMinor>1</VersionMinor>
     <VersionPatch>0</VersionPatch>
     <VersionBuild>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</VersionBuild>
     <VersionSuffix Condition="'$(ISHGITHUB_RUN_NUMBER)' == ''">localpreview-$(VersionMajor).0</VersionSuffix>
@@ -34,7 +34,7 @@
   <!-- PowerShell Module properties -->
   <PropertyGroup>
     <Major>8</Major>
-    <Minor>0</Minor>
+    <Minor>1</Minor>
     <Patch>0</Patch>
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
 	  <ModuleVersion>$(Major).$(Minor).$(Patch)</ModuleVersion>
