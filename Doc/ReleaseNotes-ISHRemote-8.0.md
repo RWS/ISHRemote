@@ -16,22 +16,28 @@ The below text describes the delta compared to fielded release ISHRemote v7.0.
 
 ## Introducing Session Protocol
 
-Where we used to have only implicit `WcfSoapWithWsTrust` protocol - same as ISHRemote v7.0 and earlier on Tridion Docs 14SPx/14.0.x and earlier - resulting SOAP Proxy classes on `IShSession`. We now introduce `WcfSoapWithOpenIdConnect` for usage on Tridion Docs 15.x/15.x.0 which results in SOAP Proxy classes that are authenticated over `Modern Authentication`.
+Where we used to have only implicit `WcfSoapWithWsTrust` protocol - same as ISHRemote v7.0 and earlier on Tridion Docs 14SPx/14.0.x and earlier - resulting SOAP Proxy classes on `IShSession`. We now introduce `WcfSoapWithOpenIdConnect` for usage on Tridion Docs 15.x/15.x.y which results in SOAP Proxy classes that are authenticated over **Modern Authentication**.
+
+For ease of use, the target server product version is detected via parameter `-WsBaseUrl`. So if you don't specifiy an explicit  `-Protocol` parameter, it will get the best matching default. The defaults are listed as below.
+* For Tridion Docs 14SP414SPx/14.0.x and earlier, this is `WcfSoapWithWsTrust`. You can use -PSCredential and –IshUserName/-IshPassword like you were used to.
+* For Tridion Docs 15.x/15.x.y and later, this is `WcfSoapWithOpenIdConnect`. This will lead you to browser-based authentication or you can use a –ClientId/-ClientSecret combination.
+
+You can force the `-Protocol` parameter, and below list will explain what will happen exactly.
 
 * If protocol on a `New-IShSession` cmdlet is forced to `WcfSoapWithWsTrust`, then it behaves the same as ISHRemote v7.0 and earlier or any Tridion Docs 14SPx/14.0.x and earlier system
     * WS-Federation/WS-Trust over –IshUserName/-IshPassword parameters, typical ISHSTS setups
     * WS-Federation/WS-Trust over implicit ActiveDirectory NetworkCredentials , typical ADFS setups
-* If protocol is not mentioned, it defaults to `WcfSoapWithOpenIdConnect` on Tridion Docs 15.x/15.x.0
+* If protocol is forced to `WcfSoapWithOpenIdConnect` on Tridion Docs 15.x/15.x.y
     * Modern Authentication like Publication Manager or Organize Space, etc over your favorite Browser
     * Modern Authentication over –ClientId/-ClientSecret coming from Access Management (ISHAM)
     * Note: ISHWS/OWCF web services have feature parity to ISHWS/WCF (and actually also ISHWS/*.ASMX) 
-* If protocol is forced to `OpenApiWithOpenIdConnect`
+* If protocol is forced to `OpenApiWithOpenIdConnect` on Tridion Docs 15.x/15.x.y
     * You mostly get fully operational WcfSoapWithOpenIdConnect 
     * You also get an OpenAPI 3.0 experimental proxy on your IShSession object (experimental, might look different in the future)
 
 ### OpenIdConnect Authorization Code Flow with PKCE Flow
 
-On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
+On Tridion Docs 15.x/15.x.y the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
 
 ```powershell
 New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example.com/ISHWS/ #over-SystemBrowser
@@ -43,7 +49,7 @@ Below animation illustrates how you will authenticate over your (system) browser
 
 ### OpenIdConnect Client Credentials Flow
 
-On Tridion Docs 15.x/15.x.0 the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
+On Tridion Docs 15.x/15.x.y the below cmdlet with superfluous `-Protocol WcfSoapWithOpenIdConnect` parameter will create an `IshSession` for usage in all other cmdlets.
 
 ```powershell
 New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl https://ish.example.com/ISHWS/ -ClientId "c82..." -ClientSecret "ziK...=="
@@ -73,7 +79,7 @@ Since Tridion Docs 15/15.0.0, the Tridion Docs User Profile as seen in the Setti
 
 Since Tridion Docs 15/15.0.0 an OpenAPI REST API v3.0 was added on route for a full functional parity successor of the public SOAP v2.5 API on which ISHRemote originated. The outstanding challenge is that over time the internals of ISHRemote cmdlets will be rewired from SOAP to REST - in this ISHRemote release most cmdlets are SOAP as you can derive from protocols `WcfSoapWithWsTrust` and `WcfSoapWithOpenIdConnect`.
 
-If there is a new implementation, it can be selected over protocol `OpenApiWithOpenIdConnect`. If not, it will fall back to `WcfSoapWithOpenIdConnect`. The first step of side-by-side implementation is having access to authenticated proxies. Hence the introduction of _experimental future_ `InfoShareOpenApiWithOpenIdConnectConnection` which offers NSwag generated proxies to OpenAPI REST API of Tridion Docs 15/15.0.0 and matching Access Management 1.0 API.
+If there is a new implementation, it can be selected over protocol `OpenApiWithOpenIdConnect`. If not, it will fall back to `WcfSoapWithOpenIdConnect`. The first step of side-by-side implementation is having access to authenticated proxies. Hence the introduction of _experimental future_ `InfoShareOpenApiWithOpenIdConnectConnection` which offers NSwag generated proxies to OpenAPI REST API of Tridion Docs 15.1/15.1.0 and matching Access Management 1.0 API.
 
     $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -Protocol OpenApiWithOpenIdConnect
     $json = $ishSession.OpenApiISH30Client.GetApplicationVersionAsync()
@@ -85,7 +91,7 @@ If there is a new implementation, it can be selected over protocol `OpenApiWithO
 ## Implementation Details
 
 * Cmdlets `New-IshSession` and `Test-IshSession` received parameter `-Protocol`, `-ClientId` and `-ClientSecret`. #152 Thanks @ddemeyer 
-* Cmdlets `New-IshSession` and `Test-IshSession` received parameter `-Timeout` and `-IgnoreSslPolicyErrors` on parameter group `Interactive` (renamed `ActiveDirectory` to cover System Browser flow next to NetworkCredentials flow). #152 Thanks @ddemeyer 
+* Cmdlets `New-IshSession` and `Test-IshSession` received parameter `-Timeout` and `-IgnoreSslPolicyErrors` on parameter group `Interactive` (renamed from `ActiveDirectory` to cover System Browser flow next to NetworkCredentials flow). #152 Thanks @ddemeyer 
 * Help of cmdlet `New-IshSession` was still suggesting obsolete parameter `-WsTrustIssuerUrl` in examples
 * Experimental OpenAPI REST API Proxies #180 Thanks @ddemeyer
 * Third-party version bump to latest available across platforms #180 Thanks @ddemeyer
@@ -103,7 +109,7 @@ Code, especially around communication and authentication protocol, was heavily r
 * Layout of `IshSession` was enriched with `AccessToken` through `ISHRemote.Format.ps1xml`.
 * Multi-platform code using pragma (e.g. `#if NET48`) for local redirect listener and system browser are
     * `IshConnectionConfiguration`:	Web Service discovery happens over ‘https://ish.example.com/ISHWS/connectionconfiguration.xml’, especially the ServerVersion drives protocol detection and available API functions/behavior. Just like Publication Manager would do.
-    * `InfoShareOpenIdConnectSystemBrowser`: Knows how to reliably launch your default web browser (the one that opens any https:// url in any application) across the supported platforms Windows, Linux and MacOS.
+    * `InfoShareOpenIdConnectSystemBrowser`: Knows how to reliably launch your default web browser (the one that opens any https:// url in any application) across the supported platforms Windows (via `StartProcess`), Linux (via `xdg-open`) and MacOS (via `Open`).
     * `InfoShareOpenIdConnectLocalHttpEndpoint`: ISHRemote will listen to the Redirect Url (typically 127.0.01 and a free port) where the System Browser will federate out for authentication but eventually will call back to ISHRemote with InfoShareOpenIdConnectTokens.
     * `InfoShareWcfSoapBearerCredentials`: SOAP web services (/ISHWS/OWCF/) with OpenIdConnect authentication need a way to pass the Access/Bearer token. This class wraps the token up in a SAML token which passes nicely over Windows Communication Foundation. Used in InfoShareWcfSoapWithOpenIdConnectConnection class.
     * `InfoShareOpenIdConnectTokens`: Container to hold and refresh your Access/Bearer tokens and more which are eventually pushed in the wire over an HttpClient class.
