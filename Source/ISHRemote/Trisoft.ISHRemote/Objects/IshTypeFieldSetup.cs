@@ -173,11 +173,6 @@ namespace Trisoft.ISHRemote.Objects
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, true, false, true, true, false, false, false, true, true, false, "EVENTDATATYPE", Enumerations.DataType.Number, "", "", "The event data type that indicates the content data type of the referenced blob under this event detail. Possible values are: None(0), String(1), List(2), Xml(3), SendEventData(10), LogObject (20), StatusReport(21), CommandOutput(30), DITAOTLogFile (31) and Other(99)."),
                 new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, true, false, "EVENTDATASIZE", Enumerations.DataType.Number, "", "", "The event data size contains the data size of the referenced blob under this detailid."),
             };
-            if ((_ishVersion.MajorVersion == 15 && _ishVersion.MinorVersion >= 1) || _ishVersion.MajorVersion >= 16)
-            {
-                ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Progress, false, false, true, false, false, false, false, true, false, false, "DATETIMEKIND", Enumerations.DataType.String, "", "", "The kind of the date time (LOCAL, UTC) in the creation and modification date of the event progress."));
-                ishTypeFieldDefinitions.Add(new IshTypeFieldDefinition(_logger, Enumerations.ISHType.ISHEvent, Enumerations.Level.Detail, false, false, true, false, false, false, false, true, false, false, "DATETIMEKIND", Enumerations.DataType.String, "", "", "The kind of the date time (LOCAL, UTC) in the creation of the event detail."));
-            }
 
             foreach (var ishTypeFieldDefinition in ishTypeFieldDefinitions)
             {
