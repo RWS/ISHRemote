@@ -162,14 +162,14 @@ Describe "Get-IshEvent" -Tags "Create" {
 			$ishEvent.IshField.Count -ge 20 | Should -Be $true  # Perhaps expected 10 Progress level fields, but Get-IshEvent currently always retrieves details as well
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=PSObjectNoteProperty" {
-			    $ishSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
-			    $ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allMetadata)[0]
-			    $ishEvent.GetType().Name | Should -BeExactly "IshEvent"  # and not PSObject
-			    [bool]($ishEvent.PSobject.Properties.name -match "status") | Should -Be $true
-			    [bool]($ishEvent.PSobject.Properties.name -match "userid") | Should -Be $true
-			    [bool]($ishEvent.PSobject.Properties.name -match "modificationdate") | Should -Be $true
-			    [bool]($ishEvent.PSobject.Properties.name -match "status_detail_value") | Should -Be $true
-			    $ishEvent.modificationdate -like "*/*" | Should -Be $false  # It should be sortable date format: yyyy-MM-ddTHH:mm:ss
+			$ishSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
+			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allMetadata)[0]
+			$ishEvent.GetType().Name | Should -BeExactly "IshEvent"  # and not PSObject
+			[bool]($ishEvent.PSobject.Properties.name -match "status") | Should -Be $true
+			[bool]($ishEvent.PSobject.Properties.name -match "userid") | Should -Be $true
+			[bool]($ishEvent.PSobject.Properties.name -match "modificationdate") | Should -Be $true
+			[bool]($ishEvent.PSobject.Properties.name -match "status_detail_value") | Should -Be $true
+			$ishEvent.modificationdate -like "*/*" | Should -Be $false  # It should be sortable date format: yyyy-MM-ddTHH:mm:ss
 		}
 		It "Parameter RequestedMetadata PipelineObjectPreference=Off" {
 		    $pipelineObjectPreference = $ishSession.PipelineObjectPreference
