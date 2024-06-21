@@ -320,11 +320,11 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 
                                 //RetrieveMetadata
                                 WriteDebug("Retrieving CardIds.length[" + lngCardIds.Count + "] RequestedMetadata.length[" + requestedMetadata.ToXml().Length + "] 0/" + lngCardIds.Count);
-                                // Devides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
-                                List<List<long>> devidedlngCardIdsList = DevideListInBatches<long>(lngCardIds, IshSession.MetadataBatchSize);
+                                // Divides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
+                                List<List<long>> dividedLngCardIdsList = DivideListInBatches<long>(lngCardIds, IshSession.MetadataBatchSize);
                                 int currentLngCardIdCount = 0;
                                 WriteParentProgress("Retrieving metadata for search results...", currentLngCardIdCount, lngCardIds.Count);
-                                foreach (List<long> lngCardIdBatch in devidedlngCardIdsList)
+                                foreach (List<long> lngCardIdBatch in dividedLngCardIdsList)
                                 {
                                     // Process language card ids in batches
                                     string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(

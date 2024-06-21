@@ -165,8 +165,8 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <exception cref="Exception"></exception>
         protected override void EndProcessing()
         {
-          try
-          {
+            try
+            {
                 // Validating the input where piped objects overrules explicit LogicalId parameter
                 WriteDebug("Validating");
                 string[] logicalIds;
@@ -180,19 +180,19 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 }
 
                 WriteDebug("Moving");
-                if (ShouldProcess(String.Join(", ",logicalIds)))
+                if (ShouldProcess(String.Join(", ", logicalIds)))
                 {
                     WriteDebug($"Moving logicalIds.length[{logicalIds.Length}] FromFolderId[{_fromFolderId}] ToFolderId[{_toFolderId}] 0/{logicalIds.Length}");
-                    // Devides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
-                    List<List<string>> devidedlogicalIdsList = DevideListInBatches<string>(logicalIds.ToList(), IshSession.MetadataBatchSize);
+                    // Divides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
+                    List<List<string>> dividedLogicalIdsList = DivideListInBatches<string>(logicalIds.ToList(), IshSession.MetadataBatchSize);
                     int currentLogicalIdCount = 0;
-                    foreach (List<string> logicalIdBatch in devidedlogicalIdsList)
+                    foreach (List<string> logicalIdBatch in dividedLogicalIdsList)
                     {
                         // Process language card ids in batches
                         string errorReport = IshSession.Folder25.MoveObjects(_toFolderId, logicalIdBatch.ToArray(), _fromFolderId);
                         ReportErrors(errorReport);
                         currentLogicalIdCount += logicalIdBatch.Count;
-                        WriteDebug($"Moving logicalIds.length[{logicalIds.Length}] FromFolderId[{_fromFolderId}] ToFolderId[{ _toFolderId}] {currentLogicalIdCount}/{logicalIds.Length}");
+                        WriteDebug($"Moving logicalIds.length[{logicalIds.Length}] FromFolderId[{_fromFolderId}] ToFolderId[{_toFolderId}] {currentLogicalIdCount}/{logicalIds.Length}");
                     }
                 }
 
@@ -203,12 +203,12 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(), Enumerations.ActionMode.Read);
                 if (_retrievedIshObjects.Count > 0)
                 {
-                    var lngCardIds =_retrievedIshObjects.Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng])).ToList();
+                    var lngCardIds = _retrievedIshObjects.Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng])).ToList();
                     WriteDebug($"Retrieving CardIds.length[{lngCardIds.Count}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] 0/{lngCardIds.Count}");
-                    // Devides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
-                    List<List<long>> devidedlngCardIdsList = DevideListInBatches<long>(lngCardIds, IshSession.MetadataBatchSize);
+                    // Divides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
+                    List<List<long>> dividedLngCardIdsList = DivideListInBatches<long>(lngCardIds, IshSession.MetadataBatchSize);
                     int currentLngCardIdCount = 0;
-                    foreach (List<long> lngCardIdBatch in devidedlngCardIdsList)
+                    foreach (List<long> lngCardIdBatch in dividedLngCardIdsList)
                     {
                         // Process language card ids in batches
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadataByIshLngRefs(
@@ -224,10 +224,10 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 {
                     // IshObject from pipeline is null. Retrieve using only provided LogicalId array
                     WriteDebug($"Retrieving LogicalId.length[{LogicalId.Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] 0/{LogicalId.Length}");
-                    // Devides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
-                    List<List<string>> devidedlogicalIdsList = DevideListInBatches<string>(LogicalId.ToList(), IshSession.MetadataBatchSize);
+                    // Divides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
+                    List<List<string>> dividedLogicalIdsList = DivideListInBatches<string>(LogicalId.ToList(), IshSession.MetadataBatchSize);
                     int currentLogicalIdCount = 0;
-                    foreach (List<string> logicalIdBatch in devidedlogicalIdsList)
+                    foreach (List<string> logicalIdBatch in dividedLogicalIdsList)
                     {
                         // Process language card ids in batches
                         string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(logicalIdBatch.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, "", requestedMetadata.ToXml());

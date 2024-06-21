@@ -158,10 +158,10 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                                 ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]))
                                 .ToList();
                         WriteDebug($"Retrieving CardIds.length[{lngCardIds}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] 0/{lngCardIds.Count}");
-                        // Devides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
-                        List<List<long>> devidedlngCardIdsList = DevideListInBatches<long>(lngCardIds, IshSession.MetadataBatchSize);
+                        // Divides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
+                        List<List<long>> dividedLngCardIdsList = DivideListInBatches<long>(lngCardIds, IshSession.MetadataBatchSize);
                         int currentLngCardIdCount = 0;
-                        foreach (List<long> lngCardIdBatch in devidedlngCardIdsList)
+                        foreach (List<long> lngCardIdBatch in dividedLngCardIdsList)
                         {
                             // Process language card ids in batches
                             string xmlIshObjects = IshSession.PublicationOutput25.RetrieveMetadataByIshLngRefs(
@@ -180,10 +180,10 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             EnumConverter.ToStatusFilter<PublicationOutput25ServiceReference.StatusFilter>(StatusFilter);
                         IshFields metadataFilter = new IshFields(MetadataFilter);
                         WriteDebug($"Retrieving LogicalId.length[{LogicalId.Length}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] 0/{LogicalId.Length}");
-                        // Devides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
-                        List<List<string>> devidedlogicalIdsList = DevideListInBatches<string>(LogicalId.ToList(), IshSession.MetadataBatchSize);
+                        // Divides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
+                        List<List<string>> dividedLogicalIdsList = DivideListInBatches<string>(LogicalId.ToList(), IshSession.MetadataBatchSize);
                         int currentLogicalIdCount = 0;
-                        foreach (List<string> logicalIdBatch in devidedlogicalIdsList)
+                        foreach (List<string> logicalIdBatch in dividedLogicalIdsList)
                         {
                             // Process language card ids in batches
                             string xmlIshObjects = IshSession.PublicationOutput25.RetrieveMetadata(

@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -239,10 +239,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                 // remove duplicates from annotationIds list
                 annotationIds = annotationIds.Distinct().ToList();
                 WriteDebug($"Retrieving AnnotationId.length[{annotationIds.Count}]  MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
-                // Devides the list of Annotation Ids in different lists that all have maximally MetadataBatchSize elements
-                List<List<string>> devidedAnnotationIdsList = DevideListInBatches<string>(annotationIds, IshSession.MetadataBatchSize);
+                // Divides the list of Annotation Ids in different lists that all have maximally MetadataBatchSize elements
+                List<List<string>> dividedAnnotationIdsList = DivideListInBatches<string>(annotationIds, IshSession.MetadataBatchSize);
                 int currentAnnotationIdCount = 0;
-                foreach (List<string> annotationIdBatch in devidedAnnotationIdsList)
+                foreach (List<string> annotationIdBatch in dividedAnnotationIdsList)
                 {
                     string xmlIshObjectsRetrieved = IshSession.Annotation25.RetrieveMetadata(annotationIdBatch.ToArray(), metadataFilter.ToXml(), requestedMetadata.ToXml());
                     IshObjects ishObjectsRetrieved = new IshObjects(ISHType, xmlIshObjectsRetrieved);

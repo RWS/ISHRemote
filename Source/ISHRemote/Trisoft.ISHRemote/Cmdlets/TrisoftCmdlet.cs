@@ -18,14 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
-using Trisoft.ISHRemote.Objects;
-using Trisoft.ISHRemote.Objects.Public;
-using Trisoft.ISHRemote.Exceptions;
 using System.Threading;
 using System.Xml;
-using Trisoft.ISHRemote.Interfaces;
 using Trisoft.ISHRemote.Folder25ServiceReference;
-using System.Runtime.InteropServices;
+using Trisoft.ISHRemote.Interfaces;
+using Trisoft.ISHRemote.Objects;
+using Trisoft.ISHRemote.Objects.Public;
 
 namespace Trisoft.ISHRemote.Cmdlets
 {
@@ -257,13 +255,13 @@ namespace Trisoft.ISHRemote.Cmdlets
 
 
         /// <summary>
-        /// Devides one list to multiple lists by batchsize
+        /// Divides one list to multiple lists by batchsize
         /// </summary>
         /// <typeparam name="T">Type</typeparam>
         /// <param name="list">List to devide</param>
         /// <param name="batchSize"></param>
         /// <returns>Multiple lists, all having maximally batchsize elements</returns>
-        internal List<List<T>> DevideListInBatches<T>(List<T> list, int batchSize)
+        internal List<List<T>> DivideListInBatches<T>(List<T> list, int batchSize)
         {
             var outList = new List<List<T>>();
             if (list != null)
@@ -273,38 +271,6 @@ namespace Trisoft.ISHRemote.Cmdlets
                     outList.Add(list.Skip(i).Take(batchSize).ToList<T>());
                 }
             }
-            return outList;
-        }
-
-        /// <summary>
-        /// Groups IshObjects list by LogicalIds and divides into multiple lists by batchsize so that objects with the same LogicalIds are never split between batches.
-        /// </summary>
-        /// <param name="list">List to devide</param>
-        /// <param name="batchSize"></param>
-        /// <returns>Multiple lists grouped by LogicalIds and having maximally batchsize elements, but the same LogicalId is never split between batches</returns>
-        internal List<List<IshObject>>DevideListInBatchesByLogicalId(List<IshObject> list, int batchSize)
-        {
-            var outList = new List<List<IshObject>>();
-
-            if (list != null)
-            {
-                var ishObjectsGroupedByIshRef = list.GroupBy(ishObject => ishObject.IshRef);
-                var tempList = new List<IshObject>(ishObjectsGroupedByIshRef.First().ToList());
-                foreach (var ishObjectsIshRefGroup in ishObjectsGroupedByIshRef.Skip(1))
-                {
-                    if (tempList.Count + ishObjectsIshRefGroup.Count() <= batchSize)
-                    {
-                        tempList.AddRange(ishObjectsIshRefGroup.ToList());
-                    }
-                    else
-                    {
-                        outList.Add(tempList);
-                        tempList = ishObjectsIshRefGroup.ToList();
-                    }
-                }
-                outList.Add(tempList);
-            }
-
             return outList;
         }
     }
