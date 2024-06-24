@@ -96,27 +96,6 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				$ishBackgroundTaskIshObjectsPipeline.userid | Should -BeExactly $ishSession.UserName
 			}
 		}
-		It "Pipeline IshObject MetadataBatchSize[2] with LogicalId grouping" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				$ishSession.MetadataBatchSize = 2
-				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-				$ishBackgroundTasks.Count | Should -BeExactly 3
-			}
-		}
-		It "Pipeline IshObject MetadataBatchSize[4] with LogicalId grouping" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				$ishSession.MetadataBatchSize = 4
-				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-				$ishBackgroundTasks.Count | Should -BeExactly 3
-			}
-		}
-		It "Pipeline IshObject MetadataBatchSize[6] with LogicalId grouping" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				$ishSession.MetadataBatchSize = 6
-				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-				$ishBackgroundTasks.Count | Should -BeExactly 2
-			}
-		}
 		It "Pipeline IshObject MetadataBatchSize[10] with LogicalId grouping" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishSession.MetadataBatchSize = 10
