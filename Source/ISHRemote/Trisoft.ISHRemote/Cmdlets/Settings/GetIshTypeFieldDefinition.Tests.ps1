@@ -73,7 +73,7 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 		It "Table ISHEvent" {
             if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)
             {
-		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should -Be 12
+		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should -Be 11
 		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Detail').Count | Should -Be 13
 		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnRead -EQ $true).Count | Should -Be 25 # all columns are allowed to be read
 		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should -Be 13 # all columns are explicit api parameters and cannot be set over metadata
