@@ -39,24 +39,24 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// </summary>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $ishBackgroundTask = Get-IshFolderContent -FolderPath "General\MyFolder\Topics" -VersionFilter Latest -LanguagesFilter en |
     ///                      Add-IshBackgroundTask -EventType "SMARTTAG"
     /// </code>
-    /// <para>Add BackgroundTask with event type "SMARTTAG" for the objects located under the "General\MyFolder\Topics" path</para> 
+    /// <para>Add BackgroundTask with event type "SMARTTAG" for the objects located under the "General\MyFolder\Topics" path.  Trigger a legacy correction event of SMARTTAG across many folders.Note that the default value for the -InputDataTemplate is IshObjectsWithLngRef.</para> 
     /// </example>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $ishBackgroundTask = Get-IshFolder -FolderPath "General\Myfolder" -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary") -Recurse |
     ///                      Get-IshFolderContent -VersionFilter Latest -LanguagesFilter en |
-    ///                      Add-IshBackgroundTask -EventType "SMARTTAG" -InputDataTemplate IshObjectsWithLngRef
+    ///                      Add-IshBackgroundTask -EventType "SMARTTAG"
     /// </code>
-    /// <para>Add BackgroundTask with event type "SMARTTAG" for the latest-version en(glish) content objects of type topic, map and topic library; located under the "General\MyFolder" path. Trigger a legacy correction event of SMARTTAG across many folders. Note that Get-IshFolder gives you a progress bar for follow-up. Note that it is possible to configure the BackgroundTask-handler with a variation of the SMARTTAG event to do more-or-less fields for automatic concept suggestions.</para> 
+    /// <para>Add BackgroundTask with event type "SMARTTAG" for the latest-version en(glish) content objects of type topic, map and topic library; located under the "General\MyFolder" path. Trigger a legacy correction event of SMARTTAG across many folders.Note that the default value for the -InputDataTemplate is IshObjectsWithLngRef. Note that Get-IshFolder gives you a progress bar for follow-up. Note that it is possible to configure the BackgroundTask-handler with a variation of the SMARTTAG event to do more-or-less fields for automatic concept suggestions.</para> 
     /// </example>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $ishBackgroundTask = Get-IshFolder -BaseFolder Data -FolderTypeFilter @("ISHIllustration") -Recurse |
     ///                      Get-IshFolderContent -VersionFilter Latest |
     ///                      Add-IshBackgroundTask -EventType "SYNCHRONIZEMETRICS" -InputDataTemplate IshObjectsWithIshRef
@@ -65,7 +65,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// </example>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $ishBackgroundTask = Get-IshDocumentObj -LogicalId "GUID-ABCD-1234" |
     ///                      Add-IshBackgroundTask -EventType "SYNCHRONIZEMETRICS" -InputDataTemplate IshObjectWithIshRef
     /// </code>
@@ -73,7 +73,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// </example>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $rawData = "&lt;data&gt;&lt;export-document-type&gt;ISHPublication&lt;/export-document-type&gt;&lt;export-document-level&gt;lng&lt;/export-document-level&gt;&lt;export-ishlngref&gt;549482&lt;/export-ishlngref&gt;&lt;creationdate&gt;20210303070257182&lt;/creationdate&gt;&lt;/data&gt;"
     /// $ishBackgroundTask = Add-IshBackgroundTask -EventType "PUBLISH" -EventDescription "Custom publish event description" -RawInputData $rawData
     /// </code>
@@ -81,7 +81,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// </example>
     /// <example>
     /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $rawData = "&lt;data&gt;&lt;export-document-type&gt;ISHPublication&lt;/export-document-type&gt;&lt;export-document-level&gt;lng&lt;/export-document-level&gt;&lt;export-ishlngref&gt;549482&lt;/export-ishlngref&gt;&lt;creationdate&gt;20210303070257182&lt;/creationdate&gt;&lt;/data&gt;"
     /// $date = (Get-Date).AddDays(1)
     /// $ishBackgroundTask = Add-IshBackgroundTask -EventType "PUBLISH" -EventDescription "Custom publish event description" -RawInputData $rawData -StartAfter $date
@@ -142,7 +142,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// <para type="description">The InputDataTemplate (e.g. IshObjectWithLngRef) indicates whether a list of ishObjects or one ishObject is submitted as input data to the background task.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
-        public InputDataTemplate InputDataTemplate { get; set; } // Change to enum.
+        public InputDataTemplate InputDataTemplate { get; set; } = InputDataTemplate.IshObjectsWithIshRef;
 
         /// <summary>
         /// <para type="description">The hash id of the background task.</para>
@@ -321,7 +321,10 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (StartAfter.HasValue)
                 {
                     // Create BackgroundTask
-                    WriteDebug($"Create BackgroundTask EventType[{EventType}] RawInputData.length[{inputData}] StartAfter[{StartAfter}]");
+                    WriteDebug(ParameterSetName == "IshObjectsGroup" ?
+                        $"Create BackgroundTask EventType[{EventType}] InputData.length[{inputData.Length}] StartAfter[{StartAfter}]" :
+                        $"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}] StartAfter[{StartAfter}]");
+
                     var newBackgroundTaskWithStartAfterRequest = new CreateBackgroundTaskWithStartAfterRequest
                     {
                         eventType = EventType,
@@ -338,7 +341,9 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (!StartAfter.HasValue)
                 {
                     // Create BackgroundTask
-                    WriteDebug($"Create BackgroundTask EventType[{EventType}] RawInputData.length[{inputData}] StartAfter[{StartAfter}]");
+                    WriteDebug(ParameterSetName == "IshObjectsGroup" ?
+                        $"Create BackgroundTask EventType[{EventType}] InputData.length[{inputData.Length}]" :
+                        $"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}]");
                     var newBackgroundTaskRequest = new CreateBackgroundTaskRequest
                     {
                         eventType = EventType,
