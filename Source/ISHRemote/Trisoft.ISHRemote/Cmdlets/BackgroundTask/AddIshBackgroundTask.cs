@@ -35,7 +35,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// <summary>
     /// <para type="synopsis">The Add-IshBackgroundTask cmdlet add fire-and-forget asynchronous processing events to the CMS generic queuing system.</para>
     /// <para type="description">Add-IshBackgroundTask ParameterGroup variation uses BackgroundTask25.CreateBackgroundTask(WithStartAfter) that allows you to submit generic messages. Note that this requires a generic BackgroundTask service message handler.</para>
-    /// <para type="description">Add-IshBackgroundTask IshObjectsGroup requires content object(s) which are transformed as message inputdata and passed to DocumentObj25.RaiseEventByIshLngRefs. This function will server-side validate the incoming objects and trigger an internal BackgroundTask25.CreateBackgroundTask.</para>
+    /// <para type="description">Add-IshBackgroundTask IshObjectsGroup requires content object(s) which are transformed as message inputdata and passed to the Background Task.</para>
     /// </summary>
     /// <example>
     /// <code>
@@ -69,7 +69,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// $ishBackgroundTask = Get-IshDocumentObj -LogicalId "GUID-ABCD-1234" |
     ///                      Add-IshBackgroundTask -EventType "SYNCHRONIZEMETRICS" -InputDataTemplate IshObjectWithIshRef
     /// </code>
-    /// <para>Add BackgroundTask with event type "SYNCHRONIZEMETRICS" for the latest-version of a single content object of type topic; located under the "General\MyFolder\Topics" path. Trigger an event of synchronizing a topic from CM to the metrics.</para> 
+    /// <para>Add BackgroundTask with event type "SYNCHRONIZEMETRICS" for the latest-version of a single content object of type topic; Trigger an event of synchronizing a topic from CM to the metrics.</para> 
     /// </example>
     /// <example>
     /// <code>
@@ -358,7 +358,6 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 metadataFilter.AddField(new IshMetadataFilterField(FieldElements.BackgroundTaskProgressId,
                     Level.Task, FilterOperator.In, progressId.ToString(),
                     Enumerations.ValueType.Value));
-
 
                 WriteDebug($"Finding BackgroundTask UserFilter[{_userFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}]");
                 var xmlIshBackgroundTasks = IshSession.BackgroundTask25.Find(
