@@ -1070,7 +1070,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             switch (_protocol)
             {
                 case Enumerations.Protocol.WcfSoapWithWsTrust:
-                    if (!_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired)
+                    if (_infoShareWcfSoapWithWsTrustConnection == null)
                     {
                         // Not valid...
                         // ...dispose connection
