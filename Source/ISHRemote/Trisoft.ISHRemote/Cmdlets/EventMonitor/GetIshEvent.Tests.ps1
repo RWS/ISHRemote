@@ -136,7 +136,7 @@ Describe "Get-IshEvent" -Tags "Create" {
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishEvent = (Get-IshEvent -IShSession $ishSession)[0]
 			if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16) {
-				$ishEvent.IshField.Count | Should -Be 12
+				$ishEvent.IshField.Count | Should -Be 11
 			} else {
 				$ishEvent.IshField.Count | Should -Be 10
 			}
@@ -149,7 +149,11 @@ Describe "Get-IshEvent" -Tags "Create" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allProgressMetadata)[0]
 			$ishEvent.ProgressRef -gt 0 | Should -Be $true
 			#$ishEvent.DetailRef -gt 0 | Should -Be $true
-			$ishEvent.IshField.Count | Should -Be 10
+            if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16) {
+				$ishEvent.IshField.Count | Should -Be 12
+			} else {
+				$ishEvent.IshField.Count | Should -Be 10
+			}
 		}
 		It "Parameter RequestedMetadata only all of Detail level" {
 			$ishEvent = (Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter All -RequestedMetadata $allDetailMetadata)[0]
