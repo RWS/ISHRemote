@@ -322,17 +322,20 @@ namespace Trisoft.ISHRemote.Connection
         /// Root uri for the Web Services
         /// </summary>
         public Uri InfoShareWSBaseUri { get; private set; }
+
         /// <summary>
-        /// Checks whether the token is issued and still valid
+        /// Gets or sets when access token should be refreshed (relative to its expiration time). Default skew time is 3 minutes.
+        /// </summary>
+        public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(3);
+
+        /// <summary>
+        /// Checks whether the token is issued and still valid with a skew time.
         /// </summary>
         public bool IsTokenAlmostExpired
         {
             get
             {
-                // we have the actual issued token which we can check for expiring
-                bool result = IssuedToken.ValidTo.ToUniversalTime() >= DateTime.UtcNow;
-                //_logger.WriteDebug($"Token still valid? {result} ({IssuedToken.ValidTo.ToUniversalTime()} >= {DateTime.UtcNow})");
-                return result;
+                return (DateTime.UtcNow.Add(RefreshBeforeExpiration) > IssuedToken.ValidTo.ToUniversalTime());
             }
         }
         #endregion Properties

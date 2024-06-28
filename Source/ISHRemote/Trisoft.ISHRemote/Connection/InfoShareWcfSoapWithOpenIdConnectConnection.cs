@@ -345,7 +345,7 @@ namespace Trisoft.ISHRemote.Connection
         public Annotation25ServiceReference.Annotation GetAnnotation25Channel()
         {
 #if NET48
-            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
@@ -353,7 +353,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
@@ -383,7 +383,7 @@ namespace Trisoft.ISHRemote.Connection
         public Application25ServiceReference.Application GetApplication25Channel()
         {
 #if NET48
-            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
@@ -391,7 +391,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
@@ -422,7 +422,7 @@ namespace Trisoft.ISHRemote.Connection
         public DocumentObj25ServiceReference.DocumentObj GetDocumentObj25Channel()
         {
 #if NET48
-            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
@@ -430,7 +430,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
@@ -461,7 +461,7 @@ namespace Trisoft.ISHRemote.Connection
         public Folder25ServiceReference.Folder GetFolder25Channel()
         {
 #if NET48
-            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
@@ -469,7 +469,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
@@ -500,7 +500,7 @@ namespace Trisoft.ISHRemote.Connection
         public User25ServiceReference.User GetUser25Channel()
         {
 #if NET48
-            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
@@ -508,7 +508,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _userClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
@@ -539,7 +539,7 @@ namespace Trisoft.ISHRemote.Connection
         public UserRole25ServiceReference.UserRole GetUserRole25Channel()
         {
 #if NET48
-            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
@@ -547,7 +547,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
@@ -578,7 +578,7 @@ namespace Trisoft.ISHRemote.Connection
         public UserGroup25ServiceReference.UserGroup GetUserGroup25Channel()
         {
 #if NET48
-            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
@@ -586,7 +586,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
@@ -617,7 +617,7 @@ namespace Trisoft.ISHRemote.Connection
         public ListOfValues25ServiceReference.ListOfValues GetListOfValues25Channel()
         {
 #if NET48
-            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
@@ -625,7 +625,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
@@ -656,7 +656,7 @@ namespace Trisoft.ISHRemote.Connection
         public PublicationOutput25ServiceReference.PublicationOutput GetPublicationOutput25Channel()
         {
 #if NET48
-            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
@@ -664,7 +664,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
@@ -695,7 +695,7 @@ namespace Trisoft.ISHRemote.Connection
         public OutputFormat25ServiceReference.OutputFormat GetOutputFormat25Channel()
         {
 #if NET48
-            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
@@ -703,7 +703,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
@@ -734,7 +734,7 @@ namespace Trisoft.ISHRemote.Connection
         public Settings25ServiceReference.Settings GetSettings25Channel()
         {
 #if NET48
-            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
@@ -742,7 +742,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
@@ -773,7 +773,7 @@ namespace Trisoft.ISHRemote.Connection
         public EDT25ServiceReference.EDT GetEDT25Channel()
         {
 #if NET48
-            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
@@ -781,7 +781,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
@@ -812,7 +812,7 @@ namespace Trisoft.ISHRemote.Connection
         public EventMonitor25ServiceReference.EventMonitor GetEventMonitor25Channel()
         {
 #if NET48
-            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
@@ -820,7 +820,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
@@ -851,7 +851,7 @@ namespace Trisoft.ISHRemote.Connection
         public Baseline25ServiceReference.Baseline GetBaseline25Channel()
         {
 #if NET48
-            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
@@ -859,7 +859,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
@@ -890,7 +890,7 @@ namespace Trisoft.ISHRemote.Connection
         public MetadataBinding25ServiceReference.MetadataBinding GetMetadataBinding25Channel()
         {
 #if NET48
-            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
@@ -898,7 +898,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
@@ -929,7 +929,7 @@ namespace Trisoft.ISHRemote.Connection
         public Search25ServiceReference.Search GetSearch25Channel()
         {
 #if NET48
-            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
@@ -937,7 +937,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
@@ -968,7 +968,7 @@ namespace Trisoft.ISHRemote.Connection
         public TranslationJob25ServiceReference.TranslationJob GetTranslationJob25Channel()
         {
 #if NET48
-            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
@@ -976,7 +976,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
@@ -1007,7 +1007,7 @@ namespace Trisoft.ISHRemote.Connection
         public TranslationTemplate25ServiceReference.TranslationTemplate GetTranslationTemplate25Channel()
         {
 #if NET48
-            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
@@ -1015,7 +1015,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
@@ -1047,7 +1047,7 @@ namespace Trisoft.ISHRemote.Connection
         public BackgroundTask25ServiceReference.BackgroundTask GetBackgroundTask25Channel()
         {
 #if NET48
-            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
@@ -1055,7 +1055,7 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
 #else
-            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) || (IsTokenAlmostExpired))
+            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
