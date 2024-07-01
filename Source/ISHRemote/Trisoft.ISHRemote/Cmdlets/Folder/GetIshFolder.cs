@@ -248,10 +248,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 {
                     var folderCardIds = _retrievedIshFolders.Select(ishFolder => Convert.ToInt64(ishFolder.IshFolderRef)).ToList();
                     WriteDebug($"Retrieving CardIds.length[{folderCardIds.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] 0/{folderCardIds.Count}");
-                    // Devides the list of folder card ids in different lists that all have maximally MetadataBatchSize elements
-                    List<List<long>> devidedFolderCardIdsList = DevideListInBatches<long>(folderCardIds, IshSession.MetadataBatchSize);
+                    // Divides the list of folder card ids in different lists that all have maximally MetadataBatchSize elements
+                    List<List<long>> dividedFolderCardIdsList = DivideListInBatches<long>(folderCardIds, IshSession.MetadataBatchSize);
                     int currentFolderCardIdCount = 0;
-                    foreach (List<long> folderCardIdBatch in devidedFolderCardIdsList)
+                    foreach (List<long> folderCardIdBatch in dividedFolderCardIdsList)
                     {
                         // Process card ids in batches
                         switch (IshSession.Protocol)
@@ -272,10 +272,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                 else if (ParameterSetName == "FolderIdGroup" && _retrievedFolderIds.Count > 0)
                 {
                     WriteDebug($"Retrieving CardIds.length[{ _retrievedFolderIds.Count}] RequestedMetadata.length[{_requestedMetadata.ToXml().Length}] 0/{_retrievedFolderIds.Count}");
-                    // Devides the list of folder card ids in different lists that all have maximally MetadataBatchSize elements
-                    List<List<long>> devidedFolderCardIdsList = DevideListInBatches<long>(_retrievedFolderIds, IshSession.MetadataBatchSize);
+                    // Divides the list of folder card ids in different lists that all have maximally MetadataBatchSize elements
+                    List<List<long>> dividedFolderCardIdsList = DivideListInBatches<long>(_retrievedFolderIds, IshSession.MetadataBatchSize);
                     int currentFolderCardIdCount = 0;
-                    foreach (List<long> folderCardIdBatch in devidedFolderCardIdsList)
+                    foreach (List<long> folderCardIdBatch in dividedFolderCardIdsList)
                     {
                         // Process card ids in batches
                         IshFolders retrievedFolders = null;

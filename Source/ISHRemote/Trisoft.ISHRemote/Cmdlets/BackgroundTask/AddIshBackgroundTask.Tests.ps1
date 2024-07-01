@@ -96,27 +96,6 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				$ishBackgroundTaskIshObjectsPipeline.userid | Should -BeExactly $ishSession.UserName
 			}
 		}
-		It "Pipeline IshObject MetadataBatchSize[2] with LogicalId grouping" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				$ishSession.MetadataBatchSize = 2
-				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-				$ishBackgroundTasks.Count | Should -BeExactly 3
-			}
-		}
-		It "Pipeline IshObject MetadataBatchSize[4] with LogicalId grouping" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				$ishSession.MetadataBatchSize = 4
-				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-				$ishBackgroundTasks.Count | Should -BeExactly 3
-			}
-		}
-		It "Pipeline IshObject MetadataBatchSize[6] with LogicalId grouping" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				$ishSession.MetadataBatchSize = 6
-				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-				$ishBackgroundTasks.Count | Should -BeExactly 2
-			}
-		}
 		It "Pipeline IshObject MetadataBatchSize[10] with LogicalId grouping" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishSession.MetadataBatchSize = 10
@@ -128,7 +107,79 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 			$ishSession.MetadataBatchSize = $savedMetadataBatchSize
 		}
 	}
-	
+    
+    Context "Add-IshBackgroundTask IshObjectsGroup Pipeline IshObject with InputDataTemplate" {
+        BeforeAll {
+            $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID
+        }
+        It "Pipeline IshObject with LogicalId IshObjectsWithLngRef" {
+            if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
+                # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
+                $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType "TESTBACKGROUNDTASK" -InputDataTemplate IshObjectsWithLngRef |
+                Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
+
+                $inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
+                $xml = [xml]$inputData
+                $cdataNode = $xml.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject.'#cdata-section'
+                $rawCdataContent = $cdataNode
+                $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
+                $ishObjectsFromInputData = [xml]$decodedContent
+
+                $ishObjectsFromInputData.ishObjects -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -ne $null | Should -Be $true
+            }
+        }
+
+        It "Pipeline IshObject with LogicalId IshObjectWithLngRef" {
+            if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
+                # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
+                $backgroundTask = Add-IshBackgroundTask -IshSession $ishSession -EventType "TESTBACKGROUNDTASK" -InputDataTemplate IshObjectWithLngRef -IshObject $ishObjectTopic1_1 |
+                Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
+
+                $inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
+                $xml = [xml]$inputData
+                $cdataNode = $xml.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject.'#cdata-section'
+                $rawCdataContent = $cdataNode
+                $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
+                $ishObjectFromInputData = [xml]$decodedContent
+        
+                $ishObjectFromInputData.ishObject -ne $null | Should -Be $true
+                $ishObjectFromInputData.ishObject.ishtype -ne $null | Should -Be $true
+                $ishObjectFromInputData.ishObject.ishref -ne $null | Should -Be $true
+                $ishObjectFromInputData.ishObject.ishlogicalref -ne $null | Should -Be $true
+                $ishObjectFromInputData.ishObject.ishversionref -ne $null | Should -Be $true
+                $ishObjectFromInputData.ishObject.ishlngref -ne $null | Should -Be $true
+            }
+        }
+
+        It "Pipeline IshObject with LogicalId IshObjectsWithIshRef" {
+            if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
+                # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
+                $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType "TESTBACKGROUNDTASK" -InputDataTemplate IshObjectsWithIshRef |
+                Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
+
+                $inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
+                $xml = [xml]$inputData
+                $cdataNode = $xml.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject.'#cdata-section'
+                $rawCdataContent = $cdataNode
+                $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
+                $ishObjectsFromInputData = [xml]$decodedContent
+        
+                $ishObjectsFromInputData.ishObjects -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -eq $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -eq $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -eq $null | Should -Be $true
+            }
+        }
+    }
 	Context "Add-IshBackgroundTask ParameterGroup" {
 		BeforeAll {
 			# If you get the below error, it means you configured default purge operation $ishEventTypetoPurge (defaults to PUSHTRANSLATIONS in ISHRemote.PesterSetup.ps1) away

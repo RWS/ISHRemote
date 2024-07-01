@@ -294,10 +294,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHIllustration, Enumerations.ISHType.ISHLibrary, Enumerations.ISHType.ISHMasterDoc, Enumerations.ISHType.ISHModule, Enumerations.ISHType.ISHTemplate };
                             IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
-                            // Devides the list of LogicalIds in different lists that all have maximally MetadataBatchSize elements
-                            List<List<string>> devidedDocumentLogicalIdsList = DevideListInBatches<string>(documentLogicalIds, IshSession.MetadataBatchSize);
+                            // Divides the list of LogicalIds in different lists that all have maximally MetadataBatchSize elements
+                            List<List<string>> dividedDocumentLogicalIdsList = DivideListInBatches<string>(documentLogicalIds, IshSession.MetadataBatchSize);
                             int currentLogicalIdCount = 0;
-                            foreach (List<string> logicalIdBatch in devidedDocumentLogicalIdsList)
+                            foreach (List<string> logicalIdBatch in dividedDocumentLogicalIdsList)
                             {
                                 currentLogicalIdCount += logicalIdBatch.Count;
                                 WriteDebug($"Retrieving DocumentObj.length[{logicalIdBatch.Count}] MetadataFilter.length[{metadataFilterFields.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{documentLogicalIds.Count}");
@@ -345,10 +345,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
                             Enumerations.ISHType[] ISHType = { Enumerations.ISHType.ISHPublication };
                             IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, new IshFields(RequestedMetadata), Enumerations.ActionMode.Read);
 
-                            // Devides the list of LogicalIds in different lists that all have maximally MetadataBatchSize elements
-                            List<List<string>> devidedPublicationLogicalIdsList = DevideListInBatches<string>(publicationLogicalIds, IshSession.MetadataBatchSize);
+                            // Divides the list of LogicalIds in different lists that all have maximally MetadataBatchSize elements
+                            List<List<string>> dividedPublicationLogicalIdsList = DivideListInBatches<string>(publicationLogicalIds, IshSession.MetadataBatchSize);
                             int currentLogicalIdCount = 0;
-                            foreach (List<string> logicalIdBatch in devidedPublicationLogicalIdsList)
+                            foreach (List<string> logicalIdBatch in dividedPublicationLogicalIdsList)
                             {
                                 currentLogicalIdCount += logicalIdBatch.Count;
                                 WriteDebug($"Retrieving PublicationOutput.length[{logicalIdBatch.Count}] MetadataFilter.length[{metadataFilterFields.ToXml().Length}] {currentLogicalIdCount}/{publicationLogicalIds.Count}");

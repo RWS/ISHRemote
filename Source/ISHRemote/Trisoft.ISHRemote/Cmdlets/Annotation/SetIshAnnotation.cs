@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -189,11 +189,11 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                 
                 //2. Retrieve set annotations
                 WriteDebug($"Retrieving AnnotationId.length[{annotationIdsToRetrieve.Count}]");
-                // Devides the list of Annotation Ids in different lists that all have maximally MetadataBatchSize elements
-                List<List<string>> devidedAnnotationIdsList = DevideListInBatches<string>(annotationIdsToRetrieve, IshSession.MetadataBatchSize);
+                // Divides the list of Annotation Ids in different lists that all have maximally MetadataBatchSize elements
+                List<List<string>> dividedAnnotationIdsList = DivideListInBatches<string>(annotationIdsToRetrieve, IshSession.MetadataBatchSize);
                 IshFields requestedMetadata = IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(IshSession.DefaultRequestedMetadata, ISHType, returnFields, Enumerations.ActionMode.Read);
                 int currentAnnotationIdCount = 0;
-                foreach (List<string> annotationIdBatch in devidedAnnotationIdsList)
+                foreach (List<string> annotationIdBatch in dividedAnnotationIdsList)
                 {
                     string xmlIshObjectsRetrieved = IshSession.Annotation25.RetrieveMetadata(annotationIdBatch.ToArray(), "", requestedMetadata.ToXml());
                     IshObjects ishObjectsRetrieved = new IshObjects(ISHType, xmlIshObjectsRetrieved);

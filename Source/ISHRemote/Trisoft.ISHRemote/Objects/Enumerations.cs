@@ -634,6 +634,16 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// <para type="description">The InputDataTemplate (e.g. IshObjectWithLngRef) indicates whether a list of ishObjects or one ishObject is submitted as input data to the background task.</para>
+        /// </summary>
+        public enum InputDataTemplate
+        {
+            IshObjectsWithLngRef,
+            IshObjectWithLngRef,
+            IshObjectsWithIshRef
+        }
+
+        /// <summary>
         /// Unique descriptive identifier of an IshTypeFieldDefinition concatenating type, level (respecting log/version/lng), and field name
         /// </summary>
         internal static string Key(Enumerations.ISHType ishType, Enumerations.Level level, string fieldName)

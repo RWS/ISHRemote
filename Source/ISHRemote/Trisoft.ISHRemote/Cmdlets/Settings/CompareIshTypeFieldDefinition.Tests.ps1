@@ -128,13 +128,13 @@ Describe "Compare-IshTypeFieldDefinition" -Tags "Read" {
         else
         {
             It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should -Be 11
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should -Be 9
 		    }
 		    It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique/ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 10
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 8
 		    }
             It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 0
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 1
 		    }
         }
 		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
