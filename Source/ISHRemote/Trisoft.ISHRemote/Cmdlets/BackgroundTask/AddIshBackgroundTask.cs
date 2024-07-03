@@ -66,14 +66,6 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// <example>
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
-    /// $ishBackgroundTask = Get-IshDocumentObj -LogicalId "GUID-ABCD-1234" |
-    ///                      Add-IshBackgroundTask -EventType "SYNCHRONIZEMETRICS" -InputDataTemplate IshObjectWithIshRef
-    /// </code>
-    /// <para>Add BackgroundTask with event type "SYNCHRONIZEMETRICS" for the latest-version of a single content object of type topic; Trigger an event of synchronizing a topic from CM to the metrics.</para> 
-    /// </example>
-    /// <example>
-    /// <code>
-    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $rawData = "&lt;data&gt;&lt;export-document-type&gt;ISHPublication&lt;/export-document-type&gt;&lt;export-document-level&gt;lng&lt;/export-document-level&gt;&lt;export-ishlngref&gt;549482&lt;/export-ishlngref&gt;&lt;creationdate&gt;20210303070257182&lt;/creationdate&gt;&lt;/data&gt;"
     /// $ishBackgroundTask = Add-IshBackgroundTask -EventType "PUBLISH" -EventDescription "Custom publish event description" -RawInputData $rawData
     /// </code>

@@ -71,26 +71,13 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').DataSource | Should -Be 'ISHUser'
 		}
 		It "Table ISHEvent" {
-            if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)
-            {
-		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should -Be 11
-		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Detail').Count | Should -Be 12
-		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnRead -EQ $true).Count | Should -Be 23 # all columns are allowed to be read
-		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should -Be 11 # all columns are explicit api parameters and cannot be set over metadata
-		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsMultiValue -EQ $false).Count | Should -Be 23 # all columns are single value
-		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsSystem -EQ $true).Count | Should -Be 23 # all columns are system columns
-		        (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').DataSource | Should -Be 'ISHUser'
-            }
-            else
-            {
-		    	(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should -Be 11
-		    	(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Detail').Count | Should -Be 12
-		    	(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnRead -EQ $true).Count | Should -Be 23 # all columns are allowed to be read
-		    	(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should -Be 11 # all columns are explicit api parameters and cannot be set over metadata
-		    	(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsMultiValue -EQ $false).Count | Should -Be 23 # all columns are single value
-		    	(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsSystem -EQ $true).Count | Should -Be 23 # all columns are system columns
-		    	(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').DataSource | Should -Be 'ISHUser'
-            }
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should -Be 11
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Detail').Count | Should -Be 12
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnRead -EQ $true).Count | Should -Be 23 # all columns are allowed to be read
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should -Be 11 # all columns are explicit api parameters and cannot be set over metadata
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsMultiValue -EQ $false).Count | Should -Be 23 # all columns are single value
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsSystem -EQ $true).Count | Should -Be 23 # all columns are system columns
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').DataSource | Should -Be 'ISHUser'
 		}
 	}
 	Context "Get-IshTypeFieldDefinition with IshSession/TriDKXmlSetupFilePath loads if ServerVersion<13.0.0" {
