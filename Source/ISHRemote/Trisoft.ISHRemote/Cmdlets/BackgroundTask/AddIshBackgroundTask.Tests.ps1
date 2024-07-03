@@ -152,7 +152,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
                 $ishObjectFromInputData = [xml]$decodedContent
         
-                $ishObjectsFromInputData.ChildNodes.Count | Should -Be 1  # first-and-only IshObject will be passed
+                $ishObjectFromInputData.ChildNodes.Count | Should -Be 1  # first-and-only IshObject will be passed
 				$ishObjectFromInputData.ishObject -ne $null | Should -Be $true
                 $ishObjectFromInputData.ishObject.ishtype | Should -Be "ISHModule"
                 $ishObjectFromInputData.ishObject.ishref | Should -Be "ISHREMOTE-LOGICALID-TOPIC-FORADDBT1"
