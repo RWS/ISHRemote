@@ -157,20 +157,9 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
             if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
             WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
 
-            switch (ParameterSetName)
+            if ((IshSession.ServerIshVersion.MajorVersion < 13) || ((IshSession.ServerIshVersion.MajorVersion == 13) && (IshSession.ServerIshVersion.RevisionVersion < 2)))
             {
-                case "ParameterGroup":
-                    if ((IshSession.ServerIshVersion.MajorVersion < 13) || ((IshSession.ServerIshVersion.MajorVersion == 13) && (IshSession.ServerIshVersion.RevisionVersion < 2)))
-                    {
-                        throw new PlatformNotSupportedException($"Add-IshBackgroundTask with the current parameter set requires server-side BackgroundTask API which is only available starting from 13SP2/13.0.2 and up. ServerIshVersion[{IshSession.ServerVersion}]");
-                    }
-                    break;
-                case "IshObjectsGroup":
-                    if ((IshSession.ServerIshVersion.MajorVersion < 14) || ((IshSession.ServerIshVersion.MajorVersion == 14) && (IshSession.ServerIshVersion.RevisionVersion < 4)))
-                    {
-                        throw new PlatformNotSupportedException($"Add-IshBackgroundTask with the current parameter set requires server-side DocumentObj API which is only available starting from 14SP4/14.0.4 and up. ServerIshVersion[{IshSession.ServerVersion}]");
-                    }
-                    break;
+                throw new PlatformNotSupportedException($"Add-IshBackgroundTask with the current parameter set requires server-side BackgroundTask API which is only available starting from 13SP2/13.0.2 and up. ServerIshVersion[{IshSession.ServerVersion}]");
             }
             base.BeginProcessing();
         }
@@ -290,7 +279,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
 
                 if (EventDescription.IsNullOrEmpty())
                 {
-                    EventDescription = $"Executing {EventType} for {ishObjectsCount} ishObjects";
+                    EventDescription = $"Executing {EventType} for {ishObjectsCount} IShObjects";
                 }
 
                 // Start event 

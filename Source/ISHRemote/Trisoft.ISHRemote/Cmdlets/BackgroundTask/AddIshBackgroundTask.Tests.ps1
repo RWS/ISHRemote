@@ -112,13 +112,15 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
         BeforeAll {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID
         }
-        It "Pipeline IshObject with LogicalId IshObjectsWithLngRef" {
+        It "Pipeline IshObject with InputDataTemplate IshObjectsWithLngRef" {
             if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
                 # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
-                $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType "TESTBACKGROUNDTASK" -InputDataTemplate IshObjectsWithLngRef |
+                $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectsWithLngRef |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
+				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
 
-                $inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
+                # inputData looks like <ishobjects><ishobject ishtype='ISHMasterDoc' ishref='GUID-X' ishlngref='45679'>...
+				$inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
                 $xml = [xml]$inputData
                 $cdataNode = $xml.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject.'#cdata-section'
                 $rawCdataContent = $cdataNode
@@ -126,6 +128,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $ishObjectsFromInputData = [xml]$decodedContent
 
                 $ishObjectsFromInputData.ishObjects -ne $null | Should -Be $true
+				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should -Be $ishObjects.LngRef.Count  # all language cards are passed
                 $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should -Be $true
                 $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should -Be $true
                 $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should -Be $true
@@ -134,36 +137,39 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -ne $null | Should -Be $true
             }
         }
-
-        It "Pipeline IshObject with LogicalId IshObjectWithLngRef" {
+        It "Pipeline IshObject with InputDataTemplate IshObjectWithLngRef" {
             if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
                 # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
-                $backgroundTask = Add-IshBackgroundTask -IshSession $ishSession -EventType "TESTBACKGROUNDTASK" -InputDataTemplate IshObjectWithLngRef -IshObject $ishObjectTopic1_1 |
+                $backgroundTask = Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectWithLngRef -IshObject $ishObjectTopic1_1 |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
+				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
 
-                $inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
+                # inputData looks like <ishobject ishtype='ISHMasterDoc' ishref='GUID-X' ishlogicalref='45677' ishversionref='45678' ishlngref='45679'> or <ishobject ishtype='ISHBaseline' ishref='GUID-X' ishbaselineref='45798'>
+				$inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
                 $xml = [xml]$inputData
                 $cdataNode = $xml.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject.'#cdata-section'
                 $rawCdataContent = $cdataNode
                 $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
                 $ishObjectFromInputData = [xml]$decodedContent
         
-                $ishObjectFromInputData.ishObject -ne $null | Should -Be $true
-                $ishObjectFromInputData.ishObject.ishtype -ne $null | Should -Be $true
-                $ishObjectFromInputData.ishObject.ishref -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ChildNodes.Count | Should -Be 1  # first-and-only IshObject will be passed
+				$ishObjectFromInputData.ishObject -ne $null | Should -Be $true
+                $ishObjectFromInputData.ishObject.ishtype | Should -Be "ISHModule"
+                $ishObjectFromInputData.ishObject.ishref | Should -Be "ISHREMOTE-LOGICALID-TOPIC-FORADDBT1"
                 $ishObjectFromInputData.ishObject.ishlogicalref -ne $null | Should -Be $true
                 $ishObjectFromInputData.ishObject.ishversionref -ne $null | Should -Be $true
                 $ishObjectFromInputData.ishObject.ishlngref -ne $null | Should -Be $true
             }
         }
-
-        It "Pipeline IshObject with LogicalId IshObjectsWithIshRef" {
+        It "Pipeline IshObject with InputDataTemplate IshObjectsWithIshRef" {
             if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
                 # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
-                $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType "TESTBACKGROUNDTASK" -InputDataTemplate IshObjectsWithIshRef |
+                $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectsWithIshRef |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
+				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
 
-                $inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
+                # inputData looks like <ishobjects><ishobject ishtype='ISHMasterDoc' ishref='GUID-X'>...
+				$inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
                 $xml = [xml]$inputData
                 $cdataNode = $xml.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject.'#cdata-section'
                 $rawCdataContent = $cdataNode
@@ -171,6 +177,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $ishObjectsFromInputData = [xml]$decodedContent
         
                 $ishObjectsFromInputData.ishObjects -ne $null | Should -Be $true
+				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should -Be ($ishObjects.IshRef | Select-Object -Unique).Count  # all unique LogicalIds are passed
                 $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should -Be $true
                 $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should -Be $true
                 $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should -Be $true

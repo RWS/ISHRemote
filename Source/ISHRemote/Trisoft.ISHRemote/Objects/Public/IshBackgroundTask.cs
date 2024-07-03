@@ -123,7 +123,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         /// </summary>
         public string HistoryRef
         {
-            get { return _backgroundTaskRef[Enumerations.ReferenceType.BackgroundTaskHistory]; }
+            get { return (_backgroundTaskRef.ContainsKey(Enumerations.ReferenceType.BackgroundTaskHistory)) ? _backgroundTaskRef[Enumerations.ReferenceType.BackgroundTaskHistory] : string.Empty; }
         }
     }
 }
