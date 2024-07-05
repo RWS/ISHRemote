@@ -112,11 +112,14 @@ The alternative is to navigate your data set in smaller chunks, then folders com
 1. The pipeline IshBackgroundTask objects are stored in a variable where you can later on track the asynchronous progress over `Get-IshBackgroundTask`.
 
 ```powershell
-New-IshSession -WsBaseUrl https://example.com/ISHWS/ -PSCredential Admin
+New-IshSession -WsBaseUrl https://example.com/ISHWS/
 $ishBackgroundTask = Get-IshFolder -FolderPath "General\Myfolder" -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary") -Recurse |
-                     Get-IshFolderContent -VersionFilter Latest -LanguagesFilter en |
-                     Add-IshBackgroundTask -EventType "SMARTTAG"
+ForEach-Object -Process {
+    Get-IshFolderContent -IshFolder $_ -VersionFilter Latest -LanguagesFilter en |
+    Add-IshBackgroundTask -EventType "SMARTTAG"
+}
 ```
+*Note: example was updated to match optimize throughput of ISHRemote v8.1*
 
 ### Sample - Custom actions across folder and subfolders
 

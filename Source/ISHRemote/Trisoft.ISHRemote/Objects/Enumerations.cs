@@ -640,7 +640,8 @@ namespace Trisoft.ISHRemote.Objects
         {
             IshObjectsWithLngRef,
             IshObjectWithLngRef,
-            IshObjectsWithIshRef
+            IshObjectsWithIshRef,
+            EventDataWithIshLngRefs
         }
 
         /// <summary>

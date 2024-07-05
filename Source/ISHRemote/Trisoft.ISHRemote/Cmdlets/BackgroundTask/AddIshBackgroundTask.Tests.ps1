@@ -163,8 +163,11 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
         }
         It "Pipeline IshObject with InputDataTemplate IshObjectsWithIshRef" {
             if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
+				# Using explicit Get-IshFolderContent which does 3 implicit API calls to compare to direct Folder25.GetContents of next test
+				$localIshObjects = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -VersionFilter ""
+
                 # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
-                $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectsWithIshRef |
+                $backgroundTask = $localIshObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectsWithIshRef |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
 				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
 
@@ -186,6 +189,68 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -eq $null | Should -Be $true
             }
         }
+		It "Pipeline IShObject with InputDataTemplate IshObjectsWithIshRef over Folder25.GetContents [SCTCM-3506]" {
+			if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
+				# As Get-IshFolderContent implicitly does 3 API calls:
+				# 1. Folder25.GetContents(returnFolderId);
+				# 2. DocumentObj25.RetrieveVersionMetadata(logicalIdBatch.ToArray(), VersionFilter, "");
+				# 3. DocumentObj25.RetrieveMetadataByIshVersionRefs(versionRefs.ToArray(), DocumentObj25ServiceReference.StatusFilter.ISHNoStatusFilter, metadataFilterFields.ToXml(), requestedMetadata.ToXml());
+				# The idea rose to bypass the 2nd and 3rd call to optimize for throughput. This however does introduce Public.IshObject dependency which we try to test here.
+                [xml]$xmlIshObjects = $ishSession.Folder25.GetContents($ishFolderTopic.IshFolderRef)
+				$localIshObjects = @()
+				foreach($xmlIshObject in $xmlIshObjects.ishobjects.ishobject)
+				{
+					$ishObject = New-Object Trisoft.ISHRemote.Objects.Public.IshObject -ArgumentList @(,$xmlIshObject)
+					$localIshObjects += $ishObject
+				}
+				# Regular ISHRemote would have fully initialized (logical-version-language) $ishObjects,
+				# these $localIshObjects only contain logical information, sufficient for the Add-IShBackgroundTask cmdlet
+
+				# Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
+                $backgroundTask = $localIshObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectsWithIshRef |
+                Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
+				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
+
+                # inputData looks like <ishobjects><ishobject ishtype='ISHMasterDoc' ishref='GUID-X'>...
+				$inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
+                $xml = [xml]$inputData
+                $cdataNode = $xml.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject.'#cdata-section'
+                $rawCdataContent = $cdataNode
+                $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
+                $ishObjectsFromInputData = [xml]$decodedContent
+        
+                $ishObjectsFromInputData.ishObjects -ne $null | Should -Be $true
+				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should -Be ($ishObjects.IshRef | Select-Object -Unique).Count  # all unique LogicalIds are passed
+                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -eq $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -eq $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -eq $null | Should -Be $true
+            }
+        }
+        It "Pipeline IShObject with InputDataTemplate EventDataWithIshLngRefs, typically skipped to avoid server file artefacts" -Skip {
+            if(([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) {
+                # Test is correct but skipped as it would generate server-side export folders like 'C:\InfoShare\Data\ExportService\Data\DataExports\20240704134839851Z\en' that nobody would clean up
+                # And BackgroundTask service would most likely pick up the export which this Pester test already deleted the data for resulting in errors like 'Object with language card id 516319 could not be found.'
+
+                # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
+                $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType "FOLDEREXPORT" -InputDataTemplate EventDataWithIshLngRefs |
+                Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
+			    $backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
+
+                # inputData looks like <eventdata><lngcardids>13043819, 13058357, 14246721, 13058260</lngcardids></eventdata>, decided to drop optional <foldername>
+			    $inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
+                $xml = [xml]$inputData
+                $cdataNode = $xml.ishbackgroundtaskdataobjects.ishbackgroundtaskdataobject.'#cdata-section'
+                $rawCdataContent = $cdataNode
+                $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
+                $eventdataFromInputData = [xml]$decodedContent
+
+                $eventdataFromInputData.eventdata -ne $null | Should -Be $true
+                $eventdataFromInputData.eventdata.lngcardids -ne $null | Should -Be $true
+            }
+		}
     }
 	Context "Add-IshBackgroundTask ParameterGroup" {
 		BeforeAll {

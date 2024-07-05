@@ -33,7 +33,7 @@ using static Trisoft.ISHRemote.Objects.Enumerations;
 namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
 {
     /// <summary>
-    /// <para type="synopsis">The Add-IshBackgroundTask cmdlet add fire-and-forget asynchronous processing events to the CMS generic queuing system.</para>
+    /// <para type="synopsis">The Add-IshBackgroundTask cmdlet adds fire-and-forget asynchronous processing events to the CMS generic queuing system.</para>
     /// <para type="description">Add-IshBackgroundTask ParameterGroup variation uses BackgroundTask25.CreateBackgroundTask(WithStartAfter) that allows you to submit generic messages. Note that this requires a generic BackgroundTask service message handler.</para>
     /// <para type="description">Add-IshBackgroundTask IshObjectsGroup requires content object(s) which are transformed as message inputdata and passed to the Background Task.</para>
     /// </summary>
@@ -49,19 +49,34 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $ishBackgroundTask = Get-IshFolder -FolderPath "General\Myfolder" -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary") -Recurse |
-    ///                      Get-IshFolderContent -VersionFilter Latest -LanguagesFilter en |
-    ///                      Add-IshBackgroundTask -EventType "SMARTTAG"
+    ///                      ForEach-Object -Process {
+    ///                        Get-IshFolderContent -IshFolder $_ -VersionFilter Latest -LanguagesFilter en |
+    ///                        Add-IshBackgroundTask -EventType "SMARTTAG"
+    ///                      }
     /// </code>
-    /// <para>Add BackgroundTask with event type "SMARTTAG" for the latest-version en(glish) content objects of type topic, map and topic library; located under the "General\MyFolder" path. Trigger a legacy correction event of SMARTTAG across many folders.Note that the default value for the -InputDataTemplate is IshObjectsWithLngRef. Note that Get-IshFolder gives you a progress bar for follow-up. Note that it is possible to configure the BackgroundTask-handler with a variation of the SMARTTAG event to do more-or-less fields for automatic concept suggestions.</para> 
+    /// <para>Add BackgroundTask with event type "SMARTTAG" for the latest-version en(glish) content objects of type topic, map and topic library; located under the "General\MyFolder" path. Trigger a legacy correction event of SMARTTAG per folder. Note that the default value for the -InputDataTemplate is IshObjectsWithLngRef. Note that Get-IshFolder gives you a progress bar for follow-up. Note that it is possible to configure the BackgroundTask-handler with a variation of the SMARTTAG event to do more-or-less fields for automatic concept suggestions.</para> 
     /// </example>
     /// <example>
     /// <code>
     /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $ishBackgroundTask = Get-IshFolder -BaseFolder Data -FolderTypeFilter @("ISHIllustration") -Recurse |
-    ///                      Get-IshFolderContent -VersionFilter Latest |
-    ///                      Add-IshBackgroundTask -EventType "SYNCHRONIZEMETRICS" -InputDataTemplate IshObjectsWithIshRef
+    ///                      ForEach-Object -Process {
+    ///                        Get-IshFolderContent -VersionFilter Latest |
+    ///                        Add-IshBackgroundTask -EventType "SYNCHRONIZEMETRICS" -InputDataTemplate IshObjectsWithIshRef
+    ///                      }
     /// </code>
-    /// <para>Add BackgroundTask with event type "SYNCHRONIZEMETRICS" for the latest-version content objects of type image; located under the "General" path. Trigger an event of synchronizing all images from CM to the metrics. Note that Get-IshFolder gives you a progress bar for follow-up.</para>
+    /// <para>Add BackgroundTask with event type "SYNCHRONIZEMETRICS" for the latest-version content objects of type image; located under the "General" path. Trigger an event of synchronizing images per folder to the Metrics subsystem. Note that Get-IshFolder gives you a progress bar for follow-up.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
+    /// $ishBackgroundTask = Get-IshFolder -FolderPath "General\MyFolder\Images" -Recurse |
+    ///                      ForEach-Object -Process {
+    ///                        Get-IshFolderContent -IshFolder $_ -VersionFilter Latest -LanguagesFilter en |
+    ///                        Add-IshBackgroundTask -EventType "FOLDEREXPORT" -InputDataTemplate EventDataWithIshLngRefs
+    ///                      }
+    /// </code>
+    /// <para>Add BackgroundTask with event type `FOLDEREXPORT` for the objects located under the `General\MyFolder\Images` path. Note that the BackgroundTask handler behind all `...EXPORT` events like `SEARCHEXPORT` or `INBOXEXPORT` on Tridion Docs 15.1 and earlier is identical. One BackgroundTask message will appear per folder containing a list of all latest version English (`en`) content objects in the `InputData` of the message. Note that without the `ForEach-Object` construction all recursively found content objects would all be passed in one BackgroundTask message.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -81,7 +96,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// <para>Add background task with the event type "PUBLISH" and provided event description and publish input raw data.
     /// Provided StartAfter parameter with tomorrow's date indicates that background task should not be executed before this date. Note: example code only, for publish operations usage of Publish-IshPublicationOutput cmdlet is preferred.</para> 
     /// </example>
-    [Cmdlet(VerbsCommon.Add, "IshBackgroundTask", SupportsShouldProcess = false)]
+    [Cmdlet(VerbsCommon.Add, "IshBackgroundTask", SupportsShouldProcess = true)]
     [OutputType(typeof(IshBackgroundTask))]
     public sealed class AddIshBackgroundTask : BackgroundTaskCmdlet
     {
@@ -190,7 +205,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         }
 
         /// <summary>
-        /// Process the Add-IshBackgroundTask command-let.
+        /// Process the Add-IshBackgroundTask cmdlet.
         /// </summary>
         /// <exception cref="TrisoftAutomationException"></exception>
         /// <exception cref="Exception"></exception>
@@ -209,6 +224,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 {
                     case InputDataTemplate.IshObjectWithLngRef:
                         {
+                            // inputData looks like <ishobject ishtype='ISHMasterDoc' ishref='GUID-X' ishlogicalref='45677' ishversionref='45678' ishlngref='45679'> or <ishobject ishtype='ISHBaseline' ishref='GUID-X' ishbaselineref='45798'>
                             if (_retrievedIshObjects.Count > 1)
                             {
                                 WriteWarning("More than one IshObject was provided. Only the first will be passed, the others will be ignored.");
@@ -240,6 +256,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                         }
                     case InputDataTemplate.IshObjectsWithLngRef:
                         {
+                            // inputData looks like <ishobjects><ishobject ishtype='ISHMasterDoc' ishref='GUID-X' ishlngref='45679'>...
                             var ishObjects = new XElement("ishobjects");
                             foreach (var ishObjectElement in _retrievedIshObjects.Select(retrievedIshObject => new XElement("ishobject",
                                          new XAttribute("ishtype", retrievedIshObject.IshType),
@@ -259,6 +276,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                         }
                     case InputDataTemplate.IshObjectsWithIshRef:
                         {
+                            // inputData looks like <ishobjects><ishobject ishtype='ISHMasterDoc' ishref='GUID-X'>...
                             var ishObjectsGroupedByIshRef = _retrievedIshObjects.GroupBy(ishObject => ishObject.IshRef);
                             var ishObjects = new XElement("ishobjects");
                             foreach (var ishObjectsIshRefGroup in ishObjectsGroupedByIshRef)
@@ -275,11 +293,26 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
 
                             break;
                         }
+                    case InputDataTemplate.EventDataWithIshLngRefs:
+                        {
+                            // inputData looks like <eventdata><lngcardids>13043819, 13058357, 14246721, 13058260</lngcardids></eventdata>
+                            var lngCardIds = _retrievedIshObjects.Select(ishObject => Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng])).ToList();
+                            var eventdataElement = new XElement("eventdata");
+                            var lngcardidsElement = new XElement("lngcardids")
+                            {
+                                Value = String.Join(", ", lngCardIds)
+                            };
+                            eventdataElement.Add(lngcardidsElement);
+
+                            ishObjectsCount = lngCardIds.Count;
+                            inputData = eventdataElement.ToString();
+                            break;
+                        }
                 }
 
                 if (EventDescription.IsNullOrEmpty())
                 {
-                    EventDescription = $"Executing {EventType} for {ishObjectsCount} IShObjects";
+                    EventDescription = $"Executing {EventType} for {ishObjectsCount} IshObjects";
                 }
 
                 // Start event 
@@ -291,7 +324,6 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                     maximumProgress = _startEventMaxProgress
                 };
 
-                var startEventResponse = IshSession.EventMonitor25.StartEvent(startEventRequest);
                 var backgroundTaskInputData = Encoding.Unicode.GetBytes(ParameterSetName == "IshObjectsGroup" ? inputData : RawInputData);
 
                 if (HashId == null)
@@ -302,37 +334,47 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (StartAfter.HasValue)
                 {
                     // Create BackgroundTask
-                    WriteDebug(ParameterSetName == "IshObjectsGroup" ?
+                    var message = ParameterSetName == "IshObjectsGroup" ?
                         $"Create BackgroundTask EventType[{EventType}] InputData.length[{inputData.Length}] StartAfter[{StartAfter}]" :
-                        $"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}] StartAfter[{StartAfter}]");
-
-                    var newBackgroundTaskWithStartAfterRequest = new CreateBackgroundTaskWithStartAfterRequest
+                        $"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}] StartAfter[{StartAfter}]";
+                    WriteDebug(message);
+                    if (ShouldProcess(message))
                     {
-                        eventType = EventType,
-                        hashId = HashId,
-                        inputData = backgroundTaskInputData,
-                        startAfter = StartAfter.Value,
-                        progressId = startEventResponse.progressId
-                    };
-                    var createBackgroundTaskStartAfterResponse = IshSession.BackgroundTask25.CreateBackgroundTaskWithStartAfter(newBackgroundTaskWithStartAfterRequest);
-                    progressId = createBackgroundTaskStartAfterResponse.progressId;
+                        var startEventResponse = IshSession.EventMonitor25.StartEvent(startEventRequest);
+                        var newBackgroundTaskWithStartAfterRequest = new CreateBackgroundTaskWithStartAfterRequest
+                        {
+                            eventType = EventType,
+                            hashId = HashId,
+                            inputData = backgroundTaskInputData,
+                            startAfter = StartAfter.Value,
+                            progressId = startEventResponse.progressId
+                        };
+                    
+                        var createBackgroundTaskStartAfterResponse = IshSession.BackgroundTask25.CreateBackgroundTaskWithStartAfter(newBackgroundTaskWithStartAfterRequest);
+                        progressId = createBackgroundTaskStartAfterResponse.progressId;
+                    }
                 }
 
                 if (!StartAfter.HasValue)
                 {
                     // Create BackgroundTask
-                    WriteDebug(ParameterSetName == "IshObjectsGroup" ?
+                    var message = ParameterSetName == "IshObjectsGroup" ?
                         $"Create BackgroundTask EventType[{EventType}] InputData.length[{inputData.Length}]" :
-                        $"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}]");
-                    var newBackgroundTaskRequest = new CreateBackgroundTaskRequest
+                        $"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}]";
+                    WriteDebug(message);
+                    if (ShouldProcess(message))
                     {
-                        eventType = EventType,
-                        hashId = HashId,
-                        inputData = backgroundTaskInputData,
-                        progressId = startEventResponse.progressId
-                    };
-                    var createBackgroundTaskStartAfterResponse = IshSession.BackgroundTask25.CreateBackgroundTask(newBackgroundTaskRequest);
-                    progressId = createBackgroundTaskStartAfterResponse.progressId;
+                        var startEventResponse = IshSession.EventMonitor25.StartEvent(startEventRequest);
+                        var newBackgroundTaskRequest = new CreateBackgroundTaskRequest
+                        {
+                            eventType = EventType,
+                            hashId = HashId,
+                            inputData = backgroundTaskInputData,
+                            progressId = startEventResponse.progressId
+                        };
+                        var createBackgroundTaskStartAfterResponse = IshSession.BackgroundTask25.CreateBackgroundTask(newBackgroundTaskRequest);
+                        progressId = createBackgroundTaskStartAfterResponse.progressId;
+                    }
                 }
 
                 // Find and return IshBackgroundTask object
