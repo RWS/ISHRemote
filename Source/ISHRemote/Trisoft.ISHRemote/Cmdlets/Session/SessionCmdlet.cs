@@ -40,7 +40,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         {
             base.BeginProcessing();
 #if NET48
-            WriteVerbose("ISHRemote module on PS5.1/NET48 forces Assembly Redirects for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll/System.Memory.dll/System.ComponentModel.Annotations.dll/Microsoft.Extensions.Logging.dll");
+            WriteVerbose("ISHRemote module on PS5.1/NET48 forces Assembly Redirects for System.Runtime.CompilerServices.Unsafe.dll/System.Text.Json.dll/IdentityModel.OidcClient.dll/Microsoft.Bcl.AsyncInterfaces.dll/System.Text.Encodings.Web.dll/System.Memory.dll/System.ComponentModel.Annotations.dll");
 #else
             WriteVerbose("ISHRemote module on PS7.2+/NET60+ forces Assembly Redirects for IdentityModel.dll");
 #endif

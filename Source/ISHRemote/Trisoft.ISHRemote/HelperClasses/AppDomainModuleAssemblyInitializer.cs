@@ -101,9 +101,10 @@ namespace Trisoft.ISHRemote.HelperClasses
             assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("System.ComponentModel.Annotations", assembly);
 
-            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Microsoft.Extensions.Logging.dll");
-            assembly = Assembly.LoadFrom(filePath);
-            _forcedLoadedAssemblies.GetOrAdd("Microsoft.Extensions.Logging", assembly);
+            // No longer required since version bump of 3 IdentityModel.OidcClient assemblies from 5.2.1->6.0.0, so ISHRemote v8.1
+            //filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Microsoft.Extensions.Logging.dll");
+            //assembly = Assembly.LoadFrom(filePath);
+            //_forcedLoadedAssemblies.GetOrAdd("Microsoft.Extensions.Logging", assembly);
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
 

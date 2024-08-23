@@ -38,7 +38,7 @@ The contract of what you put on the BackgroundTask message queue under `InputDat
 | *custom* | when not specified you have to pass `-RawInputData` | *custom* | value of `-RawInputData` should match your BackgroundTask handler implementation |
 
 ### Example using SMARTTAG
-Add BackgroundTask with event type `SMARTTAG` for the objects located under the `General\MyFolder\Topics` path. One BackgroundTask message will appear per folder containing a list of all latest version English content objects in the InputData of the message. Note that there is no devide on `$ishSession.MetadataBatchSize` (default was 999) anymore in this version of ISHRemote.
+Add BackgroundTask with event type `SMARTTAG` for the objects located under the `General\MyFolder\Topics` path. One BackgroundTask message will appear per folder containing a list of all latest version English (`en`) content objects in the InputData of the message. Note that there is no devide on `$ishSession.MetadataBatchSize` (default was 999) anymore since this v8.1 version of ISHRemote.
 ```powershell
 Get-IshFolder -FolderPath "General\Myfolder\Topics" -FolderTypeFilter @("ISHModule", "ISHMasterDoc", "ISHLibrary") -Recurse |
 ForEach-Object -Process {
@@ -48,9 +48,9 @@ ForEach-Object -Process {
 ```
 
 ### Example using SYNCHRONIZEMETRICS 
-Rebuilding the Metrics subsystem, introduced in Tridion Docs 15.1, is optimally done in the order of Images, Topics and Publications. Add BackgroundTask with event type `SYNCHRONIZEMETRICS` for the objects located under the `General` path (`Data` folder). One BackgroundTask message will appear per folder containing a list of LogicalIds in the `InputData` of the message, hence the content of one folder is passed in one message.
+Rebuilding the Metrics subsystem, introduced in Tridion Docs 15.1 Update 1 (15.1.1), is optimally done in the order of Images, Topics and Publications. Add BackgroundTask with event type `SYNCHRONIZEMETRICS` for the objects located under the `General` path (`Data` folder). One BackgroundTask message will appear per folder containing a list of LogicalIds in the `InputData` of the message, hence the content of one folder is passed in one message.
 
-Note that a more complex script will be offered in the product (IShCD) that covers error handling, logging transcript and more. The below illustrates that ISHRemote cmdlets are an enabler for the feature.
+Note that a more complex script will be offered in the product (IShCD) that covers error handling, logging transcript and more. The below illustrates that ISHRemote cmdlets are an enabler for the feature and offering variations like partial rebuilds and more.
 ```powershell
 # First Images
 Get-IshFolder -BaseFolder Data -FolderTypeFilter @("ISHIllustration") -Recurse |
@@ -110,7 +110,8 @@ n/a
 
 ## Breaking Changes - Platform
 
-n/a
+*  Security and Platform Updates, bumped version of System.Text.Json to 8.0.4; Duende's IdentityModel libraries to 6.0.0 and 7.0.0; Microsoft.Extensions.ApiDescription.Client to 8.0.8 and matching NSwag.ApiDescription.Client to 14.1.0; and  Microsoft.PowerShell.Commands.Management to 7.2.23, the latest to support the technically obsolete PowerShell 7.2+/NET6+ combination.
+*  Note that `Microsoft.Extensions.Logging.dll` is no longer preloaded by `AppDomainModuleAssemblyInitializer.cs` as a side-effect of the above assembly version bumps where bugs where fixed in the third party libraries.
 
 
 ## Known Issues
@@ -138,8 +139,8 @@ Below is not an official performance compare, but a recurring thing noticed alon
 | Name                     | Client Platform                     | Protocol       | Test Results         |
 |--------------------------|-------------------------------------|----------------------|----------------|
 | ISHRemote 8.0.10919.0     | PowerShell 7.4.0 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 449.72s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
-| ISHRemote 8.0.11207.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 464.79s AND Tests Passed: 1062, Failed: 0, Skipped: 3 NotRun: 0 |
-| ISHRemote 8.1.11503.0   | PowerShell 7.4.3 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 552.74s AND Tests Passed: 1062, Failed: 0, Skipped: 3 NotRun: 0 |
+| ISHRemote 8.1.11623.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 515.62s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
+| ISHRemote 8.1.11623.0   | PowerShell 7.4.5 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 467s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
 
 
 
