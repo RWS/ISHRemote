@@ -25,9 +25,9 @@ All customers on ISHRemote v8.0 are advised to upgrade, especially when using IS
 
 ## Extending cmdlet Add-IshBackgroundTask with parameter InputDataTemplate to enable Metrics feature
 
-The `Add-IshBackgroundTask` cmdlet, introduced in #112, offered a shorthand way of enabling the `SMARTTAG` feature (*SemanticAI*) plus it offered a raw `InputData` pass through option.
+The `Add-IshBackgroundTask` cmdlet, introduced in #112, offered a shorthand way of enabling the *Semantic AI* feature (`SMARTTAG`) plus it offered a raw `InputData` pass through option.
 
-The contract of what you put on the BackgroundTask message queue under `InputData` and how the BackgroundTask handler interprets it is up to the implementer. For the standard product however there are only a handful of `InputData` contracts. An overview where you'll notice that the client triggering the message prefers a minimal contract, so providing the least amount of information as possible as the matching BackgroundTask handler (EventTypes) can retrieve more data if desired. #193
+The contract of what you put on the BackgroundTask message queue under `InputData` and how the BackgroundTask handler interprets it is up to the implementer. For the standard product however there are only a handful of `InputData` contracts. An overview where you'll notice that the client triggering the message prefers a minimal contract, so providing the least amount of information as possible as the matching BackgroundTask handler (`EventTypes`) can retrieve more data if desired. #193
 
 | EventTypes | `InputDataTemplate` | incoming IShObjects | `InputData` sample |
 |-|-|-|-|
@@ -50,7 +50,7 @@ ForEach-Object -Process {
 ### Example using SYNCHRONIZEMETRICS 
 Rebuilding the Metrics subsystem, introduced in Tridion Docs 15.1 Update 1 (15.1.1), is optimally done in the order of Images, Topics and Publications. Add BackgroundTask with event type `SYNCHRONIZEMETRICS` for the objects located under the `General` path (`Data` folder). One BackgroundTask message will appear per folder containing a list of LogicalIds in the `InputData` of the message, hence the content of one folder is passed in one message.
 
-Note that a more complex script will be offered in the product (IShCD) that covers error handling, logging transcript and more. The below illustrates that ISHRemote cmdlets are an enabler for the feature and offering variations like partial rebuilds and more.
+Note that a more complex script will be offered in the product (`IShCD` installation media) that covers error handling, logging transcript and more. The below illustrates that ISHRemote cmdlets are an enabler for the feature and offering variations like partial rebuilds and more.
 ```powershell
 # First Images
 Get-IshFolder -BaseFolder Data -FolderTypeFilter @("ISHIllustration") -Recurse |
@@ -81,7 +81,7 @@ ForEach-Object -Process {
     Add-IshBackgroundTask -EventType "FOLDEREXPORT" -InputDataTemplate EventDataWithIshLngRefs
 }
 ```
-Note that without the `ForEach-Object` construction all recursively found content objects would all be passed in one BackgroundTask message.
+Note that without the `ForEach-Object` construction, all recursively found content objects would all be passed in one BackgroundTask message.
 ```powershell
 Get-IshFolder -BaseFolder EditorTemplate -Recurse |
 Get-IshFolderContent -VersionFilter Latest -LanguagesFilter en |
@@ -116,7 +116,7 @@ n/a
 
 ## Known Issues
 
-* Aborting the `New-IShSession`/`Test-IShSession` cmdlets using `Ctrl-C` in PowerShell is not possible, you have to await the non-configurable 60 seconds timeout potentially resulting in `GetTokensOverSystemBrowserAsync Error[Browser login cannceled after 60 seconds.]`. Typically happens if you did not authenticate in the System Browser.
+* Aborting the `New-IShSession`/`Test-IShSession` cmdlets using `Ctrl-C` in PowerShell is not possible, you have to await the non-configurable 60 seconds timeout potentially resulting in `GetTokensOverSystemBrowserAsync Error[Browser login canceled after 60 seconds.]`. Typically happens if you did not authenticate in the System Browser.
 * Several Authentication known issues...
     * Authentication over System Browser, so Authorization Code Flow with Proof Key for Code Exchange (PKCE), will give you 60 seconds. Any slower and you will see the `New-IShSession`/`Test-IShSession` cmdlets respond with `TaskCanceledException` exception stating `Browser login canceled after 60 seconds.`
     * Authentication over Client Credentials Flow with non-existing `-ClientId` will error out with `GetTokensOverClientCredentialsAsync Access Error[invalid_client]; either invalid ClientId/ClientSecret combination or expired ClientSecret.`. Please make sure you activate a client/secret on your Access Management User Profile (ISHAM).
