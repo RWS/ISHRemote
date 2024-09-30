@@ -178,7 +178,7 @@ namespace Trisoft.ISHRemote.Connection
             }
 
             // Refresh the token before it expires
-            if (DateTime.Now.Add(RefreshBeforeExpiration) > _connectionParameters.Tokens.AccessTokenExpiration)
+            if (IsTokenAlmostExpired)
             {
                 // Refresh the token
                 _logger.WriteVerbose($"InfoShareOpenIdConnectConnectionBase Access Token almost expired (" +

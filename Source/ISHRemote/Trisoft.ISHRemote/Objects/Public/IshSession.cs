@@ -638,7 +638,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_annotation25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_annotation25 == null)
                             _annotation25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetAnnotation25Channel();
                         break;
                     default:
@@ -661,7 +661,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_application25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_application25 == null)
                             _application25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetApplication25Channel();
                         break;
                     default:
@@ -685,7 +685,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_user25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_user25 == null)
                             _user25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUser25Channel();
                         break;
                     default:
@@ -708,7 +708,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_userRole25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_userRole25 == null)
                             _userRole25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserRole25Channel();
                         break;
                     default:
@@ -731,7 +731,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_userGroup25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_userGroup25 == null)
                             _userGroup25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserGroup25Channel();
                         break;
                     default:
@@ -754,7 +754,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_documentObj25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_documentObj25 == null)
                             _documentObj25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetDocumentObj25Channel();
                         break;
                     default:
@@ -777,7 +777,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_publicationOutput25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_publicationOutput25 == null)
                             _publicationOutput25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetPublicationOutput25Channel();
                         break;
                     default:
@@ -800,7 +800,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_settings25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_settings25 == null)
                             _settings25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSettings25Channel();
                         break;
                     default:
@@ -823,7 +823,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_eventMonitor25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_eventMonitor25 == null)
                             _eventMonitor25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEventMonitor25Channel();
                         break;
                     default:
@@ -846,7 +846,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_baseline25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_baseline25 == null)
                             _baseline25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBaseline25Channel();
                         break;
                     default:
@@ -869,7 +869,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_metadataBinding25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_metadataBinding25 == null)
                             _metadataBinding25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetMetadataBinding25Channel();
                         break;
                     default:
@@ -887,12 +887,12 @@ namespace Trisoft.ISHRemote.Objects.Public
                 switch (_protocol)
                 {
                     case Enumerations.Protocol.WcfSoapWithWsTrust:
-                        if ((_folder25 == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
+                        if (_folder25 == null)
                             _folder25 = _infoShareWcfSoapWithWsTrustConnection.GetFolder25Channel();
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_folder25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_folder25 == null)
                             _folder25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetFolder25Channel();
                         break;
                     default:
@@ -915,7 +915,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_listOfValues25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_listOfValues25 == null)
                             _listOfValues25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetListOfValues25Channel();
                         break;
                     default:
@@ -938,7 +938,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_outputFormat25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_outputFormat25 == null)
                             _outputFormat25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetOutputFormat25Channel();
                         break;
                     default:
@@ -961,7 +961,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_EDT25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_EDT25 == null)
                             _EDT25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEDT25Channel();
                         break;
                     default:
@@ -984,7 +984,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_translationJob25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_translationJob25 == null)
                             _translationJob25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationJob25Channel();
                         break;
                     default:
@@ -1007,7 +1007,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_translationTemplate25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_translationTemplate25 == null)
                             _translationTemplate25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationTemplate25Channel();
                         break;
                     default:
@@ -1030,7 +1030,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_search25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_search25 == null)
                             _search25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSearch25Channel();
                         break;
                     default:
@@ -1053,7 +1053,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if ((_backgroundTask25 == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                        if (_backgroundTask25 == null)
                             _backgroundTask25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBackgroundTask25Channel();
                         break;
                     default:
@@ -1070,7 +1070,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             switch (_protocol)
             {
                 case Enumerations.Protocol.WcfSoapWithWsTrust:
-                    if (_infoShareWcfSoapWithWsTrustConnection == null)
+                    if ((_infoShareWcfSoapWithWsTrustConnection == null) || (_infoShareWcfSoapWithWsTrustConnection.IsTokenAlmostExpired))
                     {
                         // Not valid...
                         // ...dispose connection
@@ -1100,13 +1100,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                     }
                     break;
                 case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
-                    {
-                        // ... discard OpenApiISH30Service
-                        // ...and re-create connection
-                        CreateOpenApiWithOpenIdConnectConnection();
-                    }
-                    if (_infoShareWcfSoapWithOpenIdConnectConnection == null)
+                    if ((_infoShareWcfSoapWithOpenIdConnectConnection == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                     {
                         // Not valid...
                         // ...dispose connection
@@ -1131,18 +1125,20 @@ namespace Trisoft.ISHRemote.Objects.Public
                         _user25 = null;
                         _userGroup25 = null;
                         _userRole25 = null;
+                        // force new tokens
+                        _infoShareOpenIdConnectConnectionParameters.Tokens = null;
                         // ...and re-create connection
                         CreateInfoShareWcfSoapWithOpenIdConnectConnection();
+                    }
+                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
+                    {
+                        // ... discard OpenApiISH30Service
+                        // ...and re-create connection
+                        CreateOpenApiWithOpenIdConnectConnection();
                     }
                     break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
-                    {
-                        // ... discard OpenApiISH30Service
-                        // ...and re-create connection
-                        CreateOpenApiWithOpenIdConnectConnection();
-                    }
-                    if (_infoShareWcfSoapWithOpenIdConnectConnection == null)
+                    if ((_infoShareWcfSoapWithOpenIdConnectConnection == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
                     {
                         // Not valid...
                         // ...dispose connection
@@ -1167,8 +1163,16 @@ namespace Trisoft.ISHRemote.Objects.Public
                         _user25 = null;
                         _userGroup25 = null;
                         _userRole25 = null;
+                        // force new tokens
+                        _infoShareOpenIdConnectConnectionParameters.Tokens = null;
                         // ...and re-create connection
                         CreateInfoShareWcfSoapWithOpenIdConnectConnection();
+                    }
+                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
+                    {
+                        // ... discard OpenApiISH30Service
+                        // ...and re-create connection
+                        CreateOpenApiWithOpenIdConnectConnection();
                     }
                     break;
                 default:

@@ -16,9 +16,11 @@ This release inherits the v0.1 to v0.14 up to v8.1 development branch and featur
 The below text describes the delta compared to fielded release ISHRemote v8.1.
 
 
-## Boosting ...
+## Actively recover interactive sessions
 
-...
+Every usage of a cmdlet will refresh the security tokens. However, when not using ISHRemote cmdlets or the implicit `$ISHRemoteSessionStateIshSession` or explicit `$ishSession` object, the session expires by default after around 57 minutes when using ISHID or similar on other identity providers. In turn resulting in error `An unsecured or incorrectly secured fault was received from the other party. See the inner FaultException for the fault code and detail.`.
+
+In this ISHRemote version, the session will attempt to get a new token automatically on every triggererd ISHRemote cmdlet. If you created the IShSession object over an interactive browser, you will see the browser again perhaps with or without a credential challenge in the browser. Change is only for protocols `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect`; no change for `WcfSoapWithWsTrust`.
 
 
 ## Extending ...
