@@ -32,10 +32,11 @@ ConvertTo-IShOasisDita -ApiSpecJsonFilePath .\Trisoft.ISHRemote.OpenApiISH30\Ope
 ```
 After a first run on an empty `ExportFolderPath` the folder could look like
 ```
-\Map\{Name} Map====.xml
-\Map\API30 Map====.xml
+\Maps\{Name} Map====.xml
+\Maps\API30 Map====.xml
 \Topics\{Class}\{Name}{OperationId}====.xml
-\Topics\User\API30 GetUser====.xml   //probably not a GUID, generate custom LogicalId "API30-{OperationId}", instantiate template once, later manually created
+\Topics\User\API30 GetUser====.xml
+\Libraries\API30 User Library====.xml
 ```
 having
 - Multiple folders that inherit the later mentioned root `IshFolder` security paradigm
@@ -45,8 +46,8 @@ having
 - File names where LogicalId, Version, Language (and Resolution) remain empty, they will be added later when importing
 
 
-## Import OASIS DITA from the File System into the CMS
-Do note that ISHRemote has no plans of offering a multi folders/files cmdlet. So the below code is an example algorithm that be added to `Source\ISHRemote\Trisoft.ISHRemote\Samples`.
+### Initial import OASIS DITA from the File System into the CMS
+Do note that ISHRemote has no plans of offering a multi folders/files cmdlet. So the below code is an example algorithm that to be added to `Source\ISHRemote\Trisoft.ISHRemote\Samples`. A list of script parameters, so should be uppercased.
 ```powershell
 $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
 $rootIshFolder = Get-IshFolder -FolderPath "General\__ISHRemote"
@@ -56,58 +57,96 @@ $topicMetadata = Set-IshMetadataField -Level Logical -Name FISHNOREVISIONS -Elem
 $libraryTopicMetadata = Set-IshMetadataField -Level Logical -Name FISHNOREVISIONS -Element Element -Value TRUE
 $mapMetadata = Set-IshMetadataField -Level Logical -Name FISHNOREVISIONS -Element Element -Value TRUE
 ```
-Make sure the file system folder structure is present in the CMS.
+Make sure the file system folder structure is present in the CMS. Or do this in the folder loop to upload the content object immediately in the right folder.
 ```powershell
 $folders = (Get-ChildItem -Directory -Recurse).FullName
 # replace -ExportFolderPath to have relative paths
-Set-IshFolder -IshFolder $rootIshFolder -FolderPath $folders
+Set-IshFolder -IshFolder $rootIshFolder -FolderPath $folders  #array-of-folders
 ```
-Extend `Set-IshFolder` (or `Add-IshFolder`) cmdlet to do idempotent create/update for parameter group `FolderPathGroup`. 
-- Let `-FolderPath` take a string array to optimize read operations on path existance.
+Extend `Set-IshFolder` cmdlet to do idempotent create/update for parameter group `FolderPathGroup`. 
 - OwnedBy and ReadAccess come from the root folder `$rootIshFolder`
-- FolderType is derived from the level 1 folder names
+- Optionally let `-FolderPath` take a string array to optimize read operations on path existance.
 
 As a result the folder structure exists.
 
 Next is the initial create of IShDocumentObj in the CMS based on the generated files. Important here is that files matching `*=====.xml` expect to be generated using a new GUID, new Version, specified Language.
 
 ```powershell
-$firstRunImportFilePaths = Get-ChildItem *=*=*=*=*.xml -Recurse
-foreach ($file in )
-Set-IshFolder -IshFolder $rootIshFolder -FolderPath $file.DirectoryName  #or handle folders separately
-Add-IshDocumentObj
-
-# alter the file path to hold the right LogicalId/Version/
-```
-
-### Multiple Nightly/OnDemand Runs
-
-Having a folder structure looking like
-
-Imagine 
-- extra class
-- extra function
-- changed parameters (intentional during agile development)
-
-In the transformation the {Class}{OperationId} so title is actually the key to distuingish betwween new files and update the files
-
-after first generation there are now folders with files and logical ID that can be adapted reusing them on next import…folders have to be always checked and potentially created… Files with === are new and have to be added… Flies with existing logicalid but version empty/latest require a set-ishdocumentobj avoiding superfluous updates
-
-Expecting all files, having a filename holding LogicalId/Version/Language, to already exists in the CMS
-```powershell
-
-Find-IshDocumentObj (so Retrieve as GetMetadata throws for non-existing objects)
-if ($exists)
+# Probably a loop per FolderType (so ISHLibrary, ISHModule, ISHMasterDoc) for easier folder creation
+$librariesExportFolderPath = Join-Path -Path $exportFolderPath -ChildPath "Libraries"
+$librariesInitialImportFilePaths = Get-ChildItem -Path $ishmoduleExportFolderPath -Filter *====.xml -Recurse
+$filePathsToSkipForUpdate = @()
+foreach ($file in $librariesInitialImportFilePaths)
 {
-    Set-IshDocumentObj -FilePath $file.FullName -Lng $sourceLanguageLabel -LogicalId NEW -Version NEW-or-LATEST -Edt EDTXML -IshSession $ishSession -Metadata $topicMetadata
-} else {
-    Add-IshDocumentObj
+    $relativeFolderPath = $file.Replace($file.DirectoryName, $exportFolderPath)
+    $ishFolder = Set-IshFolder -IshFolder $rootIshFolder -FolderType ISHLibrary -FolderPath $relativeFolderPath
+    $ishObject = Add-IshDocumentObj -IshFolder $ishFolder -FilePath $file.FullName -Lng $sourceLanguageLabel -Edt EDTXML -Metadata $topicMetadata
+
+    # After Get-IshDocumentObjData download with structured file path, delete the original file that was imported
+    $filePathsToSkipForUpdate += Get-IshDocumentObjData -IshObject $ishObject -FolderPath $file.DirectoryName
+    Remove-Item -Path $file.FullName
 }
 ```
 
-### Cleanup
+After the run, there are no more files matching ``*=====.xml``, the folder looks like
+```
+\Maps\API30 Map=GUID-M=1=en=.xml
+\Topics\User\API30 GetUser=GUID-A=1=en.xml
+\Libraries\API30 User Library=GUID-L=1=en=.xml
+```
+
+This script should be a proper sample cmdlet with parameters, help, whatif, progress, etc
+
+### Next convert from Api Spec Json to OASIS DITA on the File System
+
+On an existing `ExportFolderPath`, the folder could look like
+```
+\Maps\API30 Map=GUID-M=1=en=.xml
+\Topics\User\API30 GetUser=GUID-A=1=en.xml
+\Libraries\API30 User Library=GUID-L=1=en=.xml
+```
+
+The Map and Libraries are regenerated. While the Topics remain untouched, they are manually edited in the CMS. So an extra API class, extra function/operationId or changed Overview/Parameters/Responses could result in a folder structure looking like.
+```
+\Maps\API30 Map=GUID-M=1=en=.xml
+\Topics\User\API30 GetUser=GUID-A=1=en.xml
+\Topics\User\API30 GetBaseline====.xml
+\Libraries\API30 User Library=GUID-L=1=en=.xml
+\Libraries\API30 Baseline Library====.xml
+```
+Where 
+- Baseline Topic and Library are new so need to be imported as new.
+- Library User Library potentially is changed, for now just Set-IshDocumentObj without delta detection
+- Map definitely has changed as there is a new OperationId, so Set-IshDocumentObj 
+
+In the transformation the {Class}{OperationId} so title is actually the key to distuingish betwween new files and update the files
+
+### Next import OASIS DITA from the File System into the CMS
+
+after first generation there are now folders with files and logical ID that can be adapted reusing them on next import…folders have to be always checked and potentially created… Files with === are new and have to be added… Flies with existing logicalid but version empty/latest require a set-ishdocumentobj avoiding superfluous updates
+
+```powershell
+# ... add new content objects first
+$nextImportFilePaths = Get-ChildItem -Path exportFolderPath -Filter *=*=*=*=.xml -Recurse
+foreach ($file in $nextImportFilePaths)
+{
+    # if file in $filePathsToSkipForUpdate, just created, so skip for update
+    $ishObject = Set-IshDocumentObj -FilePath $file.FullName 
+    # optionally add not released -RequiredCurrentMetadata (Set-IshMetadataFilterField -Level Lng -Name FISHSTATUSTYPE -FilterOperator LessThan -Value 20)
+}
+```
+
+
+$filePathsToSkipForUpdate
+
+
+### Maintenance Cleanup
 
 Some scripts to clean up the File System and matching CMS $rootIshFolder structure.
+
+### Maintenance Restore ExportFolderPath
+
+Below script allows you to build the ExportFolderPath from the CMS.
 
 ### Optional change detection
 
@@ -117,7 +156,7 @@ Perhaps ConvertTo-IshOasisDita can message through a return parameter or file st
 
 
 
-## Milestone - ConvertTo-IShOasisDita parameter group ApiSpecJsonFilePath
+## Story - Add ConvertTo-IShOasisDita cmdlet with parameter group ApiSpecJsonFilePath
 Create a new `FileProcessor` cmdlet named `ConvertTo-IShOasisDita`.
 
 Parameters of `ConvertTo-IShOasisDita`
@@ -126,17 +165,50 @@ Parameters of `ConvertTo-IShOasisDita`
 - `-Name` API30 holds a unique prefix used in filenames, `FTITLE` field, `<title>` element and more
 - `-GenerationMode` holds modes of geheration for the folders and OASIS DITA files. Initial versioned modes considered are `ReferenceTopicsWitConrefsV1` or `AllInOneReferenceTopicsV1`
 
+- [ ] Test using OpenApiISH30--15.0.0.json, OpenApiISH30--15.1.0.json, OpenApiISH30--15.2.0.json and OpenApiAM10--2.1.0.json
 
-## Milestone - ConvertTo-IShOasisDita parameter group SdkDocumentationFile 
+## Story - Extend Set-IshFolder
+
+Goal is to allowed a simplified folder create and retrieve `$ishFolder = Set-IshFolder -IshFolder (Get-IshFolder -FolderPath "General\__ISHRemote") -FolderType ISHModule -FolderPath "first\second\third"`. The folder is always returned, potentially after creation, so idempotent.
+
+- Parameter `-FolderPath` respects the IshSession.FolderPathSeparator
+
+- [ ] Test after Set using `Get-IshFolderLocation`
+
+## Story - Extend Add-IshDocumentObj
+
+Goal is to allowed a simplified `Add-IshDocumentObj -IshFolder $ishFolder -FilePath "C:\Temp\My Title=GUID-A=NEW=en=.xml" -Metadata $topicMetadata` (and perhaps matching `Set-IshDocumentObj`).
+
+Extend `Add-IshDocumentObj` existing parameter group `ParameterGroupFilePath` with an overload. There is already an overload for 
+- [x] Parameters `-FolderId` vs `-IshFolder`
+- [x] Parameter `-IshType` can be derived from `-FolderId` or `-IshFolder`
+- [ ] Parameters `-LogicalId`, `-Version`, `-Lng`, `-Resolution` and `-Edt` can be derived from a structured `-FilePath` complying with `*=*=*=*=*.xml`
+
+- Explicit parameters `-LogicalId`, `-Version`, `-Lng`, `-Resolution` and `-Edt` overwrite derived `-FilePath` versions.
+- Empty `LogicalId` means `newGUID`
+- Empty `Version` means `new`. `Version` can explicitly be `new`. `Version` can be `latest`. `Version` can be an explicit version number.
+- Empty `Edt` means `EDTXML`, extra `Find-IshEdt` file extension mappings could be added later as enhancement.
+
+
+## Story - Extend Set-IshDocumentObj
+
+Goal is to allowed a simplified `Set-IshDocumentObj -FilePath C:\Temp\My Title=GUID-A=3=en=.xml -Metadata $topicMetadata` (like matching `Add-IshDocumentObj`).
+
+Extend `Set-IshDocumentObj` existing parameter group `ParameterGroupFilePath` with an overload.
+
+
+## Story - Add ConvertTo-IShOasisDita cmdlet with parameter group SdkDocumentationFile 
 `-SdkDocumentationFile ..some///commentfile...`
 
-## Milestone - ConvertTo-IShOasisDita parameter group JsDocHtmlFile
+## Story - Add ConvertTo-IShOasisDita cmdlet with parameter group JsDocHtmlFile
 `-JsDocHtmlFile`
 - https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
 - https://jsdoc.app/about-getting-started actually generates HTML, so it could be -JsDocHtmlFile as parameter
 @tridion-docs/extensions --> Oasis Dita "reference" files
 
-## Suggestions...
+
+
+# Suggestions...
 Your feedback on planning is important. The best way to indicate the importance of an issue is to vote (👍) for that issue on GitHub. This data will then feed into the planning process for the next release.
 
 In addition, please comment on this post if you believe we are missing something that is critical, or are focusing on the wrong areas.
