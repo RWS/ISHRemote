@@ -85,6 +85,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// </code>
     /// <para>Various statistics can be gathered by crawling across many API calls. This sample recursively goes over some subfolder, and retrieves all content objects in the folder and aggregates to a rough count. The ForEach-Object construct is important as it only keeps the essence, the counters, and avoids keeping all objects retrieved over the API in memory - potentially running out of client-side/PowerShell memory.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
+    /// $metadataFilter = Set-IshMetadataFilterField -Level Lng -Name FISHPUBSTATUS -ValueType Element -FilterOperator In -Value VPUBSTATUSUNPUBLISHFAILED
+    /// $ishObjects = Get-IshFolder -BaseFolder Data -FolderTypeFilter @("ISHPublication") -Recurse | 
+    ///               Get-IshFolderContent -IshFolder $ishFolders -VersionFilter LATEST -LanguagesFilter ('en-US','de-DE') -MetadataFilter $metadataFilter
+    /// </code>
+    /// <para>This Get-IshFolder iteratively loops your repository folder structure and only passes Publication folders to the next cmdlet. 
+    /// Then Get-IshFolderContent cmdlet only retrieves LATEST versions of Publications with a languages filter and metadata filter.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshFolder", SupportsShouldProcess = false)]
     [OutputType(typeof(IshFolder))]
     public sealed class GetIshFolder : FolderCmdlet

@@ -85,6 +85,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Folder
     /// </code>
     /// <para>Retrieve the latest version of content objects in smaller batches to avoid "heavy" WebService calls to the server. The progress could be seen in the debug messages</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
+    /// $metadataFilter = Set-IshMetadataFilterField -Level Lng -Name FISHPUBSTATUS -ValueType Element -FilterOperator In -Value VPUBSTATUSUNPUBLISHFAILED
+    /// $ishObjects = Get-IshFolder -BaseFolder Data -FolderTypeFilter @("ISHPublication") -Recurse | 
+    ///               Get-IshFolderContent -IshFolder $ishFolders -VersionFilter LATEST -LanguagesFilter ('en-US','de-DE') -MetadataFilter $metadataFilter
+    /// </code>
+    /// <para>This Get-IshFolder iteratively loops your repository folder structure and only passes Publication folders to the next cmdlet. 
+    /// Then Get-IshFolderContent cmdlet only retrieves LATEST versions of Publications with a languages filter and metadata filter.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Get, "IshFolderContent", SupportsShouldProcess = false)]
     [OutputType(typeof(IshObject))]
     public sealed class GetIshFolderContent : FolderCmdlet
