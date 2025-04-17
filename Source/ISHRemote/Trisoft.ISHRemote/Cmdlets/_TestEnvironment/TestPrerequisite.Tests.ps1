@@ -157,6 +157,17 @@ Describe "Test-Prerequisite" -Tags "Read" {
 			# Otherwise error [-102009] Unable to complete your request, you are not allowed to alter folder "System".
 			$ishUser.fusergroup_none_element -like '*VUSERGROUPSYSTEMMANAGEMENT*' | Should -Be $true
 		}
+		It "Current User has user role to do Status Transition from ishStatusDraft to ishStatusReleased" {
+			# Direct status transition from $ishStatusDraft (D) to $ishStatusReleased (R) is required by the executing user
+			# Some systems put Draft to Released transition under user role Administrator and other under  _Testing
+			[xml]$stateConfiguration = Get-IshSetting -FieldName FSTATECONFIGURATION
+			$fromStatusDraft = $stateConfiguration.InfoShareStates.Transitions.FromStatus | Where-Object ref -eq $ishStatusDraft 
+			$fromStatusDraftToReleased = $fromStatusDraft | Where-Object {$_.ToStatus.ref -eq $ishStatusReleased}
+			$userRolesRequiredForStatusTransition = $fromStatusDraftToReleased.userrole 
+			foreach ($userRole in $userRolesRequiredForStatusTransition) {
+				$ishUser.fishuserroles -like "*$($userRole)*" | Should -Be $true
+			}
+		}
 		It "Parameter Author ishUserAuthor exist" {
 			$ishUser = Get-IshUser -IshSession $ishSession -Id $ishUserAuthor
 			$ishUser.IshRef | Should -Be $ishUserAuthor
