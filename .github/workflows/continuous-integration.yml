@@ -23,7 +23,7 @@ jobs:
 
     steps:
     - name: PowerShell Update to latest stable (initially because 7.2.13/lts had issues, forced latest stable 7.3.6 or higher)
-      uses: bjompen/UpdatePWSHAction@v1.0.0
+      uses: bjompen/UpdatePWSHAction@v1.0.1
       with:
         ReleaseVersion: 'Stable'
 
