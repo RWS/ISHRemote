@@ -1,4 +1,4 @@
-﻿#
+#
 # Tests Header dot-sourced import PS1 file for *.Tests.ps1 files
 #
 
@@ -92,7 +92,6 @@ $ishLngCombination = 'en'  # LanguageCombination like 'en+fr+nl' can only be exp
 $ishOutputFormatDitaXml = 'GUID-079A324-FE52-45C4-82CD-A1A9663C2777'  # 'DITA XML' element name
 $ishLovId = "DLANGUAGE"  # ListOfValues where the Lov tests will work on
 $ishLovId2 = "DRESOLUTION"  # ListOfValues where the Lov tests will work on
-$ishEventTypeToPurge = "PUSHTRANSLATIONS"
 
 #region Placeholder to inject your variable overrides. 
 Write-Host "Running ISHRemote.PesterSetup.ps1 Global Test Data and Variables for debug initialization"
@@ -129,10 +128,12 @@ $hostname=$Matches['hostname']
 	[version]$infosharesoftwareversion = $matches['myversion']
 	if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
 	{
+		$ishEventTypeToPurge = "PUSHTRANSLATIONS"
 		$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -WarningAction SilentlyContinue
 	}
 	else # 15 and later, initialize ONE session over -ClientId/-ClientSecret
 	{
+		$ishEventTypeToPurge = "TESTBACKGROUNDTASK"
 		$global:ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret -WarningAction SilentlyContinue
 	}
 #}
