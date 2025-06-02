@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -100,7 +100,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                     {
                         _baselineItemsToProcess.Add(ishObject.IshRef, new List<Objects.Public.IshBaselineItem>());
                     }
-                    _baselineItemsToProcess[ishObject.IshRef].Add(new IshBaselineItem(ishObject.IshRef, LogicalId, "999999"));
+                    _baselineItemsToProcess[ishObject.IshRef].Add(new IshBaselineItem(ishObject.IshRef, LogicalId, ""));
                 }
             }
         }
@@ -125,7 +125,6 @@ namespace Trisoft.ISHRemote.Cmdlets.Baseline
                                     xmlWriter.WriteStartElement("object");
                                     xmlWriter.WriteAttributeString("ref", ishBaselineItem.LogicalId);
                                     xmlWriter.WriteAttributeString("action", "delete");
-                                    xmlWriter.WriteAttributeString("versionnumber", ishBaselineItem.Version);
                                     xmlWriter.WriteAttributeString("source", "Manual");
                                     xmlWriter.WriteEndElement();
                                 }
