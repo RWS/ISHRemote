@@ -55,6 +55,16 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// </code>
     /// <para>Suppose you get a 'revisionId' back through some error message, then the above cmdlet is a way to return you the LogicalId (typically GUID), version and language back of the content object. The ED field holds the currently latest 'revisionId' while FISHREVISIONS holds the previously ones.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/"
+    /// $metadataFilter = Set-IshMetadataFilterField -Name 'DOC-LANGUAGE'-level 'Lng' -ValueType 'Value' -FilterOperator 'Equal' -Value 'zh_CN' |
+    ///                   Set-IshMetadataFilterField -Name 'DOC-LANGUAGE'-level 'Lng' -ValueType 'Value' -FilterOperator 'Equal' -Value 'en_US' |
+    ///                   Set-IshMetadataFilterField -Name 'DOC-LANGUAGE'-level 'Lng' -ValueType 'Value' -FilterOperator 'Equal' -Value 'es'
+    /// Find-IshDocumentObj -MetadataFilter $metadataFilter
+    /// </code>
+    /// <para>LanguageApplicability is a powerful concept on single-sourcing content objects in the repository. In essence you are marking an image Logical-Version-Language entity with multiple languages so that it can be repurposed in all kinds of completion operations, status, workflow... this all without actual metadata and image file (and resolutions) duplication saving quite some governance and disk space. This example filters on images having exactly these three languages applied.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.Find, "IshDocumentObj", SupportsShouldProcess = false)]
     [OutputType(typeof(IshDocumentObj))]
     public sealed class FindIshDocumentObj : DocumentObjCmdlet

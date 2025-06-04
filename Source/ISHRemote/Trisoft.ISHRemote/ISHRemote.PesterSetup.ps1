@@ -92,7 +92,7 @@ $ishLngCombination = 'en'  # LanguageCombination like 'en+fr+nl' can only be exp
 $ishOutputFormatDitaXml = 'GUID-079A324-FE52-45C4-82CD-A1A9663C2777'  # 'DITA XML' element name
 $ishLovId = "DLANGUAGE"  # ListOfValues where the Lov tests will work on
 $ishLovId2 = "DRESOLUTION"  # ListOfValues where the Lov tests will work on
-$ishEventTypeToPurge = "PUSHTRANSLATIONS"
+$ishEventTypeToPurge = "PUSHTRANSLATIONS"  # Starting 15.1.0 you can use "TESTBACKGROUNDTASK"
 
 #region Placeholder to inject your variable overrides. 
 Write-Host "Running ISHRemote.PesterSetup.ps1 Global Test Data and Variables for debug initialization"

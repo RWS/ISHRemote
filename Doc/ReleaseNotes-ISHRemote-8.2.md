@@ -71,9 +71,9 @@ Below is not an official performance compare, but a recurring thing noticed alon
 
 | Name                     | Client Platform                     | Protocol       | Test Results         |
 |--------------------------|-------------------------------------|----------------------|----------------|
-| ISHRemote 8.0.10919.0     | PowerShell 7.4.0 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 449.72s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
-| ISHRemote 8.1.11623.0     | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 515.62s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
-| ISHRemote 8.1.11623.0   | PowerShell 7.4.5 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 467s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
-
-
+| ISHRemote 8.0.10919.0    | PowerShell 7.4.0 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 449.72s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
+| ISHRemote 8.1.11623.0    | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 515.62s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
+| ISHRemote 8.1.11623.0    | PowerShell 7.4.5 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 467s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
+| ISHRemote 8.1.11716.0    | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 642.2s AND Tests Passed: 1064, Failed: 0, Skipped: 4 NotRun: 0 |
+| ISHRemote 8.1.11716.0    | PowerShell 7.5.1 on .NET 9.0.4  | WcfSoapWithOpenIdConnect | Tests completed in 662.81s AND Tests Passed: 1064, Failed: 0, Skipped: 4 NotRun: 0 |
 
