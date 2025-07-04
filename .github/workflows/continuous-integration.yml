@@ -9,6 +9,10 @@ on:
       - '*.MD'
   pull_request:
     branches: [ master ]
+    paths:
+      - 'Source/**'
+      - '*.TXT'
+      - '*.MD'
 
 env:
   ISHGITHUB_RUN_NUMBER: ${{ github.run_number }}
@@ -34,6 +38,7 @@ jobs:
           echo ("PSVersionTable info PSEdition["+$PSVersionTable.PSEdition+"] PSVersion["+$PSVersionTable.PSVersion+"]")
           echo "GITHUB_ACTIONS[$env:GITHUB_ACTIONS]"
           echo "GITHUB_WORKFLOW[$env:GITHUB_WORKFLOW]"
+          echo "GITHUB_REF[$env:GITHUB_REF]"
           echo "GITHUB_RUN_NUMBER[$env:GITHUB_RUN_NUMBER]"
           echo "GITHUB_RUN_ATTEMPT[$env:GITHUB_RUN_ATTEMPT]"
           echo "ISHGITHUB_RUN_NUMBER[$env:ISHGITHUB_RUN_NUMBER]"
@@ -194,10 +199,10 @@ jobs:
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
 
-    - name: "Publish to PowerShellGallery if commit holds [PublishToPSGalleryAsPreview]"
+    - name: "Publish to PowerShellGallery if commit on Main/Master branch holds [PublishToPSGalleryAsPreview]"
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      if: ${{ success() && contains(github.event.head_commit.message, '[PublishToPSGalleryAsPreview]') }}
+      if: ${{ success() && (github.ref == 'refs/heads/master') && contains(github.event.head_commit.message, '[PublishToPSGalleryAsPreview]') }}
       shell: pwsh
       run: |
         $packageRootFolderPath = "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/"
@@ -219,10 +224,10 @@ jobs:
           echo ("Found recent module[ISHRemote] of version["+($remoteModule.Version)+"]. Skipping publish of module with version[$fullVersion]!")
         }
 
-    - name: "Publish to PowerShellGallery if commit holds [PublishToPSGalleryAsRelease]"
+    - name: "Publish to PowerShellGallery if commit on Main/Master branch holds [PublishToPSGalleryAsRelease]"
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      if: ${{ success() && contains(github.event.head_commit.message, '[PublishToPSGalleryAsRelease]') }}
+      if: ${{ success() && (github.ref == 'refs/heads/master') && contains(github.event.head_commit.message, '[PublishToPSGalleryAsRelease]') }}
       shell: pwsh
       run: |
         $packageRootFolderPath = "Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/"

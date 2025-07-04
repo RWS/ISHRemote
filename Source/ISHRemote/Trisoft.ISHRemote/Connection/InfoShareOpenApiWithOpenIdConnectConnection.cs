@@ -66,7 +66,7 @@ namespace Trisoft.ISHRemote.Connection
             // Not attaching logging to OidcClient anyway, there is a bug that still does logging although not configured
             // See https://github.com/IdentityModel/IdentityModel.OidcClient/pull/67
             LogSerializer.Enabled = false;
-            var infoShareWSUrl = _connectionParameters.InfoShareWSUrl.ToString().Replace("OWcf/", "").Replace("OWcf", "");
+            var infoShareWSUrl = _connectionParameters.InfoShareWSUrl.ToString().Replace("OWcf/", "").Replace("OWcf", "").Replace("OCoreWcf/", "").Replace("OCoreWcf", "");
             var infoShareWSUrlForOpenApi = (infoShareWSUrl.EndsWith("/")) ? new Uri(infoShareWSUrl) : new Uri(infoShareWSUrl.ToString() + "/");
 
             _logger.WriteDebug($"InfoShareOpenApiWithOpenIdConnectConnection InfoShareWSUrl[{infoShareWSUrlForOpenApi}] IssuerUrl[{_connectionParameters.IssuerUrl}] AuthenticationType[{_connectionParameters.AuthenticationType}]");
