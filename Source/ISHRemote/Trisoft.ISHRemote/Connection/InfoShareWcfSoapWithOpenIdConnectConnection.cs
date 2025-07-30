@@ -30,8 +30,7 @@ using System.Text;
 using System.Xml;
 using System.IO;
 
-#if NET48
-#else
+#if !NET48
 using System.ServiceModel.Federation;
 #endif
 
@@ -233,7 +232,7 @@ namespace Trisoft.ISHRemote.Connection
                 if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) && (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
                     // attempt System Browser retrieval of Access/Bearer Token
-                    _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection System Browser");
+                    _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection System Browser");
                     _connectionParameters.Tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
                 }
                 else if ((!string.IsNullOrEmpty(_connectionParameters.ClientId)) && (!string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
@@ -266,19 +265,6 @@ namespace Trisoft.ISHRemote.Connection
             _commonBinding = new WS2007FederationHttpBinding(WSFederationHttpSecurityMode.TransportWithMessageCredential);
             _commonBinding.Security.Message.IssuedKeyType = SecurityKeyType.BearerKey;
             _commonBinding.Security.Message.IssuedTokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0";
-            _commonBinding.Security.Message.EstablishSecurityContext = false;
-            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Text ReaderQuotas");
-            _commonBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
-            _commonBinding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
-            _commonBinding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
-            _commonBinding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
-            _commonBinding.ReaderQuotas.MaxDepth = 64;
-            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Transport Quotas");
-            _commonBinding.MaxReceivedMessageSize = Int32.MaxValue;
-            _commonBinding.MaxBufferPoolSize = Int32.MaxValue;
-            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Send/Receive Timeouts");
-            _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
-            _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
 #else
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Resolving Binding (NET6+)");
             _commonBinding = new WSFederationHttpBinding(new WSTrustTokenParameters
@@ -286,6 +272,7 @@ namespace Trisoft.ISHRemote.Connection
                 TokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0",
                 KeyType = SecurityKeyType.BearerKey
             });
+#endif
             _commonBinding.Security.Message.EstablishSecurityContext = false;
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Text ReaderQuotas");
             _commonBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
@@ -299,7 +286,6 @@ namespace Trisoft.ISHRemote.Connection
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Send/Receive Timeouts");
             _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
             _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
-#endif
         }
         #endregion
 
