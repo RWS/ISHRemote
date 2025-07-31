@@ -17,32 +17,20 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
-using System.Linq;
 using System.Net.Http;
 using System.ServiceModel;
-using System.ServiceModel.Description;
 using System.Xml.Linq;
-using System.Xml.XPath;
 using Trisoft.ISHRemote.Interfaces;
 using System.ServiceModel.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
-using System.IdentityModel.Selectors;
 using System.Net.Http.Headers;
-using IdentityModel.Client;
-using IdentityModel.OidcClient;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Security.Claims;
 using System.Text;
 using System.Xml;
 using System.IO;
 
-#if NET48
-using System.Security.Cryptography;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Security.Tokens;
-#else
+#if !NET48
 using System.ServiceModel.Federation;
 #endif
 
@@ -140,18 +128,14 @@ namespace Trisoft.ISHRemote.Connection
         private readonly Dictionary<string, Uri> _serviceUriByServiceName = new Dictionary<string, Uri>();
 #if NET48
         /// <summary>
-		/// The token that is used to access the services.
-		/// </summary>
-		private GenericXmlSecurityToken _issuedToken = null;
-        /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
-        private Binding _commonBinding = null;
+        private readonly WS2007FederationHttpBinding _commonBinding;
 #else
         /// <summary>
         /// Binding that is common for every endpoint.
         /// </summary>
-        private WSFederationHttpBinding _commonBinding = null;
+        private readonly WSFederationHttpBinding _commonBinding;
 #endif
 
         /// <summary>
@@ -248,7 +232,7 @@ namespace Trisoft.ISHRemote.Connection
                 if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) && (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
                     // attempt System Browser retrieval of Access/Bearer Token
-                    _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection System Browser");
+                    _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection System Browser");
                     _connectionParameters.Tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
                 }
                 else if ((!string.IsNullOrEmpty(_connectionParameters.ClientId)) && (!string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
@@ -277,35 +261,10 @@ namespace Trisoft.ISHRemote.Connection
             ResolveServiceUris();
 
 #if NET48
-            //extract from WcfSoapWithWsTrustConnection::ResolveEndpoints function to get to binding
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Resolving Binding (NET48)");
-            Uri wsdlUriApplication = new Uri(InfoShareWSBaseUri, _serviceUriByServiceName[Application25] + "?wsdl");
-            var wsdlImporterApplication = GetWsdlImporter(wsdlUriApplication);
-            // Get endpont for http or https depending on the base uri passed
-            var applicationServiceEndpoint = wsdlImporterApplication.ImportAllEndpoints().Single(x => x.Address.Uri.Scheme == InfoShareWSBaseUri.Scheme);
-
-            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Text ReaderQuotas");
-            XmlDictionaryReaderQuotas readerQuotas = new XmlDictionaryReaderQuotas();
-            readerQuotas.MaxStringContentLength = Int32.MaxValue;
-            readerQuotas.MaxNameTableCharCount = Int32.MaxValue;
-            readerQuotas.MaxArrayLength = Int32.MaxValue;
-            readerQuotas.MaxBytesPerRead = Int32.MaxValue;
-            readerQuotas.MaxDepth = 64;
-            applicationServiceEndpoint.Binding.GetType().GetProperty("ReaderQuotas").SetValue(applicationServiceEndpoint.Binding, readerQuotas, null);
-
-            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Transport Quotas");
-            CustomBinding customBinding = new CustomBinding(applicationServiceEndpoint.Binding.CreateBindingElements());
-            var transport = customBinding.Elements.Find<TransportBindingElement>();
-            transport.MaxReceivedMessageSize = Int32.MaxValue;
-            transport.MaxBufferPoolSize = Int32.MaxValue;
-
-            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Send/Receive Timeouts");
-            _commonBinding = customBinding;
-            _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
-            _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
-
-            _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Wrapping AccessToken");
-            _issuedToken = WrapJwt(_connectionParameters.Tokens.AccessToken);
+            _commonBinding = new WS2007FederationHttpBinding(WSFederationHttpSecurityMode.TransportWithMessageCredential);
+            _commonBinding.Security.Message.IssuedKeyType = SecurityKeyType.BearerKey;
+            _commonBinding.Security.Message.IssuedTokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0";
 #else
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Resolving Binding (NET6+)");
             _commonBinding = new WSFederationHttpBinding(new WSTrustTokenParameters
@@ -313,6 +272,7 @@ namespace Trisoft.ISHRemote.Connection
                 TokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0",
                 KeyType = SecurityKeyType.BearerKey
             });
+#endif
             _commonBinding.Security.Message.EstablishSecurityContext = false;
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Text ReaderQuotas");
             _commonBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
@@ -326,7 +286,6 @@ namespace Trisoft.ISHRemote.Connection
             _logger.WriteDebug("InfoShareWcfSoapWithOpenIdConnectConnection Binding Send/Receive Timeouts");
             _commonBinding.SendTimeout = _connectionParameters.IssueTimeout;
             _commonBinding.ReceiveTimeout = _connectionParameters.IssueTimeout;
-#endif
         }
         #endregion
 
@@ -1170,38 +1129,6 @@ namespace Trisoft.ISHRemote.Connection
                     null);
                 return xmlToken;
             }
-        }
-
-        /// <summary>
-        /// Find the wsdl importer
-        /// </summary>
-        /// <param name="wsdlUri">The wsdl uri</param>
-        /// <returns>A wsdl importer</returns>
-        private WsdlImporter GetWsdlImporter(Uri wsdlUri)
-        {
-            _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection GetWsdlImporter wsdlUri[{wsdlUri}]");
-            WSHttpBinding mexBinding = null;
-            if (wsdlUri.Scheme == Uri.UriSchemeHttp)
-            {
-                mexBinding = (WSHttpBinding)MetadataExchangeBindings.CreateMexHttpBinding();
-            }
-            else
-            {
-                mexBinding = (WSHttpBinding)MetadataExchangeBindings.CreateMexHttpsBinding();
-            }
-            mexBinding.MaxReceivedMessageSize = Int32.MaxValue;
-            mexBinding.MaxBufferPoolSize = Int32.MaxValue;
-            mexBinding.ReaderQuotas.MaxStringContentLength = Int32.MaxValue;
-            mexBinding.ReaderQuotas.MaxNameTableCharCount = Int32.MaxValue;
-            mexBinding.ReaderQuotas.MaxArrayLength = Int32.MaxValue;
-            mexBinding.ReaderQuotas.MaxBytesPerRead = Int32.MaxValue;
-            mexBinding.ReaderQuotas.MaxDepth = 64;
-
-            var mexClient = new MetadataExchangeClient(mexBinding);
-            mexClient.MaximumResolvedReferences = int.MaxValue;
-
-            var metadataSet = mexClient.GetMetadata(wsdlUri, MetadataExchangeClientMode.HttpGet);
-            return new WsdlImporter(metadataSet);
         }
 
         /// <summary>
