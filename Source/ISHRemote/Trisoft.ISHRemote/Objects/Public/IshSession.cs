@@ -1100,45 +1100,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                     }
                     break;
                 case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                    if ((_infoShareWcfSoapWithOpenIdConnectConnection == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
-                    {
-                        // Not valid...
-                        // ...dispose connection
-                        //_infoShareWcfSoapWithOpenIdConnectConnection.Dispose();
-                        // ...discard all channels
-                        _annotation25 = null;
-                        _application25 = null;
-                        _backgroundTask25 = null;
-                        _baseline25 = null;
-                        _documentObj25 = null;
-                        _EDT25 = null;
-                        _eventMonitor25 = null;
-                        _folder25 = null;
-                        _listOfValues25 = null;
-                        _metadataBinding25 = null;
-                        _outputFormat25 = null;
-                        _publicationOutput25 = null;
-                        _search25 = null;
-                        _settings25 = null;
-                        _translationJob25 = null;
-                        _translationTemplate25 = null;
-                        _user25 = null;
-                        _userGroup25 = null;
-                        _userRole25 = null;
-                        // force new tokens
-                        _infoShareOpenIdConnectConnectionParameters.Tokens = null;
-                        // ...and re-create connection
-                        CreateInfoShareWcfSoapWithOpenIdConnectConnection();
-                    }
-                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
-                    {
-                        // ... discard OpenApiISH30Service
-                        // ...and re-create connection
-                        CreateOpenApiWithOpenIdConnectConnection();
-                    }
-                    break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                    if ((_infoShareWcfSoapWithOpenIdConnectConnection == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                    if ((_infoShareWcfSoapWithOpenIdConnectConnection == null) || !(_infoShareWcfSoapWithOpenIdConnectConnection.RefreshAccessToken()))
                     {
                         // Not valid...
                         // ...dispose connection
