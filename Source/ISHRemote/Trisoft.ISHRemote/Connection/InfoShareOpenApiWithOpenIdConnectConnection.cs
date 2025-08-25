@@ -116,7 +116,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public OpenApiISH30Client GetOpenApiISH30Client()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessToken());
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessToken().Value);
             return _openApiISH30Client;
         }
         /// <summary>
@@ -127,7 +127,7 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public OpenApiAM10Client GetOpenApiAM10Client()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessToken());
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetAccessToken().Value);
             return _openApiAM10Client;
         }
         #endregion

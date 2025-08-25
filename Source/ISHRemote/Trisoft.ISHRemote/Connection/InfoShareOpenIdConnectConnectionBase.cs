@@ -67,17 +67,6 @@ namespace Trisoft.ISHRemote.Connection
         /// Gets or sets when access token should be refreshed (relative to its expiration time). Default skew time is 3 minutes.
         /// </summary>
         public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(3);
-
-        /// <summary>
-        /// Checks whether the token is issued and still valid with a skew time.
-        /// </summary>
-        public bool IsTokenAlmostExpired
-        {
-            get
-            {
-                return (DateTime.Now.Add(RefreshBeforeExpiration) > _connectionParameters.Tokens.AccessTokenExpiration);
-            }
-        }
         #endregion Public Properties
 
 
@@ -143,69 +132,44 @@ namespace Trisoft.ISHRemote.Connection
 
         /// <summary>
         /// Returns a valid Access Token that can be used as Issued Token or Bearer Token on the various communication technologies.
-        /// If the token is expired an explicit 'Authorization Code Flow with PKCE' (over System Browser) or 'Client Credentials' flow will happen.
-        /// If the token is almost expired, a silent Refresh flow will happen.
+        /// If using 'Authorization Code Flow with PKCE' and the Access Token is almost expired or expired, then a silent refresh token flow will be triggered. Else a full interactive browser flow should be triggered somewhere else including new Connections.
+        /// If using 'Client Credentials Flow' and the Access Token is almost expired or expired, then a silent 'Client Credentials Flow' will be triggered.
+        /// IsAccessTokenRefreshed holds if the earlier Access Token was returned, or a new one over Refresh Token or Client Credentials.
         /// </summary>
-        protected string GetAccessToken()
+        /// <remarks>Function historically used to call GetTokensOverSystemBrowserAsync, because of interactive browser flow, this is now decided on a higher layer.</remarks>
+        protected (string Value, bool IsAccessTokenRefreshed) GetAccessToken()
         {
-
             // Check if the token is expired, and attempt to get a new one
-            if (DateTime.Now.AddMinutes(1) > _connectionParameters.Tokens.AccessTokenExpiration)
+            bool isAccessTokenRefreshed = false;
+            if (DateTime.Now.Add(RefreshBeforeExpiration) > _connectionParameters.Tokens.AccessTokenExpiration)
             {
-                _logger.WriteVerbose($"InfoShareOpenIdConnectConnectionBase Access Token is expired (" +
-                    DateTime.Now.AddMinutes(1).ToString("yyyyMMdd.HHmmss.fff") +
+                _logger.WriteVerbose($"InfoShareOpenIdConnectConnectionBase Access Token is (almost) expired (" +
+                    DateTime.Now.Add(RefreshBeforeExpiration).ToString("yyyyMMdd.HHmmss.fff") +
                     " > " +
                     _connectionParameters.Tokens.AccessTokenExpiration.Add(RefreshBeforeExpiration).ToString("yyyyMMdd.HHmmss.fff") +
-                    "), authenticate again");
+                    "), attempting refresh");
 
                 if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) && (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
-                    // Authorization code flow, getting a new token
-                    _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase System Browser");
-                    _connectionParameters.Tokens = GetTokensOverSystemBrowserAsync().GetAwaiter().GetResult();
+                    // For authentication code flow, refreshing the token.
+                    _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase Refresh Token");
+                    _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
+                    isAccessTokenRefreshed = true;
                 }
                 else if ((!string.IsNullOrEmpty(_connectionParameters.ClientId)) && (!string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
                     // For client credentials flow, getting a new token
                     _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase Client Credentials");
                     _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
+                    isAccessTokenRefreshed = true;
                 }
                 else
                 {
                     throw new ArgumentException("Expected ClientId and ClientSecret to be not null or empty. How did you get here?");
                 }
-                _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
             }
 
-            // Refresh the token before it expires
-            if (IsTokenAlmostExpired)
-            {
-                // Refresh the token
-                _logger.WriteVerbose($"InfoShareOpenIdConnectConnectionBase Access Token almost expired (" +
-                    DateTime.Now.Add(RefreshBeforeExpiration).ToString("yyyyMMdd.HHmmss.fff") +
-                    " > " +
-                    _connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff") +
-                    "), attempting refresh");
-                if ((string.IsNullOrEmpty(_connectionParameters.ClientId)) && (string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
-                {
-                    // For authentication code flow, refreshing the token.
-                    _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase Refresh Token");
-                    _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
-                }
-                else if (!string.IsNullOrEmpty(_connectionParameters.ClientId) && !string.IsNullOrEmpty(_connectionParameters.ClientSecret))
-                {
-                    // For client credentials flow, getting a new token
-                    _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase Client Credentials");
-                    _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
-                }
-                else
-                {
-                    throw new ArgumentException("Expected ClientId and ClientSecret to be not null or empty. How did you get here??");
-                }
-                _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase Access Token received ValidTo[{_connectionParameters.Tokens.AccessTokenExpiration.ToString("yyyyMMdd.HHmmss.fff")}]");
-            }
-
-            return _connectionParameters.Tokens.AccessToken;
+            return (_connectionParameters.Tokens.AccessToken, isAccessTokenRefreshed);
         }
 
         protected async Task<InfoShareOpenIdConnectTokens> GetTokensOverSystemBrowserAsync(CancellationToken cancellationToken = default)
@@ -280,7 +244,7 @@ namespace Trisoft.ISHRemote.Connection
             // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
             if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new ApplicationException($"RefreshTokensAsync Refresh Error[{response.Error}]");
+                throw new ApplicationException($"RefreshTokensAsync Refresh Error[{response.Error}]; likely an expired Refresh Token so please rebuild a IShSession connection.");
             }
             returnTokens = new InfoShareOpenIdConnectTokens
             {

@@ -210,7 +210,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                         SystemBrowserTimeout = new TimeSpan(0, 1, 0),
                         ClientAppId = _clientAppId,
                         ClientId = _clientId,
-                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
+                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret),
+                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
                     };
                     CreateInfoShareWcfSoapWithOpenIdConnectConnection();
                     break;
@@ -225,7 +226,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                         SystemBrowserTimeout = new TimeSpan(0, 1, 0),
                         ClientAppId = _clientAppId,
                         ClientId = _clientId,
-                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
+                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret),
+                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
                     };
                     CreateOpenApiWithOpenIdConnectConnection();
                     // explictly initializing WcfSoapWithOpenIdConnect as well, as many cmdlets have matching OpenAPI calls (and/or implementation) missing
@@ -638,8 +640,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_annotation25 == null)
-                            _annotation25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetAnnotation25Channel();
+                        _annotation25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetAnnotation25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -661,8 +662,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_application25 == null)
-                            _application25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetApplication25Channel();
+                        _application25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetApplication25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -685,8 +685,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_user25 == null)
-                            _user25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUser25Channel();
+                        _user25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUser25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -708,8 +707,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_userRole25 == null)
-                            _userRole25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserRole25Channel();
+                        _userRole25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserRole25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -731,8 +729,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_userGroup25 == null)
-                            _userGroup25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserGroup25Channel();
+                        _userGroup25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetUserGroup25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -754,8 +751,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_documentObj25 == null)
-                            _documentObj25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetDocumentObj25Channel();
+                        _documentObj25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetDocumentObj25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -777,8 +773,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_publicationOutput25 == null)
-                            _publicationOutput25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetPublicationOutput25Channel();
+                        _publicationOutput25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetPublicationOutput25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -800,8 +795,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_settings25 == null)
-                            _settings25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSettings25Channel();
+                        _settings25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSettings25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -823,8 +817,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_eventMonitor25 == null)
-                            _eventMonitor25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEventMonitor25Channel();
+                        _eventMonitor25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEventMonitor25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -846,8 +839,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_baseline25 == null)
-                            _baseline25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBaseline25Channel();
+                        _baseline25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBaseline25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -869,8 +861,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_metadataBinding25 == null)
-                            _metadataBinding25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetMetadataBinding25Channel();
+                        _metadataBinding25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetMetadataBinding25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -892,8 +883,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_folder25 == null)
-                            _folder25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetFolder25Channel();
+                        _folder25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetFolder25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -915,8 +905,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_listOfValues25 == null)
-                            _listOfValues25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetListOfValues25Channel();
+                        _listOfValues25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetListOfValues25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -938,8 +927,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_outputFormat25 == null)
-                            _outputFormat25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetOutputFormat25Channel();
+                        _outputFormat25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetOutputFormat25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -961,8 +949,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_EDT25 == null)
-                            _EDT25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEDT25Channel();
+                        _EDT25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetEDT25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -984,8 +971,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_translationJob25 == null)
-                            _translationJob25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationJob25Channel();
+                        _translationJob25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationJob25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -1007,8 +993,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_translationTemplate25 == null)
-                            _translationTemplate25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationTemplate25Channel();
+                        _translationTemplate25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetTranslationTemplate25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -1030,8 +1015,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_search25 == null)
-                            _search25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSearch25Channel();
+                        _search25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetSearch25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -1053,8 +1037,7 @@ namespace Trisoft.ISHRemote.Objects.Public
                         break;
                     case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
                     case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                        if (_backgroundTask25 == null)
-                            _backgroundTask25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBackgroundTask25Channel();
+                        _backgroundTask25 = _infoShareWcfSoapWithOpenIdConnectConnection.GetBackgroundTask25Channel();
                         break;
                     default:
                         throw new ArgumentException($"IshSession _protocol[{_protocol}] was unexpected.");
@@ -1100,45 +1083,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                     }
                     break;
                 case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                    if ((_infoShareWcfSoapWithOpenIdConnectConnection == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
-                    {
-                        // Not valid...
-                        // ...dispose connection
-                        //_infoShareWcfSoapWithOpenIdConnectConnection.Dispose();
-                        // ...discard all channels
-                        _annotation25 = null;
-                        _application25 = null;
-                        _backgroundTask25 = null;
-                        _baseline25 = null;
-                        _documentObj25 = null;
-                        _EDT25 = null;
-                        _eventMonitor25 = null;
-                        _folder25 = null;
-                        _listOfValues25 = null;
-                        _metadataBinding25 = null;
-                        _outputFormat25 = null;
-                        _publicationOutput25 = null;
-                        _search25 = null;
-                        _settings25 = null;
-                        _translationJob25 = null;
-                        _translationTemplate25 = null;
-                        _user25 = null;
-                        _userGroup25 = null;
-                        _userRole25 = null;
-                        // force new tokens
-                        _infoShareOpenIdConnectConnectionParameters.Tokens = null;
-                        // ...and re-create connection
-                        CreateInfoShareWcfSoapWithOpenIdConnectConnection();
-                    }
-                    if (_infoShareOpenApiWithOpenIdConnectConnection == null)
-                    {
-                        // ... discard OpenApiISH30Service
-                        // ...and re-create connection
-                        CreateOpenApiWithOpenIdConnectConnection();
-                    }
-                    break;
                 case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                    if ((_infoShareWcfSoapWithOpenIdConnectConnection == null) || (_infoShareWcfSoapWithOpenIdConnectConnection.IsTokenAlmostExpired))
+                    if (_infoShareWcfSoapWithOpenIdConnectConnection == null)
                     {
                         // Not valid...
                         // ...dispose connection
