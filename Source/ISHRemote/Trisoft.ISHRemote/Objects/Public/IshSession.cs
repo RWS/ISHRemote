@@ -210,7 +210,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                         SystemBrowserTimeout = new TimeSpan(0, 1, 0),
                         ClientAppId = _clientAppId,
                         ClientId = _clientId,
-                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
+                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret),
+                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
                     };
                     CreateInfoShareWcfSoapWithOpenIdConnectConnection();
                     break;
@@ -225,7 +226,8 @@ namespace Trisoft.ISHRemote.Objects.Public
                         SystemBrowserTimeout = new TimeSpan(0, 1, 0),
                         ClientAppId = _clientAppId,
                         ClientId = _clientId,
-                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret)
+                        ClientSecret = SecureStringConversions.SecureStringToString(_clientSecureSecret),
+                        IgnoreSslPolicyErrors = _ignoreSslPolicyErrors
                     };
                     CreateOpenApiWithOpenIdConnectConnection();
                     // explictly initializing WcfSoapWithOpenIdConnect as well, as many cmdlets have matching OpenAPI calls (and/or implementation) missing
