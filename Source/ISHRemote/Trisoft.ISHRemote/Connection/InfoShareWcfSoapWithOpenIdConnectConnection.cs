@@ -142,78 +142,97 @@ namespace Trisoft.ISHRemote.Connection
         /// Proxy for annotation
         /// </summary>
         private Annotation25ServiceReference.AnnotationClient _annotationClient;
+        private Annotation25ServiceReference.Annotation _annotationServiceReference;
         /// <summary>
         /// Proxy for application
         /// </summary>
         private Application25ServiceReference.ApplicationClient _applicationClient;
+        private Application25ServiceReference.Application _applicationServiceReference;
         /// <summary>
         /// Proxy for document obj
         /// </summary>
         private DocumentObj25ServiceReference.DocumentObjClient _documentObjClient;
+        private DocumentObj25ServiceReference.DocumentObj _documentObjServiceReference;
         /// <summary>
         /// Proxy for folder
         /// </summary>
         private Folder25ServiceReference.FolderClient _folderClient;
+        private Folder25ServiceReference.Folder _folderServiceReference;
         /// <summary>
         /// Proxy for user
         /// </summary>
         private User25ServiceReference.UserClient _userClient;
+        private User25ServiceReference.User _userServiceReference;
         /// <summary>
         /// Proxy for user role
         /// </summary>
         private UserRole25ServiceReference.UserRoleClient _userRoleClient;
+        private UserRole25ServiceReference.UserRole _userRoleServiceReference;
         /// <summary>
         /// Proxy for user group
         /// </summary>
         private UserGroup25ServiceReference.UserGroupClient _userGroupClient;
+        private UserGroup25ServiceReference.UserGroup _userGroupServiceReference;
         /// <summary>
         /// Proxy for LOV
         /// </summary>
         private ListOfValues25ServiceReference.ListOfValuesClient _listOfValuesClient;
+        private ListOfValues25ServiceReference.ListOfValues _listOfValuesServiceReference;
         /// <summary>
         /// Proxy for publication output
         /// </summary>
         private PublicationOutput25ServiceReference.PublicationOutputClient _publicationOutputClient;
+        private PublicationOutput25ServiceReference.PublicationOutput _publicationOutputServiceReference;
         /// <summary>
         /// Proxy for output format
         /// </summary>
         private OutputFormat25ServiceReference.OutputFormatClient _outputFormatClient;
+        private OutputFormat25ServiceReference.OutputFormat _outputFormatServiceReference;
         /// <summary>
         /// Proxy for settings
         /// </summary>
         private Settings25ServiceReference.SettingsClient _settingsClient;
+        private Settings25ServiceReference.Settings _settingsServiceReference;
         /// <summary>
         /// Proxy for EDT
         /// </summary>
         private EDT25ServiceReference.EDTClient _EDTClient;
+        private EDT25ServiceReference.EDT _EDTServiceReference;
         /// <summary>
         /// Proxy for event monitor
         /// </summary>
         private EventMonitor25ServiceReference.EventMonitorClient _eventMonitorClient;
+        private EventMonitor25ServiceReference.EventMonitor _eventMonitorServiceReference;
         /// <summary>
         /// Proxy for baseline
         /// </summary>
         private Baseline25ServiceReference.BaselineClient _baselineClient;
+        private Baseline25ServiceReference.Baseline _baselineServiceReference;
         /// <summary>
         /// Proxy for metadata binding
         /// </summary>
         private MetadataBinding25ServiceReference.MetadataBindingClient _metadataBindingClient;
+        private MetadataBinding25ServiceReference.MetadataBinding _metadataBindingServiceReference;
         /// <summary>
         /// Proxy for search
         /// </summary>
         private Search25ServiceReference.SearchClient _searchClient;
+        private Search25ServiceReference.Search _searchServiceReference;
         /// <summary>
         /// Proxy for translation job
         /// </summary>
         private TranslationJob25ServiceReference.TranslationJobClient _translationJobClient;
+        private TranslationJob25ServiceReference.TranslationJob _translationJobServiceReference;
         /// <summary>
         /// Proxy for translation template
         /// </summary>
         private TranslationTemplate25ServiceReference.TranslationTemplateClient _translationTemplateClient;
+        private TranslationTemplate25ServiceReference.TranslationTemplate _translationTemplateServiceReference;
         /// <summary>
         /// Proxy for background task
         /// </summary>
         private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
+        private BackgroundTask25ServiceReference.BackgroundTask _backgroundTaskServiceReference;
         #endregion Private Members
 
         #region Constructors
@@ -304,35 +323,43 @@ namespace Trisoft.ISHRemote.Connection
         public Annotation25ServiceReference.Annotation GetAnnotation25Channel()
         {
 #if NET48
-            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_annotationServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_annotationClient)?.Dispose();
+                ((IDisposable)_annotationServiceReference)?.Dispose();
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
+                _annotationServiceReference = _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _annotationServiceReference;
 #else
-            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_annotationServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_annotationClient)?.Dispose();
+                ((IDisposable)_annotationServiceReference)?.Dispose();
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
-            }
 
-            _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_annotationClient.ChannelFactory.Credentials);
-            var bearerCredentials = GetBearerCredentials();
-            _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_annotationClient.ChannelFactory.Credentials);
+                var bearerCredentials = GetBearerCredentials();
+                _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
 
-            _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
-            if (_connectionParameters.IgnoreSslPolicyErrors)
-            {
-                _annotationClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
-                    CertificateValidationMode = X509CertificateValidationMode.None,
-                    RevocationMode = X509RevocationMode.NoCheck
-                };
+                    _annotationClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
+                _annotationServiceReference = _annotationClient.ChannelFactory.CreateChannel();
             }
-            return _annotationClient.ChannelFactory.CreateChannel();
+            return _annotationServiceReference;
 #endif
         }
         /// <summary>
@@ -342,16 +369,23 @@ namespace Trisoft.ISHRemote.Connection
         public Application25ServiceReference.Application GetApplication25Channel()
         {
 #if NET48
-            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_applicationServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_applicationClient)?.Dispose();
+                ((IDisposable)_applicationServiceReference)?.Dispose();
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
+                _applicationServiceReference = _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _applicationServiceReference;
 #else
-            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_applicationServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_applicationClient)?.Dispose();
+                ((IDisposable)_applicationServiceReference)?.Dispose();
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
@@ -369,8 +403,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _applicationServiceReference = _applicationClient.ChannelFactory.CreateChannel();
             }
-            return _applicationClient.ChannelFactory.CreateChannel();
+            return _applicationServiceReference;
 #endif
         }
 
@@ -381,16 +416,23 @@ namespace Trisoft.ISHRemote.Connection
         public DocumentObj25ServiceReference.DocumentObj GetDocumentObj25Channel()
         {
 #if NET48
-            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_documentObjServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_documentObjClient)?.Dispose();
+                ((IDisposable)_documentObjServiceReference)?.Dispose();
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
+                _documentObjServiceReference = _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _documentObjServiceReference;
 #else
-            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_documentObjServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_documentObjClient)?.Dispose();
+                ((IDisposable)_documentObjServiceReference)?.Dispose();
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
@@ -408,8 +450,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _documentObjServiceReference = _documentObjClient.ChannelFactory.CreateChannel();
             }
-            return _documentObjClient.ChannelFactory.CreateChannel();
+            return _documentObjServiceReference;
 #endif
         }
 
@@ -420,16 +463,23 @@ namespace Trisoft.ISHRemote.Connection
         public Folder25ServiceReference.Folder GetFolder25Channel()
         {
 #if NET48
-            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_folderServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_folderClient)?.Dispose();
+                ((IDisposable)_folderServiceReference)?.Dispose();
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
+                _folderServiceReference = _folderClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _folderServiceReference;
 #else
-            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_folderServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_folderClient)?.Dispose();
+                ((IDisposable)_folderServiceReference)?.Dispose();
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
@@ -447,8 +497,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _folderServiceReference = _folderClient.ChannelFactory.CreateChannel();
             }
-            return _folderClient.ChannelFactory.CreateChannel();
+            return _folderServiceReference;
 #endif
         }
 
@@ -459,16 +510,23 @@ namespace Trisoft.ISHRemote.Connection
         public User25ServiceReference.User GetUser25Channel()
         {
 #if NET48
-            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_userServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_userClient)?.Dispose();
+                ((IDisposable)_userServiceReference)?.Dispose();
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
+                _userServiceReference = _userClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _userClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _userServiceReference;
 #else
-            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_userServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_userClient)?.Dispose();
+                ((IDisposable)_userServiceReference)?.Dispose();
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
@@ -486,8 +544,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _userServiceReference = _userClient.ChannelFactory.CreateChannel();
             }
-            return _userClient.ChannelFactory.CreateChannel();
+            return _userServiceReference;
 #endif
         }
 
@@ -498,16 +557,23 @@ namespace Trisoft.ISHRemote.Connection
         public UserRole25ServiceReference.UserRole GetUserRole25Channel()
         {
 #if NET48
-            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_userRoleServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_userRoleClient)?.Dispose();
+                ((IDisposable)_userRoleServiceReference)?.Dispose();
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
+                _userRoleServiceReference = _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _userRoleServiceReference;
 #else
-            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_userRoleServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_userRoleClient)?.Dispose();
+                ((IDisposable)_userRoleServiceReference)?.Dispose();
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
@@ -525,8 +591,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _userRoleServiceReference = _userRoleClient.ChannelFactory.CreateChannel();
             }
-            return _userRoleClient.ChannelFactory.CreateChannel();
+            return _userRoleServiceReference;
 #endif
         }
 
@@ -537,16 +604,23 @@ namespace Trisoft.ISHRemote.Connection
         public UserGroup25ServiceReference.UserGroup GetUserGroup25Channel()
         {
 #if NET48
-            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_userGroupServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_userGroupClient)?.Dispose();
+                ((IDisposable)_userGroupServiceReference)?.Dispose();
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
+                _userGroupServiceReference = _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _userGroupServiceReference;
 #else
-            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_userGroupServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_userGroupClient)?.Dispose();
+                ((IDisposable)_userGroupServiceReference)?.Dispose();
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
@@ -564,8 +638,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _userGroupServiceReference = _userGroupClient.ChannelFactory.CreateChannel();
             }
-            return _userGroupClient.ChannelFactory.CreateChannel();
+            return _userGroupServiceReference;
 #endif
         }
 
@@ -576,16 +651,23 @@ namespace Trisoft.ISHRemote.Connection
         public ListOfValues25ServiceReference.ListOfValues GetListOfValues25Channel()
         {
 #if NET48
-            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_listOfValuesServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_listOfValuesClient)?.Dispose();
+                ((IDisposable)_listOfValuesServiceReference)?.Dispose();
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
+                _listOfValuesServiceReference = _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _listOfValuesServiceReference;
 #else
-            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_listOfValuesServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_listOfValuesClient)?.Dispose();
+                ((IDisposable)_listOfValuesServiceReference)?.Dispose();
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
@@ -603,8 +685,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _listOfValuesServiceReference = _listOfValuesClient.ChannelFactory.CreateChannel();
             }
-            return _listOfValuesClient.ChannelFactory.CreateChannel();
+            return _listOfValuesServiceReference;
 #endif
         }
 
@@ -615,16 +698,23 @@ namespace Trisoft.ISHRemote.Connection
         public PublicationOutput25ServiceReference.PublicationOutput GetPublicationOutput25Channel()
         {
 #if NET48
-            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_publicationOutputServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_publicationOutputClient)?.Dispose();
+                ((IDisposable)_publicationOutputServiceReference)?.Dispose();
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
+                _publicationOutputServiceReference = _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _publicationOutputServiceReference;
 #else
-            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_publicationOutputServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_publicationOutputClient)?.Dispose();
+                ((IDisposable)_publicationOutputServiceReference)?.Dispose();
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
@@ -642,8 +732,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _publicationOutputServiceReference = _publicationOutputClient.ChannelFactory.CreateChannel();
             }
-            return _publicationOutputClient.ChannelFactory.CreateChannel();
+            return _publicationOutputServiceReference;
 #endif
         }
 
@@ -654,16 +745,23 @@ namespace Trisoft.ISHRemote.Connection
         public OutputFormat25ServiceReference.OutputFormat GetOutputFormat25Channel()
         {
 #if NET48
-            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_outputFormatServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_outputFormatClient)?.Dispose();
+                ((IDisposable)_outputFormatServiceReference)?.Dispose();
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
+                _outputFormatServiceReference = _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _outputFormatServiceReference;
 #else
-            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_outputFormatServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_outputFormatClient)?.Dispose();
+                ((IDisposable)_outputFormatServiceReference)?.Dispose();
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
@@ -681,8 +779,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _outputFormatServiceReference = _outputFormatClient.ChannelFactory.CreateChannel();
             }
-            return _outputFormatClient.ChannelFactory.CreateChannel();
+            return _outputFormatServiceReference;
 #endif
         }
 
@@ -693,16 +792,23 @@ namespace Trisoft.ISHRemote.Connection
         public Settings25ServiceReference.Settings GetSettings25Channel()
         {
 #if NET48
-            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_settingsServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_settingsClient)?.Dispose();
+                ((IDisposable)_settingsServiceReference)?.Dispose();
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
+                _settingsServiceReference = _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _settingsServiceReference;
 #else
-            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_settingsServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_settingsClient)?.Dispose();
+                ((IDisposable)_settingsServiceReference)?.Dispose();
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
@@ -720,8 +826,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _settingsServiceReference = _settingsClient.ChannelFactory.CreateChannel();
             }
-            return _settingsClient.ChannelFactory.CreateChannel();
+            return _settingsServiceReference;
 #endif
         }
 
@@ -732,16 +839,23 @@ namespace Trisoft.ISHRemote.Connection
         public EDT25ServiceReference.EDT GetEDT25Channel()
         {
 #if NET48
-            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_EDTServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_EDTClient)?.Dispose();
+                ((IDisposable)_EDTServiceReference)?.Dispose();
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
+                _EDTServiceReference = _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _EDTServiceReference;
 #else
-            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_EDTServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_EDTClient)?.Dispose();
+                ((IDisposable)_EDTServiceReference)?.Dispose();
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
@@ -759,8 +873,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _EDTServiceReference = _EDTClient.ChannelFactory.CreateChannel();
             }
-            return _EDTClient.ChannelFactory.CreateChannel();
+            return _EDTServiceReference;
 #endif
         }
 
@@ -771,16 +886,23 @@ namespace Trisoft.ISHRemote.Connection
         public EventMonitor25ServiceReference.EventMonitor GetEventMonitor25Channel()
         {
 #if NET48
-            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_eventMonitorServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_eventMonitorClient)?.Dispose();
+                ((IDisposable)_eventMonitorServiceReference)?.Dispose();
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
+                _eventMonitorServiceReference = _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _eventMonitorServiceReference;
 #else
-            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_eventMonitorServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_eventMonitorClient)?.Dispose();
+                ((IDisposable)_eventMonitorServiceReference)?.Dispose();
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
@@ -798,8 +920,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _eventMonitorServiceReference = _eventMonitorClient.ChannelFactory.CreateChannel();
             }
-            return _eventMonitorClient.ChannelFactory.CreateChannel();
+            return _eventMonitorServiceReference;
 #endif
         }
 
@@ -810,16 +933,23 @@ namespace Trisoft.ISHRemote.Connection
         public Baseline25ServiceReference.Baseline GetBaseline25Channel()
         {
 #if NET48
-            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_baselineServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_baselineClient)?.Dispose();
+                ((IDisposable)_baselineServiceReference)?.Dispose();
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
+                _baselineServiceReference = _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _baselineServiceReference;
 #else
-            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_baselineServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_baselineClient)?.Dispose();
+                ((IDisposable)_baselineServiceReference)?.Dispose();
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
@@ -837,8 +967,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _baselineServiceReference = _baselineClient.ChannelFactory.CreateChannel();
             }
-            return _baselineClient.ChannelFactory.CreateChannel();
+            return _baselineServiceReference;
 #endif
         }
 
@@ -849,16 +980,23 @@ namespace Trisoft.ISHRemote.Connection
         public MetadataBinding25ServiceReference.MetadataBinding GetMetadataBinding25Channel()
         {
 #if NET48
-            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_metadataBindingServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_metadataBindingClient)?.Dispose();
+                ((IDisposable)_metadataBindingServiceReference)?.Dispose();
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
+                _metadataBindingServiceReference = _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _metadataBindingServiceReference;
 #else
-            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_metadataBindingServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_metadataBindingClient)?.Dispose();
+                ((IDisposable)_metadataBindingServiceReference)?.Dispose();
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
@@ -876,8 +1014,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _metadataBindingServiceReference = _metadataBindingClient.ChannelFactory.CreateChannel();
             }
-            return _metadataBindingClient.ChannelFactory.CreateChannel();
+            return _metadataBindingServiceReference;
 #endif
         }
 
@@ -888,16 +1027,23 @@ namespace Trisoft.ISHRemote.Connection
         public Search25ServiceReference.Search GetSearch25Channel()
         {
 #if NET48
-            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_searchServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_searchClient)?.Dispose();
+                ((IDisposable)_searchServiceReference)?.Dispose();
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
+                _searchServiceReference = _searchClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _searchServiceReference;
 #else
-            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_searchServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_searchClient)?.Dispose();
+                ((IDisposable)_searchServiceReference)?.Dispose();
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
@@ -915,8 +1061,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _searchServiceReference = _searchClient.ChannelFactory.CreateChannel();
             }
-            return _searchClient.ChannelFactory.CreateChannel();
+            return _searchServiceReference;
 #endif
         }
 
@@ -927,16 +1074,23 @@ namespace Trisoft.ISHRemote.Connection
         public TranslationJob25ServiceReference.TranslationJob GetTranslationJob25Channel()
         {
 #if NET48
-            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_translationJobServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_translationJobClient)?.Dispose();
+                ((IDisposable)_translationJobServiceReference)?.Dispose();
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
+                _translationJobServiceReference = _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _translationJobServiceReference;
 #else
-            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_translationJobServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_translationJobClient)?.Dispose();
+                ((IDisposable)_translationJobServiceReference)?.Dispose();
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
@@ -954,8 +1108,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _translationJobServiceReference = _translationJobClient.ChannelFactory.CreateChannel();
             }
-            return _translationJobClient.ChannelFactory.CreateChannel();
+            return _translationJobServiceReference;
 #endif
         }
 
@@ -966,16 +1121,23 @@ namespace Trisoft.ISHRemote.Connection
         public TranslationTemplate25ServiceReference.TranslationTemplate GetTranslationTemplate25Channel()
         {
 #if NET48
-            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_translationTemplateServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_translationTemplateClient)?.Dispose();
+                ((IDisposable)_translationTemplateServiceReference)?.Dispose();
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
+                _translationTemplateServiceReference = _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _translationTemplateServiceReference;
 #else
-            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_translationTemplateServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_translationTemplateClient)?.Dispose();
+                ((IDisposable)_translationTemplateServiceReference)?.Dispose();
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
@@ -993,8 +1155,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _translationTemplateServiceReference = _translationTemplateClient.ChannelFactory.CreateChannel();
             }
-            return _translationTemplateClient.ChannelFactory.CreateChannel();
+            return _translationTemplateServiceReference;
 #endif
         }
 
@@ -1006,16 +1169,23 @@ namespace Trisoft.ISHRemote.Connection
         public BackgroundTask25ServiceReference.BackgroundTask GetBackgroundTask25Channel()
         {
 #if NET48
-            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_backgroundTaskServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_backgroundTaskClient)?.Dispose();
+                ((IDisposable)_backgroundTaskServiceReference)?.Dispose();
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
+                _backgroundTaskServiceReference = _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
             }
-            return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(GetIssuedToken());
+            return _backgroundTaskServiceReference;
 #else
-            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
+            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
+                (_backgroundTaskServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
             {
+                ((IDisposable)_backgroundTaskClient)?.Dispose();
+                ((IDisposable)_backgroundTaskServiceReference)?.Dispose();
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
@@ -1033,8 +1203,9 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                _backgroundTaskServiceReference = _backgroundTaskClient.ChannelFactory.CreateChannel();
             }
-            return _backgroundTaskClient.ChannelFactory.CreateChannel();
+            return _backgroundTaskServiceReference;
 #endif
         }
         #endregion
@@ -1130,15 +1301,6 @@ namespace Trisoft.ISHRemote.Connection
                 return xmlToken;
             }
         }
-
-        /// <summary>
-        /// NET48 SOAP web services (/ISHWS/OWCF/) with OpenIdConnect authentication need a way to pass the Access/Bearer token.
-        /// This method wraps the token up in a Json Web Token (Jwt) which passes nicely over Windows Communication Foundation as Issued Token.
-        /// </summary>
-        private GenericXmlSecurityToken GetIssuedToken()
-        {
-            return WrapJwt(GetAccessToken());
-        }
 #else
         /// <summary>
         /// NET6+ SOAP web services (/ISHWS/OWCF/) with OpenIdConnect authentication need a way to pass the Access/Bearer token.
@@ -1146,7 +1308,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private BearerCredentials GetBearerCredentials()
         {
-            BearerCredentials bearerCredentials = new BearerCredentials(GetAccessToken());
+            BearerCredentials bearerCredentials = new BearerCredentials(GetAccessToken().Value);
             return bearerCredentials;
         }
 #endif

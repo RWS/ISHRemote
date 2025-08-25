@@ -67,25 +67,6 @@ namespace Trisoft.ISHRemote.Connection
         /// Gets or sets when access token should be refreshed (relative to its expiration time). Default skew time is 3 minutes.
         /// </summary>
         public TimeSpan RefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(3);
-
-        /// <summary>
-        /// Verifies and potentially refreshes the Access Token using hidden flow (so not interactive browser flow).
-        /// </summary>
-        /// <returns>True when having a valid existing or recently refreshed Access Token. Otherwise False suggesting to refresh the Connection class.</returns>
-        public bool RefreshAccessToken()
-        {
-            try
-            {
-                GetAccessToken();
-                return true;
-            }
-            catch (ApplicationException exception)
-            {
-                // catch the error if the Refresh Token flow fails, then we should trigger a new flow
-                _logger.WriteWarning("Refresh token or ClientId/ClientSecret credentials expired, rebuilding Connections is required. (message[" + exception.Message + "])");
-            }
-            return false;
-        }
         #endregion Public Properties
 
 
@@ -153,11 +134,13 @@ namespace Trisoft.ISHRemote.Connection
         /// Returns a valid Access Token that can be used as Issued Token or Bearer Token on the various communication technologies.
         /// If using 'Authorization Code Flow with PKCE' and the Access Token is almost expired or expired, then a silent refresh token flow will be triggered. Else a full interactive browser flow should be triggered somewhere else including new Connections.
         /// If using 'Client Credentials Flow' and the Access Token is almost expired or expired, then a silent 'Client Credentials Flow' will be triggered.
+        /// IsAccessTokenRefreshed holds if the earlier Access Token was returned, or a new one over Refresh Token or Client Credentials.
         /// </summary>
-        /// <remarks>Function used to call GetTokensOverSystemBrowserAsync, because of interactive browser flow, this is now decided on a higher layer.</remarks>
-        protected string GetAccessToken()
+        /// <remarks>Function historically used to call GetTokensOverSystemBrowserAsync, because of interactive browser flow, this is now decided on a higher layer.</remarks>
+        protected (string Value, bool IsAccessTokenRefreshed) GetAccessToken()
         {
             // Check if the token is expired, and attempt to get a new one
+            bool isAccessTokenRefreshed = false;
             if (DateTime.Now.Add(RefreshBeforeExpiration) > _connectionParameters.Tokens.AccessTokenExpiration)
             {
                 _logger.WriteVerbose($"InfoShareOpenIdConnectConnectionBase Access Token is (almost) expired (" +
@@ -171,12 +154,14 @@ namespace Trisoft.ISHRemote.Connection
                     // For authentication code flow, refreshing the token.
                     _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase Refresh Token");
                     _connectionParameters.Tokens = RefreshTokensAsync().GetAwaiter().GetResult();
+                    isAccessTokenRefreshed = true;
                 }
                 else if ((!string.IsNullOrEmpty(_connectionParameters.ClientId)) && (!string.IsNullOrEmpty(_connectionParameters.ClientSecret)))
                 {
                     // For client credentials flow, getting a new token
                     _logger.WriteDebug($"InfoShareOpenIdConnectConnectionBase Client Credentials");
                     _connectionParameters.Tokens = GetTokensOverClientCredentialsAsync().GetAwaiter().GetResult();
+                    isAccessTokenRefreshed = true;
                 }
                 else
                 {
@@ -184,7 +169,7 @@ namespace Trisoft.ISHRemote.Connection
                 }
             }
 
-            return _connectionParameters.Tokens.AccessToken;
+            return (_connectionParameters.Tokens.AccessToken, isAccessTokenRefreshed);
         }
 
         protected async Task<InfoShareOpenIdConnectTokens> GetTokensOverSystemBrowserAsync(CancellationToken cancellationToken = default)
@@ -259,7 +244,7 @@ namespace Trisoft.ISHRemote.Connection
             // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
             if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new ApplicationException($"RefreshTokensAsync Refresh Error[{response.Error}]");
+                throw new ApplicationException($"RefreshTokensAsync Refresh Error[{response.Error}]; likely an expired Refresh Token so please rebuild a IShSession connection.");
             }
             returnTokens = new InfoShareOpenIdConnectTokens
             {
