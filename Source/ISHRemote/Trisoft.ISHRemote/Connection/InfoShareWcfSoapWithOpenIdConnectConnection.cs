@@ -1321,82 +1321,82 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         public void Dispose()
         {
-            if (_annotationClient != null)
-            {
-                ((IDisposable)_annotationClient).Dispose();
-            }
-            if (_applicationClient != null)
-            {
-                ((IDisposable)_applicationClient).Dispose();
-            }
-            if (_backgroundTaskClient != null)
-            {
-                ((IDisposable)_backgroundTaskClient).Dispose();
-            }
-            if (_baselineClient != null)
-            {
-                ((IDisposable)_baselineClient).Dispose();
-            }
-            if (_documentObjClient != null)
-            {
-                ((IDisposable)_documentObjClient).Dispose();
-            }
-            if (_EDTClient != null)
-            {
-                ((IDisposable)_EDTClient).Dispose();
-            }
-            if (_eventMonitorClient != null)
-            {
-                ((IDisposable)_eventMonitorClient).Dispose();
-            }
-            if (_folderClient != null)
-            {
-                ((IDisposable)_folderClient).Dispose();
-            }
-            if (_listOfValuesClient != null)
-            {
-                ((IDisposable)_listOfValuesClient).Dispose();
-            }
-            if (_metadataBindingClient != null)
-            {
-                ((IDisposable)_metadataBindingClient).Dispose();
-            }
-            if (_outputFormatClient != null)
-            {
-                ((IDisposable)_outputFormatClient).Dispose();
-            }
-            if (_publicationOutputClient != null)
-            {
-                ((IDisposable)_publicationOutputClient).Dispose();
-            }
-            if (_searchClient != null)
-            {
-                ((IDisposable)_searchClient).Dispose();
-            }
-            if (_settingsClient != null)
-            {
-                ((IDisposable)_settingsClient).Dispose();
-            }
-            if (_translationJobClient != null)
-            {
-                ((IDisposable)_translationJobClient).Dispose();
-            }
-            if (_translationTemplateClient != null)
-            {
-                ((IDisposable)_translationTemplateClient).Dispose();
-            }
-            if (_userClient != null)
-            {
-                ((IDisposable)_userClient).Dispose();
-            }
-            if (_userRoleClient != null)
-            {
-                ((IDisposable)_userRoleClient).Dispose();
-            }
-            if (_userGroupClient != null)
-            {
-                ((IDisposable)_userGroupClient).Dispose();
-            }
+            ((IDisposable) _annotationClient)?.Dispose();
+            ((IDisposable)_annotationServiceReference)?.Dispose();
+            ((IDisposable)_annotationClient)?.Dispose();
+            ((IDisposable)_annotationServiceReference)?.Dispose();
+            ((IDisposable)_applicationClient)?.Dispose();
+            ((IDisposable)_applicationServiceReference)?.Dispose();
+            ((IDisposable)_applicationClient)?.Dispose();
+            ((IDisposable)_applicationServiceReference)?.Dispose();
+            ((IDisposable)_documentObjClient)?.Dispose();
+            ((IDisposable)_documentObjServiceReference)?.Dispose();
+            ((IDisposable)_documentObjClient)?.Dispose();
+            ((IDisposable)_documentObjServiceReference)?.Dispose();
+            ((IDisposable)_folderClient)?.Dispose();
+            ((IDisposable)_folderServiceReference)?.Dispose();
+            ((IDisposable)_folderClient)?.Dispose();
+            ((IDisposable)_folderServiceReference)?.Dispose();
+            ((IDisposable)_userClient)?.Dispose();
+            ((IDisposable)_userServiceReference)?.Dispose();
+            ((IDisposable)_userClient)?.Dispose();
+            ((IDisposable)_userServiceReference)?.Dispose();
+            ((IDisposable)_userRoleClient)?.Dispose();
+            ((IDisposable)_userRoleServiceReference)?.Dispose();
+            ((IDisposable)_userRoleClient)?.Dispose();
+            ((IDisposable)_userRoleServiceReference)?.Dispose();
+            ((IDisposable)_userGroupClient)?.Dispose();
+            ((IDisposable)_userGroupServiceReference)?.Dispose();
+            ((IDisposable)_userGroupClient)?.Dispose();
+            ((IDisposable)_userGroupServiceReference)?.Dispose();
+            ((IDisposable)_listOfValuesClient)?.Dispose();
+            ((IDisposable)_listOfValuesServiceReference)?.Dispose();
+            ((IDisposable)_listOfValuesClient)?.Dispose();
+            ((IDisposable)_listOfValuesServiceReference)?.Dispose();
+            ((IDisposable)_publicationOutputClient)?.Dispose();
+            ((IDisposable)_publicationOutputServiceReference)?.Dispose();
+            ((IDisposable)_publicationOutputClient)?.Dispose();
+            ((IDisposable)_publicationOutputServiceReference)?.Dispose();
+            ((IDisposable)_outputFormatClient)?.Dispose();
+            ((IDisposable)_outputFormatServiceReference)?.Dispose();
+            ((IDisposable)_outputFormatClient)?.Dispose();
+            ((IDisposable)_outputFormatServiceReference)?.Dispose();
+            ((IDisposable)_settingsClient)?.Dispose();
+            ((IDisposable)_settingsServiceReference)?.Dispose();
+            ((IDisposable)_settingsClient)?.Dispose();
+            ((IDisposable)_settingsServiceReference)?.Dispose();
+            ((IDisposable)_EDTClient)?.Dispose();
+            ((IDisposable)_EDTServiceReference)?.Dispose();
+            ((IDisposable)_EDTClient)?.Dispose();
+            ((IDisposable)_EDTServiceReference)?.Dispose();
+            ((IDisposable)_eventMonitorClient)?.Dispose();
+            ((IDisposable)_eventMonitorServiceReference)?.Dispose();
+            ((IDisposable)_eventMonitorClient)?.Dispose();
+            ((IDisposable)_eventMonitorServiceReference)?.Dispose();
+            ((IDisposable)_baselineClient)?.Dispose();
+            ((IDisposable)_baselineServiceReference)?.Dispose();
+            ((IDisposable)_baselineClient)?.Dispose();
+            ((IDisposable)_baselineServiceReference)?.Dispose();
+            ((IDisposable)_metadataBindingClient)?.Dispose();
+            ((IDisposable)_metadataBindingServiceReference)?.Dispose();
+            ((IDisposable)_metadataBindingClient)?.Dispose();
+            ((IDisposable)_metadataBindingServiceReference)?.Dispose();
+            ((IDisposable)_searchClient)?.Dispose();
+            ((IDisposable)_searchServiceReference)?.Dispose();
+            ((IDisposable)_searchClient)?.Dispose();
+            ((IDisposable)_searchServiceReference)?.Dispose();
+            ((IDisposable)_translationJobClient)?.Dispose();
+            ((IDisposable)_translationJobServiceReference)?.Dispose();
+            ((IDisposable)_translationJobClient)?.Dispose();
+            ((IDisposable)_translationJobServiceReference)?.Dispose();
+            ((IDisposable)_translationTemplateClient)?.Dispose();
+            ((IDisposable)_translationTemplateServiceReference)?.Dispose();
+            ((IDisposable)_translationTemplateClient)?.Dispose();
+            ((IDisposable)_translationTemplateServiceReference)?.Dispose();
+            ((IDisposable)_backgroundTaskClient)?.Dispose();
+            ((IDisposable)_backgroundTaskServiceReference)?.Dispose();
+            ((IDisposable)_backgroundTaskClient)?.Dispose();
+            ((IDisposable)_backgroundTaskServiceReference)?.Dispose();
         }
         /// <summary>
         /// Disposes the object
