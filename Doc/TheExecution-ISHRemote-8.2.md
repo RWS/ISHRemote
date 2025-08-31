@@ -13,6 +13,44 @@ Main tasks are
 - [ ] Add experimental auxiliary scripts to support [Model Context Protocol](https://modelcontextprotocol.io/specification/versioning) like `Invoke-IshRemoteMcpHandleRequest.ps1`, `Register-IshRemoteMcpTool.ps1`, `Register-IshRemoteMcpResources.ps1` or alike `Start-IshRemoteMcpServer.ps1`
 
 
+## Install
+
+### From PowerShell Gallery
+
+```
+{
+    "servers": {
+        "IshRemoteMcpServer": {
+            "type": "stdio",
+            "command": "pwsh",
+            "args": [                
+                "-NoProfile",
+                "-Command",
+                "& { Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -LogFilePath \"C:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log\" }"
+            ]
+        }
+    }
+}
+```
+
+### While developing
+
+```
+{
+    "servers": {
+        "IshRemoteMcpServer": {
+            "type": "stdio",
+            "command": "pwsh",
+            "args": [                
+                "-NoProfile",
+                "-Command",
+                "${workspaceFolder}\\Debug-IShRemoteMCPServer.ps1 }"
+            ]
+        }
+    }
+}
+```
+
 ## Experimented with PSMPC
 
 ```powershell
@@ -57,7 +95,13 @@ Overall [PSMCP/Public at main · dfinke/PSMCP](https://github.com/dfinke/PSMCP/t
 
 Is 'inspect' required?
 
-Debugging for now from C:\Github\ISHREMOTE>Copy-Item -Path Source\ISHRemote\Trisoft.ISHRemote\Scripts -Destination Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ -Force -Recurse; Import-Module C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ISHRemote.psm1; start-ishremotemcpserver -ActivateWhileLoop $false
+Debugging for now from C:\Github\ISHREMOTE>Copy-Item -Path Source\ISHRemote\Trisoft.ISHRemote\Scripts -Destination Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ -Force -Recurse; Import-Module C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ISHRemote.psm1 -Force; start-ishremotemcpserver -ActivateWhileLoop $false
+
+More debugging is: 
+    1. pwsh -NoProfile -Command "& { Copy-Item -Path "C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\Scripts" -Destination "C:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\" -Force -Recurse;Import-Module "C:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ISHRemote.psm1" -Verbose -Debug -Force;Import-Module "C:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\net6.0\Trisoft.ISHRemote.dll" -Verbose -Debug -Force;Get-IshVersion;(Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name;(Get-Help New-IShSession).Description.Text;(Get-Help New-IShSession).Description;Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -ActivateWhileLoop 0 -LogFilePath "C:\GITHUB\ISHRemote\IshRemoteMcpServer.log" }"
+    2. pwsh -NoProfile -Command "& { $env:PSModulePath=$env:PSModulePath + \";\" +  \"C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\";Get-IshVersion;(Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name;(Get-Help New-IShSession).Description.Text;(Get-Help New-IShSession).Description;Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -ActivateWhileLoop 0 -LogFilePath "C:\GITHUB\ISHRemote\IshRemoteMcpServer.log" }"
+
+
 
 ## Add MCP Prompt
 
@@ -91,6 +135,22 @@ Where priority 1.0 means required, is hopefully always read by the host. Others 
 
 Resources could also be editor template like files as DITA Map or DITA Topic.
 
+Clearly mention PowerShell so use the provided parameters for all tools and not some json object overload
+Prefer table result over Select columns
+
+## Create script Register-IshRemoteMcpTool at ISHRemote compile time
+
+As the set of cmdlets of ISHRemote is fixed, the json to seed the LLM for McpTools (and probably also McpResources) can be generated up front. Currently that takes 40 seconds or so.
+
+## Known Issues
+
+- Where are modules loaded from `$(Get-Module ISHRemote -ListAvailable | select-object).path`
+- Very very painful, but `import-module ....psm1` or even `import-module ....Trisoft.InfoShare.dll` does not seem to 
+    - properly load the cmdlets. The `Get-Command` gave irregular results.
+    - properly load the help breaking `Get-Help` for cmdlet descriptions and sometimes only for parameter descriptions (like description of `IShSession` parameter).
+    - This means that best way to resolve this was actually make the `ISHRemote` module properly available in `%USERPROFILE%\Documents\PowerShell\Modules\ISHRemote\8.2.0\ISHRemote.psd1` where a simple `import-module ISHRemote` does the job - it loads all cmdlets with its help.
+    - In turn `Start-IshRemoteMcpServer.ps1` function takes the cmdlets list from outside as a parameter coming from a regular `.PS1` script, and loading within that function gave irregular results for `Get-Command` and `Get-Help`
+- Script `.\.vscode\Debug-IShRemoteMCPServer.ps1` allows to debug by either a variation of `import-module` and the `-ActivateWhileLoop $true` which is required to have a *listening* MCP Server.
 
 ## References
 - [MCP Server Best Practices: Production\-Grade Development Guide \| MCPcat](https://mcpcat.io/blog/mcp-server-best-practices/)

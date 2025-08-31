@@ -1,7 +1,7 @@
 function Register-IshRemoteMcpTool {
     param(
-        [Parameter(Mandatory)]
-        [string[]]$FunctionName,
+        [Parameter(Mandatory)][AllowEmptyString()]
+        [object[]]$FunctionName,
         [int]$ParameterSet = 0,
         [Switch]$DoNotCompress
     )
@@ -40,9 +40,10 @@ function Register-IshRemoteMcpTool {
             continue
         } #>
         Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Getting EXTENDED help for function '$($CommandInfo.Name)'"; TargetFunction = $CommandInfo.Name }
+
         $help = Get-Help $CommandInfo.Name -Detailed
         # Prefer Description over Synopsis
-        $description = $help.Description.Text | Out-String
+        $description = $help.Description | Out-String
         if (-not $description) {
             $description = $help.Synopsis | Out-String
         }
@@ -78,7 +79,7 @@ function Register-IshRemoteMcpTool {
                 default { $type = 'string' }
             }
             try {
-                $paramHelp = (Get-Help $CommandInfo.Name -Parameter $Parameter.Name -ErrorAction Stop).Description.Text | Out-String
+                $paramHelp = (Get-Help $CommandInfo.Name -Parameter $Parameter.Name -ErrorAction Stop).Description | Out-String
             }
             catch {
                 Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Could not get help for parameter '$($Parameter.Name)' on function '$($CommandInfo.Name)'."; TargetFunction = $CommandInfo.Name; ParameterName = $Parameter.Name }

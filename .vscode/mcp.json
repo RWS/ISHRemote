@@ -6,7 +6,7 @@
             "args": [                
                 "-NoProfile",
                 "-Command",
-                "& Copy-Item -Path \"${workspaceFolder}\\Source\\ISHRemote\\Trisoft.ISHRemote\\Scripts\" -Destination \"${workspaceFolder}\\Source\\ISHRemote\\Trisoft.ISHRemote\\bin\\Debug\\ISHRemote\\\" -Force -Recurse;Import-Module \"${workspaceFolder}\\Source\\ISHRemote\\Trisoft.ISHRemote\\bin\\Debug\\ISHRemote\\ISHRemote.psm1\";Start-IshRemoteMcpServer -LogFilePath \"${workspaceFolder}\\IshRemoteMcpServer.log\""
+                "${workspaceFolder}\\.vscode\\Debug-IShRemoteMCPServer.ps1"
             ]
         }
     }
