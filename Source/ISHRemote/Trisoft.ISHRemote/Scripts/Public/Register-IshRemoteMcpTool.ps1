@@ -6,41 +6,30 @@ function Register-IshRemoteMcpTool {
         [Switch]$DoNotCompress
     )
 
-    Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Starting Register-IshRemoteMcpTool for functions: $($FunctionName -join ', ')" }
+    Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Register-IshRemoteMcpTool for functions[$($FunctionName -join ', ')]" }
     $results = [ordered]@{}
     foreach ($fn in $FunctionName) {
-        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Processing function: $fn"; TargetFunction = $fn }
+        
+        
+        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$fn]"; TargetFunction = $fn }
         $CommandInfo = try { Get-Command -Name $fn -ErrorAction Stop } catch { $null }
         if ($null -eq $CommandInfo) {
-            Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Function '$fn' not found."; TargetFunction = $fn }
-            Write-Warning "$fn not found!"
+            Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Register-IshRemoteMcpTool function[$fn] not found."; TargetFunction = $fn }
+            Write-Warning "Register-IshRemoteMcpTool function[$fn] not found."
             continue
         }
         if ($CommandInfo -is [System.Management.Automation.AliasInfo]) {
-            Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Resolving alias '$fn' to '$($CommandInfo.ResolvedCommand.Name)'"; Alias = $fn; ResolvedName = $CommandInfo.ResolvedCommand.Name }
+            Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool alias[$fn] to [$($CommandInfo.ResolvedCommand.Name)]"; Alias = $fn; ResolvedName = $CommandInfo.ResolvedCommand.Name }
             $CommandInfo = $CommandInfo.ResolvedCommand
         }
         if ($CommandInfo.ParameterSets.Count -lt $ParameterSet + 1) {
-            Write-IshRemoteLog -LogEntry @{ Level = 'Error'; Message = "ParameterSet $ParameterSet does not exist for function '$fn'."; TargetFunction = $fn; ParameterSetIndex = $ParameterSet }
-            Write-Error "ParameterSet $ParameterSet does not exist for $fn."
+            Write-IshRemoteLog -LogEntry @{ Level = 'Error'; Message = "Register-IshRemoteMcpTool function[$fn] ParameterSet[$ParameterSet] does not exist."; TargetFunction = $fn; ParameterSetIndex = $ParameterSet }
+            Write-Error "Register-IshRemoteMcpTool function[$fn] ParameterSet[$ParameterSet] does not exist."
             continue
         }
-        
-        <# REPLACED
-        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Getting help for function '$($CommandInfo.Name)'"; TargetFunction = $CommandInfo.Name }
-        $help = Get-Help $CommandInfo.Name
-        $description = $help.Synopsis | Out-String
-        if (-not $description) {
-            $description = $help.Description.Text | Out-String
-        }
-        $description = $description.Trim()
-        if (-not $description) {
-            Write-IshRemoteLog -LogEntry @{ Level = 'Error'; Message = "Function '$($CommandInfo.Name)' does not have a description (Synopsis or Description in comment-based help)."; TargetFunction = $CommandInfo.Name }
-            Write-Error "Function '$($CommandInfo.Name)' does not have a description (Synopsis or Description in comment-based help). Aborting." -ErrorAction Stop
-            continue
-        } #>
-        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Getting EXTENDED help for function '$($CommandInfo.Name)'"; TargetFunction = $CommandInfo.Name }
 
+        
+        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] extended help"; TargetFunction = $CommandInfo.Name }
         $help = Get-Help $CommandInfo.Name -Detailed
         # Prefer Description over Synopsis
         $description = $help.Description | Out-String
@@ -49,8 +38,8 @@ function Register-IshRemoteMcpTool {
         }
         $description = $description.Trim()
         if (-not $description) {
-            Write-IshRemoteLog -LogEntry @{ Level = 'Error'; Message = "Function '$($CommandInfo.Name)' does not have a description (Synopsis or Description in comment-based help)."; TargetFunction = $CommandInfo.Name }
-            Write-Error "Function '$($CommandInfo.Name)' does not have a description (Synopsis or Description in comment-based help). Aborting." -ErrorAction Stop
+            Write-IshRemoteLog -LogEntry @{ Level = 'Error'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] does not have a description (Synopsis or Description in comment-based help)."; TargetFunction = $CommandInfo.Name }
+            Write-Error "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] does not have a description (Synopsis or Description in comment-based help). Aborting." -ErrorAction Stop
             continue
         }
         # Adding all syntax of parameter sets
@@ -60,10 +49,10 @@ function Register-IshRemoteMcpTool {
         # Adding all examples
         $description = $description + "`n`nThe PowerShell cmdlet has the following examples as inspiration:`n" + ($help.examples | Out-String).Trim()
 
-        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Processing parameters for function '$($CommandInfo.Name)'"; TargetFunction = $CommandInfo.Name }
+        
+        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] extended parameters"; TargetFunction = $CommandInfo.Name }
         $Parameters = $CommandInfo.ParameterSets[$ParameterSet].Parameters |
         Where-Object { $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm|NoHyperLinkConversion|ProgressAction' }
-
         $inputSchema = [ordered]@{
             type       = 'object'
             properties = [ordered]@{}
@@ -92,27 +81,41 @@ function Register-IshRemoteMcpTool {
             }
         }
 
+
         # Set returns based on spec - use original function name for description
         # Inferring return type is complex in PowerShell, using example's 'number' for Invoke-Addition
         # Defaulting to 'string' otherwise, but this might need refinement based on actual function output types
         $returnType = 'string' # Default
-
         $returns = [ordered]@{ type = $returnType; description = $CommandInfo.Name }
 
-        <# REPLACED
+
+        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] tool annotations"; TargetFunction = $CommandInfo.Name }
+        $annotations = [ordered]@{
+            type       = 'object'
+            destructiveHint = 'true'
+            idempotentHint = 'false'
+            readOnlyHint = 'false'
+        }
+        switch -Regex ($CommandInfo.Name) {
+            { $_.StartsWith("Find-IshDocumentObj") -or $_.StartsWith("Find-IshPublicationOutput") } { $annotations.destructiveHint = 'true' ; $annotations.idempotentHint = 'true'; $annotations.readOnlyHint = 'true' }  # mostly because these Find can return the full repository
+            { $_.StartsWith("Get") -or $_.StartsWith("Test") -or $_.StartsWith("Search") -or $_.StartsWith("Find") -or $_.StartsWith("Compare") } { $annotations.destructiveHint = 'false' ; $annotations.idempotentHint = 'true'; $annotations.readOnlyHint = 'true' }
+            { $_.StartsWith("Set") -or $_.StartsWith("New") -or $_.StartsWith("Add") -or $_.StartsWith("Remove") -or $_.StartsWith("Move") -or $_.StartsWith("Stop") -or $_.StartsWith("Publish")} { <#defaults are good#> }
+        }
+        # If verb is Delete, then destructiveHint=$true
+        # If verb is Get, then idempotentHint=$true
+        # Omit title and openWorldHint to hold defaults
+        # if verb is Get, then readOnlyHint=$true
+
+
+
         $results[$CommandInfo.Name] = [ordered]@{ # Keep using CommandInfo.Name as key for internal logic
             name        = $CommandInfo.Name # Use original name for output
-            description = $CommandInfo.Name # Use original name for output description
-            inputSchema = $inputSchema
-            returns     = $returns
-        } #>
-            $results[$CommandInfo.Name] = [ordered]@{ # Keep using CommandInfo.Name as key for internal logic
-            name        = $CommandInfo.Name # Use original name for output
             description = $description
+            annotations = $annotations
             inputSchema = $inputSchema
             returns     = $returns
         }
-        Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Successfully processed function '$($CommandInfo.Name)'."; TargetFunction = $CommandInfo.Name }
+        Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Register-IshRemoteMcpTool function[$fn] done"; TargetFunction = $CommandInfo.Name }
     }
 
     # Output an array of tool objects, ensuring it's an array even for a single function

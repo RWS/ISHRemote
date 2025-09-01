@@ -78,6 +78,7 @@ This help rewrite would benefit [dfinke/PSMCP: PSMCP turns your PowerShell scrip
 - [ ] Consistently remove the New-IshSession line in examples
 - [ ] Every parameter should hold the default value, and mention which cmdlet to use to generate the parameter like Set-IshMetadataField
 - [ ] Set-IshMetadataField and Requested/Filter should hold in their description how to use Get-IshTypeFieldDefinition per object types. Exactly describe the name and level fields per object types and how types relate to cmdlets you can use. In some way logical-version-language and none-level needs to be explained.
+- [ ] Set-IshMetadataFilterField like and clike operator use wildcard percentage(`%`)
 - [ ] Get-IshTypeFieldDefinition should describe per object type (and synonyms like DocumentObj, content object, topic, map, template, other, etc) or Publication/PublicationOutput
 - [ ] Get-IshTypeFieldDefinition should describe how to interpret the columns. So one sentence per column like 'MM' is short for mandatory and multi-value; the first 'M' indicates that the field is required and the second 'm' indicates that field is single value or can contain multiple values.
 - [ ] `Get-IShUser` without parameters is the shallow whoami call that checks if you are still authenticated. If not do a New-IShession again.
@@ -137,10 +138,18 @@ Resources could also be editor template like files as DITA Map or DITA Topic.
 
 Clearly mention PowerShell so use the provided parameters for all tools and not some json object overload
 Prefer table result over Select columns
+Do not use parameter -IshSession to pass variable $ishSession, it is superfluous
+
+Set-IshMetadataFilterField like and clike operator use wildcard percentage(`%`)
+
+Instead of making up field names, I expected you to source it from that Get-IshTypeFieldDefinition cmdlet
+
 
 ## Create script Register-IshRemoteMcpTool at ISHRemote compile time
 
 As the set of cmdlets of ISHRemote is fixed, the json to seed the LLM for McpTools (and probably also McpResources) can be generated up front. Currently that takes 40 seconds or so.
+
+Instead of generated from Get-Help on ISHRemote, directly convert Trisoft.ISHRemote.dll-Help.xml into the requested JSON. Do make sure to add some good basic self-service cmdlets in the JSON like `Get-Help`.
 
 ## Known Issues
 
@@ -151,6 +160,7 @@ As the set of cmdlets of ISHRemote is fixed, the json to seed the LLM for McpToo
     - This means that best way to resolve this was actually make the `ISHRemote` module properly available in `%USERPROFILE%\Documents\PowerShell\Modules\ISHRemote\8.2.0\ISHRemote.psd1` where a simple `import-module ISHRemote` does the job - it loads all cmdlets with its help.
     - In turn `Start-IshRemoteMcpServer.ps1` function takes the cmdlets list from outside as a parameter coming from a regular `.PS1` script, and loading within that function gave irregular results for `Get-Command` and `Get-Help`
 - Script `.\.vscode\Debug-IShRemoteMCPServer.ps1` allows to debug by either a variation of `import-module` and the `-ActivateWhileLoop $true` which is required to have a *listening* MCP Server.
+- Visual Studio Code shows a `Continue` button after every *MCP Tool*, even the non-destructive or idempotent ones like `Get-Help`. Seemingly it is an all-or-nothing in vscode for now as described on [Use agent mode in VS Code](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode#_manage-tool-approvals).
 
 ## References
 - [MCP Server Best Practices: Production\-Grade Development Guide \| MCPcat](https://mcpcat.io/blog/mcp-server-best-practices/)
