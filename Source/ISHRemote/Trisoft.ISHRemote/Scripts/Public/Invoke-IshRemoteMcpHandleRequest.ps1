@@ -1,21 +1,23 @@
 function Invoke-IshRemoteMcpHandleRequest {
     param(
-        [object]$request,
-        [string]$toolsListJson
+        [object]$Request,
+        [string]$ToolsListJson,
+        [string]$ResourcesListJson
     )
 
     # Initialize Method
-    if ($request.method -eq "initialize") {
+    if ($Request.method -eq "initialize") {
         # Static response for simplicity, adjust serverInfo as needed
-        $response = '{"jsonrpc":"2.0","id":' + ($request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"protocolVersion":"0.3.0","capabilities":{"tools":{"listChanged":false}},"serverInfo":{"name":"PowerShell MCP Server (Template)","version":"0.1.0"}}}'
+        $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"protocolVersion":"0.3.0","capabilities":{"tools":{"listChanged":false}},"serverInfo":{"name":"PowerShell MCP Server (Template)","version":"0.1.0"}}}'
         return $response
     }
+    # TODO https://rws-dev.atlassian.net/browse/FT2-6266
 
     # Ping Method
-    if ($request.method -eq "ping") {
+    if ($Request.method -eq "ping") {
         $pingResponse = @{
             jsonrpc = "2.0"
-            id      = $request.id
+            id      = $Request.id
             result  = @{}
         }
 
@@ -24,41 +26,44 @@ function Invoke-IshRemoteMcpHandleRequest {
     }
 
     # Tools/List Method
-    if ($request.method -eq "tools/list") {
+    if ($Request.method -eq "tools/list") {
 
-        $response = '{"jsonrpc":"2.0","id":' + ($request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"tools":' + $toolsListJson + '}}'
+        $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"tools":' + $ToolsListJson + '}}'
 
         # Use the Write-IshRemoteLog function correctly with a hashtable
         Write-IshRemoteLog -LogEntry @{
-            RequestId   = $request.id
-            Method      = $request.method
-            FullRequest = ($request | ConvertTo-Json -Depth 10 -Compress) # Keep as string if preferred, or parse if needed elsewhere
-            ToolsList   = $toolsListJson # Keep as string
+            RequestId   = $Request.id
+            Method      = $Request.method
+            FullRequest = ($Request | ConvertTo-Json -Depth 10 -Compress) # Keep as string if preferred, or parse if needed elsewhere
+            ToolsList   = $ToolsListJson # Keep as string
         }
 
         return $response
     }
 
     # Tools/Call Method
-    if ($request.method -eq "tools/call") {
-        $toolName = $request.params.name
-        $targetArgs = $request.params.arguments | ConvertTo-Json -Depth 10 | ConvertFrom-Json -Depth 10 -AsHashtable
+    if ($Request.method -eq "tools/call") {
+        $toolName = $Request.params.name
+        $targetArgs = $Request.params.arguments | ConvertTo-Json -Depth 10 | ConvertFrom-Json -Depth 10 -AsHashtable
 
         $result = & $toolName @targetArgs
 
         # Log structured data
         Write-IshRemoteLog -LogEntry @{
-            RequestId = $request.id
-            Method    = $request.method
+            RequestId = $Request.id
+            Method    = $Request.method
             ToolName  = $toolName
             Arguments = $targetArgs
             Result    = $result
-            # FullRequest = $request # Optionally include the full request if needed, can be large
+            # FullRequest = $Request # Optionally include the full Request if needed, can be large
         }
+
+        # TODO if $result holds a cmdlet error like 'Find-IshUser: [-102001]...' or PowerShell errors like 'ParseError'
+        # then add 'see docs://tools for more information' to instruct the LLM to download this McpResource for proper usage
 
         $response = [ordered]@{
             jsonrpc = "2.0"
-            id      = $request.id
+            id      = $Request.id
             result  = @{
                 content = @(
                     [ordered]@{
@@ -74,7 +79,7 @@ function Invoke-IshRemoteMcpHandleRequest {
     }
 
     # Unknown Method Error
-    $response = '{"jsonrpc":"2.0","id":' + ($request.id | ConvertTo-Json -Depth 10 -Compress) + ',"error":{"code":-32601,"message":"Method not found"}}'
+    $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"error":{"code":-32601,"message":"Method not found"}}'
 
     return $response
 }

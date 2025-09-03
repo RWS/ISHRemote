@@ -144,12 +144,31 @@ Set-IshMetadataFilterField like and clike operator use wildcard percentage(`%`)
 
 Instead of making up field names, I expected you to source it from that Get-IshTypeFieldDefinition cmdlet
 
+Suggest this McpResources as a must read over `instructions`, see https://modelcontextprotocol.io/specification/2025-06-18/schema#initializeresult-instructions
+
 
 ## Create script Register-IshRemoteMcpTool at ISHRemote compile time
 
 As the set of cmdlets of ISHRemote is fixed, the json to seed the LLM for McpTools (and probably also McpResources) can be generated up front. Currently that takes 40 seconds or so.
 
-Instead of generated from Get-Help on ISHRemote, directly convert Trisoft.ISHRemote.dll-Help.xml into the requested JSON. Do make sure to add some good basic self-service cmdlets in the JSON like `Get-Help`.
+Instead of generated from Get-Help on ISHRemote, directly convert Trisoft.ISHRemote.dll-Help.xml into the requested JSON. Perhaps over .NET code instead of scripting.
+
+- Add tag `[IgnoreForMcp]` or `[ScriptUasegeOnly]` to cmdlet description, parameters (like ishsession) and examples /remarks
+- Also remove common parameters from mcp help 
+
+
+Do make sure to add some good basic self-service cmdlets in the JSON like `Get-Help`.
+
+## Only works on PS7+
+
+Mcp cmdlets should  check platform and only work on pwsh 7, warn on ps5.1 or preferably not available which include ice help.
+Script cmdlets should have help 
+So most simple way is to have psm1 export the extra scripts only on pwsh 7, perhaps better a begin() with platform check that throws or points to documentation what to do now.
+
+## Invoke-IshRemoteMcpHandleRequest to hint McpResources upon error
+
+When an McpTool call results in a (PowerShell) error like ParseError or failed cmdlets because cmdlet parameter combinations. Append an instruction 'see docs://tools for more information' to instruct the LLM to download this McpResource for proper usagelike 
+
 
 ## Known Issues
 

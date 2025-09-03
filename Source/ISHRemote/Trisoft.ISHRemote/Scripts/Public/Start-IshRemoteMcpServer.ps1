@@ -10,6 +10,8 @@ function Start-IshRemoteMcpServer {
     # Convert the tools list to JSON format, takes a while, so could be generated in ISHRemote at compile time
     $toolsListJson = Register-IshRemoteMcpTool $CmdletsToRegister
 
+    $resourcesListJson = "" # Register-IshRemoteMcpResource
+
     Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Starting MCP Server" }
     while ($ActivateWhileLoop) {
         $inputLine = [Console]::In.ReadLine()
@@ -19,7 +21,7 @@ function Start-IshRemoteMcpServer {
             if ($request.id) {
                 # Handle the request and get the response
                 Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Processing request"; RequestId = $request.id; Request = $inputLine }
-                $jsonResponse = Invoke-IshRemoteMcpHandleRequest -request $request -toolsListJson $toolsListJson
+                $jsonResponse = Invoke-IshRemoteMcpHandleRequest -Request $request -ToolsListJson $toolsListJson -ResourcesListJson $resourcesListJson
                 [Console]::WriteLine($jsonResponse)
                 [Console]::Out.Flush()
             }
