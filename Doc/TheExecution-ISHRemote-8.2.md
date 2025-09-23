@@ -1,6 +1,6 @@
 # The Execution of the plan of ISHRemote v8.2
 
-This page will try to track work in progress. And because I work on it in free time, it will help trace how I got where I am in the first place plus what is next. Inspired by [ThePlan-ISHRemote-8.2.md](./ThePlan-ISHRemote-8.2.md) although that one does not mention MCP at all :)
+This page will try to track work in progress. And because I work on it in free time, it will help trace how I got where I am in the first place plus what is next. Inspired by [ThePlan-ISHRemote-8.2.md](./ThePlan-ISHRemote-8.2.md) although that one does not mention [MCP](https://modelcontextprotocol.info) at all :)
 
 # MCP - What if you can steer an LLM to use ISHRemote properly?
 
@@ -51,7 +51,7 @@ Main tasks are
 }
 ```
 
-## Experimented with PSMPC
+## Experimented with PSMPC Module
 
 ```powershell
 Install-PSResource -Name PSMCP -Repository PSGallery
@@ -77,11 +77,12 @@ This help rewrite would benefit [dfinke/PSMCP: PSMCP turns your PowerShell scrip
 - [ ] Extend description with a sentence per parameter set and its purpose
 - [ ] Consistently remove the New-IshSession line in examples
 - [ ] Every parameter should hold the default value, and mention which cmdlet to use to generate the parameter like Set-IshMetadataField
-- [ ] Set-IshMetadataField and Requested/Filter should hold in their description how to use Get-IshTypeFieldDefinition per object types. Exactly describe the name and level fields per object types and how types relate to cmdlets you can use. In some way logical-version-language and none-level needs to be explained.
-- [ ] Set-IshMetadataFilterField like and clike operator use wildcard percentage(`%`)
-- [ ] Get-IshTypeFieldDefinition should describe per object type (and synonyms like DocumentObj, content object, topic, map, template, other, etc) or Publication/PublicationOutput
-- [ ] Get-IshTypeFieldDefinition should describe how to interpret the columns. So one sentence per column like 'MM' is short for mandatory and multi-value; the first 'M' indicates that the field is required and the second 'm' indicates that field is single value or can contain multiple values.
-- [ ] `Get-IShUser` without parameters is the shallow whoami call that checks if you are still authenticated. If not do a New-IShession again.
+- [X] Handled over markdown file to be passed over `instructions`
+    - [X] Set-IshMetadataField and Requested/Filter should hold in their description how to use Get-IshTypeFieldDefinition per object types. Exactly describe the name and level fields per object types and how types relate to cmdlets you can use. In some way logical-version-language and none-level needs to be explained.
+    - [X] Set-IshMetadataFilterField like and clike operator use wildcard percentage(`%`)
+    - [X] Get-IshTypeFieldDefinition should describe per object type (and synonyms like DocumentObj, content object, topic, map, template, other, etc) or Publication/PublicationOutput
+    - [X] Get-IshTypeFieldDefinition should describe how to interpret the columns. So one sentence per column like 'MM' is short for mandatory and multi-value; the first 'M' indicates that the field is required and the second 'm' indicates that field is single value or can contain multiple values.
+    - [X] `Get-IShUser` without parameters is the shallow whoami call that checks if you are still authenticated. If not do a New-IShession again.
 
 ## Duplicate PSMCP code into ISHRemote
 
@@ -161,7 +162,7 @@ Do make sure to add some good basic self-service cmdlets in the JSON like `Get-H
 
 ## Only works on PS7+
 
-Mcp cmdlets should  check platform and only work on pwsh 7, warn on ps5.1 or preferably not available which include ice help.
+Mcp cmdlets should check platform and only work on pwsh 7, warn on ps5.1 or preferably not available which include ice help.
 Script cmdlets should have help 
 So most simple way is to have psm1 export the extra scripts only on pwsh 7, perhaps better a begin() with platform check that throws or points to documentation what to do now.
 

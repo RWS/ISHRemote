@@ -1,3 +1,6 @@
+function Register-IshRemoteMcpInstructions {
+    $instructions=
+@"
 
 # Introduction
 
@@ -23,7 +26,6 @@ To execute these MCP Tools, so IShRemote cmdlets, you need to create a `IshSessi
 8. All IShRemote cmdlets come with preformatted tables, there is no need to pipeline (`|`) these results in a `Format-Table`.
 9. You can always do a `Get-Help` for any ISHRemote cmdlet with option `-Detailed` so you get insights in its purpose, parameter sets which are allowed parameter combinations, the individual parameters explained and of course several typical examples. Do not ask for `Continue` for this `Get-Help` MCP Tool.
 10. `Get-IShUser` without parameters is the shallow `whoami` call that checks if you are still authenticated. If not do a `New-IShession` again.
-
 
 
 # Concepts
@@ -136,5 +138,8 @@ To predict the naming of PSNoteType properties you can use a quick `Format-List`
 * When there is doubt the full level and value type is used in lower-case format. To continue the example the read-only property `fishusertype_none_element` holding the stable identifier `VUSERTYPEINTERNAL` (so a `V` list of value entry of `DUSERTYPE´).
 
 Note these PSNoteType properties are read-only, they can only be used to read or process values. Any change like updating metadata needs to go over `Set-IshMetadataField`.
+"@
 
 
+    Write-Output ($instructions | ConvertTo-Json -Compress)
+}

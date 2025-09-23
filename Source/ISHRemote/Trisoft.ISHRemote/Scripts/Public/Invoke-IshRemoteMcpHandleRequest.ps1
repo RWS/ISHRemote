@@ -2,16 +2,16 @@ function Invoke-IshRemoteMcpHandleRequest {
     param(
         [object]$Request,
         [string]$ToolsListJson,
-        [string]$ResourcesListJson
+        [string]$ResourcesListJson,
+        [string]$InstructionsJson
     )
 
     # Initialize Method
     if ($Request.method -eq "initialize") {
         # Static response for simplicity, adjust serverInfo as needed
-        $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"protocolVersion":"0.3.0","capabilities":{"tools":{"listChanged":false}},"serverInfo":{"name":"PowerShell MCP Server (Template)","version":"0.1.0"}}}'
+        $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"protocolVersion":"0.3.0","capabilities":{"tools":{"listChanged":false}},"instructions":"' + $instructionsJson + '","serverInfo":{"name":"PowerShell MCP Server (Template)","version":"0.1.0"}}}'
         return $response
     }
-    # TODO https://rws-dev.atlassian.net/browse/FT2-6266
 
     # Ping Method
     if ($Request.method -eq "ping") {
