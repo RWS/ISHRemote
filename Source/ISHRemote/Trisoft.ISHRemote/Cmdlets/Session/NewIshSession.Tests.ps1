@@ -496,6 +496,7 @@ Describe "New-IshSession" -Tags "Read" {
 			$slash3Position = $webServicesBaseUrl.IndexOf("/",$slash2Position+1)
 			$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position-1)
 			$ipv4Addresses = [System.Net.Dns]::GetHostAddresses($hostname) | 
+			                 Where-Object -Property AddressFamily -eq 'InterNetwork' |
 			                 Where-Object -Property IsIPv6LinkLocal -ne $true | 
 							 Select-Object -Property IPAddressToString  # returning @(192.168.1.160,10.100.139.126)
 			foreach ($ipv4Address in $ipv4Addresses)
@@ -505,6 +506,7 @@ Describe "New-IshSession" -Tags "Read" {
 				$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
 				$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 			}
+			# Remember that ipv6 addresses need to go in between square brackets to avoid port confusion
 		}
 		It "Parameter IgnoreSslPolicyErrors specified negative flow like hostname (segment-one-url)" -Skip {
 			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
