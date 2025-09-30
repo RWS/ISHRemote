@@ -27,7 +27,6 @@ using Trisoft.ISHRemote.BackgroundTask25ServiceReference;
 using Trisoft.ISHRemote.EventMonitor25ServiceReference;
 using System.Text;
 using System.Xml.Linq;
-using Microsoft.IdentityModel.Tokens;
 using static Trisoft.ISHRemote.Objects.Enumerations;
 
 namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
@@ -310,7 +309,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                         }
                 }
 
-                if (EventDescription.IsNullOrEmpty())
+                if (String.IsNullOrEmpty(EventDescription))
                 {
                     EventDescription = $"Executing {EventType} for {ishObjectsCount} IshObjects";
                 }
