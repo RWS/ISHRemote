@@ -340,6 +340,198 @@ namespace Trisoft.ISHRemote.Connection
         }
         #endregion Properties
 
+        #region Private Faulted Event Handlers
+        /// <summary>
+        /// Event handler for when the Annotation client channel enters a Faulted state
+        /// </summary>
+        private void AnnotationClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"AnnotationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _annotationClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the Application client channel enters a Faulted state
+        /// </summary>
+        private void ApplicationClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"ApplicationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _applicationClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the DocumentObj client channel enters a Faulted state
+        /// </summary>
+        private void DocumentObjClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"DocumentObjClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _documentObjClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the Folder client channel enters a Faulted state
+        /// </summary>
+        private void FolderClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"FolderClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _folderClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the User client channel enters a Faulted state
+        /// </summary>
+        private void UserClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"UserClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _userClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the UserRole client channel enters a Faulted state
+        /// </summary>
+        private void UserRoleClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"UserRoleClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _userRoleClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the UserGroup client channel enters a Faulted state
+        /// </summary>
+        private void UserGroupClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"UserGroupClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _userGroupClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the ListOfValues client channel enters a Faulted state
+        /// </summary>
+        private void ListOfValuesClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"ListOfValuesClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _listOfValuesClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the PublicationOutput client channel enters a Faulted state
+        /// </summary>
+        private void PublicationOutputClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"PublicationOutputClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _publicationOutputClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the OutputFormat client channel enters a Faulted state
+        /// </summary>
+        private void OutputFormatClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"OutputFormatClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _outputFormatClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the Settings client channel enters a Faulted state
+        /// </summary>
+        private void SettingsClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"SettingsClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _settingsClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the EDT client channel enters a Faulted state
+        /// </summary>
+        private void EDTClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"EDTClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _EDTClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the EventMonitor client channel enters a Faulted state
+        /// </summary>
+        private void EventMonitorClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"EventMonitorClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _eventMonitorClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the Baseline client channel enters a Faulted state
+        /// </summary>
+        private void BaselineClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"BaselineClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _baselineClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the MetadataBinding client channel enters a Faulted state
+        /// </summary>
+        private void MetadataBindingClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"MetadataBindingClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _metadataBindingClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the Search client channel enters a Faulted state
+        /// </summary>
+        private void SearchClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"SearchClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _searchClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the TranslationJob client channel enters a Faulted state
+        /// </summary>
+        private void TranslationJobClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"TranslationJobClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _translationJobClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the TranslationTemplate client channel enters a Faulted state
+        /// </summary>
+        private void TranslationTemplateClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"TranslationTemplateClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _translationTemplateClient = null;
+        }
+
+        /// <summary>
+        /// Event handler for when the BackgroundTask client channel enters a Faulted state
+        /// </summary>
+        private void BackgroundTaskClientChannelFaulted(object sender, EventArgs e)
+        {
+            _logger.WriteDebug($"BackgroundTaskClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            ((ICommunicationObject)sender)?.Abort();
+            _backgroundTaskClient = null;
+        }
+        #endregion Private Faulted Event Handlers
+
         #region Public Get..Channel Methods
         /// <summary>
         /// Create a /Wcf/API25/Annotation.svc proxy
@@ -350,17 +542,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetAnnotation25Channel recreating client - Client[{_annotationClient?.InnerChannel?.State}]");
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
+                ((ICommunicationObject)_annotationClient).Faulted += new EventHandler(AnnotationClientChannelFaulted);
             }
             return _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetAnnotation25Channel recreating client - Client[{_annotationClient?.InnerChannel?.State}]");
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
+                ((ICommunicationObject)_annotationClient).Faulted += new EventHandler(AnnotationClientChannelFaulted);
             }
             _annotationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
             _annotationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
@@ -385,17 +581,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetApplication25Channel recreating client - Client[{_applicationClient?.InnerChannel?.State}]");
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
+                ((ICommunicationObject)_applicationClient).Faulted += new EventHandler(ApplicationClientChannelFaulted);
             }
             return _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetApplication25Channel recreating client - Client[{_applicationClient?.InnerChannel?.State}]");
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
+                ((ICommunicationObject)_applicationClient).Faulted += new EventHandler(ApplicationClientChannelFaulted);
                 _applicationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _applicationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _applicationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -421,17 +621,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - Client[{_documentObjClient?.InnerChannel?.State}]");
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
+                ((ICommunicationObject)_documentObjClient).Faulted += new EventHandler(DocumentObjClientChannelFaulted);
             }
             return _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - Client[{_documentObjClient?.InnerChannel?.State}]");
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
+                ((ICommunicationObject)_documentObjClient).Faulted += new EventHandler(DocumentObjClientChannelFaulted);
                 _documentObjClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _documentObjClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -457,17 +661,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetFolder25Channel recreating client - Client[{_folderClient?.InnerChannel?.State}]");
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
+                ((ICommunicationObject)_folderClient).Faulted += new EventHandler(FolderClientChannelFaulted);
             }
             return _folderClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetFolder25Channel recreating client - Client[{_folderClient?.InnerChannel?.State}]");
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
+                ((ICommunicationObject)_folderClient).Faulted += new EventHandler(FolderClientChannelFaulted);
                 _folderClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _folderClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -493,17 +701,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetUser25Channel recreating client - Client[{_userClient?.InnerChannel?.State}]");
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
+                ((ICommunicationObject)_userClient).Faulted += new EventHandler(UserClientChannelFaulted);
             }
             return _userClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetUser25Channel recreating client - Client[{_userClient?.InnerChannel?.State}]");
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
+                ((ICommunicationObject)_userClient).Faulted += new EventHandler(UserClientChannelFaulted);
                 _userClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -529,17 +741,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetUserRole25Channel recreating client - Client[{_userRoleClient?.InnerChannel?.State}]");
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
+                ((ICommunicationObject)_userRoleClient).Faulted += new EventHandler(UserRoleClientChannelFaulted);
             }
             return _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetUserRole25Channel recreating client - Client[{_userRoleClient?.InnerChannel?.State}]");
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
+                ((ICommunicationObject)_userRoleClient).Faulted += new EventHandler(UserRoleClientChannelFaulted);
                 _userRoleClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userRoleClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -565,17 +781,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetUserGroup25Channel recreating client - Client[{_userGroupClient?.InnerChannel?.State}]");
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
+                ((ICommunicationObject)_userGroupClient).Faulted += new EventHandler(UserGroupClientChannelFaulted);
             }
             return _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetUserGroup25Channel recreating client - Client[{_userGroupClient?.InnerChannel?.State}]");
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
+                ((ICommunicationObject)_userGroupClient).Faulted += new EventHandler(UserGroupClientChannelFaulted);
                 _userGroupClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userGroupClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -601,17 +821,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetListOfValues25Channel recreating client - Client[{_listOfValuesClient?.InnerChannel?.State}]");
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
+                ((ICommunicationObject)_listOfValuesClient).Faulted += new EventHandler(ListOfValuesClientChannelFaulted);
             }
             return _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetListOfValues25Channel recreating client - Client[{_listOfValuesClient?.InnerChannel?.State}]");
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
+                ((ICommunicationObject)_listOfValuesClient).Faulted += new EventHandler(ListOfValuesClientChannelFaulted);
                 _listOfValuesClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _listOfValuesClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -637,17 +861,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - Client[{_publicationOutputClient?.InnerChannel?.State}]");
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
+                ((ICommunicationObject)_publicationOutputClient).Faulted += new EventHandler(PublicationOutputClientChannelFaulted);
             }
             return _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - Client[{_publicationOutputClient?.InnerChannel?.State}]");
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
+                ((ICommunicationObject)_publicationOutputClient).Faulted += new EventHandler(PublicationOutputClientChannelFaulted);
                 _publicationOutputClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _publicationOutputClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -673,17 +901,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - Client[{_outputFormatClient?.InnerChannel?.State}]");
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
+                ((ICommunicationObject)_outputFormatClient).Faulted += new EventHandler(OutputFormatClientChannelFaulted);
             }
             return _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - Client[{_outputFormatClient?.InnerChannel?.State}]");
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
+                ((ICommunicationObject)_outputFormatClient).Faulted += new EventHandler(OutputFormatClientChannelFaulted);
                 _outputFormatClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _outputFormatClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -709,17 +941,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetSettings25Channel recreating client - Client[{_settingsClient?.InnerChannel?.State}]");
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
+                ((ICommunicationObject)_settingsClient).Faulted += new EventHandler(SettingsClientChannelFaulted);
             }
             return _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetSettings25Channel recreating client - Client[{_settingsClient?.InnerChannel?.State}]");
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
+                ((ICommunicationObject)_settingsClient).Faulted += new EventHandler(SettingsClientChannelFaulted);
                 _settingsClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _settingsClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -745,17 +981,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetEDT25Channel recreating client - Client[{_EDTClient?.InnerChannel?.State}]");
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
+                ((ICommunicationObject)_EDTClient).Faulted += new EventHandler(EDTClientChannelFaulted);
             }
             return _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetEDT25Channel recreating client - Client[{_EDTClient?.InnerChannel?.State}]");
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
+                ((ICommunicationObject)_EDTClient).Faulted += new EventHandler(EDTClientChannelFaulted);
                 _EDTClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _EDTClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -781,17 +1021,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - Client[{_eventMonitorClient?.InnerChannel?.State}]");
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
+                ((ICommunicationObject)_eventMonitorClient).Faulted += new EventHandler(EventMonitorClientChannelFaulted);
             }
             return _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - Client[{_eventMonitorClient?.InnerChannel?.State}]");
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
+                ((ICommunicationObject)_eventMonitorClient).Faulted += new EventHandler(EventMonitorClientChannelFaulted);
                 _eventMonitorClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _eventMonitorClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -817,17 +1061,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetBaseline25Channel recreating client - Client[{_baselineClient?.InnerChannel?.State}]");
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
+                ((ICommunicationObject)_baselineClient).Faulted += new EventHandler(BaselineClientChannelFaulted);
             }
             return _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetBaseline25Channel recreating client - Client[{_baselineClient?.InnerChannel?.State}]");
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
+                ((ICommunicationObject)_baselineClient).Faulted += new EventHandler(BaselineClientChannelFaulted);
                 _baselineClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _baselineClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -853,17 +1101,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - Client[{_metadataBindingClient?.InnerChannel?.State}]");
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
+                ((ICommunicationObject)_metadataBindingClient).Faulted += new EventHandler(MetadataBindingClientChannelFaulted);
             }
             return _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - Client[{_metadataBindingClient?.InnerChannel?.State}]");
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
+                ((ICommunicationObject)_metadataBindingClient).Faulted += new EventHandler(MetadataBindingClientChannelFaulted);
                 _metadataBindingClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _metadataBindingClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -889,17 +1141,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetSearch25Channel recreating client - Client[{_searchClient?.InnerChannel?.State}]");
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
+                ((ICommunicationObject)_searchClient).Faulted += new EventHandler(SearchClientChannelFaulted);
             }
             return _searchClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetSearch25Channel recreating client - Client[{_searchClient?.InnerChannel?.State}]");
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
+                ((ICommunicationObject)_searchClient).Faulted += new EventHandler(SearchClientChannelFaulted);
                 _searchClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _searchClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -925,17 +1181,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - Client[{_translationJobClient?.InnerChannel?.State}]");
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
+                ((ICommunicationObject)_translationJobClient).Faulted += new EventHandler(TranslationJobClientChannelFaulted);
             }
             return _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - Client[{_translationJobClient?.InnerChannel?.State}]");
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
+                ((ICommunicationObject)_translationJobClient).Faulted += new EventHandler(TranslationJobClientChannelFaulted);
                 _translationJobClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _translationJobClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -961,17 +1221,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - Client[{_translationTemplateClient?.InnerChannel?.State}]");
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
+                ((ICommunicationObject)_translationTemplateClient).Faulted += new EventHandler(TranslationTemplateClientChannelFaulted);
             }
             return _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - Client[{_translationTemplateClient?.InnerChannel?.State}]");
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
+                ((ICommunicationObject)_translationTemplateClient).Faulted += new EventHandler(TranslationTemplateClientChannelFaulted);
                 _translationTemplateClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _translationTemplateClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -998,17 +1262,21 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - Client[{_backgroundTaskClient?.InnerChannel?.State}]");
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
+                ((ICommunicationObject)_backgroundTaskClient).Faulted += new EventHandler(BackgroundTaskClientChannelFaulted);
             }
             return _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(IssuedToken);
 #else
             if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
+                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - Client[{_backgroundTaskClient?.InnerChannel?.State}]");
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
+                ((ICommunicationObject)_backgroundTaskClient).Faulted += new EventHandler(BackgroundTaskClientChannelFaulted);
                 _backgroundTaskClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _backgroundTaskClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
