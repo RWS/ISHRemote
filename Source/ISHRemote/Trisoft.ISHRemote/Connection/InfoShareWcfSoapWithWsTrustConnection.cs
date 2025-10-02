@@ -542,7 +542,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetAnnotation25Channel recreating client - Client[{_annotationClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetAnnotation25Channel recreating client - ClientInnerChannelState[{_annotationClient?.InnerChannel?.State}]");
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
@@ -552,7 +552,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetAnnotation25Channel recreating client - Client[{_annotationClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetAnnotation25Channel recreating client - ClientInnerChannelState[{_annotationClient?.InnerChannel?.State}]");
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
@@ -581,7 +581,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetApplication25Channel recreating client - Client[{_applicationClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetApplication25Channel recreating client - ClientInnerChannelState[{_applicationClient?.InnerChannel?.State}]");
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
@@ -591,7 +591,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetApplication25Channel recreating client - Client[{_applicationClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetApplication25Channel recreating client - ClientInnerChannelState[{_applicationClient?.InnerChannel?.State}]");
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
@@ -621,7 +621,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - Client[{_documentObjClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - ClientInnerChannelState[{_documentObjClient?.InnerChannel?.State}]");
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
@@ -631,7 +631,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - Client[{_documentObjClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - ClientInnerChannelState[{_documentObjClient?.InnerChannel?.State}]");
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
@@ -661,7 +661,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetFolder25Channel recreating client - Client[{_folderClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetFolder25Channel recreating client - ClientInnerChannelState[{_folderClient?.InnerChannel?.State}]");
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
@@ -671,7 +671,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetFolder25Channel recreating client - Client[{_folderClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetFolder25Channel recreating client - ClientInnerChannelState[{_folderClient?.InnerChannel?.State}]");
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
@@ -701,7 +701,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetUser25Channel recreating client - Client[{_userClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetUser25Channel recreating client - ClientInnerChannelState[{_userClient?.InnerChannel?.State}]");
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
@@ -711,7 +711,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetUser25Channel recreating client - Client[{_userClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetUser25Channel recreating client - ClientInnerChannelState[{_userClient?.InnerChannel?.State}]");
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
@@ -741,7 +741,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetUserRole25Channel recreating client - Client[{_userRoleClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetUserRole25Channel recreating client - ClientInnerChannelState[{_userRoleClient?.InnerChannel?.State}]");
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
@@ -751,7 +751,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetUserRole25Channel recreating client - Client[{_userRoleClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetUserRole25Channel recreating client - ClientInnerChannelState[{_userRoleClient?.InnerChannel?.State}]");
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
@@ -781,7 +781,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetUserGroup25Channel recreating client - Client[{_userGroupClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetUserGroup25Channel recreating client - ClientInnerChannelState[{_userGroupClient?.InnerChannel?.State}]");
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
@@ -791,7 +791,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetUserGroup25Channel recreating client - Client[{_userGroupClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetUserGroup25Channel recreating client - ClientInnerChannelState[{_userGroupClient?.InnerChannel?.State}]");
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
@@ -821,7 +821,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetListOfValues25Channel recreating client - Client[{_listOfValuesClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetListOfValues25Channel recreating client - ClientInnerChannelState[{_listOfValuesClient?.InnerChannel?.State}]");
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
@@ -831,7 +831,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetListOfValues25Channel recreating client - Client[{_listOfValuesClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetListOfValues25Channel recreating client - ClientInnerChannelState[{_listOfValuesClient?.InnerChannel?.State}]");
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
@@ -861,7 +861,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - Client[{_publicationOutputClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - ClientInnerChannelState[{_publicationOutputClient?.InnerChannel?.State}]");
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
@@ -871,7 +871,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - Client[{_publicationOutputClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - ClientInnerChannelState[{_publicationOutputClient?.InnerChannel?.State}]");
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
@@ -901,7 +901,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - Client[{_outputFormatClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - ClientInnerChannelState[{_outputFormatClient?.InnerChannel?.State}]");
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
@@ -911,7 +911,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - Client[{_outputFormatClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - ClientInnerChannelState[{_outputFormatClient?.InnerChannel?.State}]");
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
@@ -941,7 +941,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetSettings25Channel recreating client - Client[{_settingsClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetSettings25Channel recreating client - ClientInnerChannelState[{_settingsClient?.InnerChannel?.State}]");
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
@@ -951,7 +951,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetSettings25Channel recreating client - Client[{_settingsClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetSettings25Channel recreating client - ClientInnerChannelState[{_settingsClient?.InnerChannel?.State}]");
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
@@ -981,7 +981,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetEDT25Channel recreating client - Client[{_EDTClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetEDT25Channel recreating client - ClientInnerChannelState[{_EDTClient?.InnerChannel?.State}]");
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
@@ -991,7 +991,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetEDT25Channel recreating client - Client[{_EDTClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetEDT25Channel recreating client - ClientInnerChannelState[{_EDTClient?.InnerChannel?.State}]");
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
@@ -1021,7 +1021,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - Client[{_eventMonitorClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - ClientInnerChannelState[{_eventMonitorClient?.InnerChannel?.State}]");
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
@@ -1031,7 +1031,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - Client[{_eventMonitorClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - ClientInnerChannelState[{_eventMonitorClient?.InnerChannel?.State}]");
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
@@ -1061,7 +1061,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetBaseline25Channel recreating client - Client[{_baselineClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetBaseline25Channel recreating client - ClientInnerChannelState[{_baselineClient?.InnerChannel?.State}]");
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
@@ -1071,7 +1071,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetBaseline25Channel recreating client - Client[{_baselineClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetBaseline25Channel recreating client - ClientInnerChannelState[{_baselineClient?.InnerChannel?.State}]");
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
@@ -1101,7 +1101,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - Client[{_metadataBindingClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - ClientInnerChannelState[{_metadataBindingClient?.InnerChannel?.State}]");
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
@@ -1111,7 +1111,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - Client[{_metadataBindingClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - ClientInnerChannelState[{_metadataBindingClient?.InnerChannel?.State}]");
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
@@ -1141,7 +1141,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetSearch25Channel recreating client - Client[{_searchClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetSearch25Channel recreating client - ClientInnerChannelState[{_searchClient?.InnerChannel?.State}]");
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
@@ -1151,7 +1151,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetSearch25Channel recreating client - Client[{_searchClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetSearch25Channel recreating client - ClientInnerChannelState[{_searchClient?.InnerChannel?.State}]");
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
@@ -1181,7 +1181,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - Client[{_translationJobClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - ClientInnerChannelState[{_translationJobClient?.InnerChannel?.State}]");
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
@@ -1191,7 +1191,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - Client[{_translationJobClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - ClientInnerChannelState[{_translationJobClient?.InnerChannel?.State}]");
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
@@ -1221,7 +1221,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - Client[{_translationTemplateClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - ClientInnerChannelState[{_translationTemplateClient?.InnerChannel?.State}]");
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
@@ -1231,7 +1231,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - Client[{_translationTemplateClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - ClientInnerChannelState[{_translationTemplateClient?.InnerChannel?.State}]");
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
@@ -1262,7 +1262,7 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - Client[{_backgroundTaskClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - ClientInnerChannelState[{_backgroundTaskClient?.InnerChannel?.State}]");
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
@@ -1272,7 +1272,7 @@ namespace Trisoft.ISHRemote.Connection
 #else
             if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted))
             {
-                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - Client[{_backgroundTaskClient?.InnerChannel?.State}]");
+                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - ClientInnerChannelState[{_backgroundTaskClient?.InnerChannel?.State}]");
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));

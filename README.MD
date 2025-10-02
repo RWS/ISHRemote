@@ -65,7 +65,6 @@ Any feedback is welcome. Please log a GitHub issue, make sure you submit your ve
 * If a `New-IshSession -IshUserName ...` results in `System.ServiceModel.FaultException` followed by `An error occurred when verifying security for the message.`, then you are using `-Protocol WcfSoapWithWsTrust` implicitly. A very likely candidate is that deprecated `/ISHSTS/` which authenticates the WS-Federation protocol was not part of your certificate rollover. A simple workaround is to stop the ISHSTS IIS App Pool, delete `\Web\InfoShareSTS\App_Data\IdentityServerConfiguration-2.3.sdf` and in turn start the IIS App Pool again - which will regenerate the local .sdf database.
 * If you get `You cannot call a method on a null-valued expression.` or `The HTTP status code of the response was not expected (401).`, probably while using `$ishSession.OpenApiISH30Client` it means your token expired and requires a refresh.
 * If you get `New-IshSession : Reference to undeclared entity 'raquo'. Line 98, position 121.`, most likely you specified an unexisting "Web Services API" url. Make sure your url ends with an ending slash `/`.
-* ISHDeploy `Enable-ISHIntegrationSTSInternalAuthentication/Disable-ISHIntegrationSTSInternalAuthentication` adds a /ISHWS/Internal/connectionconfiguration.xml that a different issuer should be used. As ISHRemote doesn't have an app.config, all the artifacts are derived from the RelyingParty WSDL provided mex endpoint (e.g. /ISHSTS/issue/wstrust/mex).
 
 # Standards To Respect
 
