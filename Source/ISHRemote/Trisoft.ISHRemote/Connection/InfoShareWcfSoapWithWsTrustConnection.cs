@@ -556,18 +556,18 @@ namespace Trisoft.ISHRemote.Connection
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
-                ((ICommunicationObject)_annotationClient).Faulted += new EventHandler(AnnotationClientChannelFaulted);
-            }
-            _annotationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
-            _annotationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
-            _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
-            if (_connectionParameters.IgnoreSslPolicyErrors)
-            {
-                _annotationClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                _annotationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
+                _annotationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
+                _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+                if (_connectionParameters.IgnoreSslPolicyErrors)
                 {
-                    CertificateValidationMode = X509CertificateValidationMode.None,
-                    RevocationMode = X509RevocationMode.NoCheck
-                };
+                    _annotationClient.ChannelFactory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
+                    {
+                        CertificateValidationMode = X509CertificateValidationMode.None,
+                        RevocationMode = X509RevocationMode.NoCheck
+                    };
+                }
+                ((ICommunicationObject)_annotationClient).Faulted += new EventHandler(AnnotationClientChannelFaulted);
             }
             return _annotationClient.ChannelFactory.CreateChannel();
 #endif
@@ -595,7 +595,6 @@ namespace Trisoft.ISHRemote.Connection
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
-                ((ICommunicationObject)_applicationClient).Faulted += new EventHandler(ApplicationClientChannelFaulted);
                 _applicationClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _applicationClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _applicationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -607,6 +606,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_applicationClient).Faulted += new EventHandler(ApplicationClientChannelFaulted);
             }
             return _applicationClient.ChannelFactory.CreateChannel();
 #endif
@@ -635,7 +635,6 @@ namespace Trisoft.ISHRemote.Connection
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
-                ((ICommunicationObject)_documentObjClient).Faulted += new EventHandler(DocumentObjClientChannelFaulted);
                 _documentObjClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _documentObjClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -647,6 +646,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_documentObjClient).Faulted += new EventHandler(DocumentObjClientChannelFaulted);
             }
             return _documentObjClient.ChannelFactory.CreateChannel();
 #endif
@@ -675,7 +675,6 @@ namespace Trisoft.ISHRemote.Connection
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
-                ((ICommunicationObject)_folderClient).Faulted += new EventHandler(FolderClientChannelFaulted);
                 _folderClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _folderClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -687,6 +686,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_folderClient).Faulted += new EventHandler(FolderClientChannelFaulted);
             }
             return _folderClient.ChannelFactory.CreateChannel();
 #endif
@@ -715,7 +715,6 @@ namespace Trisoft.ISHRemote.Connection
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
-                ((ICommunicationObject)_userClient).Faulted += new EventHandler(UserClientChannelFaulted);
                 _userClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -727,6 +726,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_userClient).Faulted += new EventHandler(UserClientChannelFaulted);
             }
             return _userClient.ChannelFactory.CreateChannel();
 #endif
@@ -755,7 +755,6 @@ namespace Trisoft.ISHRemote.Connection
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
-                ((ICommunicationObject)_userRoleClient).Faulted += new EventHandler(UserRoleClientChannelFaulted);
                 _userRoleClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userRoleClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -767,6 +766,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_userRoleClient).Faulted += new EventHandler(UserRoleClientChannelFaulted);
             }
             return _userRoleClient.ChannelFactory.CreateChannel();
 #endif
@@ -795,7 +795,6 @@ namespace Trisoft.ISHRemote.Connection
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
-                ((ICommunicationObject)_userGroupClient).Faulted += new EventHandler(UserGroupClientChannelFaulted);
                 _userGroupClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _userGroupClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -807,6 +806,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_userGroupClient).Faulted += new EventHandler(UserGroupClientChannelFaulted);
             }
             return _userGroupClient.ChannelFactory.CreateChannel();
 #endif
@@ -835,7 +835,6 @@ namespace Trisoft.ISHRemote.Connection
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
-                ((ICommunicationObject)_listOfValuesClient).Faulted += new EventHandler(ListOfValuesClientChannelFaulted);
                 _listOfValuesClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _listOfValuesClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -847,6 +846,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_listOfValuesClient).Faulted += new EventHandler(ListOfValuesClientChannelFaulted);
             }
             return _listOfValuesClient.ChannelFactory.CreateChannel();
 #endif
@@ -875,7 +875,6 @@ namespace Trisoft.ISHRemote.Connection
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
-                ((ICommunicationObject)_publicationOutputClient).Faulted += new EventHandler(PublicationOutputClientChannelFaulted);
                 _publicationOutputClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _publicationOutputClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -888,6 +887,7 @@ namespace Trisoft.ISHRemote.Connection
                     };
                 }
             }
+            ((ICommunicationObject)_publicationOutputClient).Faulted += new EventHandler(PublicationOutputClientChannelFaulted);
             return _publicationOutputClient.ChannelFactory.CreateChannel();
 #endif
         }
@@ -915,7 +915,6 @@ namespace Trisoft.ISHRemote.Connection
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
-                ((ICommunicationObject)_outputFormatClient).Faulted += new EventHandler(OutputFormatClientChannelFaulted);
                 _outputFormatClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _outputFormatClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -927,6 +926,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_outputFormatClient).Faulted += new EventHandler(OutputFormatClientChannelFaulted);
             }
             return _outputFormatClient.ChannelFactory.CreateChannel();
 #endif
@@ -955,7 +955,6 @@ namespace Trisoft.ISHRemote.Connection
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
-                ((ICommunicationObject)_settingsClient).Faulted += new EventHandler(SettingsClientChannelFaulted);
                 _settingsClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _settingsClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -967,6 +966,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_settingsClient).Faulted += new EventHandler(SettingsClientChannelFaulted);
             }
             return _settingsClient.ChannelFactory.CreateChannel();
 #endif
@@ -995,7 +995,6 @@ namespace Trisoft.ISHRemote.Connection
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
-                ((ICommunicationObject)_EDTClient).Faulted += new EventHandler(EDTClientChannelFaulted);
                 _EDTClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _EDTClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1007,6 +1006,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_EDTClient).Faulted += new EventHandler(EDTClientChannelFaulted);
             }
             return _EDTClient.ChannelFactory.CreateChannel();
 #endif
@@ -1035,7 +1035,6 @@ namespace Trisoft.ISHRemote.Connection
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
-                ((ICommunicationObject)_eventMonitorClient).Faulted += new EventHandler(EventMonitorClientChannelFaulted);
                 _eventMonitorClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _eventMonitorClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1047,6 +1046,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_eventMonitorClient).Faulted += new EventHandler(EventMonitorClientChannelFaulted);
             }
             return _eventMonitorClient.ChannelFactory.CreateChannel();
 #endif
@@ -1075,7 +1075,6 @@ namespace Trisoft.ISHRemote.Connection
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
-                ((ICommunicationObject)_baselineClient).Faulted += new EventHandler(BaselineClientChannelFaulted);
                 _baselineClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _baselineClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1087,6 +1086,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_baselineClient).Faulted += new EventHandler(BaselineClientChannelFaulted);
             }
             return _baselineClient.ChannelFactory.CreateChannel();
 #endif
@@ -1115,7 +1115,6 @@ namespace Trisoft.ISHRemote.Connection
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
-                ((ICommunicationObject)_metadataBindingClient).Faulted += new EventHandler(MetadataBindingClientChannelFaulted);
                 _metadataBindingClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _metadataBindingClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1127,6 +1126,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_metadataBindingClient).Faulted += new EventHandler(MetadataBindingClientChannelFaulted);
             }
             return _metadataBindingClient.ChannelFactory.CreateChannel();
 #endif
@@ -1155,7 +1155,6 @@ namespace Trisoft.ISHRemote.Connection
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
-                ((ICommunicationObject)_searchClient).Faulted += new EventHandler(SearchClientChannelFaulted);
                 _searchClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _searchClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1167,6 +1166,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_searchClient).Faulted += new EventHandler(SearchClientChannelFaulted);
             }
             return _searchClient.ChannelFactory.CreateChannel();
 #endif
@@ -1195,7 +1195,6 @@ namespace Trisoft.ISHRemote.Connection
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
-                ((ICommunicationObject)_translationJobClient).Faulted += new EventHandler(TranslationJobClientChannelFaulted);
                 _translationJobClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _translationJobClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1207,6 +1206,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_translationJobClient).Faulted += new EventHandler(TranslationJobClientChannelFaulted);
             }
             return _translationJobClient.ChannelFactory.CreateChannel();
 #endif
@@ -1235,7 +1235,6 @@ namespace Trisoft.ISHRemote.Connection
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
-                ((ICommunicationObject)_translationTemplateClient).Faulted += new EventHandler(TranslationTemplateClientChannelFaulted);
                 _translationTemplateClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _translationTemplateClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1247,6 +1246,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_translationTemplateClient).Faulted += new EventHandler(TranslationTemplateClientChannelFaulted);
             }
             return _translationTemplateClient.ChannelFactory.CreateChannel();
 #endif
@@ -1276,7 +1276,6 @@ namespace Trisoft.ISHRemote.Connection
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
-                ((ICommunicationObject)_backgroundTaskClient).Faulted += new EventHandler(BackgroundTaskClientChannelFaulted);
                 _backgroundTaskClient.ClientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 _backgroundTaskClient.ClientCredentials.UserName.Password = _connectionParameters.Credential.Password;
                 _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
@@ -1288,6 +1287,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_backgroundTaskClient).Faulted += new EventHandler(BackgroundTaskClientChannelFaulted);
             }
             return _backgroundTaskClient.ChannelFactory.CreateChannel();
 #endif

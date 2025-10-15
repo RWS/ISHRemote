@@ -558,8 +558,6 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Annotation25]));
 
-                ((ICommunicationObject)_annotationClient).Faulted += new EventHandler(AnnotationClientChannelFaulted);
-
                 _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_annotationClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
@@ -573,6 +571,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_annotationClient).Faulted += new EventHandler(AnnotationClientChannelFaulted);
                 _annotationServiceReference = _annotationClient.ChannelFactory.CreateChannel();
             }
             return _annotationServiceReference;
@@ -609,8 +608,6 @@ namespace Trisoft.ISHRemote.Connection
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Application25]));
 
-                ((ICommunicationObject)_applicationClient).Faulted += new EventHandler(ApplicationClientChannelFaulted);
-
                 _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_applicationClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
@@ -624,6 +621,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_applicationClient).Faulted += new EventHandler(ApplicationClientChannelFaulted);
                 _applicationServiceReference = _applicationClient.ChannelFactory.CreateChannel();
             }
             return _applicationServiceReference;
@@ -660,7 +658,6 @@ namespace Trisoft.ISHRemote.Connection
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[DocumentObj25]));
-                ((ICommunicationObject)_documentObjClient).Faulted += new EventHandler(DocumentObjClientChannelFaulted);
 
                 _documentObjClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_documentObjClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -675,6 +672,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_documentObjClient).Faulted += new EventHandler(DocumentObjClientChannelFaulted);
                 _documentObjServiceReference = _documentObjClient.ChannelFactory.CreateChannel();
             }
             return _documentObjServiceReference;
@@ -711,7 +709,6 @@ namespace Trisoft.ISHRemote.Connection
                 _folderClient = new Folder25ServiceReference.FolderClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Folder25]));
-                ((ICommunicationObject)_folderClient).Faulted += new EventHandler(FolderClientChannelFaulted);
 
                 _folderClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_folderClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -726,6 +723,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_folderClient).Faulted += new EventHandler(FolderClientChannelFaulted);
                 _folderServiceReference = _folderClient.ChannelFactory.CreateChannel();
             }
             return _folderServiceReference;
@@ -762,7 +760,6 @@ namespace Trisoft.ISHRemote.Connection
                 _userClient = new User25ServiceReference.UserClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[User25]));
-                ((ICommunicationObject)_userClient).Faulted += new EventHandler(UserClientChannelFaulted);
 
                 _userClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -777,6 +774,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_userClient).Faulted += new EventHandler(UserClientChannelFaulted);
                 _userServiceReference = _userClient.ChannelFactory.CreateChannel();
             }
             return _userServiceReference;
@@ -813,7 +811,6 @@ namespace Trisoft.ISHRemote.Connection
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserRole25]));
-                ((ICommunicationObject)_userRoleClient).Faulted += new EventHandler(UserRoleClientChannelFaulted);
 
                 _userRoleClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userRoleClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -828,6 +825,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_userRoleClient).Faulted += new EventHandler(UserRoleClientChannelFaulted);
                 _userRoleServiceReference = _userRoleClient.ChannelFactory.CreateChannel();
             }
             return _userRoleServiceReference;
@@ -864,7 +862,6 @@ namespace Trisoft.ISHRemote.Connection
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[UserGroup25]));
-                ((ICommunicationObject)_userGroupClient).Faulted += new EventHandler(UserGroupClientChannelFaulted);
 
                 _userGroupClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userGroupClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -879,6 +876,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_userGroupClient).Faulted += new EventHandler(UserGroupClientChannelFaulted);
                 _userGroupServiceReference = _userGroupClient.ChannelFactory.CreateChannel();
             }
             return _userGroupServiceReference;
@@ -915,7 +913,6 @@ namespace Trisoft.ISHRemote.Connection
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[ListOfValues25]));
-                ((ICommunicationObject)_listOfValuesClient).Faulted += new EventHandler(ListOfValuesClientChannelFaulted);
 
                 _listOfValuesClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_listOfValuesClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -930,6 +927,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_listOfValuesClient).Faulted += new EventHandler(ListOfValuesClientChannelFaulted);
                 _listOfValuesServiceReference = _listOfValuesClient.ChannelFactory.CreateChannel();
             }
             return _listOfValuesServiceReference;
@@ -966,7 +964,6 @@ namespace Trisoft.ISHRemote.Connection
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[PublicationOutput25]));
-                ((ICommunicationObject)_publicationOutputClient).Faulted += new EventHandler(PublicationOutputClientChannelFaulted);
 
                 _publicationOutputClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_publicationOutputClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -981,6 +978,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_publicationOutputClient).Faulted += new EventHandler(PublicationOutputClientChannelFaulted);
                 _publicationOutputServiceReference = _publicationOutputClient.ChannelFactory.CreateChannel();
             }
             return _publicationOutputServiceReference;
@@ -1017,7 +1015,6 @@ namespace Trisoft.ISHRemote.Connection
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[OutputFormat25]));
-                ((ICommunicationObject)_outputFormatClient).Faulted += new EventHandler(OutputFormatClientChannelFaulted);
 
                 _outputFormatClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_outputFormatClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1032,6 +1029,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_outputFormatClient).Faulted += new EventHandler(OutputFormatClientChannelFaulted);
                 _outputFormatServiceReference = _outputFormatClient.ChannelFactory.CreateChannel();
             }
             return _outputFormatServiceReference;
@@ -1068,7 +1066,6 @@ namespace Trisoft.ISHRemote.Connection
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Settings25]));
-                ((ICommunicationObject)_settingsClient).Faulted += new EventHandler(SettingsClientChannelFaulted);
 
                 _settingsClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_settingsClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1083,6 +1080,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_settingsClient).Faulted += new EventHandler(SettingsClientChannelFaulted);
                 _settingsServiceReference = _settingsClient.ChannelFactory.CreateChannel();
             }
             return _settingsServiceReference;
@@ -1119,7 +1117,6 @@ namespace Trisoft.ISHRemote.Connection
                 _EDTClient = new EDT25ServiceReference.EDTClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EDT25]));
-                ((ICommunicationObject)_EDTClient).Faulted += new EventHandler(EDTClientChannelFaulted);
 
                 _EDTClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_EDTClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1134,6 +1131,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_EDTClient).Faulted += new EventHandler(EDTClientChannelFaulted);
                 _EDTServiceReference = _EDTClient.ChannelFactory.CreateChannel();
             }
             return _EDTServiceReference;
@@ -1170,7 +1168,6 @@ namespace Trisoft.ISHRemote.Connection
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[EventMonitor25]));
-                ((ICommunicationObject)_eventMonitorClient).Faulted += new EventHandler(EventMonitorClientChannelFaulted);
 
                 _eventMonitorClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_eventMonitorClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1185,6 +1182,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_eventMonitorClient).Faulted += new EventHandler(EventMonitorClientChannelFaulted);
                 _eventMonitorServiceReference = _eventMonitorClient.ChannelFactory.CreateChannel();
             }
             return _eventMonitorServiceReference;
@@ -1221,7 +1219,6 @@ namespace Trisoft.ISHRemote.Connection
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Baseline25]));
-                ((ICommunicationObject)_baselineClient).Faulted += new EventHandler(BaselineClientChannelFaulted);
 
                 _baselineClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_baselineClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1236,6 +1233,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_baselineClient).Faulted += new EventHandler(BaselineClientChannelFaulted);
                 _baselineServiceReference = _baselineClient.ChannelFactory.CreateChannel();
             }
             return _baselineServiceReference;
@@ -1272,7 +1270,6 @@ namespace Trisoft.ISHRemote.Connection
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[MetadataBinding25]));
-                ((ICommunicationObject)_metadataBindingClient).Faulted += new EventHandler(MetadataBindingClientChannelFaulted);
 
                 _metadataBindingClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_metadataBindingClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1287,6 +1284,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_metadataBindingClient).Faulted += new EventHandler(MetadataBindingClientChannelFaulted);
                 _metadataBindingServiceReference = _metadataBindingClient.ChannelFactory.CreateChannel();
             }
             return _metadataBindingServiceReference;
@@ -1323,7 +1321,6 @@ namespace Trisoft.ISHRemote.Connection
                 _searchClient = new Search25ServiceReference.SearchClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[Search25]));
-                ((ICommunicationObject)_searchClient).Faulted += new EventHandler(SearchClientChannelFaulted);
 
                 _searchClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_searchClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1338,6 +1335,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_searchClient).Faulted += new EventHandler(SearchClientChannelFaulted);
                 _searchServiceReference = _searchClient.ChannelFactory.CreateChannel();
             }
             return _searchServiceReference;
@@ -1374,7 +1372,6 @@ namespace Trisoft.ISHRemote.Connection
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationJob25]));
-                ((ICommunicationObject)_translationJobClient).Faulted += new EventHandler(TranslationJobClientChannelFaulted);
 
                 _translationJobClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_translationJobClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1389,6 +1386,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_translationJobClient).Faulted += new EventHandler(TranslationJobClientChannelFaulted);
                 _translationJobServiceReference = _translationJobClient.ChannelFactory.CreateChannel();
             }
             return _translationJobServiceReference;
@@ -1425,7 +1423,6 @@ namespace Trisoft.ISHRemote.Connection
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[TranslationTemplate25]));
-                ((ICommunicationObject)_translationTemplateClient).Faulted += new EventHandler(TranslationTemplateClientChannelFaulted);
 
                 _translationTemplateClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_translationTemplateClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1440,6 +1437,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_translationTemplateClient).Faulted += new EventHandler(TranslationTemplateClientChannelFaulted);
                 _translationTemplateServiceReference = _translationTemplateClient.ChannelFactory.CreateChannel();
             }
             return _translationTemplateServiceReference;
@@ -1477,7 +1475,6 @@ namespace Trisoft.ISHRemote.Connection
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
                     _commonBinding,
                     new EndpointAddress(_serviceUriByServiceName[BackgroundTask25]));
-                ((ICommunicationObject)_backgroundTaskClient).Faulted += new EventHandler(BackgroundTaskClientChannelFaulted);
 
                 _backgroundTaskClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_backgroundTaskClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
@@ -1492,6 +1489,7 @@ namespace Trisoft.ISHRemote.Connection
                         RevocationMode = X509RevocationMode.NoCheck
                     };
                 }
+                ((ICommunicationObject)_backgroundTaskClient).Faulted += new EventHandler(BackgroundTaskClientChannelFaulted);
                 _backgroundTaskServiceReference = _backgroundTaskClient.ChannelFactory.CreateChannel();
             }
             return _backgroundTaskServiceReference;
