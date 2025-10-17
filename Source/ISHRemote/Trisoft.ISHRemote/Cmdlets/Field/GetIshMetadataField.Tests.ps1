@@ -8,27 +8,77 @@ BeforeAll {
 
 Describe "Get-IshMetadataField" -Tags "Read" {
 	BeforeAll {
-		# Helper function that iteratively tries to find one BackgroundTask entry depending on availability 
-		# Get one, start recent, expand from minutes to hour to day until you have one
+		# Helper function that iteratively tries to find a reduced set of BackgroundTask entries depending on availability 
+		# Get one, start recent, expand from minutes to hour to day until you have one, similar to GetIshEvents
 		function GetBackgroundTasks {
 			param (
 				$ishSession,
-				$userFilter
+				$userFilter = "All",
+				$requestedMetadata = $null
 			)
-			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-5)) -UserFilter $userFilter)
+			if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter $userFilter }
+			if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			if ($ishBackgroundTasks.Count -eq 0) {
-				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter)
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-30)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-30)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			}
 			if ($ishBackgroundTasks.Count -eq 0) {
-				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter)
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-2)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-2)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			}
 			if ($ishBackgroundTasks.Count -eq 0) {
-				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter)
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			}
 			if ($ishBackgroundTasks.Count -eq 0) {
-				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter)
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishBackgroundTasks.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishBackgroundTasks.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			}
 			return $ishBackgroundTasks
+		}
+		# Helper function that iteratively tries to find a reduced set of Event entries depending on availability 
+		# Get one, start recent, expand from minutes to hour to day until you have one, similar to GetIshBackgroundTasks
+		function GetIshEvents {
+			param (
+				$ishSession,
+				$userFilter = "All",
+				$requestedMetadata = $null
+			)
+			if ($null -eq $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter $userFilter }
+			if ($null -ne $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			if ($ishEvents.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-30)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-30)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishEvents.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-2)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-2)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishEvents.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishEvents.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishEvents.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishEvents.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishEvents = Get-IshEvent -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			return $ishEvents
 		}
 
 		$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FNAME" |
@@ -100,7 +150,7 @@ Describe "Get-IshMetadataField" -Tags "Read" {
 		}
 		It "Pipeline IshEvent Multiple" {
 			#TODO test possibly is slow (or fails) when there are no EventMonitor entries
-			(Get-IshEvent -IshSession $ishSession -ModifiedSince (Get-Date).AddMonths(-3) | Get-IshMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level Progress).Count -ge 0 | Should -Be $true
+			(GetIshEvents -IshSession $ishSession | Get-IshMetadataField -IshSession $ishSession -Name "EVENTTYPE" -Level Progress).Count -ge 0 | Should -Be $true
 		}
 	}
 	Context "Get-IshMetadataField -IshSession ishSession IshBackgroundTask" {

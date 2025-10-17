@@ -63,17 +63,20 @@ n/a
 
 ## Quality Assurance
 
-Added more Invoke-Pester 5.3.0 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7.2+ hosts where
+Added more Invoke-Pester 5.7.1 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7.5+ hosts where
 * the skipped are about SslPolicyErrors testing
 * the failed are about IMetadata bound fields (issue #58)
 
 Below is not an official performance compare, but a recurring thing noticed along the way. Using the same client machine, same ISHRemote build and same backend but different PowerShell hosts we noticed a considerable speed up of the Pester tests. However, adding (complicated) tests along the way and knowing that ISHRemote as client library greatly depends on the server-side load, we have to take these numbers at face value.
 
-| Name                     | Client Platform                     | Protocol       | Test Results         |
+| Name                     | Client Platform ($PSVersionTable on [Environment]::Version)  | Server Platform       | Test Results         |
 |--------------------------|-------------------------------------|----------------------|----------------|
-| ISHRemote 8.0.10919.0    | PowerShell 7.4.0 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 449.72s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
-| ISHRemote 8.1.11623.0    | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 515.62s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
-| ISHRemote 8.1.11623.0    | PowerShell 7.4.5 on .NET 8.0.0 | WcfSoapWithOpenIdConnect | Tests completed in 467s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
-| ISHRemote 8.1.11716.0    | Windows PowerShell 5.1 on .NET 4.8.1  | WcfSoapWithOpenIdConnect | Tests completed in 642.2s AND Tests Passed: 1064, Failed: 0, Skipped: 4 NotRun: 0 |
-| ISHRemote 8.1.11716.0    | PowerShell 7.5.1 on .NET 9.0.4  | WcfSoapWithOpenIdConnect | Tests completed in 662.81s AND Tests Passed: 1064, Failed: 0, Skipped: 4 NotRun: 0 |
-
+| ISHRemote 8.0.10919.0    | PowerShell 7.4.0 on .NET 8.0.0 | LVNDEVDEM... | Tests completed in 449.72s AND Tests Passed: 1057, Failed: 0, Skipped: 3 NotRun: 0 |
+| ISHRemote 8.1.11623.0    | Windows PowerShell 5.1 on .NET 4.8.1  | LVNDEVDEM... | Tests completed in 515.62s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
+| ISHRemote 8.1.11623.0    | PowerShell 7.4.5 on .NET 8.0.0 | LVNDEVDEM... | Tests completed in 467s AND Tests Passed: 1063, Failed: 0, Skipped: 4 NotRun: 0 |
+| ISHRemote 8.1.11716.0    | Windows PowerShell 5.1 on .NET 4.8.1  | LVNDEVDEM... | Tests completed in 642.2s AND Tests Passed: 1064, Failed: 0, Skipped: 4 NotRun: 0 |
+| ISHRemote 8.1.11716.0    | PowerShell 7.5.1 on .NET 9.0.4  | LVNDEVDEM...@15.2.0 | Tests completed in 662.81s AND Tests Passed: 1064, Failed: 0, Skipped: 4 NotRun: 0 |
+| ISHRemote 8.2.13001.0    | Windows PowerShell 5.1 on .NET 4.8.1  | LEUDEVDDE...@15.2.0 | Tests completed in 197.85s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.2.13001.0    | PowerShell 7.5.3 on .NET 9.0.8  | LEUDEVDDE...@15.2.0 | Tests completed in 173.09s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.2.13001.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b2216 | Tests completed in 125.49s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.2.13001.0    | PowerShell 7.5.3 on .NET 9.0.8  | LEUDEVDDE...@15.3.0b2216 | Tests completed in 111.41s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |

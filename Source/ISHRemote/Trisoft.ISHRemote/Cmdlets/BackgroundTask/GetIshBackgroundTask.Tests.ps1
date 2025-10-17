@@ -8,26 +8,39 @@ BeforeAll {
 
 Describe "Get-IshBackgroundTask" -Tags "Create" {
 	BeforeAll {
-		# Helper function that iteratively tries to find one BackgroundTask entry depending on availability 
-		# Get one, start recent, expand from minutes to hour to day until you have one
+		# Helper function that iteratively tries to find a reduced set of BackgroundTask entries depending on availability 
+		# Get one, start recent, expand from minutes to hour to day until you have one, similar to GetIshEvents
 		function GetBackgroundTasks {
 			param (
 				$ishSession,
-				$userFilter,
-				$requestedMetadata 
+				$userFilter = "All",
+				$requestedMetadata = $null
 			)
-			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-5)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata)
+			if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter $userFilter }
+			if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-10)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			if ($ishBackgroundTasks.Count -eq 0) {
-				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata)
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-30)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddSeconds(-30)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			}
 			if ($ishBackgroundTasks.Count -eq 0) {
-				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata)
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-2)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-2)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			}
 			if ($ishBackgroundTasks.Count -eq 0) {
-				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata)
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(-10)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			}
 			if ($ishBackgroundTasks.Count -eq 0) {
-				$ishBackgroundTasks = (Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata)
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-2)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishBackgroundTasks.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-24)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
+			}
+			if ($ishBackgroundTasks.Count -eq 0) {
+				if ($null -eq $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter }
+				if ($null -ne $requestedMetadata) { $ishBackgroundTasks = Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddHours(-120)) -UserFilter $userFilter -RequestedMetadata $requestedMetadata }
 			}
 			return $ishBackgroundTasks
 		}
@@ -135,30 +148,31 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			{ Get-IshBackgroundTask -IShSession $ishSession -RequestedMetadata "INVALIDMETADATA" -MetadataFilter "INVALIDFILTER"  } | Should -Throw
 		}
 		It "Parameter IshSession/UserFilter/MetadataFilter are optional" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -RequestedMetadata $allTaskMetadata)[0]
+			$ishBackgroundTask = (GetBackgroundTasks -ishSession $ishSession -requestedMetadata $allTaskMetadata)[0]
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name USERID -ValueType Element).StartsWith('VUSER') | Should -Be $true
 			($ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name STATUS -ValueType Element).StartsWith('VBACKGROUNDTASK') | Should -Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
 			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
 			$ishSession.DefaultRequestedMetadata = "Descriptive"
-			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
+			$ishBackgroundTask = (GetBackgroundTasks -ishSession $ishSession)[0]
 			(($ishBackgroundTask.IshField.Count -eq 1) -or ($ishBackgroundTask.IshField.Count -eq 2)) | Should -Be $true  # Either BackgroundTask has run and you get taskid/historyid, or it didn't and you only get taskid
 			$ishSession.DefaultRequestedMetadata = "Basic"
-			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
+			$ishBackgroundTask = (GetBackgroundTasks -ishSession $ishSession)[0]
 			$ishBackgroundTask.status.Length -ge 1 | Should -Be $true
 			$ishBackgroundTask.status_task_element.StartsWith('VBACKGROUNDTASKSTATUS') | Should -Be $true 
 			(($ishBackgroundTask.IshField.Count -eq 13) -or ($ishBackgroundTask.IshField.Count -eq 20)) | Should -Be $true
 			$ishSession.DefaultRequestedMetadata = "All"
-			$ishBackgroundTask = (Get-IshBackgroundTask -IShSession $ishSession)[0]
+			$ishBackgroundTask = (GetBackgroundTasks -ishSession $ishSession)[0]
 			(($ishBackgroundTask.IshField.Count -eq 18) -or ($ishBackgroundTask.IshField.Count -eq 27)) | Should -Be $true
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 		}
 		It "Parameter ModifiedSince is now" {
+			# a date in the future should yield no results
 			(Get-IshBackgroundTask -IshSession $ishSession -ModifiedSince ((Get-Date).AddMinutes(1)) -UserFilter All).Count | Should -Be 0
 		}
 		It "Parameter RequestedMetadata only all of Task level" {
-			$ishBackgroundTask = (Get-IshBackgroundTask -IshSession $ishSession -UserFilter All -RequestedMetadata $allTaskMetadata)[0]
+			$ishBackgroundTask = (GetBackgroundTasks -ishSession $ishSession -userFilter All -requestedMetadata $allTaskMetadata)[0]
 			$ishBackgroundTask.TaskRef -gt 0 | Should -Be $true
 			$ishBackgroundTask.IshField.Count -ge 16 | Should -Be $true
 		}
@@ -203,7 +217,9 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			$taskId = $ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID
 			$ishBackgroundTaskArray = Get-IshBackgroundTask -IshSession $ishSession -IshBackgroundTask $ishBackgroundTask
 			$ishBackgroundTaskArray.Count -ge 1 | Should -Be $true
-			$ishBackgroundTaskArray.IshRef | Should -Be $taskId
+			foreach ($task in $ishBackgroundTaskArray) {
+				$task.IshRef | Should -Be $taskId
+			}
 		}
 		<# TODO [Could] It "Parameter IshBackgroundTask Multiple" {
 		}
@@ -213,7 +229,9 @@ Describe "Get-IshBackgroundTask" -Tags "Create" {
 			$taskId = $ishBackgroundTask | Get-IshMetadataField -IshSession $ishSession -Level Task -Name TASKID
 			$ishBackgroundTaskArray = $ishBackgroundTask | Get-IshBackgroundTask -IshSession $ishSession
 			$ishBackgroundTaskArray.Count -ge 1 | Should -Be $true
-			$ishBackgroundTaskArray.IshRef | Should -Be $taskId
+			foreach ($task in $ishBackgroundTaskArray) {
+				$task.IshRef | Should -Be $taskId
+			}
 		}
 		<# TODO [Could] It "Pipeline IshBackgroundTask Multiple" {
 		}
