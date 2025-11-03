@@ -139,14 +139,9 @@ namespace Trisoft.ISHRemote.Connection
             {
                 if (disposing)
                 {
-                    if (_openApiISH30Client != null)
-                    {
-                        ((IDisposable)_openApiISH30Client).Dispose();
-                    }
-                    if (_openApiAM10Client != null)
-                    {
-                        ((IDisposable)_openApiAM10Client).Dispose();
-                    }
+                    // TODO [Could] Generated OpenAPI clients cannot be easily aborted or disposed
+                    // ((IDisposable)_openApiISH30Client)?.Dispose();
+                    // ((IDisposable)_openApiAM10Client)?.Dispose();
                 }
                 disposedValue = true;
             }

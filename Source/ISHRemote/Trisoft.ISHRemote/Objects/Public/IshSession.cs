@@ -1129,8 +1129,11 @@ namespace Trisoft.ISHRemote.Objects.Public
         public void Dispose()
         {
             _infoShareWcfSoapWithWsTrustConnection?.Dispose();
+            _infoShareWcfSoapWithWsTrustConnection = null;
             _infoShareWcfSoapWithOpenIdConnectConnection?.Dispose( );
+            _infoShareWcfSoapWithOpenIdConnectConnection = null;
             _infoShareOpenApiWithOpenIdConnectConnection?.Dispose( );
+            _infoShareOpenApiWithOpenIdConnectConnection = null;
         }
         public void Close()
         {
