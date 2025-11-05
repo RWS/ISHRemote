@@ -321,7 +321,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void AnnotationClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"AnnotationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"AnnotationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _annotationClient = null;
             _annotationServiceReference = null;
@@ -332,7 +332,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void ApplicationClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"ApplicationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"ApplicationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _applicationClient = null;
             _applicationServiceReference = null;
@@ -343,7 +343,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void DocumentObjClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"DocumentObjClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"DocumentObjClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _documentObjClient = null;
             _documentObjServiceReference = null;
@@ -354,7 +354,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void FolderClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"FolderClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"FolderClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _folderClient = null;
             _folderServiceReference = null;
@@ -365,7 +365,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void UserClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"UserClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"UserClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _userClient = null;
             _userServiceReference = null;
@@ -376,7 +376,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void UserRoleClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"UserRoleClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"UserRoleClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _userRoleClient = null;
             _userRoleServiceReference = null;
@@ -387,7 +387,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void UserGroupClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"UserGroupClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"UserGroupClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _userGroupClient = null;
             _userGroupServiceReference = null;
@@ -398,7 +398,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void ListOfValuesClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"ListOfValuesClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"ListOfValuesClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _listOfValuesClient = null;
             _listOfValuesServiceReference = null;
@@ -409,7 +409,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void PublicationOutputClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"PublicationOutputClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"PublicationOutputClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _publicationOutputClient = null;
             _publicationOutputServiceReference = null;
@@ -420,7 +420,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void OutputFormatClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"OutputFormatClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"OutputFormatClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _outputFormatClient = null;
             _outputFormatServiceReference = null;
@@ -431,7 +431,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void SettingsClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"SettingsClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"SettingsClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _settingsClient = null;
             _settingsServiceReference = null;
@@ -442,7 +442,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void EDTClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"EDTClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"EDTClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _EDTClient = null;
             _EDTServiceReference = null;
@@ -453,7 +453,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void EventMonitorClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"EventMonitorClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"EventMonitorClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _eventMonitorClient = null;
             _eventMonitorServiceReference = null;
@@ -464,7 +464,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void BaselineClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"BaselineClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"BaselineClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _baselineClient = null;
             _baselineServiceReference = null;
@@ -475,7 +475,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void MetadataBindingClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"MetadataBindingClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"MetadataBindingClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _metadataBindingClient = null;
             _metadataBindingServiceReference = null;
@@ -486,7 +486,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void SearchClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"SearchClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"SearchClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _searchClient = null;
             _searchServiceReference = null;
@@ -497,7 +497,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void TranslationJobClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"TranslationJobClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"TranslationJobClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _translationJobClient = null;
             _translationJobServiceReference = null;
@@ -508,7 +508,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void TranslationTemplateClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"TranslationTemplateClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"TranslationTemplateClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _translationTemplateClient = null;
             _translationTemplateServiceReference = null;
@@ -519,7 +519,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void BackgroundTaskClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteWarning($"BackgroundTaskClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"BackgroundTaskClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _backgroundTaskClient = null;
             _backgroundTaskServiceReference = null;
