@@ -16,12 +16,13 @@
 
 using System;
 using System.Management.Automation;
+using System.Reflection;
+using System.Security;
+using System.ServiceModel;
+using Trisoft.ISHRemote.Exceptions;
+using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
-using Trisoft.ISHRemote.Exceptions;
-using System.Reflection;
-using Trisoft.ISHRemote.HelperClasses;
-using System.Security;
 
 namespace Trisoft.ISHRemote.Cmdlets.Session
 {
@@ -260,6 +261,16 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
             {
                 var flattenedAggregateException = aggregateException.Flatten();
                 WriteVerbose(flattenedAggregateException.ToString());
+                WriteObject(false);
+            }
+            catch (TimeoutException timeoutException)
+            {
+                WriteVerbose("TimeoutException Message[" + timeoutException.Message + "] StackTrace[" + timeoutException.StackTrace + "]");
+                WriteObject(false);
+            }
+            catch (CommunicationException communicationException)
+            {
+                WriteVerbose("CommunicationException Message[" + communicationException.Message + "] StackTrace[" + communicationException.StackTrace + "]");
                 WriteObject(false);
             }
             catch (Exception exception)

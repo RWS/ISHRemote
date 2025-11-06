@@ -321,7 +321,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void AnnotationClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"AnnotationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"AnnotationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _annotationClient = null;
             _annotationServiceReference = null;
@@ -332,7 +332,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void ApplicationClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"ApplicationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"ApplicationClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _applicationClient = null;
             _applicationServiceReference = null;
@@ -343,7 +343,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void DocumentObjClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"DocumentObjClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"DocumentObjClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _documentObjClient = null;
             _documentObjServiceReference = null;
@@ -354,7 +354,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void FolderClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"FolderClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"FolderClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _folderClient = null;
             _folderServiceReference = null;
@@ -365,7 +365,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void UserClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"UserClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"UserClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _userClient = null;
             _userServiceReference = null;
@@ -376,7 +376,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void UserRoleClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"UserRoleClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"UserRoleClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _userRoleClient = null;
             _userRoleServiceReference = null;
@@ -387,7 +387,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void UserGroupClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"UserGroupClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"UserGroupClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _userGroupClient = null;
             _userGroupServiceReference = null;
@@ -398,7 +398,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void ListOfValuesClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"ListOfValuesClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"ListOfValuesClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _listOfValuesClient = null;
             _listOfValuesServiceReference = null;
@@ -409,7 +409,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void PublicationOutputClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"PublicationOutputClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"PublicationOutputClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _publicationOutputClient = null;
             _publicationOutputServiceReference = null;
@@ -420,7 +420,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void OutputFormatClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"OutputFormatClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"OutputFormatClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _outputFormatClient = null;
             _outputFormatServiceReference = null;
@@ -431,7 +431,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void SettingsClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"SettingsClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"SettingsClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _settingsClient = null;
             _settingsServiceReference = null;
@@ -442,7 +442,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void EDTClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"EDTClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"EDTClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _EDTClient = null;
             _EDTServiceReference = null;
@@ -453,7 +453,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void EventMonitorClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"EventMonitorClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"EventMonitorClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _eventMonitorClient = null;
             _eventMonitorServiceReference = null;
@@ -464,7 +464,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void BaselineClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"BaselineClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"BaselineClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _baselineClient = null;
             _baselineServiceReference = null;
@@ -475,7 +475,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void MetadataBindingClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"MetadataBindingClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"MetadataBindingClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _metadataBindingClient = null;
             _metadataBindingServiceReference = null;
@@ -486,7 +486,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void SearchClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"SearchClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"SearchClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _searchClient = null;
             _searchServiceReference = null;
@@ -497,7 +497,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void TranslationJobClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"TranslationJobClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"TranslationJobClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _translationJobClient = null;
             _translationJobServiceReference = null;
@@ -508,7 +508,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void TranslationTemplateClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"TranslationTemplateClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"TranslationTemplateClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _translationTemplateClient = null;
             _translationTemplateServiceReference = null;
@@ -519,7 +519,7 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private void BackgroundTaskClientChannelFaulted(object sender, EventArgs e)
         {
-            _logger.WriteDebug($"BackgroundTaskClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
+            _logger.WriteVerbose($"BackgroundTaskClientChannelFaulted State[{((ICommunicationObject)sender)?.State}]");
             ((ICommunicationObject)sender)?.Abort();
             _backgroundTaskClient = null;
             _backgroundTaskServiceReference = null;
@@ -533,11 +533,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public Annotation25ServiceReference.Annotation GetAnnotation25Channel()
         {
+            var clientInnerChannelState = _annotationClient?.InnerChannel?.State;
+            var serviceReferenceState = (_annotationServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_annotationServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_annotationClient == null) || (_annotationServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetAnnotation25Channel recreating client - ClientInnerChannelState[{_annotationClient?.InnerChannel?.State}] ServiceReferenceState[{(_annotationServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetAnnotation25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_annotationClient)?.Dispose();
                 ((IDisposable)_annotationServiceReference)?.Dispose();
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
@@ -548,10 +553,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _annotationServiceReference;
 #else
-            if ((_annotationClient == null) || (_annotationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_annotationServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_annotationClient == null) || (_annotationServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetAnnotation25Channel recreating client - ClientInnerChannelState[{_annotationClient?.InnerChannel?.State}] ServiceReferenceState[{(_annotationServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetAnnotation25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_annotationClient)?.Dispose();
                 ((IDisposable)_annotationServiceReference)?.Dispose();
                 _annotationClient = new Annotation25ServiceReference.AnnotationClient(
@@ -583,11 +591,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public Application25ServiceReference.Application GetApplication25Channel()
         {
+            var clientInnerChannelState = _applicationClient?.InnerChannel?.State;
+            var serviceReferenceState = (_applicationServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_applicationServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_applicationClient == null) || (_applicationServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetApplication25Channel recreating client - ClientInnerChannelState[{_applicationClient?.InnerChannel?.State}] ServiceReferenceState[{(_applicationServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetApplication25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_applicationClient)?.Dispose();
                 ((IDisposable)_applicationServiceReference)?.Dispose();
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
@@ -598,10 +611,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _applicationServiceReference;
 #else
-            if ((_applicationClient == null) || (_applicationClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_applicationServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_applicationClient == null) || (_applicationServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetApplication25Channel recreating client - ClientInnerChannelState[{_applicationClient?.InnerChannel?.State}] ServiceReferenceState[{(_applicationServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetApplication25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_applicationClient)?.Dispose();
                 ((IDisposable)_applicationServiceReference)?.Dispose();
                 _applicationClient = new Application25ServiceReference.ApplicationClient(
@@ -634,11 +650,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public DocumentObj25ServiceReference.DocumentObj GetDocumentObj25Channel()
         {
+            var clientInnerChannelState = _documentObjClient?.InnerChannel?.State;
+            var serviceReferenceState = (_documentObjServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_documentObjServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_documentObjClient == null) || (_documentObjServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - ClientInnerChannelState[{_documentObjClient?.InnerChannel?.State}] ServiceReferenceState[{(_documentObjServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_documentObjClient)?.Dispose();
                 ((IDisposable)_documentObjServiceReference)?.Dispose();
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
@@ -649,10 +670,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _documentObjServiceReference;
 #else
-            if ((_documentObjClient == null) || (_documentObjClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_documentObjServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_documentObjClient == null) || (_documentObjServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - ClientInnerChannelState[{_documentObjClient?.InnerChannel?.State}] ServiceReferenceState[{(_documentObjServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetDocumentObj25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_documentObjClient)?.Dispose();
                 ((IDisposable)_documentObjServiceReference)?.Dispose();
                 _documentObjClient = new DocumentObj25ServiceReference.DocumentObjClient(
@@ -685,11 +709,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public Folder25ServiceReference.Folder GetFolder25Channel()
         {
+            var clientInnerChannelState = _folderClient?.InnerChannel?.State;
+            var serviceReferenceState = (_folderServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_folderServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_folderClient == null) || (_folderServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetFolder25Channel recreating client - ClientInnerChannelState[{_folderClient?.InnerChannel?.State}] ServiceReferenceState[{(_folderServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetFolder25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_folderClient)?.Dispose();
                 ((IDisposable)_folderServiceReference)?.Dispose();
                 _folderClient = new Folder25ServiceReference.FolderClient(
@@ -700,10 +729,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _folderServiceReference;
 #else
-            if ((_folderClient == null) || (_folderClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_folderServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_folderClient == null) || (_folderServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetFolder25Channel recreating client - ClientInnerChannelState[{_folderClient?.InnerChannel?.State}] ServiceReferenceState[{(_folderServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetFolder25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_folderClient)?.Dispose();
                 ((IDisposable)_folderServiceReference)?.Dispose();
                 _folderClient = new Folder25ServiceReference.FolderClient(
@@ -736,11 +768,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public User25ServiceReference.User GetUser25Channel()
         {
+            var clientInnerChannelState = _userClient?.InnerChannel?.State;
+            var serviceReferenceState = (_userServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_userServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_userClient == null) || (_userServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetUser25Channel recreating client - ClientInnerChannelState[{_userClient?.InnerChannel?.State}] ServiceReferenceState[{(_userServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetUser25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_userClient)?.Dispose();
                 ((IDisposable)_userServiceReference)?.Dispose();
                 _userClient = new User25ServiceReference.UserClient(
@@ -751,10 +788,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _userServiceReference;
 #else
-            if ((_userClient == null) || (_userClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_userServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_userClient == null) || (_userServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetUser25Channel recreating client - ClientInnerChannelState[{_userClient?.InnerChannel?.State}] ServiceReferenceState[{(_userServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetUser25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_userClient)?.Dispose();
                 ((IDisposable)_userServiceReference)?.Dispose();
                 _userClient = new User25ServiceReference.UserClient(
@@ -787,11 +827,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public UserRole25ServiceReference.UserRole GetUserRole25Channel()
         {
+            var clientInnerChannelState = _userRoleClient?.InnerChannel?.State;
+            var serviceReferenceState = (_userRoleServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_userRoleServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_userRoleClient == null) || (_userRoleServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetUserRole25Channel recreating client - ClientInnerChannelState[{_userRoleClient?.InnerChannel?.State}] ServiceReferenceState[{(_userRoleServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetUserRole25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_userRoleClient)?.Dispose();
                 ((IDisposable)_userRoleServiceReference)?.Dispose();
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
@@ -802,10 +847,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _userRoleServiceReference;
 #else
-            if ((_userRoleClient == null) || (_userRoleClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_userRoleServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_userRoleClient == null) || (_userRoleServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetUserRole25Channel recreating client - ClientInnerChannelState[{_userRoleClient?.InnerChannel?.State}] ServiceReferenceState[{(_userRoleServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetUserRole25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_userRoleClient)?.Dispose();
                 ((IDisposable)_userRoleServiceReference)?.Dispose();
                 _userRoleClient = new UserRole25ServiceReference.UserRoleClient(
@@ -838,11 +886,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public UserGroup25ServiceReference.UserGroup GetUserGroup25Channel()
         {
+            var clientInnerChannelState = _userGroupClient?.InnerChannel?.State;
+            var serviceReferenceState = (_userGroupServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_userGroupServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_userGroupClient == null) || (_userGroupServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetUserGroup25Channel recreating client - ClientInnerChannelState[{_userGroupClient?.InnerChannel?.State}] ServiceReferenceState[{(_userGroupServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetUserGroup25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_userGroupClient)?.Dispose();
                 ((IDisposable)_userGroupServiceReference)?.Dispose();
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
@@ -853,10 +906,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _userGroupServiceReference;
 #else
-            if ((_userGroupClient == null) || (_userGroupClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_userGroupServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_userGroupClient == null) || (_userGroupServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetUserGroup25Channel recreating client - ClientInnerChannelState[{_userGroupClient?.InnerChannel?.State}] ServiceReferenceState[{(_userGroupServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetUserGroup25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_userGroupClient)?.Dispose();
                 ((IDisposable)_userGroupServiceReference)?.Dispose();
                 _userGroupClient = new UserGroup25ServiceReference.UserGroupClient(
@@ -889,11 +945,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public ListOfValues25ServiceReference.ListOfValues GetListOfValues25Channel()
         {
+            var clientInnerChannelState = _listOfValuesClient?.InnerChannel?.State;
+            var serviceReferenceState = (_listOfValuesServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_listOfValuesServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_listOfValuesClient == null) || (_listOfValuesServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetListOfValues25Channel recreating client - ClientInnerChannelState[{_listOfValuesClient?.InnerChannel?.State}] ServiceReferenceState[{(_listOfValuesServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetListOfValues25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_listOfValuesClient)?.Dispose();
                 ((IDisposable)_listOfValuesServiceReference)?.Dispose();
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
@@ -904,10 +965,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _listOfValuesServiceReference;
 #else
-            if ((_listOfValuesClient == null) || (_listOfValuesClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_listOfValuesServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_listOfValuesClient == null) || (_listOfValuesServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetListOfValues25Channel recreating client - ClientInnerChannelState[{_listOfValuesClient?.InnerChannel?.State}] ServiceReferenceState[{(_listOfValuesServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetListOfValues25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_listOfValuesClient)?.Dispose();
                 ((IDisposable)_listOfValuesServiceReference)?.Dispose();
                 _listOfValuesClient = new ListOfValues25ServiceReference.ListOfValuesClient(
@@ -940,11 +1004,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public PublicationOutput25ServiceReference.PublicationOutput GetPublicationOutput25Channel()
         {
+            var clientInnerChannelState = _publicationOutputClient?.InnerChannel?.State;
+            var serviceReferenceState = (_publicationOutputServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_publicationOutputServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_publicationOutputClient == null) || (_publicationOutputServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - ClientInnerChannelState[{_publicationOutputClient?.InnerChannel?.State}] ServiceReferenceState[{(_publicationOutputServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_publicationOutputClient)?.Dispose();
                 ((IDisposable)_publicationOutputServiceReference)?.Dispose();
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
@@ -955,10 +1024,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _publicationOutputServiceReference;
 #else
-            if ((_publicationOutputClient == null) || (_publicationOutputClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_publicationOutputServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_publicationOutputClient == null) || (_publicationOutputServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - ClientInnerChannelState[{_publicationOutputClient?.InnerChannel?.State}] ServiceReferenceState[{(_publicationOutputServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetPublicationOutput25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_publicationOutputClient)?.Dispose();
                 ((IDisposable)_publicationOutputServiceReference)?.Dispose();
                 _publicationOutputClient = new PublicationOutput25ServiceReference.PublicationOutputClient(
@@ -991,11 +1063,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public OutputFormat25ServiceReference.OutputFormat GetOutputFormat25Channel()
         {
+            var clientInnerChannelState = _outputFormatClient?.InnerChannel?.State;
+            var serviceReferenceState = (_outputFormatServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_outputFormatServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_outputFormatClient == null) || (_outputFormatServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - ClientInnerChannelState[{_outputFormatClient?.InnerChannel?.State}] ServiceReferenceState[{(_outputFormatServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_outputFormatClient)?.Dispose();
                 ((IDisposable)_outputFormatServiceReference)?.Dispose();
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
@@ -1006,10 +1083,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _outputFormatServiceReference;
 #else
-            if ((_outputFormatClient == null) || (_outputFormatClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_outputFormatServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_outputFormatClient == null) || (_outputFormatServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - ClientInnerChannelState[{_outputFormatClient?.InnerChannel?.State}] ServiceReferenceState[{(_outputFormatServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetOutputFormat25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_outputFormatClient)?.Dispose();
                 ((IDisposable)_outputFormatServiceReference)?.Dispose();
                 _outputFormatClient = new OutputFormat25ServiceReference.OutputFormatClient(
@@ -1042,11 +1122,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public Settings25ServiceReference.Settings GetSettings25Channel()
         {
+            var clientInnerChannelState = _settingsClient?.InnerChannel?.State;
+            var serviceReferenceState = (_settingsServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_settingsServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_settingsClient == null) || (_settingsServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetSettings25Channel recreating client - ClientInnerChannelState[{_settingsClient?.InnerChannel?.State}] ServiceReferenceState[{(_settingsServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetSettings25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_settingsClient)?.Dispose();
                 ((IDisposable)_settingsServiceReference)?.Dispose();
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
@@ -1057,10 +1142,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _settingsServiceReference;
 #else
-            if ((_settingsClient == null) || (_settingsClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_settingsServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_settingsClient == null) || (_settingsServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetSettings25Channel recreating client - ClientInnerChannelState[{_settingsClient?.InnerChannel?.State}] ServiceReferenceState[{(_settingsServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetSettings25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_settingsClient)?.Dispose();
                 ((IDisposable)_settingsServiceReference)?.Dispose();
                 _settingsClient = new Settings25ServiceReference.SettingsClient(
@@ -1093,11 +1181,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public EDT25ServiceReference.EDT GetEDT25Channel()
         {
+            var clientInnerChannelState = _EDTClient?.InnerChannel?.State;
+            var serviceReferenceState = (_EDTServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_EDTServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_EDTClient == null) || (_EDTServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetEDT25Channel recreating client - ClientInnerChannelState[{_EDTClient?.InnerChannel?.State}] ServiceReferenceState[{(_EDTServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetEDT25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_EDTClient)?.Dispose();
                 ((IDisposable)_EDTServiceReference)?.Dispose();
                 _EDTClient = new EDT25ServiceReference.EDTClient(
@@ -1108,10 +1201,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _EDTServiceReference;
 #else
-            if ((_EDTClient == null) || (_EDTClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_EDTServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_EDTClient == null) || (_EDTServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetEDT25Channel recreating client - ClientInnerChannelState[{_EDTClient?.InnerChannel?.State}] ServiceReferenceState[{(_EDTServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetEDT25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_EDTClient)?.Dispose();
                 ((IDisposable)_EDTServiceReference)?.Dispose();
                 _EDTClient = new EDT25ServiceReference.EDTClient(
@@ -1144,11 +1240,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public EventMonitor25ServiceReference.EventMonitor GetEventMonitor25Channel()
         {
+            var clientInnerChannelState = _eventMonitorClient?.InnerChannel?.State;
+            var serviceReferenceState = (_eventMonitorServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_eventMonitorServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_eventMonitorClient == null) || (_eventMonitorServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - ClientInnerChannelState[{_eventMonitorClient?.InnerChannel?.State}] ServiceReferenceState[{(_eventMonitorServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_eventMonitorClient)?.Dispose();
                 ((IDisposable)_eventMonitorServiceReference)?.Dispose();
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
@@ -1159,10 +1260,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _eventMonitorServiceReference;
 #else
-            if ((_eventMonitorClient == null) || (_eventMonitorClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_eventMonitorServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_eventMonitorClient == null) || (_eventMonitorServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - ClientInnerChannelState[{_eventMonitorClient?.InnerChannel?.State}] ServiceReferenceState[{(_eventMonitorServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetEventMonitor25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_eventMonitorClient)?.Dispose();
                 ((IDisposable)_eventMonitorServiceReference)?.Dispose();
                 _eventMonitorClient = new EventMonitor25ServiceReference.EventMonitorClient(
@@ -1195,11 +1299,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public Baseline25ServiceReference.Baseline GetBaseline25Channel()
         {
+            var clientInnerChannelState = _baselineClient?.InnerChannel?.State;
+            var serviceReferenceState = (_baselineServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_baselineServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_baselineClient == null) || (_baselineServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetBaseline25Channel recreating client - ClientInnerChannelState[{_baselineClient?.InnerChannel?.State}] ServiceReferenceState[{(_baselineServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetBaseline25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_baselineClient)?.Dispose();
                 ((IDisposable)_baselineServiceReference)?.Dispose();
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
@@ -1210,10 +1319,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _baselineServiceReference;
 #else
-            if ((_baselineClient == null) || (_baselineClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_baselineServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_baselineClient == null) || (_baselineServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetBaseline25Channel recreating client - ClientInnerChannelState[{_baselineClient?.InnerChannel?.State}] ServiceReferenceState[{(_baselineServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetBaseline25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_baselineClient)?.Dispose();
                 ((IDisposable)_baselineServiceReference)?.Dispose();
                 _baselineClient = new Baseline25ServiceReference.BaselineClient(
@@ -1246,11 +1358,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public MetadataBinding25ServiceReference.MetadataBinding GetMetadataBinding25Channel()
         {
+            var clientInnerChannelState = _metadataBindingClient?.InnerChannel?.State;
+            var serviceReferenceState = (_metadataBindingServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_metadataBindingServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_metadataBindingClient == null) || (_metadataBindingServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - ClientInnerChannelState[{_metadataBindingClient?.InnerChannel?.State}] ServiceReferenceState[{(_metadataBindingServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_metadataBindingClient)?.Dispose();
                 ((IDisposable)_metadataBindingServiceReference)?.Dispose();
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
@@ -1261,10 +1378,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _metadataBindingServiceReference;
 #else
-            if ((_metadataBindingClient == null) || (_metadataBindingClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_metadataBindingServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_metadataBindingClient == null) || (_metadataBindingServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - ClientInnerChannelState[{_metadataBindingClient?.InnerChannel?.State}] ServiceReferenceState[{(_metadataBindingServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetMetadataBinding25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_metadataBindingClient)?.Dispose();
                 ((IDisposable)_metadataBindingServiceReference)?.Dispose();
                 _metadataBindingClient = new MetadataBinding25ServiceReference.MetadataBindingClient(
@@ -1297,11 +1417,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public Search25ServiceReference.Search GetSearch25Channel()
         {
+            var clientInnerChannelState = _searchClient?.InnerChannel?.State;
+            var serviceReferenceState = (_searchServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_searchServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_searchClient == null) || (_searchServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetSearch25Channel recreating client - ClientInnerChannelState[{_searchClient?.InnerChannel?.State}] ServiceReferenceState[{(_searchServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetSearch25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_searchClient)?.Dispose();
                 ((IDisposable)_searchServiceReference)?.Dispose();
                 _searchClient = new Search25ServiceReference.SearchClient(
@@ -1312,10 +1437,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _searchServiceReference;
 #else
-            if ((_searchClient == null) || (_searchClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_searchServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_searchClient == null) || (_searchServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetSearch25Channel recreating client - ClientInnerChannelState[{_searchClient?.InnerChannel?.State}] ServiceReferenceState[{(_searchServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetSearch25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_searchClient)?.Dispose();
                 ((IDisposable)_searchServiceReference)?.Dispose();
                 _searchClient = new Search25ServiceReference.SearchClient(
@@ -1348,11 +1476,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public TranslationJob25ServiceReference.TranslationJob GetTranslationJob25Channel()
         {
+            var clientInnerChannelState = _translationJobClient?.InnerChannel?.State;
+            var serviceReferenceState = (_translationJobServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_translationJobServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_translationJobClient == null) || (_translationJobServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - ClientInnerChannelState[{_translationJobClient?.InnerChannel?.State}] ServiceReferenceState[{(_translationJobServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_translationJobClient)?.Dispose();
                 ((IDisposable)_translationJobServiceReference)?.Dispose();
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
@@ -1363,10 +1496,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _translationJobServiceReference;
 #else
-            if ((_translationJobClient == null) || (_translationJobClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_translationJobServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_translationJobClient == null) || (_translationJobServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - ClientInnerChannelState[{_translationJobClient?.InnerChannel?.State}] ServiceReferenceState[{(_translationJobServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetTranslationJob25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_translationJobClient)?.Dispose();
                 ((IDisposable)_translationJobServiceReference)?.Dispose();
                 _translationJobClient = new TranslationJob25ServiceReference.TranslationJobClient(
@@ -1399,11 +1535,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public TranslationTemplate25ServiceReference.TranslationTemplate GetTranslationTemplate25Channel()
         {
+            var clientInnerChannelState = _translationTemplateClient?.InnerChannel?.State;
+            var serviceReferenceState = (_translationTemplateServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_translationTemplateServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_translationTemplateClient == null) || (_translationTemplateServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - ClientInnerChannelState[{_translationTemplateClient?.InnerChannel?.State}] ServiceReferenceState[{(_translationTemplateServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_translationTemplateClient)?.Dispose();
                 ((IDisposable)_translationTemplateServiceReference)?.Dispose();
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
@@ -1414,10 +1555,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _translationTemplateServiceReference;
 #else
-            if ((_translationTemplateClient == null) || (_translationTemplateClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_translationTemplateServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_translationTemplateClient == null) || (_translationTemplateServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - ClientInnerChannelState[{_translationTemplateClient?.InnerChannel?.State}] ServiceReferenceState[{(_translationTemplateServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetTranslationTemplate25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_translationTemplateClient)?.Dispose();
                 ((IDisposable)_translationTemplateServiceReference)?.Dispose();
                 _translationTemplateClient = new TranslationTemplate25ServiceReference.TranslationTemplateClient(
@@ -1451,11 +1595,16 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public BackgroundTask25ServiceReference.BackgroundTask GetBackgroundTask25Channel()
         {
+            var clientInnerChannelState = _backgroundTaskClient?.InnerChannel?.State;
+            var serviceReferenceState = (_backgroundTaskServiceReference as ICommunicationObject)?.State;
 #if NET48
-            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_backgroundTaskServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_backgroundTaskClient == null) || (_backgroundTaskServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - ClientInnerChannelState[{_backgroundTaskClient?.InnerChannel?.State}] ServiceReferenceState[{(_backgroundTaskServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_backgroundTaskClient)?.Dispose();
                 ((IDisposable)_backgroundTaskServiceReference)?.Dispose();
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(
@@ -1466,10 +1615,13 @@ namespace Trisoft.ISHRemote.Connection
             }
             return _backgroundTaskServiceReference;
 #else
-            if ((_backgroundTaskClient == null) || (_backgroundTaskClient.InnerChannel.State == System.ServiceModel.CommunicationState.Faulted) ||
-                (_backgroundTaskServiceReference == null) || (GetAccessToken().IsAccessTokenRefreshed))
+            if ((_backgroundTaskClient == null) || (_backgroundTaskServiceReference == null) ||
+                (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
+                (clientInnerChannelState == CommunicationState.Closing) || (serviceReferenceState == CommunicationState.Closing) ||  
+                (clientInnerChannelState == CommunicationState.Closed) || (serviceReferenceState == CommunicationState.Closed) ||
+                (GetAccessToken().IsAccessTokenRefreshed))
             {
-                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - ClientInnerChannelState[{_backgroundTaskClient?.InnerChannel?.State}] ServiceReferenceState[{(_backgroundTaskServiceReference as ICommunicationObject)?.State}]");
+                _logger.WriteDebug($"GetBackgroundTask25Channel recreating client - ClientInnerChannelState[{clientInnerChannelState}] ServiceReferenceState[{serviceReferenceState}]");
                 ((IDisposable)_backgroundTaskClient)?.Dispose();
                 ((IDisposable)_backgroundTaskServiceReference)?.Dispose();
                 _backgroundTaskClient = new BackgroundTask25ServiceReference.BackgroundTaskClient(

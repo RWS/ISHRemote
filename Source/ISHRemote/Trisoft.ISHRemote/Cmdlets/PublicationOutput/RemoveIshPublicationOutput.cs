@@ -19,9 +19,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Management.Automation;
+using System.ServiceModel;
+using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
-using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.PublicationOutput25ServiceReference;
 
 namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
@@ -228,6 +229,22 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
             catch (TrisoftAutomationException trisoftAutomationException)
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (AggregateException aggregateException)
+            {
+                var flattenedAggregateException = aggregateException.Flatten();
+                WriteWarning(flattenedAggregateException.ToString());
+                ThrowTerminatingError(new ErrorRecord(flattenedAggregateException, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+            catch (TimeoutException timeoutException)
+            {
+                WriteVerbose("TimeoutException Message[" + timeoutException.Message + "] StackTrace[" + timeoutException.StackTrace + "]");
+                ThrowTerminatingError(new ErrorRecord(timeoutException, base.GetType().Name, ErrorCategory.OperationTimeout, null));
+            }
+            catch (CommunicationException communicationException)
+            {
+                WriteVerbose("CommunicationException Message[" + communicationException.Message + "] StackTrace[" + communicationException.StackTrace + "]");
+                ThrowTerminatingError(new ErrorRecord(communicationException, base.GetType().Name, ErrorCategory.OperationStopped, null));
             }
             catch (Exception exception)
             {

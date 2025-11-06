@@ -16,10 +16,11 @@
 
 using System;
 using System.Management.Automation;
-using Trisoft.ISHRemote.Objects;
-using Trisoft.ISHRemote.Objects.Public;
+using System.ServiceModel;
 using Trisoft.ISHRemote.Exceptions;
 using Trisoft.ISHRemote.HelperClasses;
+using Trisoft.ISHRemote.Objects;
+using Trisoft.ISHRemote.Objects.Public;
 
 namespace Trisoft.ISHRemote.Cmdlets.Application
 {
@@ -60,14 +61,45 @@ namespace Trisoft.ISHRemote.Cmdlets.Application
             base.BeginProcessing();
         }
 
-        protected override void ProcessRecord()
+        protected override void EndProcessing()
         {
-            //Get the version of the application
-            WriteDebug($"Before IshSession.Application25.GetVersion()");
-            string version = IshSession.Application25.GetVersion();
-            WriteDebug($"After IshSession.Application25.GetVersion()");
-            IshVersion versionObject = new IshVersion(version);
-            WriteObject(versionObject);
+            try
+            {
+                //Get the version of the application
+                WriteDebug($"Before IshSession.Application25.GetVersion()");
+                string version = IshSession.Application25.GetVersion();
+                WriteDebug($"After IshSession.Application25.GetVersion()");
+                IshVersion versionObject = new IshVersion(version);
+                WriteObject(versionObject);
+            }
+            catch (TrisoftAutomationException trisoftAutomationException)
+            {
+                ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (AggregateException aggregateException)
+            {
+                var flattenedAggregateException = aggregateException.Flatten();
+                WriteWarning(flattenedAggregateException.ToString());
+                ThrowTerminatingError(new ErrorRecord(flattenedAggregateException, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+            catch (TimeoutException timeoutException)
+            {
+                WriteVerbose("TimeoutException Message[" + timeoutException.Message + "] StackTrace[" + timeoutException.StackTrace + "]");
+                ThrowTerminatingError(new ErrorRecord(timeoutException, base.GetType().Name, ErrorCategory.OperationTimeout, null));
+            }
+            catch (CommunicationException communicationException)
+            {
+                WriteVerbose("CommunicationException Message[" + communicationException.Message + "] StackTrace[" + communicationException.StackTrace + "]");
+                ThrowTerminatingError(new ErrorRecord(communicationException, base.GetType().Name, ErrorCategory.OperationStopped, null));
+            }
+            catch (Exception exception)
+            {
+                ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+            finally
+            {
+                base.EndProcessing();
+            }
         }
     }
 }

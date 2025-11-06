@@ -16,17 +16,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Management.Automation;
-using Trisoft.ISHRemote.Objects;
-using Trisoft.ISHRemote.Objects.Public;
-using Trisoft.ISHRemote.Exceptions;
-using Trisoft.ISHRemote.HelperClasses;
 using System.Linq;
+using System.Management.Automation;
 using System.Security.Cryptography;
-using Trisoft.ISHRemote.BackgroundTask25ServiceReference;
-using Trisoft.ISHRemote.EventMonitor25ServiceReference;
+using System.ServiceModel;
 using System.Text;
 using System.Xml.Linq;
+using Trisoft.ISHRemote.BackgroundTask25ServiceReference;
+using Trisoft.ISHRemote.EventMonitor25ServiceReference;
+using Trisoft.ISHRemote.Exceptions;
+using Trisoft.ISHRemote.HelperClasses;
+using Trisoft.ISHRemote.Objects;
+using Trisoft.ISHRemote.Objects.Public;
 using static Trisoft.ISHRemote.Objects.Enumerations;
 
 namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
@@ -196,6 +197,22 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
             catch (TrisoftAutomationException trisoftAutomationException)
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
+            catch (AggregateException aggregateException)
+            {
+                var flattenedAggregateException = aggregateException.Flatten();
+                WriteWarning(flattenedAggregateException.ToString());
+                ThrowTerminatingError(new ErrorRecord(flattenedAggregateException, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+            catch (TimeoutException timeoutException)
+            {
+                WriteVerbose("TimeoutException Message[" + timeoutException.Message + "] StackTrace[" + timeoutException.StackTrace + "]");
+                ThrowTerminatingError(new ErrorRecord(timeoutException, base.GetType().Name, ErrorCategory.OperationTimeout, null));
+            }
+            catch (CommunicationException communicationException)
+            {
+                WriteVerbose("CommunicationException Message[" + communicationException.Message + "] StackTrace[" + communicationException.StackTrace + "]");
+                ThrowTerminatingError(new ErrorRecord(communicationException, base.GetType().Name, ErrorCategory.OperationStopped, null));
             }
             catch (Exception exception)
             {
@@ -396,9 +413,29 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
             }
+            catch (AggregateException aggregateException)
+            {
+                var flattenedAggregateException = aggregateException.Flatten();
+                WriteWarning(flattenedAggregateException.ToString());
+                ThrowTerminatingError(new ErrorRecord(flattenedAggregateException, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+            catch (TimeoutException timeoutException)
+            {
+                WriteVerbose("TimeoutException Message[" + timeoutException.Message + "] StackTrace[" + timeoutException.StackTrace + "]");
+                ThrowTerminatingError(new ErrorRecord(timeoutException, base.GetType().Name, ErrorCategory.OperationTimeout, null));
+            }
+            catch (CommunicationException communicationException)
+            {
+                WriteVerbose("CommunicationException Message[" + communicationException.Message + "] StackTrace[" + communicationException.StackTrace + "]");
+                ThrowTerminatingError(new ErrorRecord(communicationException, base.GetType().Name, ErrorCategory.OperationStopped, null));
+            }
             catch (Exception exception)
             {
                 ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
+            }
+            finally
+            {
+                base.EndProcessing();
             }
         }
 
