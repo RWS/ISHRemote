@@ -14,8 +14,8 @@
 * limitations under the License.
 */
 
-using IdentityModel.Client;
-using IdentityModel.OidcClient;
+using Duende.IdentityModel.Client;
+using Duende.IdentityModel.OidcClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -189,14 +189,14 @@ namespace Trisoft.ISHRemote.Connection
                 FilterClaims = false,
                 Policy = new Policy()
                 {
-                    Discovery = new IdentityModel.Client.DiscoveryPolicy
+                    Discovery = new Duende.IdentityModel.Client.DiscoveryPolicy
                     {
                         ValidateIssuerName = false,  // Casing matters, otherwise "Error loading discovery document: "PolicyViolation" - "Issuer name does not match authority"
-                        ValidateEndpoints = false  // Otherwise "Error loading discovery document: Endpoint belongs to different authority: https://mecdev12qa01.global.sdl.corp/ISHAMORA19/.well-known/openid-configuration/jwks"
+                        ValidateEndpoints = false  // Otherwise "Error loading discovery document: Endpoint belongs to different authority: https://ish.example.com/ISHAM/.well-known/openid-configuration/jwks"
                     }
                 },
                 Browser = browser,
-                IdentityTokenValidator = new JwtHandlerIdentityTokenValidator(),
+                IdentityTokenValidator = new Duende.IdentityModel.OidcClient.NoValidationIdentityTokenValidator(),
                 RefreshTokenInnerHttpHandler = new HttpClientHandler()
                 {
                     ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true

@@ -63,7 +63,7 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// AssemblyResolve solution.
         /// * System.Runtime.CompilerServices.Unsafe requested 4.0.4.1 or 5.0.0.0 but we now return 6.0.0.0
         /// * System.Text.Json requested 5.0.0.0 but we now return 5.0.0.2
-        /// * IdentityModel.OidcClient requested but we now return
+        /// * IdentityModel.OidcClient requested but we now return over Duende.IdentityModel.dll
         /// * Microsoft.Bcl.AsyncInterfaces requested 5.0.0.0 but we now return 6.0.0.0
         /// * System.ComponentModel.Annotations requested 4.2.0.0 but we now return 5.0.0.0
         /// </summary>
@@ -83,7 +83,7 @@ namespace Trisoft.ISHRemote.HelperClasses
                 var assemblySTJson = Assembly.LoadFrom(filePathSTJson);
                 _forcedLoadedAssemblies.GetOrAdd("System.Text.Json", assemblySTJson);
 
-                string filePathIdentityModel = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
+                string filePathIdentityModel = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Duende.IdentityModel.dll");
                 var assemblyIdentityModel = Assembly.LoadFrom(filePathIdentityModel);
                 _forcedLoadedAssemblies.GetOrAdd("IdentityModel.OidcClient", assemblyIdentityModel);
 

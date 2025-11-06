@@ -48,7 +48,7 @@ namespace Trisoft.ISHRemote.HelperClasses
     /// MAPPINGS:
     /// * System.Runtime.CompilerServices.Unsafe requested 4.0.4.1 or 5.0.0.0 but we now return 6.0.0.0
     /// * System.Text.Json requested 5.0.0.0 but we now return 5.0.0.2
-    /// * IdentityModel.OidcClient requested but we now return
+    /// * IdentityModel.OidcClient requested but we now return over Duende.IdentityModel.dll
     /// * Microsoft.Bcl.AsyncInterfaces requested 5.0.0.0 but we now return 6.0.0.0
     /// * System.ComponentModel.Annotations requested 4.2.0.0 but we now return 4.2.1.0 (for NET48/OpenApi clients)
     /// * ...see code below
@@ -89,7 +89,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("System.Text.Encodings.Web", assembly);
 
-            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
+            filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Duende.IdentityModel.dll");
             assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("IdentityModel", assembly);
 
@@ -108,7 +108,7 @@ namespace Trisoft.ISHRemote.HelperClasses
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
 
-            var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"IdentityModel.dll");
+            var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Duende.IdentityModel.dll");
             var assembly = Assembly.LoadFrom(filePath);
             _forcedLoadedAssemblies.GetOrAdd("IdentityModel", assembly);
             

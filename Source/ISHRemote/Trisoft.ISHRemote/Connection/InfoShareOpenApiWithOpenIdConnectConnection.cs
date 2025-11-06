@@ -23,14 +23,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using IdentityModel.Client;
-using IdentityModel.OidcClient;
+using Duende.IdentityModel.Client;
+using Duende.IdentityModel.OidcClient;
 using Trisoft.ISHRemote.Interfaces;
 using Trisoft.ISHRemote.OpenApiISH30;
 using Trisoft.ISHRemote.OpenApiAM10;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using IdentityModel.OidcClient.Infrastructure;
+using Duende.IdentityModel.OidcClient.Infrastructure;
 
 namespace Trisoft.ISHRemote.Connection
 {
