@@ -33,10 +33,13 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 		}
 		It "FXYEDITOR is not a standard field for <13.0.x" {
 			# Making sure the implicit IshSession stored in SessionState is temporarily removed
-			$restoreIshSession=$executioncontext.SessionState.PSVariable.GetValue("ISHRemoteSessionStateIshSession")
+			$restoreLocalIshSession=$executioncontext.SessionState.PSVariable.GetValue("ISHRemoteSessionStateIshSession")
 			$executioncontext.SessionState.PSVariable.Set("ISHRemoteSessionStateIshSession", $null)
+			$restoreGlobalIshSession=$executioncontext.SessionState.PSVariable.GetValue("global:ISHRemoteSessionStateIshSession")
+			$executioncontext.SessionState.PSVariable.Set("global:ISHRemoteSessionStateIshSession", $null)
 			(Get-IshTypeFieldDefinition | Where-Object -Property Name -EQ -Value "FXYEDITOR").Count | Should -Be 0
-			$executioncontext.SessionState.PSVariable.Set("ISHRemoteSessionStateIshSession", $restoreIshSession)
+			$executioncontext.SessionState.PSVariable.Set("ISHRemoteSessionStateIshSession", $restoreLocalIshSession)
+			$executioncontext.SessionState.PSVariable.Set("global:ISHRemoteSessionStateIshSession", $restoreGlobalIshSession)
 		}
 		# More tests required for the IshTypeFieldDefinition properties
 		# Also test that there CardFields and TableFields present

@@ -51,9 +51,13 @@ namespace Trisoft.ISHRemote.Cmdlets
         private readonly ProgressRecord _childProgressRecord;
 
         /// <summary>
-        /// Name of the PSVariable so you don't have to specify '-IshSession $ishSession' anymore, should be set by New-IshSession
+        /// Name of the local PSVariable so you don't have to specify '-IshSession $ishSession' anymore, should be set by New-IshSession
         /// </summary>
         internal const string ISHRemoteSessionStateIshSession = "ISHRemoteSessionStateIshSession";
+        /// <summary>
+        /// Name of the global PSVariable so you don't have to specify '-IshSession $ishSession' anymore, should be set by New-IshSession
+        /// </summary>
+        internal const string ISHRemoteSessionStateGlobalIshSession = "global:ISHRemoteSessionStateIshSession";
         /// <summary>
         /// Error message you get when you didn't pass an explicit -IshSession on the cmdlet, or New-IshSession didn't set the SessionState variable
         /// </summary>
