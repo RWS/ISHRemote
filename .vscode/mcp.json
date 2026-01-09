@@ -6,7 +6,7 @@
             "args": [                
                 "-NoProfile",
                 "-Command",
-                "& { Start-IshRemoteMcpServer -CmdletsToRegister (((Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name) + \"Get-Help\") -LogFilePath \"C:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log\" }"
+                "& { Start-IshRemoteMcpServer -CmdletsToRegister (((Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name) + \"Get-Help\") -LogFilePath \"D:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log\" }"
             ]
         },
         "IshRemoteMcpServerDEBUG": {

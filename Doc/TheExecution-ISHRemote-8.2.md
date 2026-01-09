@@ -26,7 +26,7 @@ Main tasks are
             "args": [                
                 "-NoProfile",
                 "-Command",
-                "& { Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -LogFilePath \"C:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log\" }"
+                "& { Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -LogFilePath \"D:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log\" }"
             ]
         }
     }
@@ -55,7 +55,7 @@ Main tasks are
 
 ```powershell
 Install-PSResource -Name PSMCP -Repository PSGallery
-CD C:\GITHUB\ISHRemote\MCP
+CD D:\GITHUB\ISHRemote\MCP
 New-MCP -Path .\ISHRemoteMcpServer -ServerName 'ISHRemoteMcpServer'
 ```
 PSMCP `Register-MCPTool.ps1` does not implement 'description'. There is `Get-Help` that prefers .SYNOPSIS over .DESCRIPTION but eventually it puts the cmdlet name in the description for `tools/list` endpoint
@@ -97,11 +97,11 @@ Overall [PSMCP/Public at main · dfinke/PSMCP](https://github.com/dfinke/PSMCP/t
 
 Is 'inspect' required?
 
-Debugging for now from C:\Github\ISHREMOTE>Copy-Item -Path Source\ISHRemote\Trisoft.ISHRemote\Scripts -Destination Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ -Force -Recurse; Import-Module C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ISHRemote.psm1 -Force; start-ishremotemcpserver -ActivateWhileLoop $false
+Debugging for now from D:\GITHUB\ISHREMOTE>Copy-Item -Path Source\ISHRemote\Trisoft.ISHRemote\Scripts -Destination Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ -Force -Recurse; Import-Module D:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ISHRemote.psm1 -Force; start-ishremotemcpserver -ActivateWhileLoop $false
 
 More debugging is: 
-    1. pwsh -NoProfile -Command "& { Copy-Item -Path "C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\Scripts" -Destination "C:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\" -Force -Recurse;Import-Module "C:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ISHRemote.psm1" -Verbose -Debug -Force;Import-Module "C:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\net6.0\Trisoft.ISHRemote.dll" -Verbose -Debug -Force;Get-IshVersion;(Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name;(Get-Help New-IShSession).Description.Text;(Get-Help New-IShSession).Description;Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -ActivateWhileLoop 0 -LogFilePath "C:\GITHUB\ISHRemote\IshRemoteMcpServer.log" }"
-    2. pwsh -NoProfile -Command "& { $env:PSModulePath=$env:PSModulePath + \";\" +  \"C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\";Get-IshVersion;(Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name;(Get-Help New-IShSession).Description.Text;(Get-Help New-IShSession).Description;Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -ActivateWhileLoop 0 -LogFilePath "C:\GITHUB\ISHRemote\IshRemoteMcpServer.log" }"
+    1. pwsh -NoProfile -Command "& { Copy-Item -Path "D:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\Scripts" -Destination "D:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\" -Force -Recurse;Import-Module "D:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\ISHRemote.psm1" -Verbose -Debug -Force;Import-Module "D:\GITHUB\\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\net6.0\Trisoft.ISHRemote.dll" -Verbose -Debug -Force;Get-IshVersion;(Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name;(Get-Help New-IShSession).Description.Text;(Get-Help New-IShSession).Description;Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -ActivateWhileLoop 0 -LogFilePath "D:\GITHUB\ISHRemote\IshRemoteMcpServer.log" }"
+    2. pwsh -NoProfile -Command "& { $env:PSModulePath=$env:PSModulePath + \";\" +  \"D:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Debug\ISHRemote\";Get-IshVersion;(Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name;(Get-Help New-IShSession).Description.Text;(Get-Help New-IShSession).Description;Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -ActivateWhileLoop 0 -LogFilePath "D:\GITHUB\ISHRemote\IshRemoteMcpServer.log" }"
 
 
 

@@ -9,7 +9,7 @@ function Invoke-IshRemoteMcpHandleRequest {
     # Initialize Method
     if ($Request.method -eq "initialize") {
         # Static response for simplicity, adjust serverInfo as needed
-        $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"protocolVersion":"0.3.0","capabilities":{"tools":{"listChanged":false}},"instructions":"' + $instructionsJson + '","serverInfo":{"name":"PowerShell MCP Server (Template)","version":"0.1.0"}}}'
+        $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"protocolVersion":"0.3.0","capabilities":{"tools":{"listChanged":false}},"instructions":' + $instructionsJson + ',"serverInfo":{"name":"PowerShell MCP Server (Template)","version":"0.1.0"}}}'
         return $response
     }
 
@@ -45,8 +45,20 @@ function Invoke-IshRemoteMcpHandleRequest {
     if ($Request.method -eq "tools/call") {
         $toolName = $Request.params.name
         $targetArgs = $Request.params.arguments | ConvertTo-Json -Depth 10 | ConvertFrom-Json -Depth 10 -AsHashtable
-
-        $result = & $toolName @targetArgs
+        $result = $null
+        try {
+            $result = & $toolName @targetArgs
+        }
+        catch {
+            Write-IshRemoteLog -LogEntry @{
+                Level      = 'Error'
+                Message    = "Error invoking tool [$toolName]: $_"
+                RequestId  = $Request.id
+                Method     = $Request.method
+                ToolName   = $toolName
+                Arguments  = $targetArgs
+            }
+        }
 
         # Log structured data
         Write-IshRemoteLog -LogEntry @{

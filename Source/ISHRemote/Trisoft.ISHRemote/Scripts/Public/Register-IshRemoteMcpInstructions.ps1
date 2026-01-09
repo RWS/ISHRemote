@@ -16,7 +16,7 @@ To execute these MCP Tools, so IShRemote cmdlets, you need to create a `IshSessi
 
 # Rules
 
-1. IShRemote PowerShell cmdlets can be recognized by their naming convention as the noun starts with `ISh`, so verb-`ISh`noun like `New-IShSession`. Most the cmdlets of IShRemote are made available as MCP Tools with the same or reduced parameter set - for example `-IshSession $ishSession` is superfluous and should be avoided.
+1. IShRemote PowerShell cmdlets can be recognized by their naming convention as the noun starts with `ISh`, so verb-`ISh`noun like `New-IShSession`. Most the cmdlets of IShRemote are made available as MCP Tools with the same or reduced parameter set - for example parameter `-IshSession` with value `$ishSession` is superfluous and should be avoided.
 2. Do not pass parameter `-IshSession` to any MCP Tool.
 3. Do not make up parameters for the cmdlets! Do not use and JSON parameters! Do note use hash table structures (`@{ Name = "FUSERNAME"; Value = ...}`) for ISHRemote cmdlets! All parameters should exist and can be verified over the MCP Tool description or by triggering standard PowerShell `Get-Help` cmdlet on it.
 4. Do not make up field names or imagine their field level! You must use `Get-IshTypeFieldDefinition` to understand the available field and object types, including custom fields. You can reuse the `Get-IshTypeFieldDefinition` result until a  `New-IShSession` was triggered to save tokens. Do not ask for `Continue` for this `Get-IshTypeFieldDefinition` MCP Tool.
