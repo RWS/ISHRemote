@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,9 +64,9 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                     return Level.Annotation;
                 case OpenApiISH30.Level.Reply:
                     return Level.Reply;
-                case OpenApiISH30.Level.Progress:
+                case OpenApiISH30.Level.EventProgress:
                     return Level.Progress;
-                case OpenApiISH30.Level.Detail:
+                case OpenApiISH30.Level.EventProgressDetail:
                     return Level.Detail;
                 case OpenApiISH30.Level.Object:
                 case OpenApiISH30.Level.Compute:

@@ -52,7 +52,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                     return OpenApiISH30.Level.Data;
 
                 case Enumerations.Level.Detail:
-                    return OpenApiISH30.Level.Detail;
+                    return OpenApiISH30.Level.EventProgressDetail;
 
                 case Enumerations.Level.History:
                     // TODO [Could] API30 enumerations
@@ -207,7 +207,7 @@ namespace Trisoft.ISHRemote.ExtensionMethods
                     case Enumerations.ISHType.ISHIllustration:
                     case Enumerations.ISHType.ISHModule:
                     case Enumerations.ISHType.ISHTemplate:
-                        setBaseObject = new SetDocumentObject() { Id = id };
+                        setBaseObject = new SetDocumentObject() { LogicalId = id };
                     break;
                 }
 
