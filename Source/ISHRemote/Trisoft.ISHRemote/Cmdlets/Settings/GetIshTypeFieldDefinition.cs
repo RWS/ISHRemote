@@ -139,9 +139,10 @@ namespace Trisoft.ISHRemote.Cmdlets.Settings
                 else
                 {
                     IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateIshSession);
+                    if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateGlobalIshSession); }
                     if ((TriDKXmlSetupFilePath == null) && (IshSession != null) && (13 <= IshSession.ServerIshVersion.MajorVersion))
                     {
-                        WriteDebug($"Importing using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession}");
+                        WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession} or in turn SessionState.{ISHRemoteSessionStateGlobalIshSession}");
                         // when IshSession.ServerVersion >= 13.0.0 use Settings25.RetrieveFieldSetupByIshType
                         WriteVerbose($"Importing Settings25.RetrieveFieldSetupByIshType in IshSession.ServerVersion[{IshSession.ServerVersion}]");
                         IshTypeFieldSetup ishTypeFieldSetup = new IshTypeFieldSetup(Logger, IshSession.Settings25.RetrieveFieldSetupByIshType(null), IshSession.ServerIshVersion);

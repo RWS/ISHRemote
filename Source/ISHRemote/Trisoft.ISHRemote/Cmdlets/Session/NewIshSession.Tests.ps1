@@ -90,6 +90,22 @@ Describe "New-IshSession" -Tags "Read" {
 		BeforeAll {
 			$localIShSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
 		}
+		It "Local ISHRemoteSessionStateIshSession" {
+			$ishSession=$executioncontext.SessionState.PSVariable.GetValue("ISHRemoteSessionStateIshSession")
+			$ishSession | Should -Not -BeNullOrEmpty
+			$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
+			$ishSession.Protocol | Should -Be $localIShSession.Protocol
+			$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
+			$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
+		}
+		It "Global ISHRemoteSessionStateIshSession" {
+			$ishSession=$executioncontext.SessionState.PSVariable.GetValue("global:ISHRemoteSessionStateIshSession")
+			$ishSession | Should -Not -BeNullOrEmpty
+			$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
+			$ishSession.Protocol | Should -Be $localIShSession.Protocol
+			$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
+			$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
+		}
 		It "Protocol" {
 			$localIShSession.Protocol | Should -BeExactly "WcfSoapWithWsTrust"
 		}
@@ -179,6 +195,22 @@ Describe "New-IshSession" -Tags "Read" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				$localIShSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
+		}
+		It "Local ISHRemoteSessionStateIshSession" {
+			$ishSession=$executioncontext.SessionState.PSVariable.GetValue("ISHRemoteSessionStateIshSession")
+			$ishSession | Should -Not -BeNullOrEmpty
+			$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
+			$ishSession.Protocol | Should -Be $localIShSession.Protocol
+			$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
+			$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
+		}
+		It "Global ISHRemoteSessionStateIshSession" {
+			$ishSession=$executioncontext.SessionState.PSVariable.GetValue("global:ISHRemoteSessionStateIshSession")
+			$ishSession | Should -Not -BeNullOrEmpty
+			$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
+			$ishSession.Protocol | Should -Be $localIShSession.Protocol
+			$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
+			$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
 		}
 		It "Protocol" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
@@ -321,6 +353,22 @@ Describe "New-IshSession" -Tags "Read" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
 				$localIShSession = New-IshSession -Protocol OpenApiWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
+		}
+		It "Local ISHRemoteSessionStateIshSession" {
+			$ishSession=$executioncontext.SessionState.PSVariable.GetValue("ISHRemoteSessionStateIshSession")
+			$ishSession | Should -Not -BeNullOrEmpty
+			$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
+			$ishSession.Protocol | Should -Be $localIShSession.Protocol
+			$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
+			$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
+		}
+		It "Global ISHRemoteSessionStateIshSession" {
+			$ishSession=$executioncontext.SessionState.PSVariable.GetValue("global:ISHRemoteSessionStateIshSession")
+			$ishSession | Should -Not -BeNullOrEmpty
+			$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
+			$ishSession.Protocol | Should -Be $localIShSession.Protocol
+			$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
+			$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
 		}
 		It "Protocol" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
