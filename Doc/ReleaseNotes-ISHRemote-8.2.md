@@ -9,6 +9,7 @@ High level release notes are on [Github](https://github.com/rws/ISHRemote/releas
 
 This release inherits the v0.1 to v0.14 up to v8.1 development branch and features. All cmdlets and business logic are fully compatible even around authentication. In short, we expect it all to work still :)
 
+
 ### Remember
 * All C# source code of the ISHRemote library is online at [master](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of the different [Connection](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/Connection) protocols in a NET 4.8 and NET 6.0+ style.
 * All PowerShell-based Pester integration tests are located per cmdlet complying with the `*.tests.ps1` file naming convention. See for example [AddIshDocumentObj.Tests.ps1](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/DocumentObj/AddIshDocumentObj.Tests.ps1) or [TestIshValidXml.Tests.ps1](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/FileProcessor/TestIshValidXml.Tests.ps1)
@@ -18,20 +19,59 @@ The below text describes the delta compared to fielded release ISHRemote v8.1.
 
 ## Actively recover interactive sessions
 
-Every usage of a cmdlet will refresh the security tokens. However, when not using ISHRemote cmdlets or the implicit `$ISHRemoteSessionStateIshSession` or explicit `$ishSession` object, the session expires by default after around 57 minutes when using ISHID or similar on other identity providers. In turn resulting in error `An unsecured or incorrectly secured fault was received from the other party. See the inner FaultException for the fault code and detail.`.
+Every usage of a cmdlet will refresh the security tokens. However, when not using ISHRemote cmdlets or the implicit local or global `$ISHRemoteSessionStateIshSession` or explicit `$ishSession` object, the session expires by default after around 57 minutes when using ISHID or similar on other identity providers. In turn resulting in error `An unsecured or incorrectly secured fault was received from the other party. See the inner FaultException for the fault code and detail.`.
 
 In this ISHRemote version, the session will attempt to get a new token automatically on every triggererd ISHRemote cmdlet. If you created the IShSession object over an interactive browser, you will see the browser again perhaps with or without a credential challenge in the browser. Change is only for protocols `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect`; no change for `WcfSoapWithWsTrust`.
 
 Infamous random annoying error `The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.` should now recover within the cmdlet or worst-case when rerunning the same cmdlet. This without applying the earlier workaround of building a `New-IshSession`.
 
 
-## Extending ...
+## Adding experimental ISHRemote MCP Server
 
-...
+ISHRemote is a PowerShell library that abstracts some authentication and metadata modelling complexity from the Tridion Docs API in an opionated way like default metadata. ISHRemote also comes with a built-in help for every cmdlet - or should I say MCP Tool - as you can see in for example `Get-Help New-IshSession`.
+
+Model Concept Protocol (MCP) is the language to offer tools to your chosen Large Language Model (LLM) to have smart data interactions.
+
+This experiment serves two purposes...
+1. As the MCP Tools to ISHRemote cmdlet ratio including cmdlet parameters is one-to-one. You can reuse your LLM's PowerShell knowledge and the ISHRemote MCP Server to draft PowerShell scripts. You can ask it questions on parameter usage, filters, concepts, etc that would get you started... although the LLM will not always offer working code, but something that you can debug and get working.
+2. As the MCP Tools are offered over PowerShell (pwsh), it means you can ask it questions like `Create a new ishsession to https://ish.example.com/ISHWS/`. And yes it will create you that `$ishSession` variable in the background that you can use over the other MCP Tools - euh cmdlets ;) - allowing you to follow up with `How many user roles are there?`.
+
+So what do you need...
+1. You need ISHRemote (PreRelease) installed in your PowerShell v7 (not Windows PowerShell!)
+2. Inside Visual Studio Code, you need to extend your `/.vscode/mcp.json` with the below code block. Make sure to point to an existing log file path and use the double backslashes to comply with the json file syntax.
+3. Start the `IshRemoteMcpServer` using the decorator `Start`
+4. Go to your CoPilot, put it in `Agent` mode and start with a `Create a new ishsession to https://ish.example.com/ISHWS/`
+
+```json
+{
+    "servers": {
+        "IshRemoteMcpServer": {
+            "type": "stdio",
+            "command": "pwsh",
+            "args": [                
+                "-NoProfile",
+                "-Command",
+                "& { Start-IshRemoteMcpServer -CmdletsToRegister (Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name -LogFilePath \"D:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log\" }"
+            ]
+        }
+    }
+}
+```
+
+How does it technically work? This allows the ISHRemote library to register itself as a local `stdio` transport Mcp server `ISHRemoteMcpServer`. Overall as a thin client layer that pushes the heavy lifting via PowerShell over ISHRemote and in turn HTTPS to a Tridion Docs server. Hat tip to [dfinke/PSMCP](https://github.com/dfinke/PSMCP) offering a generic PowerShell library wrapper which is self-contained ISHRemote to make it easier for our user base.
+
 
 ## Implementation Details
 
-*  ...
+* Refactored `WcfSoapWithOpenIdConnect`-based code to cache the Access Tokens and in turn SOAP channels on a class level lower than `IShSession` class. This to optimize `Refresh Token` usage for NET48 and NET6+ #210 Thanks @ddemeyer 
+* Along the way errors like `The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.`, `An unsecured or incorrectly secured fault was received from the other party.` or `Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired.` are recovered more automatically when using protocol `WcfSoapWithOpenIdConnect`. #210 Thanks @ddemeyer
+* Added a better detection of the error and in turn retry for `The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.` by introducing a upon `Faulted` `EventHandler` handler for every `Get...Channel()` function for `WcfSoapWithOpenIdConnect` and `WcfSoapWithWsTrust`. #214 #219 Thanks @copilot @ddemeyer 
+* `New-IShSession ... -IgnoreSslPolicyErrors` option on PowerShell 7+ is now even more resilient. The parameter is now passed over `InfoShareOpenIdConnectConnectionParameters` class to activate the same `SslCertificateAuthentication` code as `InfoShareWcfSoapWithWsTrustConnectionParameters` does. Thereby avoiding errors like `The remote certificate is invalid because of errors in the certificate chain: NotTimeValid` and `The remote certificate is invalid because of errors in the certificate chain: UnTrustedRoot`. #211 Thanks @ddemeyer 
+* Added extra global variable `$global:ISHRemoteSessionStateIshSession` next to existing local variable `$ISHRemoteSessionStateIshSession` to allow nested function usage like in a PowerShell-based ModelContextProtocol (MCP) Server. #224  Thanks @ivandelagemaat @ddemeyer 
+* Since 15.3.0 WcfSoapWithOpenIdConnect will no longer be hosted by Windows .NET Framework 4.8 as runtime but switched to .NET10+ runtime as host with the help of [CoreWCF](https://github.com/CoreWCF/CoreWCF). Although public SOAP API compatibility is of uttermost importance, the product team could not get _managing ReaderQuotas_ working in exactly the same way as before causing an ISHRemote crash. The ISHRemote `ReaderQuotas` implementation is now much sturdier and works for `WcfSoapWithOpenIdConnect` (ISHWS) hosted on .NET Framework 4.8-based and .NET8+based runtimes - works across Tridion Docs product versions. #207 Thanks @jlaridon 
+* OpenAPI proxies of Access Management and Tridion Docs CMS were refreshed. The Access Management API proxies, accessible over `$ishSession.OpenApiAM10Client`, changed and standardized as all API OperationIds are no longer written in CamelCase but Snake_Case. So for example `$ishhSession.OpenApiAM10Client.IdentityProvidersGetAsync()` becomes `$ishhSession.OpenApiAM10Client.IdentityProviders_GetAsync()` with one extra underscore. #223 
+* `Remove-IshBaselineItem` used version `999999` when removing an entry from the baseline. Since 15.2.0 this has to be the correct version or an empty version, but not the wrong `999999` version. #205 Thanks @OlegTokar 
+* Rewrite cmdlet `Add-IshBackgroundTask` to not use Microsoft.IdentityModel.Tokens.CollectionUtilities.IsNullOrEmpty extension method which was made `private` (and no longer `public`) in version 8.0.0 of `Microsoft.IdentityModel.Tokens.dll` #216 Thanks @ddemeyer 
 
 
 ## Breaking Changes - Cmdlets
@@ -41,10 +81,12 @@ All cmdlets and business logic are fully compatible.
 
 ## Breaking Changes - Code
 
-n/a
+* The Access Management API proxies, accessible over `$ishSession.OpenApiAM10Client`, changed and standardized as all API OperationIds are no longer written in CamelCase but Snake_Case. So for example `$ishhSession.OpenApiAM10Client.IdentityProvidersGetAsync()` becomes `$ishhSession.OpenApiAM10Client.IdentityProviders_GetAsync()` with one extra underscore. #223
 
 
 ## Breaking Changes - Platform
+
+* Replaced package references of deprecated `IdentityModel.OidcClient` to supported `Duende.IdentityModel.OidcClient` plus matching code changes. More details in the releases notes and on #220 
 
 | PackageReference From Version                         | PackageReference To Version                     | Remarks                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ----------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
