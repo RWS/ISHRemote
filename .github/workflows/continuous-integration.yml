@@ -137,7 +137,7 @@ jobs:
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
-      run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/ -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
+      run: Invoke-Pester -Path @('Source/ISHRemote/Trisoft.ISHRemote/Scripts/Public/','Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/') -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v4
       with:

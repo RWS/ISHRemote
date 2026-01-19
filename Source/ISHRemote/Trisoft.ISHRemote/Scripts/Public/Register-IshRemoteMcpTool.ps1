@@ -2,7 +2,6 @@ function Register-IshRemoteMcpTool {
     param(
         [Parameter(Mandatory)][AllowEmptyString()]
         [object[]]$FunctionName,
-        [int]$ParameterSet = 0,
         [Switch]$DoNotCompress
     )
 
@@ -22,11 +21,6 @@ function Register-IshRemoteMcpTool {
             Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool alias[$fn] to [$($CommandInfo.ResolvedCommand.Name)]"; Alias = $fn; ResolvedName = $CommandInfo.ResolvedCommand.Name }
             $CommandInfo = $CommandInfo.ResolvedCommand
         }
-        if ($CommandInfo.ParameterSets.Count -lt $ParameterSet + 1) {
-            Write-IshRemoteLog -LogEntry @{ Level = 'Error'; Message = "Register-IshRemoteMcpTool function[$fn] ParameterSet[$ParameterSet] does not exist."; TargetFunction = $fn; ParameterSetIndex = $ParameterSet }
-            Write-Error "Register-IshRemoteMcpTool function[$fn] ParameterSet[$ParameterSet] does not exist."
-            continue
-        }
 
         
         Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] extended help"; TargetFunction = $CommandInfo.Name }
@@ -43,16 +37,15 @@ function Register-IshRemoteMcpTool {
             continue
         }
         # Adding all syntax of parameter sets
-        $description = $description + "`n`nThis PowerShell cmdlet has the following parameter sets to choose form:`n" + ($help.syntax | Out-String).Trim()
-        # Adding all parameters
-        $description = $description + "`n`nThe PowerShell cmdlet uses the following parameters in the parameter sets:`n" + ($help.parameters | Out-String).Trim()
+        $description = $description + "`n`nThis PowerShell cmdlet has the following parameter sets to choose form where square brackets indicate optional parameters while the other parameters are mandatory:`n" + ($help.syntax | Out-String).Trim()
+
         # Adding all examples
         $description = $description + "`n`nThe PowerShell cmdlet has the following examples as inspiration:`n" + ($help.examples | Out-String).Trim()
 
-        
-        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] extended parameters"; TargetFunction = $CommandInfo.Name }
-        $Parameters = $CommandInfo.ParameterSets[$ParameterSet].Parameters |
-        Where-Object { $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm|NoHyperLinkConversion|ProgressAction' }
+        # Adding all parameters
+        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] all parameters across parameter sets"; TargetFunction = $CommandInfo.Name }
+        $Parameters = $CommandInfo.ParameterSets.Parameters |
+        Where-Object { $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm|NoHyperLinkConversion|ProgressAction' } | Sort-Object -Property Name -Unique
         $inputSchema = [ordered]@{
             type       = 'object'
             properties = [ordered]@{}
@@ -71,14 +64,15 @@ function Register-IshRemoteMcpTool {
                 $paramHelp = (Get-Help $CommandInfo.Name -Parameter $Parameter.Name -ErrorAction Stop).Description | Out-String
             }
             catch {
-                Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Could not get help for parameter '$($Parameter.Name)' on function '$($CommandInfo.Name)'."; TargetFunction = $CommandInfo.Name; ParameterName = $Parameter.Name }
-                $paramHelp = $null
+                Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Could not get help description for parameter '$($Parameter.Name)' on function '$($CommandInfo.Name)'. Often happens with forced import-module loading of PowerShell module while developing."; TargetFunction = $CommandInfo.Name; ParameterName = $Parameter.Name }
+                $paramHelp = ""
             }
-            $paramHelp = if ($paramHelp) { $paramHelp.Trim() } else { "No description available for this parameter." }
+            $paramHelp = if ($paramHelp) { $paramHelp.Trim() } else { "No description available." }
             $inputSchema.properties[$Parameter.Name] = [ordered]@{ type = $type; description = $paramHelp }
-            if ($Parameter.IsMandatory) {
-                $inputSchema.required += $Parameter.Name
-            }
+            # Only $help.syntax indicates if parameters are mandatory within parameter sets. E.g. setting Get-IshFolder -FolderId as required blocks other parameter sets where FolderId is not mandatory.
+            #if ($Parameter.IsMandatory) {
+            #    $inputSchema.required += $Parameter.Name
+            #}
         }
 
 
@@ -100,6 +94,7 @@ function Register-IshRemoteMcpTool {
             { $_.StartsWith("Find-IshDocumentObj") -or $_.StartsWith("Find-IshPublicationOutput") } { $annotations.destructiveHint = 'true' ; $annotations.idempotentHint = 'true'; $annotations.readOnlyHint = 'true' }  # mostly because these Find can return the full repository
             { $_.StartsWith("Get") -or $_.StartsWith("Test") -or $_.StartsWith("Search") -or $_.StartsWith("Find") -or $_.StartsWith("Compare") } { $annotations.destructiveHint = 'false' ; $annotations.idempotentHint = 'true'; $annotations.readOnlyHint = 'true' }
             { $_.StartsWith("Set") -or $_.StartsWith("New") -or $_.StartsWith("Add") -or $_.StartsWith("Remove") -or $_.StartsWith("Move") -or $_.StartsWith("Stop") -or $_.StartsWith("Publish")} { <#defaults are good#> }
+            default { Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Unknown verb or cmdlet '$($CommandInfo.Name)', defaulting destructiveHint and idempotentHint to false" } }
         }
         # If verb is Delete, then destructiveHint=$true
         # If verb is Get, then idempotentHint=$true

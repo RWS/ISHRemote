@@ -90,23 +90,17 @@
     <XmlDoc2CmdletDocToolPath>net48\XmlDoc2CmdletDoc.dll</XmlDoc2CmdletDocToolPath>
     <XmlDocToolsPath>net48\XmlDoc2CmdletDoc.dll</XmlDocToolsPath>
   </PropertyGroup>
-
-  <!-- Hack as Windows PowerShell complains about System.ComponentModel.Annotations 4.2.0 missing during exception handling. 
-       Similar to https://stackoverflow.com/questions/44257436/when-using-net-standard-1-4-in-a-library-and-net-framework-4-6-1-in-and-applic 
-	   And https://stackoverflow.com/questions/44053187/could-not-load-file-or-assembly-system-componentmodel-annotations-version-4-1 
-	   Solved as hinted on https://github.com/square/connect-csharp-sdk/issues/109 by referencing 4.4.1 (instead of latest-5.0.0) as that one offers file version 4.2.0
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-	</PropertyGroup>
+  <!-- Trisoft.ISHRemote.dll-Help.xml is generated next to \bin\Debug\ISHRemote\net48\Trisoft.ISHRemote.dll
+       then duplicated next to \bin\Debug\ISHRemote\net6.0\Trisoft.ISHRemote.dll so that debug get-help have proper parameter descriptions
+       then copied to ISHRemote packaging folder where it is delivered in the root and per TargetFramework subfolder
   -->
-
   <Target Name="CopyCmdletDoc" AfterTargets="AfterBuild" Condition="'$(TargetFramework)' == 'net48'">
     <PropertyGroup>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
     </PropertyGroup>
     <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
-    <Move SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/net6.0" />
   </Target>
 
   <!-- Generating Module Manifest only once -->

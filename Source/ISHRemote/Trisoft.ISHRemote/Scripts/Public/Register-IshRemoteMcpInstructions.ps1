@@ -11,7 +11,7 @@ The IShRemote module is used by many clients in PowerShell PS1 script files to a
 
 # Getting Started
 
-To execute these MCP Tools, so IShRemote cmdlets, you need to create a `IshSession`. The cmdlet `New-IShSession` with provided `-WsBaseUrl` https url is triggered first - potenially with `-ClientId` and `-ClientSecret` parameters if provided. The result is an in-memory IShSession object that implicitly set as a variable accessible over `$ISHRemoteSessionStateIshSession`. This means that you never have to explicitly mention parameter `-IShSession` or value `$ishSession` because every cmdlet takes that implicitly from `$ISHRemoteSessionStateIshSession`.
+To execute these MCP Tools, so IShRemote cmdlets, you need to create a `IshSession`. If not you will see MCP Tools responding with `IshSession is null. Please create a session first using New-IshSession`. The cmdlet `New-IShSession` with provided `-WsBaseUrl` https url is triggered first - potenially with `-ClientId` and `-ClientSecret` parameters if provided. The result is an in-memory IShSession object that implicitly set as a variable accessible over `$ISHRemoteSessionStateIshSession`. This means that you never have to explicitly mention parameter `-IShSession` or value `$ishSession` because every cmdlet takes that implicitly from `$ISHRemoteSessionStateIshSession`.
 
 
 # Rules
@@ -73,7 +73,7 @@ There is a hierarchy where base class `IShObject` is used for PowerShell pipelin
   - `IShBaseline` holds an instance with fields (`IShField`) of level `None` and can be linked to `IShBaselineItem` entries that list exact versions per logical identifier.
   - `IShConfiguration` holds the singleton instance with fields (`IShField`) of level `None` that holds feature toggles, Xml Settings and more system configuration.
   - `IShEDT` holds an instance with fields (`IShField`) of level `None`. EDT is short for Electronic Document Type that links a typical file extension and mimetype of some binary. Well known EDT is `EDTXML` for xml files and `EDTPNG` for png files. This information is also offered when downloading Data (`IShData`).
-  - `IShFolder` holds an instance with fields (`IShField`) of level `None`. Folders or sometimes called Directories are nested structures to organize `IShPublication` and `IShDocumentObj` derived entities.
+  - `IShFolder` holds an instance with fields (`IShField`) of level `None`. Folders or sometimes called Directories are nested structures to organize `IShPublication` and `IShDocumentObj` derived entities. Depth 1 returns the current folder, depth 2 first level of subfolders and typically requires the recurse parameter.
   - `IShDocumentObj`, also known as content objects. A denormalized structure of the `logical`, `version` and `lng` (language) level fields (`IShField`).
   - `IShIllustration` in turn is derived from `IShDocumentObj` and holds content objects known as images, illustrations, graphics. A unique language level identifier for this type is lng level field resolution (`FRESOLUTION`) which indicates the purpose of an image - for example `Low` for web resolution, `High` for print quality and `Master` could be the source vector graphic that generated the earlier two.
   - `IShLibrary` in turn is derived from `IShDocumentObj` and holds content objects known as library topics, conref libraries or variable libraries. Typically holding OASIS DITA topic xml files of type `EDTXML`.
