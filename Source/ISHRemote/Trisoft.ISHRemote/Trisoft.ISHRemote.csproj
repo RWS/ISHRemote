@@ -129,7 +129,7 @@
     
     <ItemGroup>
         <ISHRemoteFiles Include="$(TargetDir)/**/*.*" />
-        <ISHRemoteScriptFiles Include="$(ProjectDir)/Scripts/**/*.*" />
+        <ISHRemoteScriptFiles Include="$(ProjectDir)/Scripts/**/*.*" Exclude="$(ProjectDir)/Scripts/**/*.tests.ps1;$(ProjectDir)/Scripts/**/*.Tests.ps1" />
     </ItemGroup>
 
     <RemoveDir Directories="$(ISHRemoteFrameworkDir)" Condition="Exists('$(ISHRemoteFrameworkDir)')" />
