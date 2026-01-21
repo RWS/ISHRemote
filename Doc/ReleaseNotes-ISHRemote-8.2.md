@@ -44,7 +44,11 @@ Combining documented ISHRemote cmdlets with the interaction pattern of MCP Tools
 
 ### ISHRemoteMcpServer Setup using Visual Studio Code
 
-So what do you need...
+Below animation give you an overview on what you need to do to set it up.
+
+![ISHRemote-8.2--ISHRemoteMcpServerSetupDemo 1024x512](./Images/ISHRemote-8.2--ISHRemoteMcpServerSetupDemo.gif)
+
+Below the steps in some more detail...
 1. You need ISHRemote v8.2+ (PreRelease) installed in your PowerShell v7 (not Windows PowerShell!). See [Installation-ISHRemote-8.0.md](./Installation-ISHRemote-8.0.md) for guidance. Make sure that it works by calling the classic `New-IshSession -WsBaseUrl https://ish.example.com/ISHWS/`
 2. Open your installed [Visual Studio Code](https://code.visualstudio.com) preferably to a working folder where you have or plan to have your scripts saved. Now you need to create or extend your `.vscode/mcp.json` with the below code block. Optionally use a different log file path, and use the double backslashes to comply with the json file syntax.
 3. Start the `IshRemoteMcpServer` using the decorator `Start`
@@ -71,9 +75,7 @@ So what do you need...
 
 The diagram below explains the deployment architecture, and allows to clarify the lifecycle of the MCP Server, especially regarding any `$ishSession` lifecycle. Overall ISHRemote as MCP Server does not act differently from any PowerShell 7+ ISHRemote interactive session - the PowerShell session is hidden for you however by Visual Studio Code.
 
-
-BELOW PICTURE IS A PLACE HOLDER AND NEEDS TO CHANGE
-![ISHRemote-0.7--InstallModuleFromPSGallery 1024x512](./Images/ISHRemote-0.7--InstallModuleFromPSGallery.gif)
+![ISHRemote-8.2--ISHRemoteMcpServerFlow 1024x512](./Images/ISHRemote-8.2--ISHRemoteMcpServerFlow.gif)
 
 When you click the `Start` decorator in the `mcp.json`, Visual Studio Code will start a local PowerShell (`pwsh.exe`) process using a local `stdio` [transport](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports) MCP server. As ISHRemote was already installed and working up front for interactive usage, this module will be loaded by the first cmdlet called. 
 
