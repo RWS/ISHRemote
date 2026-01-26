@@ -9,7 +9,7 @@ function Invoke-IshRemoteMcpHandleRequest {
     # Initialize Method
     if ($Request.method -eq "initialize") {
         # Static response for simplicity, adjust serverInfo as needed
-        $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"protocolVersion":"0.3.0","capabilities":{"tools":{"listChanged":false}},"instructions":' + $instructionsJson + ',"serverInfo":{"name":"PowerShell MCP Server (Template)","version":"0.1.0"}}}'
+        $response = '{"jsonrpc":"2.0","id":' + ($Request.id | ConvertTo-Json -Depth 10 -Compress) + ',"result":{"protocolVersion":"2024-11-05","capabilities":{"tools":{"listChanged":false}},"instructions":' + $instructionsJson + ',"serverInfo":{"name":"PowerShell MCP Server (Template)","version":"0.2.0"}}}'
         return $response
     }
 
