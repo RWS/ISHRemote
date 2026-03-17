@@ -44,6 +44,25 @@ namespace Trisoft.ISHRemote.ExtensionMethods
         }
 
         /// <summary>
+        /// Converts ISHRemote StatusFilter to OpenAPI StatusFilter
+        /// </summary>
+        internal static OpenApiISH30.StatusFilter ToOpenApiISH30StatusFilter(this StatusFilter statusFilter)
+        {
+            switch (statusFilter)
+            {
+                case StatusFilter.ISHReleasedStates:
+                    return OpenApiISH30.StatusFilter.LatestReleased;
+                case StatusFilter.ISHReleasedOrDraftStates:
+                    return OpenApiISH30.StatusFilter.DraftOrLatestReleased;
+                case StatusFilter.ISHOutOfDateOrReleasedStates:
+                    return OpenApiISH30.StatusFilter.AllReleased;
+                case StatusFilter.ISHNoStatusFilter:
+                default:
+                    return OpenApiISH30.StatusFilter.All;
+            }
+        }
+
+        /// <summary>
         /// OpenApi (dd 20211228) implements Field Level, needs mapping to ISHRemote levels
         /// </summary>
         internal static Level ToISHFieldLevel(this OpenApiISH30.Level oLevel)
