@@ -129,7 +129,7 @@ $isLinuxContainerized = $baseUrl.Contains('.sdldev.net')
 	$webServicesConnectionConfigurationUrl = $webServicesBaseUrl + "connectionconfiguration.xml"
 	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
 	# $connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl #Only PS7#-SkipCertificateCheck 
-	$connectionConfigurationRaw = (Invoke-WebRequest -Uri $webServicesConnectionConfigurationUrl).Content #as Kestrel/IIS behave differently
+	$connectionConfigurationRaw = (Invoke-WebRequest -Uri $webServicesConnectionConfigurationUrl -UseBasicParsing).Content #as Kestrel/IIS behave differently
 	$connectionConfigurationRaw -match "<infosharesoftwareversion>(?<myVersion>.*)</infosharesoftwareversion>"  # Straight string handling avoids UTF8-BOM cross-platform handling
 	[version]$infosharesoftwareversion = $matches['myVersion']
 	if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
