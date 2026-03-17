@@ -63,9 +63,11 @@ Describe "Test-IshSession" -Tags "Read" {
 			Test-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $false
 		}
 		It "Parameter PSCredential over WcfSoapWithWsTrust" {
-			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
-			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
-			Test-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $true
+			if (-not $isLinuxContainerized) {
+				$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
+				$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
+				Test-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials | Should -Be $true
+			}
 		}
 		It "Parameter PSCredential over WcfSoapWithOpenIdConnect" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
@@ -115,7 +117,7 @@ Describe "Test-IshSession" -Tags "Read" {
 		It "WsBaseUrl without ending slash" {
 			# .NET throws unhandy "Reference to undeclared entity 'raquo'." error
 			$webServicesBaseUrlWithoutEndingSlash = $webServicesBaseUrl.Substring(0,$webServicesBaseUrl.Length-1)
-			Test-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword | Should -Be $true
+			Test-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -ClientId $amClientId -ClientSecret $amClientSecret | Should -Be $true
 		}
 	}
 

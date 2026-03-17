@@ -109,11 +109,15 @@ if (Test-Path -Path $debugPesterSetupFilePath -PathType Leaf)
 	# $ishPassword = 'mypassword'
 	# $amClientId = 'myserviceaccountclientid'
 	# $amClientSecret = 'myserviceaccountclientsecret'
+	# $isLinuxContainerized = $baseUrl.Contains('.sdldev.net') # $true to indicate containerization skipping Windows-only .NET Framework features like WcfSoapWithWsTrust protocol; version 15.3.0 is insufficient
 }
 #endregion
 
 $webServicesBaseUrl -match "https://((?<hostname>.+))+/(.)+/" | Out-Null
 $hostname=$Matches['hostname']
+
+#$true to indicate containerization skipping Windows-only .NET Framework features like WcfSoapWithWsTrust protocol; version 15.3.0 is insufficient
+$isLinuxContainerized = $baseUrl.Contains('.sdldev.net')
 
 #
 # Note
@@ -124,9 +128,10 @@ $hostname=$Matches['hostname']
 #{
 	$webServicesConnectionConfigurationUrl = $webServicesBaseUrl + "connectionconfiguration.xml"
 	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
-	$connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl #Only PS7#-SkipCertificateCheck 
+	# $connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl #Only PS7#-SkipCertificateCheck 
+	$connectionConfigurationRaw = (Invoke-WebRequest -Uri $webServicesConnectionConfigurationUrl).Content #as Kestrel/IIS behave differently
 	$connectionConfigurationRaw -match "<infosharesoftwareversion>(?<myVersion>.*)</infosharesoftwareversion>"  # Straight string handling avoids UTF8-BOM cross-platform handling
-	[version]$infosharesoftwareversion = $matches['myversion']
+	[version]$infosharesoftwareversion = $matches['myVersion']
 	if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
 	{
 		$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -WarningAction SilentlyContinue

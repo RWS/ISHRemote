@@ -73,9 +73,11 @@ Describe "New-IshSession" -Tags "Read" {
 			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should -Throw
 		}
 		It "Parameter PSCredential over WcfSoapWithWsTrust" {
-			$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
-			$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
-			{ New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should -Not -Throw
+			if (-not $isLinuxContainerized) {
+				$securePassword = ConvertTo-SecureString $ishPassword -AsPlainText -Force
+				$mycredentials = New-Object System.Management.Automation.PSCredential ($ishUserName, $securePassword)
+				{ New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -PSCredential $mycredentials } | Should -Not -Throw
+			}
 		}
 		It "Parameter PSCredential over WcfSoapWithOpenIdConnect" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
@@ -88,105 +90,163 @@ Describe "New-IshSession" -Tags "Read" {
 
 	Context "New-IshSession over WcfSoapWithWsTrust returns IshSession object" {
 		BeforeAll {
-			$localIShSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			if (-not $isLinuxContainerized) {
+				$localIShSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			}
 		}
 		It "Local ISHRemoteSessionStateIshSession" {
-			$ishSession=$executioncontext.SessionState.PSVariable.GetValue("ISHRemoteSessionStateIshSession")
-			$ishSession | Should -Not -BeNullOrEmpty
-			$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
-			$ishSession.Protocol | Should -Be $localIShSession.Protocol
-			$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
-			$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
+			if (-not $isLinuxContainerized) {
+				$ishSession=$executioncontext.SessionState.PSVariable.GetValue("ISHRemoteSessionStateIshSession")
+				$ishSession | Should -Not -BeNullOrEmpty
+				$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
+				$ishSession.Protocol | Should -Be $localIShSession.Protocol
+				$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
+				$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
+			}
 		}
 		It "Global ISHRemoteSessionStateIshSession" {
-			$ishSession=$executioncontext.SessionState.PSVariable.GetValue("global:ISHRemoteSessionStateIshSession")
-			$ishSession | Should -Not -BeNullOrEmpty
-			$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
-			$ishSession.Protocol | Should -Be $localIShSession.Protocol
-			$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
-			$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
+			if (-not $isLinuxContainerized) {
+				$ishSession=$executioncontext.SessionState.PSVariable.GetValue("global:ISHRemoteSessionStateIshSession")
+				$ishSession | Should -Not -BeNullOrEmpty
+				$ishSession.WebServicesBaseUrl | Should -Be $localIShSession.WebServicesBaseUrl
+				$ishSession.Protocol | Should -Be $localIShSession.Protocol
+				$ishSession.ServerVersion | Should -Be $localIShSession.ServerVersion
+				$ishSession.ClientVersion | Should -Be $localIShSession.ClientVersion
+			}
 		}
 		It "Protocol" {
-			$localIShSession.Protocol | Should -BeExactly "WcfSoapWithWsTrust"
+			if (-not $isLinuxContainerized) {
+				$localIShSession.Protocol | Should -BeExactly "WcfSoapWithWsTrust"
+			}
 		}
 		It "GetType()" {
-			$localIShSession.GetType().Name | Should -BeExactly "IshSession"
+			if (-not $isLinuxContainerized) {
+				$localIShSession.GetType().Name | Should -BeExactly "IshSession"
+			}
 		}
 		It "IshSession.AuthenticationContext" {
-			$localIShSession.AuthenticationContext | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.AuthenticationContext | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.BlobBatchSize" {
-			$localIShSession.BlobBatchSize -gt 0 | Should -Be $true
+			if (-not $isLinuxContainerized) {
+				$localIShSession.BlobBatchSize -gt 0 | Should -Be $true
+			}
 		}
 		It "IshSession.ChunkSize" {
-			$localIShSession.ChunkSize -gt 0 | Should -Be $true
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ChunkSize -gt 0 | Should -Be $true
+			}
 		}
 		It "IshSession.ClientVersion" {
-			$localIShSession.ClientVersion | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ClientVersion | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.ClientVersion not 0.0.0.0" {
-			$localIShSession.ClientVersion | Should -Not -Be "0.0.0.0"
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ClientVersion | Should -Not -Be "0.0.0.0"
+			}
 		}
 		It "IshSession.FolderPathSeparator" {
-			$localIShSession.FolderPathSeparator | Should -Be "\"
+			if (-not $isLinuxContainerized) {
+				$localIShSession.FolderPathSeparator | Should -Be "\"
+			}
 		}
 		It "IshSession.IshUserName" {
-			$localIShSession.IshUserName | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.IshUserName | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.UserName" {
-			$localIShSession.UserName | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.UserName | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.ClientAppId" {
-			$localIShSession.ClientAppId | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ClientAppId | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.ClientId" {
-			$localIShSession.ClientId | Should -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ClientId | Should -BeNullOrEmpty
+			}
 		}
 		It "IshSession.AccessToken" {
-			$localIShSession.AccessToken | Should -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.AccessToken | Should -BeNullOrEmpty
+			}
 		}
 		It "IshSession.IshTypeFieldDefinition" {
-			$localIShSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.IshTypeFieldDefinition | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.IshTypeFieldDefinition.Count" {
-			$localIShSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
+			if (-not $isLinuxContainerized) {
+				$localIShSession.IshTypeFieldDefinition.Count -gt 460 | Should -Be $true
+			}
 		}
 		It "IshSession.IshTypeFieldDefinition.GetType().Name" {
-			$localIShSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
-			$localIShSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
-			$localIShSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
-			$localIShSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
-			$localIShSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
+				$localIShSession.IshTypeFieldDefinition[0].ISHType | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].Level | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].Name | Should -Not -BeNullOrEmpty
+				$localIShSession.IshTypeFieldDefinition[0].DataType | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.MetadataBatchSize" {
-			$localIShSession.MetadataBatchSize -gt 0 | Should -Be $true
+			if (-not $isLinuxContainerized) {
+				$localIShSession.MetadataBatchSize -gt 0 | Should -Be $true
+			}
 		}
 		It "IshSession.Separator" {
-			$localIShSession.Separator | Should -Be ", "
+			if (-not $isLinuxContainerized) {
+				$localIShSession.Separator | Should -Be ", "
+			}
 		}
 		It "IshSession.ServerVersion empty (ISHWS down?)" {
-			$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.ServerVersion not 0.0.0.0" {
-			$localIShSession.ServerVersion | Should -Not -Be "0.0.0.0"
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ServerVersion | Should -Not -Be "0.0.0.0"
+			}
 		}
 		It "IshSession.ServerVersion contains 4 dot-seperated parts" {
-			$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
+			}
 		}
 		It "IshSession.Timeout defaults to 30m" {
-			$localIShSession.Timeout.TotalMinutes | Should -Be 30
+			if (-not $isLinuxContainerized) {
+				$localIShSession.Timeout.TotalMinutes | Should -Be 30
+			}
 		}
 		It "IshSession.StrictMetadataPreference" {
-			$localIShSession.StrictMetadataPreference | Should -Be "Continue"
+			if (-not $isLinuxContainerized) {
+				$localIShSession.StrictMetadataPreference | Should -Be "Continue"
+			}
 		}
 		It "IshSession.PipelineObjectPreference" {
-			$localIShSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
+			if (-not $isLinuxContainerized) {
+				$localIShSession.PipelineObjectPreference | Should -Be "PSObjectNoteProperty"
+			}
 		}
 		It "IshSession.DefaultRequestedMetadata" {
-			$localIShSession.DefaultRequestedMetadata | Should -Be "Basic"
+			if (-not $isLinuxContainerized) {
+				$localIShSession.DefaultRequestedMetadata | Should -Be "Basic"
+			}
 		}
 		It "IshSession.WebServicesBaseUrl" {
-			$localIShSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.WebServicesBaseUrl | Should -Not -BeNullOrEmpty
+			}
 		}
 	}
 
@@ -510,7 +570,7 @@ Describe "New-IshSession" -Tags "Read" {
 		It "WsBaseUrl without ending slash" {
 			# .NET throws unhandy "Reference to undeclared entity 'raquo'." error
 			$webServicesBaseUrlWithoutEndingSlash = $webServicesBaseUrl.Substring(0,$webServicesBaseUrl.Length-1)
-			{ New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -IshUserName $ishUserName -IshPassword $ishPassword } | Should -Not -Throw
+			{ New-IshSession -WsBaseUrl $webServicesBaseUrlWithoutEndingSlash -ClientId $amClientId -ClientSecret $amClientSecret } | Should -Not -Throw
 		}
 	}
 
@@ -519,42 +579,45 @@ Describe "New-IshSession" -Tags "Read" {
 			{ New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout "INVALIDTIMEOUT" } | Should -Throw
 		}
 		It "IshSession.Timeout set to 30s" {
-			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-TimeSpan -Seconds 60) -WarningAction Ignore -ErrorAction Ignore
+			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret -Timeout (New-TimeSpan -Seconds 60) -WarningAction Ignore -ErrorAction Ignore
 			$localIShSession.Timeout.TotalMilliseconds  | Should -Be "60000"
 		}
 		It "IshSession.Timeout on INVALID url set to 1ms execution" {
 			# TaskCanceledException: A task was canceled.
 			{
 				$invalidWebServicesBaseUrl = $webServicesBaseUrl -replace "://", "://INVALID"
-				New-IshSession -WsBaseUrl $invalidWebServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -Timeout (New-Object TimeSpan(0,0,0,0,1))
+				New-IshSession -WsBaseUrl $invalidWebServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret -Timeout (New-Object TimeSpan(0,0,0,0,1))
 			} | Should -Throw
 		}
 	}
 
 	Context "New-IshSession IgnoreSslPolicyErrors" {
 		It "Parameter IgnoreSslPolicyErrors specified positive flow" {
-			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors -WarningAction Ignore
+			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret -IgnoreSslPolicyErrors -WarningAction Ignore
 			$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 		}
 		It "Parameter IgnoreSslPolicyErrors specified negative flow like host IPv4 address" {
-			# replace hostname like machinename.somedomain.com to ipaddress only as often certificates are valid for machinename/localhost as well
-			$slash1Position = $webServicesBaseUrl.IndexOf("/")
-			$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
-			$slash3Position = $webServicesBaseUrl.IndexOf("/",$slash2Position+1)
-			$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position-1)
-			$ipv4Addresses = [System.Net.Dns]::GetHostAddresses($hostname) | 
-			                 Where-Object -Property AddressFamily -eq 'InterNetwork' |
-			                 Where-Object -Property IsIPv6LinkLocal -ne $true | 
-							 Select-Object -Property IPAddressToString  # returning @(192.168.1.160,10.100.139.126)
-			foreach ($ipv4Address in $ipv4Addresses)
-			{
-				$webServicesBaseUrlWithIpAddress = $webServicesBaseUrl.Replace($hostname,$ipv4Address.IPAddressToString)
-				$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
-				$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
-				$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
+			if (-not $isLinuxContainerized) { 
+				# test only works on Protocol WcfSoapWithWsTrust as WcfSoapWithOpenIdConnect errors out with 'An error occurred when verifying security for the message.'
+				# replace hostname like machinename.somedomain.com to ipaddress only as often certificates are valid for machinename/localhost as well
+				$slash1Position = $webServicesBaseUrl.IndexOf("/")
+				$slash2Position = $webServicesBaseUrl.IndexOf("/",$slash1Position+1)
+				$slash3Position = $webServicesBaseUrl.IndexOf("/",$slash2Position+1)
+				$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position-1)
+				$ipv4Addresses = [System.Net.Dns]::GetHostAddresses($hostname) | 
+								Where-Object -Property AddressFamily -eq 'InterNetwork' |
+								Where-Object -Property IsIPv6LinkLocal -ne $true | 
+								Select-Object -Property IPAddressToString  # returning @(192.168.1.160,10.100.139.126)
+				foreach ($ipv4Address in $ipv4Addresses)
+				{
+					$webServicesBaseUrlWithIpAddress = $webServicesBaseUrl.Replace($hostname,$ipv4Address.IPAddressToString)
+					$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlWithIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+					$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
+					$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
+				}
+				# Remember that ipv6 addresses need to go in between square brackets to avoid port confusion
 			}
-			# Remember that ipv6 addresses need to go in between square brackets to avoid port confusion
 		}
 		It "Parameter IgnoreSslPolicyErrors specified negative flow like hostname (segment-one-url)" -Skip {
 			# replace hostname like machinename.somedomain.com to machinename only, marked as skipped for non-development machines
@@ -564,7 +627,7 @@ Describe "New-IshSession" -Tags "Read" {
 			$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position-1)
 			$computername = $hostname.Substring(0,$hostname.IndexOf("."))
 			$webServicesBaseUrlToComputerName = $webServicesBaseUrl.Replace($hostname,$computername)
-			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToComputerName -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToComputerName -ClientId $amClientId -ClientSecret $amClientSecret -IgnoreSslPolicyErrors
 			$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 			$localIShSession.Dispose()
@@ -577,7 +640,7 @@ Describe "New-IshSession" -Tags "Read" {
 			$hostname = $webServicesBaseUrl.Substring($slash2Position+1,$slash3Position-$slash2Position)
 			$ipAddress = Resolve-DnsName –Name $hostname  # only available on Windows Server 2012 R2 and Windows 8.1
 			$webServicesBaseUrlToIpAddress = $webServicesBaseUrl.Replace($hostname,$ipAddress)
-			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToIpAddress -IshUserName $ishUserName -IshPassword $ishPassword -IgnoreSslPolicyErrors
+			$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrlToIpAddress -ClientId $amClientId -ClientSecret $amClientSecret -IgnoreSslPolicyErrors
 			$localIShSession.ServerVersion | Should -Not -BeNullOrEmpty
 			$localIShSession.ServerVersion.Split(".").Length | Should -Be 4
 			$localIShSession.Dispose()
@@ -586,78 +649,114 @@ Describe "New-IshSession" -Tags "Read" {
 
 	Context "New-IshSession over WcfSoapWithWsTrust returns IshSession ServiceReferences" {
 		BeforeAll {
-			$localIShSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			if (-not $isLinuxContainerized) {
+				$localIShSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+			}
 		}
 		It "IshSession.OpenApiISH30Client" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+			if ((-not $isLinuxContainerized) -and (([Version]$ishSession.ServerVersion).Major -ge 15)) { # new service since 15/15.0.0
 				 $localIShSession.OpenApiISH30Client | Should -BeNullOrEmpty
 			}
 		}
 		It "IshSession.OpenApiAM10Client" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
+			if ((-not $isLinuxContainerized) -and (([Version]$ishSession.ServerVersion).Major -ge 15)) { # new service since 15/15.0.0
 				 $localIShSession.OpenApiAM10Client | Should -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Annotation25" {
-			if (([Version]$ishSession.ServerVersion).Major -ge 14) { # new service since 14/14.0.0
+			if ((-not $isLinuxContainerized) -and (([Version]$ishSession.ServerVersion).Major -ge 14)) { # new service since 14/14.0.0
 				 $localIShSession.Annotation25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Application25" {
-			$localIShSession.Application25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.Application25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.BackgroundTask25" { # new service since 13SP2/13.0.2
-			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { 
+			if (((-not $isLinuxContainerized) -and (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)))) { 
 				$localIShSession.BackgroundTask25 | Should -Not -BeNullOrEmpty
 			}
 		}
 		It "IshSession.Baseline25" {
-			$localIShSession.Baseline25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.Baseline25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.DocumentObj25" {
-			$localIShSession.DocumentObj25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.DocumentObj25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.EDT25" {
-			$localIShSession.EDT25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.EDT25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.EventMonitor25" {
-			$localIShSession.EventMonitor25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.EventMonitor25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.Folder25" {
-			$localIShSession.Folder25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.Folder25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.ListOfValues25" {
-			$localIShSession.ListOfValues25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.ListOfValues25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.MetadataBinding25" {
-			$localIShSession.MetadataBinding25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.MetadataBinding25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.OutputFormat25" {
-			$localIShSession.OutputFormat25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.OutputFormat25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.PublicationOutput25" {
-			$localIShSession.PublicationOutput25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.PublicationOutput25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.Search25" {
-			$localIShSession.Search25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.Search25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.Settings25" {
-			$localIShSession.Settings25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.Settings25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.TranslationJob25" {
-			$localIShSession.TranslationJob25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.TranslationJob25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.TranslationTemplate25" {
-			$localIShSession.TranslationTemplate25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.TranslationTemplate25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.User25" {
-			$localIShSession.User25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.User25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.UserGroup25" {
-			$localIShSession.UserGroup25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.UserGroup25 | Should -Not -BeNullOrEmpty
+			}
 		}
 		It "IshSession.UserRole25" {
-			$localIShSession.UserRole25 | Should -Not -BeNullOrEmpty
+			if (-not $isLinuxContainerized) {
+				$localIShSession.UserRole25 | Should -Not -BeNullOrEmpty
+			}
 		}
 	}
 
