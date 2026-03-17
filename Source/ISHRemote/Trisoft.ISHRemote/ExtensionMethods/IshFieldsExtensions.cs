@@ -219,5 +219,62 @@ namespace Trisoft.ISHRemote.ExtensionMethods
 
             return setBaseObjects;
         }
+
+        /// <summary>
+        /// Converts IshFields to OpenAPI FilterFieldValue collection for metadata filtering
+        /// </summary>
+        internal static ICollection<FilterFieldValue> ToOpenApiISH30FilterFieldValues(this IshFields ishFields)
+        {
+            ICollection<FilterFieldValue> filterFields = new List<FilterFieldValue>();
+
+            foreach (Objects.Public.IshField ishField in ishFields.Fields())
+            {
+                var ishMetadataFilterField = ishField.ToMetadataFilterField() as IshMetadataFilterField;
+                if (ishMetadataFilterField != null)
+                {
+                    // Create a StringFilterFieldValue for string-based filters
+                    StringFilterFieldValue filterField = new StringFilterFieldValue
+                    {
+                        IshField = new OpenApiISH30.IshField 
+                        { 
+                            Level = ishField.Level.ToOpenApiISH30Level(), 
+                            Name = ishField.Name 
+                        },
+                        Value = new List<string> { ishMetadataFilterField.Value },
+                        Operator = OpenApiISH30.MetadataFilterOperator.Like
+                    };
+                    filterFields.Add(filterField);
+                }
+            }
+
+            return filterFields;
+        }
+
+        /// <summary>
+        /// Converts IshFields to OpenAPI RequestedField collection for requested metadata
+        /// </summary>
+        internal static ICollection<RequestedField> ToOpenApiISH30RequestedFields(this IshFields ishFields)
+        {
+            ICollection<RequestedField> requestedFields = new List<RequestedField>();
+
+            foreach (Objects.Public.IshField ishField in ishFields.Fields())
+            {
+                var ishRequestedMetadataField = ishField.ToRequestedMetadataField() as IshRequestedMetadataField;
+                if (ishRequestedMetadataField != null)
+                {
+                    RequestedField requestedField = new RequestedField
+                    {
+                        IshField = new OpenApiISH30.IshField
+                        {
+                            Level = ishField.Level.ToOpenApiISH30Level(),
+                            Name = ishField.Name
+                        }
+                    };
+                    requestedFields.Add(requestedField);
+                }
+            }
+
+            return requestedFields;
+        }
     }
 }

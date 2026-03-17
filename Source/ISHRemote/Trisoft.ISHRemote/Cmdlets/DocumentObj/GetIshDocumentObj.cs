@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 using System.ServiceModel;
+using System.Threading;
 using Trisoft.ISHRemote.Exceptions;
+using Trisoft.ISHRemote.ExtensionMethods;
 using Trisoft.ISHRemote.HelperClasses;
 using Trisoft.ISHRemote.Objects;
 using Trisoft.ISHRemote.Objects.Public;
@@ -110,9 +112,15 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
 
+        /// <summary>
+        /// <para type="description">Switch parameter to use REST API (OpenAPI) instead of SOAP API for retrieval. This is experimental in Phase 1.</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ParameterSetName = "ParameterGroup")]
+        public SwitchParameter UseREST { get; set; }
 
 
-        
+
+
 
         #region Private fields
 
@@ -216,24 +224,85 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         var statusFilter = EnumConverter.ToStatusFilter<DocumentObj25ServiceReference.StatusFilter>(StatusFilter);
                         if (!_includeData)
                         {
-                            //RetrieveMetadata
-                            WriteDebug($"Retrieving LogicalId.length[{LogicalId.Length}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] 0/{LogicalId.Length}");
-                            // Divides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
-                            List<List<string>> dividedLogicalIdsList = DivideListInBatches<string>(LogicalId.ToList(), IshSession.MetadataBatchSize);
-                            int currentLogicalIdCount = 0;
-                            foreach (List<string> logicalIdBatch in dividedLogicalIdsList)
+                            if (!UseREST)
                             {
-                                // Process language card ids in batches
-                                string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(
-                                    logicalIdBatch.ToArray(),
-                                    statusFilter,
-                                    metadataFilter.ToXml(),
-                                    requestedMetadata.ToXml());
-                                IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
-                                returnIshObjects.AddRange(retrievedObjects.Objects);
-                                currentLogicalIdCount += logicalIdBatch.Count;
-                                WriteDebug($"Retrieving LogicalId.length[{logicalIdBatch.Count}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");
+                                //RetrieveMetadata via SOAP (default implementation)
+                                WriteDebug($"[SOAP] Retrieving LogicalId.length[{LogicalId.Length}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] 0/{LogicalId.Length}");
+                                // Divides the list of language card ids in different lists that all have maximally MetadataBatchSize elements
+                                List<List<string>> dividedLogicalIdsList = DivideListInBatches<string>(LogicalId.ToList(), IshSession.MetadataBatchSize);
+                                int currentLogicalIdCount = 0;
+                                foreach (List<string> logicalIdBatch in dividedLogicalIdsList)
+                                {
+                                    // Process language card ids in batches
+                                    string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(
+                                        logicalIdBatch.ToArray(),
+                                        statusFilter,
+                                        metadataFilter.ToXml(),
+                                        requestedMetadata.ToXml());
+                                    IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
+                                    returnIshObjects.AddRange(retrievedObjects.Objects);
+                                    currentLogicalIdCount += logicalIdBatch.Count;
+                                    WriteDebug($"[SOAP] Retrieving LogicalId.length[{logicalIdBatch.Count}] StatusFilter[{statusFilter}] MetadataFilter.length[{metadataFilter.ToXml().Length}] RequestedMetadata.length[{requestedMetadata.ToXml().Length}] {currentLogicalIdCount}/{LogicalId.Length}");
+                                }
                             }
+                            else
+                            {
+                                //RetrieveMetadata via REST/OpenAPI (experimental Phase 1 implementation)
+                                WriteDebug($"[REST] Retrieving LogicalId.length[{LogicalId.Length}] StatusFilter[{StatusFilter}] MetadataFilter fields[{metadataFilter.Fields().Length}] RequestedMetadata fields[{requestedMetadata.Fields().Length}]");
+
+                                // Convert ISHRemote types to OpenAPI types
+                                var openApiStatusFilter = StatusFilter.ToOpenApiISH30StatusFilter();
+                                var filterFields = metadataFilter.ToOpenApiISH30FilterFieldValues();
+                                var requestedFields = requestedMetadata.ToOpenApiISH30RequestedFields();
+
+                                // Divide logical IDs into batches (same batch size as SOAP for consistency)
+                                List<List<string>> dividedLogicalIdsList = DivideListInBatches<string>(LogicalId.ToList(), IshSession.MetadataBatchSize);
+                                int currentLogicalIdCount = 0;
+
+                                foreach (List<string> logicalIdBatch in dividedLogicalIdsList)
+                                {
+                                    // Build the request object for this batch
+                                    var getDocumentObjectRequest = new OpenApiISH30.GetDocumentObjectListByLogicalId
+                                    {
+                                        LogicalIds = logicalIdBatch,
+                                        StatusFilter = openApiStatusFilter,
+                                        FilterFields = filterFields,
+                                        Fields = requestedFields,
+                                        SelectedProperties = OpenApiISH30.SelectedProperties.Id,
+                                        FieldGroup = requestedMetadata.Fields().Length > 0 ? OpenApiISH30.FieldGroup.None : OpenApiISH30.FieldGroup.Basic,
+                                        IncludeLinks = false,
+                                        IncludePartialItems = false
+                                    };
+
+                                    WriteDebug($"[REST] Calling GetDocumentObjectListByLogicalIdAsync for batch {currentLogicalIdCount}/{LogicalId.Length}");
+
+                                    // Make the async call synchronously (using GetAwaiter().GetResult() for PowerShell compatibility)
+                                    var documentObjects = IshSession.OpenApiISH30Client.GetDocumentObjectListByLogicalIdAsync(
+                                        getDocumentObjectRequest, 
+                                        CancellationToken.None)
+                                        .GetAwaiter()
+                                        .GetResult();
+
+                                    WriteDebug($"[REST] Retrieved {documentObjects.Count} document objects from OpenAPI");
+
+                                    // TODO [Phase 2]: Convert OpenApiISH30.DocumentObject collection to IshObjects
+                                    // For Phase 1, we log that REST API was called successfully but cannot yet process results
+                                    WriteWarning($"[REST Phase 1] Successfully retrieved {documentObjects.Count} objects via REST API, but conversion to IshObjects not yet implemented. Falling back to SOAP for this batch.");
+
+                                    // Fallback to SOAP for actual data retrieval in Phase 1
+                                    string xmlIshObjects = IshSession.DocumentObj25.RetrieveMetadata(
+                                        logicalIdBatch.ToArray(),
+                                        statusFilter,
+                                        metadataFilter.ToXml(),
+                                        requestedMetadata.ToXml());
+                                    IshObjects retrievedObjects = new IshObjects(ISHType, xmlIshObjects);
+                                    returnIshObjects.AddRange(retrievedObjects.Objects);
+
+                                    currentLogicalIdCount += logicalIdBatch.Count;
+                                    WriteDebug($"[REST] Processed batch {currentLogicalIdCount}/{LogicalId.Length}");
+                                }
+                            }
+
                         }
                         else
                         {

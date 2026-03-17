@@ -34,34 +34,6 @@ Describe "Test-Prerequisite" -Tags "Read" {
 		}
 	}
 
-	Context "IshSession (-lt 16) - Validating overwrites of ISHRemote.PesterSetup.Debug.ps1" {
-		BeforeAll {
-			$ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
-			$ishUser = Get-IshUser
-		}
-		It "IshSession.Protocol WcfSoapWithWsTrust" {
-			$IshSession.Protocol | Should -Be 'WcfSoapWithWsTrust'
-		}
-		It "Current IShSession user should be part of VUSERGROUPSYSTEMMANAGEMENT UserGroup" {
-			$ishUser.fusergroup_none_element -like "*VUSERGROUPSYSTEMMANAGEMENT*" | Should -Be $true
-		}
-		It "IshSession.AuthenticationContext" {
-			$ishSession.AuthenticationContext | Should -Not -BeNullOrEmpty
-		}
-		It "IshSession.ClientVersion" {
-			$ishSession.ClientVersion | Should -Not -BeNullOrEmpty
-		}
-		It "IshSession.ClientVersion not 0.0.0.0" {
-			$ishSession.ClientVersion | Should -Not -Be "0.0.0.0"
-		}
-		It "IshSession.ServerVersion empty (ISHWS down?)" {
-			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
-		}
-		It "IshSession.ServerVersion not 0.0.0.0" {
-			$ishSession.ServerVersion | Should -Not -Be "0.0.0.0"
-		}
-	}
-
 	Context "IshSession (-eq 15) - Validating overwrites of ISHRemote.PesterSetup.Debug.ps1" {
 		BeforeAll {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
@@ -86,6 +58,21 @@ Describe "Test-Prerequisite" -Tags "Read" {
 			if (([Version]$ishSession.ServerVersion).Major -eq 15) { 
 				$ishUser.username | Should -Be $ishUserName
 			}
+		}
+		It "IshSession.AuthenticationContext" {
+			$ishSession.AuthenticationContext | Should -Not -BeNullOrEmpty
+		}
+		It "IshSession.ClientVersion" {
+			$ishSession.ClientVersion | Should -Not -BeNullOrEmpty
+		}
+		It "IshSession.ClientVersion not 0.0.0.0" {
+			$ishSession.ClientVersion | Should -Not -Be "0.0.0.0"
+		}
+		It "IshSession.ServerVersion empty (ISHWS down?)" {
+			$ishSession.ServerVersion | Should -Not -BeNullOrEmpty
+		}
+		It "IshSession.ServerVersion not 0.0.0.0" {
+			$ishSession.ServerVersion | Should -Not -Be "0.0.0.0"
 		}
 	}
 
@@ -147,8 +134,15 @@ Describe "Test-Prerequisite" -Tags "Read" {
 
 	Context "User - Potential overwrite in ISHRemote.PesterSetup.Debug.ps1" {
 		BeforeAll {
-			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
-			$ishUser = Get-IshUser -RequestedMetadata (Set-IshRequestedMetadataField -Level None -Name FUSERGROUP)
+			if ($isLinuxContainerized) {
+				# Detecting Containerization; Windows .NET-Framework-based WcfSoapWithWsTrust not supported, so forcing newer route
+				$ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+				$ishUser = Get-IshUser -RequestedMetadata (Set-IshRequestedMetadataField -Level None -Name FUSERGROUP)				
+			}
+			else {
+				$ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword
+				$ishUser = Get-IshUser -RequestedMetadata (Set-IshRequestedMetadataField -Level None -Name FUSERGROUP)
+			}
 		}
 		It "Current User has UserRole Administrator access" {
 			$ishUser.fishuserroles_none_element -like '*VUSERROLEADMINISTRATOR*' | Should -Be $true

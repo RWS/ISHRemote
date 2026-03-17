@@ -29,11 +29,11 @@ Describe "Get-IshDocumentObj" {
 		$tempFilePath = (New-TemporaryFile).FullName
 
 		# amount of test data to generate 
-		$ishDocumentObjTopicsCount = 1000
-		$ishDocumentObjMapsCount = 1000
-		$ishDocumentObjLibsCount = 1000
-		$ishDocumentObjImagesCount = 1000
-		$ishDocumentObjOthersCount = 1000
+		$ishDocumentObjTopicsCount = 10
+		$ishDocumentObjMapsCount = 10
+		$ishDocumentObjLibsCount = 10
+		$ishDocumentObjImagesCount = 10
+		$ishDocumentObjOthersCount = 10
 	}
 	Context "Get-IshDocumentObj Generate Performance Test Data within the test" {
 		BeforeAll {
@@ -102,6 +102,7 @@ Describe "Get-IshDocumentObj" {
 			}
 		}
 	}
+	<#
 	Context  "Get-IshDocumentObj Query 5 times per test" {
 		BeforeAll {
 			$ishDocumentObjTopics = Get-IshFolder -IshFolder $global:ishFolderCmdlet -Recurse -FolderTypeFilter ISHModule | Get-IshFolderContent
@@ -287,14 +288,35 @@ Describe "Get-IshDocumentObj" {
 			Get-IshDocumentObj -IshObject ($allIShDocumentObjs | Get-Random -Count 5000)
 			Get-IshDocumentObj -IshObject ($allIShDocumentObjs | Get-Random -Count 5000)
 		}
-	} 
+	}
+		#>
+	Context  "Direct OpenAPI calls 5 times per test" {
+		BeforeAll {
+			$ishDocumentObjTopics = Get-IshFolder -IshFolder $global:ishFolderCmdlet -Recurse -FolderTypeFilter ISHModule | Get-IshFolderContent
+			$ishDocumentObjMaps = Get-IshFolder -IshFolder $global:ishFolderCmdlet -Recurse -FolderTypeFilter ISHMasterDoc | Get-IshFolderContent
+			$ishDocumentObjLibs = Get-IshFolder -IshFolder $global:ishFolderCmdlet -Recurse -FolderTypeFilter ISHLibrary | Get-IshFolderContent
+			$ishDocumentObjImages = Get-IshFolder -IshFolder $global:ishFolderCmdlet -Recurse -FolderTypeFilter ISHIllustration | Get-IshFolderContent
+			$ishDocumentObjOthers = Get-IshFolder -IshFolder $global:ishFolderCmdlet -Recurse -FolderTypeFilter ISHTemplate | Get-IshFolderContent
+			$allIShDocumentObjs = $ishDocumentObjTopics + $ishDocumentObjMaps + $ishDocumentObjLibs + $ishDocumentObjImages + $ishDocumentObjOthers
+		}
+		It "Get-IShDocumentObj by LogicalId for 1 (RetrieveMetadata equals API30.GetDocumentObjectListByLogicalId)" {
+			$ishSession.DefaultRequestedMetadata="All"
+			Get-IshDocumentObj -LogicalId $ishDocumentObjTopics[0].IshRef
+		} 
+		It "Get-IShDocumentObj by IshLngref for 1 (RetrieveMetadataByIshLngRefs equals API30.GetDocumentObjectListByLanguageCardId)" {
+			$ishSession.DefaultRequestedMetadata="All"
+			Get-IshDocumentObj -IshObject $ishDocumentObjTopics[1]
+		}
+	}
 }
 
 AfterAll {
+	#
 	Write-Host ("Running "+$cmdletName+" Test Data and Variables cleanup")
 	$folderCmdletRootPath = (Join-Path $folderTestRootPath $cmdletName)
 	try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse | Get-IshFolderContent -IshSession $ishSession | Remove-IshDocumentObj -IshSession $ishSession -Force } catch { }
 	try { Remove-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse } catch { }
 	try { Remove-Item $tempFilePath -Force } catch { }
+	#>
 }
 

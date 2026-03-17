@@ -23,7 +23,7 @@ The below text describes the delta compared to fielded release ISHRemote v8.1.
 
 Every usage of a cmdlet will refresh the security tokens. However, when not using ISHRemote cmdlets or the implicit local or global `$ISHRemoteSessionStateIshSession` or explicit `$ishSession` object, the session expires by default after around 57 minutes when using ISHID or similar on other identity providers. In turn resulting in error `An unsecured or incorrectly secured fault was received from the other party. See the inner FaultException for the fault code and detail.`.
 
-In this ISHRemote version, the session will attempt to get a new token automatically on every triggererd ISHRemote cmdlet. If you created the IShSession object over an interactive browser, you will see the browser again perhaps with or without a credential challenge in the browser. Change is only for protocols `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect`; no change for `WcfSoapWithWsTrust`.
+In this ISHRemote version, the session will attempt to get a new token automatically on every triggered ISHRemote cmdlet. If you created the IShSession object over an interactive browser, you will see the browser again perhaps with or without a credential challenge in the browser. Change is only for protocols `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect`; no change for `WcfSoapWithWsTrust`.
 
 Infamous random annoying error `The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.` should now recover within the cmdlet or worst-case when rerunning the same cmdlet. This without applying the earlier workaround of building a `New-IshSession`.
 
@@ -38,13 +38,13 @@ Model Concept Protocol ([MCP](https://modelcontextprotocol.io/docs/getting-start
 
 Combining documented ISHRemote cmdlets with the interaction pattern of MCP Tools to LLMs, we see at least the below purposes...
 1. By offering every ISHRemote cmdlet as an MCP Tool to your LLM, it means you can **ask your system questions** like `Create a new ishsession to https://ish.example.com/ISHWS/`. And yes it will create you that `$ishSession` variable in the background that you can use over the other MCP Tools - or I could say cmdlets. This allows you to use natural language to query your specific instance on `How many user roles are there?` or `which status transitions do you have for a module?`. These requests will be executed using your authenticated `$ishSession`.
-2. As ISHRemote cmdlets understand the API and many of its concepts, it can **explain system concepts** usage questions. This allows you to query `How many statusses are there?`, `Does the system have any privileges?` which could be followed by `These are labels, any way to use these values in an API?`.
+2. As ISHRemote cmdlets understand the API and many of its concepts, it can **explain system concepts** usage questions. This allows you to query `How many statusses are there?`, `Does the system have any privileges?` which could be followed by `These are labels, any way to use these values in an API?`. It can explain existing ISHRemote PowerShell scripts.
 3. And because the MCP Tools look a lot like ISHRemote cmdlets, you can reuse your LLM's PowerShell knowledge to **draft PowerShell scripts**. You could query for `can you write me a powershell script to create a user?` or `Can you suggest a rewrite using the faster search cmdlet?`. Although the LLM will not always offer working code, but it does seem to make sure you don't have a blank sheet in front of you. You now have something that you can debug and get to a working state as you can feed it your runtime errors and it will improve the generated code iteratively.
 
 
 ### ISHRemoteMcpServer Setup using Visual Studio Code
 
-Below animation give you an overview on what you need to do to set it up.
+Below animation give you an overview on what you need to do to set it up. Important is that your Visual Studio Code Terminal runs a different PowerShell process then the one behind the `ISHRemoteMcpServer` which means that any `$ishSession` is not reused which could lead to initial confusion.
 
 ![ISHRemote-8.2--ISHRemoteMcpServerSetupDemo 1024x512](./Images/ISHRemote-8.2--ISHRemoteMcpServerSetupDemo.gif)
 
@@ -104,6 +104,8 @@ A list of reminders and known issues which we noticed while experimenting...
 * OpenAPI proxies of Access Management and Tridion Docs CMS were refreshed. The Access Management API proxies, accessible over `$ishSession.OpenApiAM10Client`, changed and standardized as all API OperationIds are no longer written in CamelCase but Snake_Case. So for example `$ishhSession.OpenApiAM10Client.IdentityProvidersGetAsync()` becomes `$ishhSession.OpenApiAM10Client.IdentityProviders_GetAsync()` with one extra underscore. #223 
 * `Remove-IshBaselineItem` used version `999999` when removing an entry from the baseline. Since 15.2.0 this has to be the correct version or an empty version, but not the wrong `999999` version. #205 Thanks @OlegTokar 
 * Rewrite cmdlet `Add-IshBackgroundTask` to not use Microsoft.IdentityModel.Tokens.CollectionUtilities.IsNullOrEmpty extension method which was made `private` (and no longer `public`) in version 8.0.0 of `Microsoft.IdentityModel.Tokens.dll` #216 Thanks @ddemeyer 
+* Tridion Docs 15.3.0 will be shipped to be running on Windows Server. There is however a parallel track where non-deprecated functionality of 15.3.0 runs in Linux-based containers. Non-deprecated means that the already deprecated features like `AsmxSoapWithAuthenticationContext` and `WcfSoapWithWsTrust` will be removed in next major version 16.0.0. Do note that `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect` are predicted to remain working. Refactored the Pester tests to detect this situtation. #230 Thanks @ddemeyer 
+
 
 
 ## Breaking Changes - Cmdlets
