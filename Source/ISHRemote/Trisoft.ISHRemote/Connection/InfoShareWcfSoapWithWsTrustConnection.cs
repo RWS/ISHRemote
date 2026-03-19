@@ -1368,7 +1368,20 @@ namespace Trisoft.ISHRemote.Connection
                 handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             }
             handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
+#if NET48
+            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+#else
+            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli;
+#endif
             var httpClient = new HttpClient(handler);
+#if NET48
+            httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip");
+            httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("deflate");
+#else
+            httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip");
+            httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("deflate");
+            httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("br");
+#endif
             httpClient.Timeout = _connectionParameters.Timeout;
             var connectionConfigurationUri = new Uri(InfoShareWSBaseUri, "connectionconfiguration.xml");
             _logger.WriteDebug($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{httpClient.Timeout}]");
