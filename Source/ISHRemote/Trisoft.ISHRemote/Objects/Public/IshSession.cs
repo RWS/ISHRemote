@@ -138,10 +138,24 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
             handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
+#if NET48
+            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+#else
+            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli;
+#endif
+
             _httpClient = new HttpClient(handler)
             {
                 Timeout = _timeout
             };
+#if NET48
+            _httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip");
+            _httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("deflate");
+#else
+            _httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip");
+            _httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("deflate");
+            _httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("br");
+#endif
             // webServicesBaseUrl should have trailing slash, otherwise .NET throws unhandy "Reference to undeclared entity 'raquo'." error
             _webServicesBaseUri = (webServicesBaseUrl.EndsWith("/")) ? new Uri(webServicesBaseUrl) : new Uri(webServicesBaseUrl + "/");
             _ishUserName = ishUserName == null ? Environment.UserName : ishUserName;
