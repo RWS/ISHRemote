@@ -8,7 +8,7 @@ function Start-IshRemoteMcpServer {
     $script:logFilePath = $LogFilePath
 
     # TODO [SHOULD] Convert the tools list to JSON format, takes a while, so could be generated in ISHRemote at compile time
-    $toolsListJson = Register-IshRemoteMcpTool $CmdletsToRegister
+    $toolsListJson = Register-IshRemoteMcpTool -FunctionNameFullLoad @('Get-Help','New-IshSession') -FunctionNamePartialLoad $CmdletsToRegister
 
     $resourcesListJson = "" # Register-IshRemoteMcpResource
 
