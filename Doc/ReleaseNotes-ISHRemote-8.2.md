@@ -32,7 +32,7 @@ Infamous random annoying error `The communication object, System.ServiceModel.Ch
 
 ### ISHRemoteMcpServer Introduction
 
-Tridion Docs CMS has a very rich API which opens up all the power of Organize Space, Draft Space, Publication Manager, and more. ISHRemote is a PowerShell library that abstracts some authentication and metadata modelling complexity from the Tridion Docs API in an opionated way like default metadata. ISHRemote also comes with a built-in help for every cmdlet - or should I say MCP Tool - as you can see in for example `Get-Help New-IshSession -Detailed`. It lists purpose, parameters, syntax and examples - this for every cmdlet.
+Tridion Docs CMS has a very rich API which opens up all the power of Organize Space, Draft Space, Publication Manager, and more. ISHRemote is a PowerShell library that abstracts some authentication and metadata modelling complexity from the Tridion Docs API in an opionated way like default metadata. ISHRemote also comes with a built-in help for every cmdlet - or should I say MCP Tool - as you can see in for example `Get-Help New-IshSession -Detailed`. It lists purpose, parameters, syntax and examples - this for every cmdlet. #213 #233
 
 Model Concept Protocol ([MCP](https://modelcontextprotocol.io/docs/getting-started/intro)) is the language to offer tools to your chosen Large Language Model ([LLM](https://en.wikipedia.org/wiki/Large_language_model)) to have smart data interactions. Where in the past the LLMs had access to functions to for example find out the weather in some location, now you can offer it a tool box to access a specific domain like *Tridion Docs*. MCP [Tools](https://modelcontextprotocol.io/docs/learn/server-concepts) enable AI models to perform actions. Each tool defines a specific operation with typed inputs and outputs. The model requests tool execution based on context.
 
@@ -50,10 +50,10 @@ Below animation give you an overview on what you need to do to set it up. Import
 
 Below the steps in some more detail...
 1. You need ISHRemote v8.2+ (PreRelease) installed in your PowerShell v7 (not Windows PowerShell!). See [Installation-ISHRemote-8.0.md](./Installation-ISHRemote-8.0.md) for guidance. Make sure that it works by calling the classic `New-IshSession -WsBaseUrl https://ish.example.com/ISHWS/`
-2. Open your installed [Visual Studio Code](https://code.visualstudio.com) preferably to a working folder where you have or plan to have your scripts saved. Now you need to create or extend your `.vscode/mcp.json` with the below code block. Optionally use a different log file path, and use the double backslashes to comply with the json file syntax.
+2. Open your installed [Visual Studio Code](https://code.visualstudio.com) preferably to a working folder where you have or plan to have your scripts saved. Now you need to create or extend your `.vscode/mcp.json` with the below code block. Optionally use a different log file path, and use the double backslashes to comply with the json file syntax. Or you can run without client-side logging by removing ` -LogFilePath \"$env:TEMP\\IshRemoteMcpServer.log\"`.
 3. Start the `IshRemoteMcpServer` using the decorator `Start`
 4. Go to your CoPilot, put it in `Agent` mode. After typing a hash (`#`), you should see the registered MCP Tools which look a lot like cmdlet name pop-up, starting with `#Add-IshAnnotation`.
-5. Now set your LLM to `Claude Sonnet 4.5` (or similar). In the chat enter `Create a new ishsession to https://ish.example.com/ISHWS/`, where the url is an existing url.
+5. Now set your LLM to `Claude Sonnet 4.5` (or better). In the chat enter `Create a new ishsession to https://ish.example.com/ISHWS/`, where the url is an existing url.
 
 ```json
 {

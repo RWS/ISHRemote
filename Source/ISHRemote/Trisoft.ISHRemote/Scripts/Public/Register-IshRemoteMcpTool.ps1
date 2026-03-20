@@ -1,3 +1,16 @@
+<#
+.DESCRIPTION
+    This cmdlet creates help documentation for code selections. It analyzes the code and generates
+    appropriate documentation comments. The key difference between functionnamefullload and functionnamepartialload is:
+    
+    - functionnamefullload: Loads the complete function definition including all metadata, parameters,
+      body, and associated resources. This provides full context but may consume more memory and 
+      processing time.
+    
+    - functionnamepartialload: Loads only essential function information such as the function signature
+      and basic metadata. This is a lightweight operation suitable for scenarios where you only need
+      basic function details without the complete implementation.
+#>
 function Register-IshRemoteMcpTool {
     param(
         [AllowEmptyString()]

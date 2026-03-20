@@ -1,3 +1,9 @@
+<#
+.DESCRIPTION
+  Below are LLM instructions for using the IShRemoteMcpServer and its tools.
+  These instructions are meant to be read by humans, but are also available as an MCP Resource for LLMs to understand
+  how to use the IShRemoteMcpServer effectively.
+#>
 function Register-IshRemoteMcpInstructions {
     $instructions=
 @"
