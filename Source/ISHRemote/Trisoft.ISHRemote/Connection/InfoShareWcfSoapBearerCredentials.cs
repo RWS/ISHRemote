@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,7 +89,11 @@ namespace Trisoft.ISHRemote.Connection
             var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
 
             var password = Guid.NewGuid().ToString();
+#if NET10_0_OR_GREATER
+            return X509CertificateLoader.LoadPkcs12(cert.Export(X509ContentType.Pfx, password), password);
+#else
             return new X509Certificate2(cert.Export(X509ContentType.Pfx, password), password);
+#endif
         }
 
         private static GenericXmlSecurityToken WrapJwt(string jwt)

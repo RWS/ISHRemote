@@ -126,6 +126,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 CertificateValidationHelper.OverrideCertificateValidation();
             }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
 #endif
             _logger.WriteDebug($"Enabling Tls, Tls11, Tls12 and Tls13 security protocols on HttpClientHandler. Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
             if (_ignoreSslPolicyErrors)
@@ -136,7 +137,6 @@ namespace Trisoft.ISHRemote.Objects.Public
                 // overwrite certificate handling for HttpClient requests
                 handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             }
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
             handler.SslProtocols = (System.Security.Authentication.SslProtocols)(SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13);
             _httpClient = new HttpClient(handler)
             {
