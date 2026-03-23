@@ -11,7 +11,7 @@ BeforeAll {
     }
 }
 
-Describe "Start-IshRemoteMcpServer" -Tags "Read" {
+Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersion.Major -lt 7) {
     Context "Start-IshRemoteMcpServer with ActivateWhileLoop=false" {
         BeforeEach {
             Mock -ModuleName ISHRemote Write-IshRemoteLog { }

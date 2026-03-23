@@ -12,7 +12,7 @@ BeforeAll {
 
 }
 
-Describe "Invoke-IshRemoteMcpHandleRequest" {
+Describe "Invoke-IshRemoteMcpHandleRequest" -Skip:($PSVersionTable.PSVersion.Major -lt 7){
     Context "Method Initialize" {
         BeforeAll {
             Mock -ModuleName ISHRemote Write-IshRemoteLog { }
