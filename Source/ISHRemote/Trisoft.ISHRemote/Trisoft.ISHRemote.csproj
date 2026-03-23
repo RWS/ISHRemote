@@ -51,9 +51,9 @@
     <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     
     <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
-    <PackageReference Include="System.ServiceModel.Federation" Version="8.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
-    <PackageReference Include="System.ServiceModel.Http" Version="8.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Federation" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     
