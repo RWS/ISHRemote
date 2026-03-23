@@ -17,7 +17,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" {
             Mock -ModuleName ISHRemote Write-IshRemoteLog { }
         }
         It "Validates CmdletsToRegister parameter is mandatory" {
-            { Start-IshRemoteMcpServer -ActivateWhileLoop $false } | Should -Throw
+            { Start-IshRemoteMcpServer -ActivateWhileLoop $false -CmdletsToRegister @() } | Should -Throw
         }
         It "Starts server with CmdletsToRegister parameter" {
             $cmdlets = @('Get-IshFolder', 'Set-IshFolder')

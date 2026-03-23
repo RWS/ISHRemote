@@ -99,6 +99,7 @@
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
     </PropertyGroup>
     <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
+    <MakeDir Directories="$(ProjectDir)bin/$(Configuration)/net6.0" Condition="Exists('$(ProjectDir)bin/$(Configuration)/net6.0')" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/net6.0" />
   </Target>
@@ -126,10 +127,11 @@
       <LocalPSRepoDir>$(ProjectDir)bin/$(Configuration)</LocalPSRepoDir>
       <ISHRemoteFrameworkDir>$(ProjectDir)bin/$(Configuration)/ISHRemote/$(TargetFramework)</ISHRemoteFrameworkDir>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <ISHRemoteFiles Include="$(TargetDir)/**/*.*" />
-        <ISHRemoteScriptFiles Include="$(ProjectDir)/Scripts/**/*.*" Exclude="$(ProjectDir)/Scripts/**/*.tests.ps1;$(ProjectDir)/Scripts/**/*.Tests.ps1" />
+      <ISHRemoteFiles Include="$(TargetDir)/**/*.*" />
+      <ISHRemoteScriptFiles Include="$(ProjectDir)/Scripts/**/*.*" Exclude="$(ProjectDir)/Scripts/**/*.tests.ps1;$(ProjectDir)/Scripts/**/*.Tests.ps1" />
+      <ISHRemoteScriptFilesToDelete Include="$(LocalPSRepoDir)\ISHRemote\Scripts\**\*.Tests.ps1" />
     </ItemGroup>
 
     <RemoveDir Directories="$(ISHRemoteFrameworkDir)" Condition="Exists('$(ISHRemoteFrameworkDir)')" />
@@ -138,6 +140,7 @@
     <Copy SourceFiles="@(ISHRemoteScriptFiles)" DestinationFiles="@(ISHRemoteScriptFiles-&gt;'$(LocalPSRepoDir)\ISHRemote\Scripts\%(RecursiveDir)%(Filename)%(Extension)')" /><!-- hyphen-gt arrow needs to remain entity gt -->
     <Copy SourceFiles="$(ProjectDir)ISHRemote.psm1" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
     <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
+    <Delete Files="@(ISHRemoteTestFilesToDelete)" />
   </Target>
 
   <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' AND '$(TargetFramework)' == 'net48'">
@@ -162,3 +165,4 @@
   </PropertyGroup>
 
 </Project>
+

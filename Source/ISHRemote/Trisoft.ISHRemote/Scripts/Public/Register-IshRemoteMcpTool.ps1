@@ -20,7 +20,7 @@ function Register-IshRemoteMcpTool {
         [Switch]$DoNotCompress
     )
 
-    Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Register-IshRemoteMcpTool for full help functions[$($FunctionNameFullLoad -join ', ')] and partial functions[$($FunctionNamePartialLoad -join ', ')]" }
+    Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Register-IshRemoteMcpTool for full help functions[$($FunctionNameFullLoad -join ',')] and partial functions[$($FunctionNamePartialLoad -join ',')]" }
     # Combine both arrays, ensuring full load functions are included
     $FunctionName = @()
     if ($FunctionNameFullLoad) {
@@ -53,13 +53,27 @@ function Register-IshRemoteMcpTool {
 
         
         Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] extended help"; TargetFunction = $CommandInfo.Name }
-        $help = Get-Help $CommandInfo.Name -Detailed
-        # Prefer Description over Synopsis
-        $description = $help.Description | Out-String
-        if (-not $description) {
-            $description = $help.Synopsis | Out-String
+        # Get help - for binary cmdlets in ISHRemote module, specify category to ensure correct help resolution
+        if ($CommandInfo -is [System.Management.Automation.CmdletInfo]) {
+            $help = Get-Help -Name $CommandInfo.Name -Category Cmdlet -Full
+        } else {
+            $help = Get-Help -Name $CommandInfo.Name -Full
+        }
+        # Prefer Description over Synopsis - access .Text property for reliable extraction
+        $description = ""
+        if ($null -ne $help.Description -and $help.Description.Count -gt 0) {
+            if ($help.Description -is [array]) {
+                $description = ($help.Description | ForEach-Object { if ($null -ne $_.Text) { $_.Text } }) -join "`n"
+            } elseif ($help.Description.Text) {
+                $description = $help.Description.Text
+            } else {
+                $description = ($help.Description | Out-String).Trim()
+            }
         }
         $description = $description.Trim()
+        if (-not $description -and $help.Synopsis) {
+            $description = $help.Synopsis.Trim()
+        }
         if (-not $description) {
             Write-IshRemoteLog -LogEntry @{ Level = 'Error'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] does not have a description (Synopsis or Description in comment-based help)."; TargetFunction = $CommandInfo.Name }
             Write-Error "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] does not have a description (Synopsis or Description in comment-based help). Aborting." -ErrorAction Stop
@@ -96,7 +110,23 @@ function Register-IshRemoteMcpTool {
                     default { $type = 'string' }
                 }
                 try {
-                    $paramHelp = (Get-Help $CommandInfo.Name -Parameter $Parameter.Name -ErrorAction Stop).Description | Out-String
+                    # Get parameter help - specify category for binary cmdlets
+                    if ($CommandInfo -is [System.Management.Automation.CmdletInfo]) {
+                        $paramHelpObj = Get-Help -Name $CommandInfo.Name -Parameter $Parameter.Name -Category Cmdlet -ErrorAction Stop
+                    } else {
+                        $paramHelpObj = Get-Help -Name $CommandInfo.Name -Parameter $Parameter.Name -ErrorAction Stop
+                    }
+                    $paramHelp = ""
+                    if ($paramHelpObj.Description) {
+                        if ($paramHelpObj.Description -is [array] -and $paramHelpObj.Description.Count -gt 0) {
+                            $paramHelp = ($paramHelpObj.Description | ForEach-Object { if ($null -ne $_.Text) { $_.Text } }) -join "`n"
+                        } elseif ($paramHelpObj.Description.Text) {
+                            $paramHelp = $paramHelpObj.Description.Text
+                        } else {
+                            $paramHelp = ($paramHelpObj.Description | Out-String).Trim()
+                        }
+                    }
+                    $paramHelp = $paramHelp.Trim()
                 }
                 catch {
                     Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Could not get help description for parameter '$($Parameter.Name)' on function '$($CommandInfo.Name)'. Often happens with forced import-module loading of PowerShell module while developing."; TargetFunction = $CommandInfo.Name; ParameterName = $Parameter.Name }
