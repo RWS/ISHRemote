@@ -26,33 +26,33 @@
 #
 
 # Required for Expand-ISHParameter.ps1 because $global:options might not exists
-Set-StrictMode -Off
+Set-StrictMode -Off
 
 # Set up some helper variables to make it easier to work with the module
-$PSModule = $ExecutionContext.SessionState.Module
-$PSModuleRoot = $PSModule.ModuleBase
+$PSModule = $ExecutionContext.SessionState.Module
+$PSModuleRoot = $PSModule.ModuleBase
 
 # Import the appropriate nested binary module based on the current PowerShell version
-$binaryModuleRoot = $PSModuleRoot
+$binaryModuleRoot = $PSModuleRoot
 
-if (($PSVersionTable.Keys -contains "PSEdition") -and ($PSVersionTable.PSEdition -eq 'Desktop')) {
-    $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net48'
+if (($PSVersionTable.Keys -contains "PSEdition") -and ($PSVersionTable.PSEdition -eq 'Desktop')) {
+    $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net48'
 }
 else
 {
-    if (($PSVersionTable.PSVersion -gt [Version]'7.1') -and ($PSVersionTable.PSVersion -lt [Version]'7.6'))
+    if (($PSVersionTable.PSVersion -gt [Version]'7.1') -and ($PSVersionTable.PSVersion -lt [Version]'7.6'))
     {
-        $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net6.0'
-    }
+        $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net6.0'
+    }
     else
     {
-      $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net10.0'
+      $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net10.0'
     }
 }
 
 Write-Debug ("[" + $MyInvocation.MyCommand + "] Loading [" + $binaryModuleRoot + "] on PSEdition[" + $PSVersionTable.PSEdition + "] + PSVersion[" + $PSVersionTable.PSVersion + "]")
-$binaryModulePath = Join-Path -Path $binaryModuleRoot -ChildPath 'Trisoft.ISHRemote.dll'
-$binaryModule = Import-Module -Name $binaryModulePath -PassThru
+$binaryModulePath = Join-Path -Path $binaryModuleRoot -ChildPath 'Trisoft.ISHRemote.dll'
+$binaryModule = Import-Module -Name $binaryModulePath -PassThru
 
 $privateCmdlet  = @(Get-ChildItem -Path $PSScriptRoot\Scripts\Private\*.ps1 -ErrorAction SilentlyContinue -Exclude *.Tests.ps1)
 $publicCmdlet  = @(Get-ChildItem -Path $PSScriptRoot\Scripts\Public\*.ps1 -ErrorAction SilentlyContinue -Exclude *.Tests.ps1)
@@ -69,9 +69,9 @@ Foreach($import in @($privateCmdlet + $publicCmdlet))
     }
 }
 
-Set-StrictMode -Version Latest
+Set-StrictMode -Version Latest
 
 # When the module is unloaded, remove the nested binary module that was loaded with it
-$PSModule.OnRemove = {
-    Remove-Module -ModuleInfo $binaryModule
+$PSModule.OnRemove = {
+    Remove-Module -ModuleInfo $binaryModule
 }
