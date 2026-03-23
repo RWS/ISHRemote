@@ -1,4 +1,4 @@
-﻿# PowerShell Module file in the same folder as the AssemblyName.DLL with the name AssemblyName.PSM1
+# PowerShell Module file in the same folder as the AssemblyName.DLL with the name AssemblyName.PSM1
 # This file will add aliasses, including backward compatible entries
 # SRC
 #   http://stackoverflow.com/questions/13583604/is-there-a-way-to-add-alias-to-powershell-cmdlet-programmatically
@@ -40,10 +40,14 @@ if (($PSVersionTable.Keys -contains "PSEdition") -and ($PSVersionTable.PSEd
 }
 else
 {
-    if ($PSVersionTable.PSVersion -gt [Version]'7.1')
+    if (($PSVersionTable.PSVersion -gt [Version]'7.1') -and ($PSVersionTable.PSVersion -lt [Version]'7.6'))
     {
         $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net6.0'
     }
+    else
+    {
+      $binaryModuleRoot = Join-Path -Path $PSModuleRoot -ChildPath 'net10.0'
+    }
 }
 
 Write-Debug ("[" + $MyInvocation.MyCommand + "] Loading [" + $binaryModuleRoot + "] on PSEdition[" + $PSVersionTable.PSEdition + "] + PSVersion[" + $PSVersionTable.PSVersion + "]")

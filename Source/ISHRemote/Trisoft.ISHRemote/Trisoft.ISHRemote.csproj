@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net6.0</TargetFrameworks>
-  	<!-- TargetFrameworks>netcoreapp3.1;net48;net6.0</TargetFrameworks -->
+    <TargetFrameworks>net48;net6.0;net10.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
@@ -24,13 +23,29 @@
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.Federation" Version="4.10.3" Condition="'$(TargetFramework)' != 'net48'" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" />
+
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'" /><!-- last version with net48 support -->
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.Federation" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    
+    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Federation" Version="8.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Http" Version="8.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.6" />
@@ -100,8 +115,10 @@
     </PropertyGroup>
     <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
     <MakeDir Directories="$(ProjectDir)bin/$(Configuration)/net6.0" Condition="Exists('$(ProjectDir)bin/$(Configuration)/net6.0')" />
+    <MakeDir Directories="$(ProjectDir)bin/$(Configuration)/net10.0" Condition="Exists('$(ProjectDir)bin/$(Configuration)/net10.0')" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/net6.0" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/net10.0" />
   </Target>
 
   <!-- Generating Module Manifest only once -->
