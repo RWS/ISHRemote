@@ -1,3 +1,8 @@
+<#
+.DESCRIPTION
+  Processes incoming MCP requests including initialize, ping, tools/list, and tools/call methods.
+  Returns formatted JSON-RPC 2.0 responses for each request type.
+#>
 function Invoke-IshRemoteMcpHandleRequest {
     param(
         [object]$Request,

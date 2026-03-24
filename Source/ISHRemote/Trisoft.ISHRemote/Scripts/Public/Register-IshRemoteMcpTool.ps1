@@ -1,16 +1,45 @@
+<#
+.DESCRIPTION
+    This cmdlet creates help documentation for code selections. It analyzes the code and generates
+    appropriate documentation comments. The key difference between functionnamefullload and functionnamepartialload is:
+    
+    - functionnamefullload: Loads the complete function definition including all metadata, parameters,
+      body, and associated resources. This provides full context but may consume more memory and 
+      processing time.
+    
+    - functionnamepartialload: Loads only essential function information such as the function signature
+      and basic metadata. This is a lightweight operation suitable for scenarios where you only need
+      basic function details without the complete implementation.
+#>
 function Register-IshRemoteMcpTool {
     param(
-        [Parameter(Mandatory)][AllowEmptyString()]
-        [object[]]$FunctionName,
+        [AllowEmptyString()]
+        [object[]]$FunctionNameFullLoad,
+        [AllowEmptyString()]
+        [object[]]$FunctionNamePartialLoad,        
         [Switch]$DoNotCompress
     )
 
-    Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Register-IshRemoteMcpTool for functions[$($FunctionName -join ', ')]" }
+    Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Register-IshRemoteMcpTool for full help functions[$($FunctionNameFullLoad -join ',')] and partial functions[$($FunctionNamePartialLoad -join ',')]" }
+    # Combine both arrays, ensuring full load functions are included
+    $FunctionName = @()
+    if ($FunctionNameFullLoad) {
+        $FunctionName += $FunctionNameFullLoad
+    }
+    if ($FunctionNamePartialLoad) {
+        # Add partial load functions that are not already in full load
+        foreach ($partialFunc in $FunctionNamePartialLoad) {
+            if ($partialFunc -notin $FunctionNameFullLoad) {
+                $FunctionName += $partialFunc
+            }
+        }
+    }
+
     $results = [ordered]@{}
     foreach ($fn in $FunctionName) {
+        $fullLoad = $FunctionNameFullLoad -contains $fn
         
-        
-        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$fn]"; TargetFunction = $fn }
+        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$fn] fullLoad[$fullLoad]"; TargetFunction = $fn }
         $CommandInfo = try { Get-Command -Name $fn -ErrorAction Stop } catch { $null }
         if ($null -eq $CommandInfo) {
             Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Register-IshRemoteMcpTool function[$fn] not found."; TargetFunction = $fn }
@@ -24,55 +53,92 @@ function Register-IshRemoteMcpTool {
 
         
         Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] extended help"; TargetFunction = $CommandInfo.Name }
-        $help = Get-Help $CommandInfo.Name -Detailed
-        # Prefer Description over Synopsis
-        $description = $help.Description | Out-String
-        if (-not $description) {
-            $description = $help.Synopsis | Out-String
+        # Get help - for binary cmdlets in ISHRemote module, specify category to ensure correct help resolution
+        if ($CommandInfo -is [System.Management.Automation.CmdletInfo]) {
+            $help = Get-Help -Name $CommandInfo.Name -Category Cmdlet -Full
+        } else {
+            $help = Get-Help -Name $CommandInfo.Name -Full
+        }
+        # Prefer Description over Synopsis - access .Text property for reliable extraction
+        $description = ""
+        if ($null -ne $help.Description -and $help.Description.Count -gt 0) {
+            if ($help.Description -is [array]) {
+                $description = ($help.Description | ForEach-Object { if ($null -ne $_.Text) { $_.Text } }) -join "`n"
+            } elseif ($help.Description.Text) {
+                $description = $help.Description.Text
+            } else {
+                $description = ($help.Description | Out-String).Trim()
+            }
         }
         $description = $description.Trim()
+        if (-not $description -and $help.Synopsis) {
+            $description = $help.Synopsis.Trim()
+        }
         if (-not $description) {
             Write-IshRemoteLog -LogEntry @{ Level = 'Error'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] does not have a description (Synopsis or Description in comment-based help)."; TargetFunction = $CommandInfo.Name }
             Write-Error "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] does not have a description (Synopsis or Description in comment-based help). Aborting." -ErrorAction Stop
             continue
         }
-        # Adding all syntax of parameter sets
-        $description = $description + "`n`nThis PowerShell cmdlet has the following parameter sets to choose form where square brackets indicate optional parameters while the other parameters are mandatory:`n" + ($help.syntax | Out-String).Trim()
 
-        # Adding all examples
-        $description = $description + "`n`nThe PowerShell cmdlet has the following examples as inspiration:`n" + ($help.examples | Out-String).Trim()
+        if ($fullLoad) {
+            # Adding all syntax of parameter sets
+            $description = $description + "`n`nThis PowerShell cmdlet has the following parameter sets to choose form where square brackets indicate optional parameters while the other parameters are mandatory:`n" + ($help.syntax | Out-String).Trim()
+        }
 
-        # Adding all parameters
-        Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] all parameters across parameter sets"; TargetFunction = $CommandInfo.Name }
-        $Parameters = $CommandInfo.ParameterSets.Parameters |
-        Where-Object { $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm|NoHyperLinkConversion|ProgressAction' } | Sort-Object -Property Name -Unique
+        if ($fullLoad) {
+            # Adding all examples
+            $description = $description + "`n`nThe PowerShell cmdlet has the following examples as inspiration:`n" + ($help.examples | Out-String).Trim()
+        }
+
         $inputSchema = [ordered]@{
             type       = 'object'
             properties = [ordered]@{}
             required   = @()
         }
-        foreach ($Parameter in $Parameters) {
-            $typeName = $Parameter.ParameterType.Name.ToLower()
-            switch -Regex ($typeName) {
-                'string' { $type = 'string' }
-                'int|int32|int64|double' { $type = 'number' }
-                'boolean' { $type = 'boolean' }
-                'switchparameter' { $type = 'boolean' }
-                default { $type = 'string' }
+        if ($fullLoad) {
+            # Adding all parameters
+            Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] all parameters across parameter sets"; TargetFunction = $CommandInfo.Name }
+            $Parameters = $CommandInfo.ParameterSets.Parameters |
+            Where-Object { $_.Name -notmatch 'Verbose|Debug|ErrorAction|WarningAction|InformationAction|ErrorVariable|WarningVariable|InformationVariable|OutVariable|OutBuffer|PipelineVariable|WhatIf|Confirm|NoHyperLinkConversion|ProgressAction' } | Sort-Object -Property Name -Unique
+            foreach ($Parameter in $Parameters) {
+                $typeName = $Parameter.ParameterType.Name.ToLower()
+                switch -Regex ($typeName) {
+                    'string' { $type = 'string' }
+                    'int|int32|int64|double' { $type = 'number' }
+                    'boolean' { $type = 'boolean' }
+                    'switchparameter' { $type = 'boolean' }
+                    default { $type = 'string' }
+                }
+                try {
+                    # Get parameter help - specify category for binary cmdlets
+                    if ($CommandInfo -is [System.Management.Automation.CmdletInfo]) {
+                        $paramHelpObj = Get-Help -Name $CommandInfo.Name -Parameter $Parameter.Name -Category Cmdlet -ErrorAction Stop
+                    } else {
+                        $paramHelpObj = Get-Help -Name $CommandInfo.Name -Parameter $Parameter.Name -ErrorAction Stop
+                    }
+                    $paramHelp = ""
+                    if ($paramHelpObj.Description) {
+                        if ($paramHelpObj.Description -is [array] -and $paramHelpObj.Description.Count -gt 0) {
+                            $paramHelp = ($paramHelpObj.Description | ForEach-Object { if ($null -ne $_.Text) { $_.Text } }) -join "`n"
+                        } elseif ($paramHelpObj.Description.Text) {
+                            $paramHelp = $paramHelpObj.Description.Text
+                        } else {
+                            $paramHelp = ($paramHelpObj.Description | Out-String).Trim()
+                        }
+                    }
+                    $paramHelp = $paramHelp.Trim()
+                }
+                catch {
+                    Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Could not get help description for parameter '$($Parameter.Name)' on function '$($CommandInfo.Name)'. Often happens with forced import-module loading of PowerShell module while developing."; TargetFunction = $CommandInfo.Name; ParameterName = $Parameter.Name }
+                    $paramHelp = ""
+                }
+                $paramHelp = if ($paramHelp) { $paramHelp.Trim() } else { "No description available." }
+                $inputSchema.properties[$Parameter.Name] = [ordered]@{ type = $type; description = $paramHelp }
+                # Only $help.syntax indicates if parameters are mandatory within parameter sets. E.g. setting Get-IshFolder -FolderId as required blocks other parameter sets where FolderId is not mandatory.
+                #if ($Parameter.IsMandatory) {
+                #    $inputSchema.required += $Parameter.Name
+                #}
             }
-            try {
-                $paramHelp = (Get-Help $CommandInfo.Name -Parameter $Parameter.Name -ErrorAction Stop).Description | Out-String
-            }
-            catch {
-                Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Could not get help description for parameter '$($Parameter.Name)' on function '$($CommandInfo.Name)'. Often happens with forced import-module loading of PowerShell module while developing."; TargetFunction = $CommandInfo.Name; ParameterName = $Parameter.Name }
-                $paramHelp = ""
-            }
-            $paramHelp = if ($paramHelp) { $paramHelp.Trim() } else { "No description available." }
-            $inputSchema.properties[$Parameter.Name] = [ordered]@{ type = $type; description = $paramHelp }
-            # Only $help.syntax indicates if parameters are mandatory within parameter sets. E.g. setting Get-IshFolder -FolderId as required blocks other parameter sets where FolderId is not mandatory.
-            #if ($Parameter.IsMandatory) {
-            #    $inputSchema.required += $Parameter.Name
-            #}
         }
 
 

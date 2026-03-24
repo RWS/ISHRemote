@@ -9,14 +9,22 @@ High level release notes are on [Github](https://github.com/rws/ISHRemote/releas
 
 This release inherits the v0.1 to v0.14 up to v8.1 development branch and features. All cmdlets and business logic are fully compatible even around authentication. In short, we expect it all to work still :)
 
-The one that drastically improved implicit authentication and refresh stability. This stability powered the introduction of the `ISHRemoteMcpServer` experiment - an MCP Server that allow natural language quering of your *Tridion Docs* system. Furthermore, ISHRemote v8.2 is the recommended version to use for Tridion Docs 15.3.0 ( #207).
+The one that is required to run on PowerShell 7.6 LTS hosted by .NET 10. Several big quality of life security improvements regarding implicit authentication and refresh stability. This stability powered the introduction of the `ISHRemoteMcpServer` experiment - an MCP Server that allow natural language quering of your *Tridion Docs* system. Furthermore, ISHRemote v8.2 is the recommended version to use for Tridion Docs 15.3.0 ( #207 #235).
 
 
 ### Remember
-* All C# source code of the ISHRemote library is online at [master](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of the different [Connection](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/Connection) protocols in a NET 4.8 and NET 6.0+ style.
+* All C# source code of the ISHRemote library is online at [master](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote), including handling of the different [Connection](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/Connection) protocols in a NET 4.8, NET 6.0 and .NET 10.0+ style.
 * All PowerShell-based Pester integration tests are located per cmdlet complying with the `*.tests.ps1` file naming convention. See for example [AddIshDocumentObj.Tests.ps1](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/DocumentObj/AddIshDocumentObj.Tests.ps1) or [TestIshValidXml.Tests.ps1](https://github.com/rws/ISHRemote/tree/master/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/FileProcessor/TestIshValidXml.Tests.ps1)
 
 The below text describes the delta compared to fielded release ISHRemote v8.1.
+
+
+## Platform Support for PowerShell 7.6
+
+PowerShell 7.6, a Long Term Service (LTS) release, hosted on .NET 10 (LTS) required code changes because of breaking changes between .NET 8 and .NET 10. When using ISHRemote v8.1 or earlier, the most prominent error on a `New-IshSession` invoke is `Could not load type 'System.IdentityModel.Tokens.SecurityKeyType' from assembly 'System.ServiceModel.Security` which should trigger you to upgrade to this release. Along the way refactored some warnings `X509Certificate2` and `ServicePointManager` usage. The chosen solution is to have 3 runtimes:
+* Kept Windows-only .NET Framework 4.8 for usage in Windows PowerShell 5.1 with as little code changes as feasible.
+* Kept cross-platform .NET 6.0 for usage in cross-platform PowerShell 7.2 and 7.4 with as little code changes as feasible. Do note that these platforms are out-of-support by Microsoft; in turn ISHRemote considers these deprecated as well.
+* Introduced cross-platform .NET 10.0 for usage in cross-platform PowerShell 7.6. This variation received all possible third-party library updates as well; ranging from Duende.* over System.ServiceModel.* to supporting library like System.Text.Json and more. #235
 
 
 ## Stability improved by actively recovering interactive sessions
@@ -28,11 +36,11 @@ In this ISHRemote version, the session will attempt to get a new token automatic
 Infamous random annoying error `The communication object, System.ServiceModel.Channels.ServiceChannel, cannot be used for communication because it is in the Faulted state.` should now recover within the cmdlet or worst-case when rerunning the same cmdlet. This without applying the earlier workaround of building a `New-IshSession`.
 
 
-## Experimental MCP Server for Tridion Docs CMS powered by ISHRemote
+## MCP Server for Tridion Docs CMS powered by ISHRemote
 
 ### ISHRemoteMcpServer Introduction
 
-Tridion Docs CMS has a very rich API which opens up all the power of Organize Space, Draft Space, Publication Manager, and more. ISHRemote is a PowerShell library that abstracts some authentication and metadata modelling complexity from the Tridion Docs API in an opionated way like default metadata. ISHRemote also comes with a built-in help for every cmdlet - or should I say MCP Tool - as you can see in for example `Get-Help New-IshSession -Detailed`. It lists purpose, parameters, syntax and examples - this for every cmdlet.
+Tridion Docs CMS has a very rich API which opens up all the power of Organize Space, Draft Space, Publication Manager, and more. ISHRemote is a PowerShell library that abstracts some authentication and metadata modelling complexity from the Tridion Docs API in an opionated way like default metadata. ISHRemote also comes with a built-in help for every cmdlet - or should I say MCP Tool - as you can see in for example `Get-Help New-IshSession -Detailed`. It lists purpose, parameters, syntax and examples - this for every cmdlet. #213 #233
 
 Model Concept Protocol ([MCP](https://modelcontextprotocol.io/docs/getting-started/intro)) is the language to offer tools to your chosen Large Language Model ([LLM](https://en.wikipedia.org/wiki/Large_language_model)) to have smart data interactions. Where in the past the LLMs had access to functions to for example find out the weather in some location, now you can offer it a tool box to access a specific domain like *Tridion Docs*. MCP [Tools](https://modelcontextprotocol.io/docs/learn/server-concepts) enable AI models to perform actions. Each tool defines a specific operation with typed inputs and outputs. The model requests tool execution based on context.
 
@@ -50,10 +58,10 @@ Below animation give you an overview on what you need to do to set it up. Import
 
 Below the steps in some more detail...
 1. You need ISHRemote v8.2+ (PreRelease) installed in your PowerShell v7 (not Windows PowerShell!). See [Installation-ISHRemote-8.0.md](./Installation-ISHRemote-8.0.md) for guidance. Make sure that it works by calling the classic `New-IshSession -WsBaseUrl https://ish.example.com/ISHWS/`
-2. Open your installed [Visual Studio Code](https://code.visualstudio.com) preferably to a working folder where you have or plan to have your scripts saved. Now you need to create or extend your `.vscode/mcp.json` with the below code block. Optionally use a different log file path, and use the double backslashes to comply with the json file syntax.
+2. Open your installed [Visual Studio Code](https://code.visualstudio.com) preferably to a working folder where you have or plan to have your scripts saved. Now you need to create or extend your `.vscode/mcp.json` with the below code block. Optionally use a different log file path, and use the double backslashes to comply with the json file syntax. Or you can run without client-side logging by removing ` -LogFilePath \"$env:TEMP\\IshRemoteMcpServer.log\"`.
 3. Start the `IshRemoteMcpServer` using the decorator `Start`
 4. Go to your CoPilot, put it in `Agent` mode. After typing a hash (`#`), you should see the registered MCP Tools which look a lot like cmdlet name pop-up, starting with `#Add-IshAnnotation`.
-5. Now set your LLM to `Claude Sonnet 4.5` (or similar). In the chat enter `Create a new ishsession to https://ish.example.com/ISHWS/`, where the url is an existing url.
+5. Now set your LLM to `Claude Sonnet 4.5` (or better). In the chat enter `Create a new ishsession to https://ish.example.com/ISHWS/`, where the url is an existing url.
 
 ```json
 {
@@ -120,17 +128,10 @@ All cmdlets and business logic are fully compatible.
 
 ## Breaking Changes - Platform
 
-* Replaced package references of deprecated `IdentityModel.OidcClient` to supported `Duende.IdentityModel.OidcClient` plus matching code changes. More details in the releases notes and on #220 
-
-| PackageReference From Version                         | PackageReference To Version                     | Remarks                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| ----------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| IdentityModel 7.0.0                                   | Duende.IdentityModel 7.1.0                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| IdentityModel.OidcClient 7.0.0                        | Duende.IdentityModel.OidcClient 6.0.1           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| IdentityModel.OidcClient.IdentityTokenValidator 6.0.0 | \-                                              | With the removal of Hybrid Flow support from (Duende.)IdentityModel.OidcClient, it is not necessary anymore to validate id_tokens. However, You can still do you own validation via our extensibility points if desired. See [https://community.auth0.com/t/managing-tokens-in-net-maui/101577/25?page=2](https://community.auth0.com/t/managing-tokens-in-net-maui/101577/25?page=2)                                                                             |
-| Microsoft.PowerShell.Commands.Management 7.2.23       | Microsoft.PowerShell.Commands.Management 7.2.24 | Unsupported PowerShell 7.2/NET6 but all works well; will wait for future 7.6/NET10 or higher to bump this package and the underlying net6.0/Trisoft.ISHRemote.dll compilation.                                                                                                                                                                                                                                                                                    |
-| System.Runtime.CompilerServices.Unsafe 6.0.0          | System.Runtime.CompilerServices.Unsafe 6.1.2    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| System.Numerics.Vectors 4.5.0                         | System.Numerics.Vectors 4.5.0                   | Tried 4.6.1 \`ApplicationException: GetTokensOverClientCredentialsAsync Access Error[Could not load file or assembly 'System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The system cannot find the file specified.]; either invalid ClientId/ClientSecret combination or expired ClientSecret.\`Assembly is lock stepped with System.ServiceModel packages, so rolled back to earlier 4.5.0 |
-| System.Text.Json 8.0.5                                | System.Text.Json 8.0.6                          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+* Replaced package references of deprecated `IdentityModel.OidcClient` to supported `Duende.IdentityModel.OidcClient` plus matching code changes. More details in on #220 
+    * With the removal of Hybrid Flow support from (Duende.)IdentityModel.OidcClient, it is not necessary anymore to validate id_tokens. However, You can still do you own validation via our extensibility points if desired. See https://community.auth0.com/t/managing-tokens-in-net-maui/101577/25?page=2
+* Tried 4.6.1 `ApplicationException: GetTokensOverClientCredentialsAsync Access Error[Could not load file or assembly 'System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies. The system cannot find the file specified.]; either invalid ClientId/ClientSecret combination or expired ClientSecret.`Assembly is lock stepped with System.ServiceModel packages, so rolled back to earlier 4.5.0
+* Added .NET 10 runtime next to .NET 4.8 and .NET 6. All third-party libraries are updated for .NET 10 only. More details in on #235
 
 
 ## Known Issues
@@ -168,3 +169,5 @@ Below is not an official performance compare, but a recurring thing noticed alon
 | ISHRemote 8.2.13001.0    | PowerShell 7.5.3 on .NET 9.0.8  | LEUDEVDDE...@15.3.0b2216 | Tests completed in 111.41s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
 | ISHRemote 8.2.13106.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b2303 | Tests completed in 151.73s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
 | ISHRemote 8.2.13106.0    | PowerShell 7.5.4 on .NET 9.0.10  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 144.6s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.2.13523.0    | PowerShell 7.5.4 on .NET 9.0.10  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 141.61s AND Tests Passed: 1128, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.2.13523.0    | PowerShell 7.6.0 on .NET 10.0.5  | LEUDEVDDE...@15.3.0b2303 | Tests completed in s AND Tests Passed: 1128, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |

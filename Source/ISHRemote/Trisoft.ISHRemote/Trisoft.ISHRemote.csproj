@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net6.0</TargetFrameworks>
-  	<!-- TargetFrameworks>netcoreapp3.1;net48;net6.0</TargetFrameworks -->
+    <TargetFrameworks>net48;net6.0;net10.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
@@ -14,26 +13,61 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Duende.IdentityModel" Version="7.1.0" />
-    <PackageReference Include="Duende.IdentityModel.OidcClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    
+    <PackageReference Include="Duende.IdentityModel" Version="7.1.0"  Condition="'$(TargetFramework)' == 'net48'" />
+    <PackageReference Include="Duende.IdentityModel.OidcClient" Version="6.0.1"  Condition="'$(TargetFramework)' == 'net48'" />
+    <PackageReference Include="Duende.IdentityModel" Version="7.1.0"  Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="Duende.IdentityModel.OidcClient" Version="6.0.1"  Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="Duende.IdentityModel" Version="8.1.0" Condition="'$(TargetFramework)' == 'net10.0'" />
+    <PackageReference Include="Duende.IdentityModel.OidcClient" Version="7.1.0" Condition="'$(TargetFramework)' == 'net10.0'" />
+    
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" Condition="'$(TargetFramework)' == 'net48'" />
-    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.2.24" Condition="'$(TargetFramework)' != 'net48'" /><!-- last version for PS7.2 -->
-    <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.2.24" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.6.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    
+    <PackageReference Include="System.Drawing.Common" Version="8.0.8" Condition="'$(TargetFramework)' == 'net48'" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.8" Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.5" Condition="'$(TargetFramework)' == 'net10.0'" />
+
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.Federation" Version="4.10.3" Condition="'$(TargetFramework)' != 'net48'" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" /><!-- last version with net48 support -->
-    <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.6" />
+
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'" /><!-- last version with net48 support -->
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.Federation" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    
+    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Federation" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" Condition="'$(TargetFramework)' == 'net10.0'"/><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.5" Condition="'$(TargetFramework)' == 'net10.0'"/><!-- ISHRemote v8.2+ NET10.0 way -->
+    
+    <PackageReference Include="System.Text.Json" Version="8.0.6" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Text.Json" Version="8.0.6" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Text.Json" Version="10.0.5" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    
     <PackageReference Include="XmlDoc2CmdletDoc" Version="0.3.0" Condition="'$(TargetFramework)' == 'net48'">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -99,8 +133,11 @@
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
     </PropertyGroup>
     <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
+    <MakeDir Directories="$(ProjectDir)bin/$(Configuration)/net6.0" Condition="Exists('$(ProjectDir)bin/$(Configuration)/net6.0')" />
+    <MakeDir Directories="$(ProjectDir)bin/$(Configuration)/net10.0" Condition="Exists('$(ProjectDir)bin/$(Configuration)/net10.0')" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/net6.0" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/net10.0" />
   </Target>
 
   <!-- Generating Module Manifest only once -->
@@ -126,10 +163,11 @@
       <LocalPSRepoDir>$(ProjectDir)bin/$(Configuration)</LocalPSRepoDir>
       <ISHRemoteFrameworkDir>$(ProjectDir)bin/$(Configuration)/ISHRemote/$(TargetFramework)</ISHRemoteFrameworkDir>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <ISHRemoteFiles Include="$(TargetDir)/**/*.*" />
-        <ISHRemoteScriptFiles Include="$(ProjectDir)/Scripts/**/*.*" Exclude="$(ProjectDir)/Scripts/**/*.tests.ps1;$(ProjectDir)/Scripts/**/*.Tests.ps1" />
+      <ISHRemoteFiles Include="$(TargetDir)/**/*.*" />
+      <ISHRemoteScriptFiles Include="$(ProjectDir)/Scripts/**/*.*" Exclude="$(ProjectDir)/Scripts/**/*.tests.ps1;$(ProjectDir)/Scripts/**/*.Tests.ps1" />
+      <ISHRemoteScriptFilesToDelete Include="$(LocalPSRepoDir)\ISHRemote\Scripts\**\*.Tests.ps1" />
     </ItemGroup>
 
     <RemoveDir Directories="$(ISHRemoteFrameworkDir)" Condition="Exists('$(ISHRemoteFrameworkDir)')" />
@@ -138,6 +176,7 @@
     <Copy SourceFiles="@(ISHRemoteScriptFiles)" DestinationFiles="@(ISHRemoteScriptFiles-&gt;'$(LocalPSRepoDir)\ISHRemote\Scripts\%(RecursiveDir)%(Filename)%(Extension)')" /><!-- hyphen-gt arrow needs to remain entity gt -->
     <Copy SourceFiles="$(ProjectDir)ISHRemote.psm1" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
     <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
+    <Delete Files="@(ISHRemoteTestFilesToDelete)" />
   </Target>
 
   <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' AND '$(TargetFramework)' == 'net48'">
@@ -162,3 +201,4 @@
   </PropertyGroup>
 
 </Project>
+

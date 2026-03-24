@@ -12,7 +12,7 @@ Start-IshRemoteMcpServer -CmdletsToRegister Get-Help, New-IshSession, Get-IshUse
                          -ActivateWhileLoop $true `
                          -LogFilePath "$PSScriptRoot\..\IshRemoteMcpServer.log"
 #>
-Start-IshRemoteMcpServer -CmdletsToRegister (((Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name) + "Get-Help") `
+Start-IshRemoteMcpServer -CmdletsToRegister (((Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name)) `
                          -ActivateWhileLoop $true `
                          -LogFilePath "$PSScriptRoot\..\IshRemoteMcpServer.log"
 #>
