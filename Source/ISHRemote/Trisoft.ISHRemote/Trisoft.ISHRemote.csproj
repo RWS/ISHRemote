@@ -125,25 +125,21 @@
     <XmlDocToolsPath>net48\XmlDoc2CmdletDoc.dll</XmlDocToolsPath>
   </PropertyGroup>
   <!-- Trisoft.ISHRemote.dll-Help.xml is generated next to \bin\Debug\net48\Trisoft.ISHRemote.dll during net48 build
-       then copied to ISHRemote packaging folder root where it is shared across all frameworks
+       then copied to ISHRemote packaging folder root 
+       then copied per non-net48 framework
   -->
   <Target Name="CopyCmdletDoc" AfterTargets="AfterBuild" Condition="'$(TargetFramework)' == 'net48'">
     <PropertyGroup>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
+      <ISHRemoteNet6Dir>$(ProjectDir)bin/$(Configuration)/ISHRemote/net6.0</ISHRemoteNet6Dir>
+      <ISHRemoteNet10Dir>$(ProjectDir)bin/$(Configuration)/ISHRemote/net10.0</ISHRemoteNet10Dir>
     </PropertyGroup>
     <MakeDir Directories="$(ISHRemoteDir)" Condition="!Exists('$(ISHRemoteDir)')" />
+    <MakeDir Directories="$(ISHRemoteNet6Dir)" Condition="!Exists('$(ISHRemoteNet6Dir)')" />
+    <MakeDir Directories="$(ISHRemoteNet10Dir)" Condition="!Exists('$(ISHRemoteNet10Dir)')" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
-  </Target>
-
-  <!-- Trisoft.ISHRemote.dll-Help.xml is generated next to \bin\Debug\net48\Trisoft.ISHRemote.dll during net48 build
-       then copied to ISHRemote packaging folder root where it is shared across all frameworks
-  -->
-  <Target Name="CopyHelpXmlToFrameworkFolder" BeforeTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(TargetFramework)' != 'net48'">
-    <PropertyGroup>
-      <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
-      <HelpXmlSource>$(ISHRemoteDir)/Trisoft.ISHRemote.dll-Help.xml</HelpXmlSource>
-    </PropertyGroup>
-    <Copy SourceFiles="$(HelpXmlSource)" DestinationFolder="$(TargetDir)" Condition="Exists('$(HelpXmlSource)')" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteNet6Dir)" />
+    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteNet10Dir)" />
   </Target>
 
   <!-- Generating Module Manifest only once -->
@@ -153,8 +149,6 @@
       <PowerShellExe Condition=" '$(PowerShellExe)'=='' ">&quot;%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe&quot;</PowerShellExe>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
       <ISHRemote48DllFilePath>$(ProjectDir)bin/$(Configuration)/net48/Trisoft.ISHRemote.dll</ISHRemote48DllFilePath>
-      <ISHRemote60DllFilePath>$(ProjectDir)bin/$(Configuration)/net6.0/Trisoft.ISHRemote.dll</ISHRemote60DllFilePath>
-      <ISHRemote100DllFilePath>$(ProjectDir)bin/$(Configuration)/net10.0/Trisoft.ISHRemote.dll</ISHRemote100DllFilePath>
       <ManifestFilePath>$(ISHRemoteDir)/$(ModuleName).psd1</ManifestFilePath>
       <RootModuleFileName>$(ModuleName).psm1</RootModuleFileName>
       <FormatsToProcessFileName>$(ModuleName).Format.ps1xml</FormatsToProcessFileName>

@@ -7,6 +7,45 @@
 }
 
 Describe "Test-Prerequisite" -Tags "Read" {
+	Context "Package ISHRemote verification" {
+		It "Folder ISHRemote exists" {
+			Test-Path -Path $moduleFolder | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "ISHRemote.psm1") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "ISHRemote.psd1") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "ISHRemote.Format.ps1xml") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "Trisoft.ISHRemote.dll-Help.xml") | Should -Be $true
+		}
+		It "Folder ISHRemote/Scripts exists" {
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "Scripts") | Should -Be $true
+		}
+		It "Folder ISHRemote/Scripts/Public exists" {
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "Scripts/Public") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "Scripts/Public/Expand-ISHParameter.ps1") | Should -Be $true
+		}
+		It "Folder ISHRemote/Scripts/Private exists" {
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "Scripts/Private") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "Scripts/Private/Register-IshAuxParameterCompleter.ps1") | Should -Be $true
+		}
+		It "Folder ISHRemote/net48 exists" {
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net48") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net48/Trisoft.ISHRemote.dll") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net48/Trisoft.ISHRemote.xml") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net48/Trisoft.ISHRemote.dll-Help.xml") | Should -Be $true
+		}
+		It "Folder ISHRemote/net6.0 exists" {
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net6.0") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net6.0/Trisoft.ISHRemote.dll") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net6.0/Trisoft.ISHRemote.xml") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net6.0/Trisoft.ISHRemote.dll-Help.xml") | Should -Be $true
+		}
+		It "Folder ISHRemote/net10.0 exists" {
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net10.0") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net10.0/Trisoft.ISHRemote.dll") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net10.0/Trisoft.ISHRemote.xml") | Should -Be $true
+			Test-Path -Path (Join-Path -Path $moduleFolder -ChildPath "net10.0/Trisoft.ISHRemote.dll-Help.xml") | Should -Be $true
+		}
+	}
+
 	Context "ISHRemote.PesterSetup.Debug.ps1 minimal overwrites" {
 		It "baseUrl" {
 			$baseUrl | Should -Not -Be 'https://ish.example.com'
