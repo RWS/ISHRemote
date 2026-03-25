@@ -4,7 +4,7 @@ BeforeAll {
 	. (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
 }
 
-Describe "Register-IshRemoteMcpInstructions" {
+Describe "Register-IshRemoteMcpInstructions" -Skip:($PSVersionTable.PSVersion.Major -lt 7) {
     
     Context "Function Output" {
         It "Should return valid JSON" {

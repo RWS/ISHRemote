@@ -12,7 +12,7 @@ BeforeAll {
 
 }
 
-Describe "Register-IshRemoteMcpTool" -Tags "Read" {
+Describe "Register-IshRemoteMcpTool" -Tags "Read" -Skip:($PSVersionTable.PSVersion.Major -lt 7) {
 	Context "Register-IshRemoteMcpTool (beware Get-Help is empty if Get-InstalledPSResource still shows ISHRemote installed)" {
 		BeforeEach{
             Mock -ModuleName ISHRemote Write-IshRemoteLog { }
