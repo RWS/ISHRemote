@@ -33,7 +33,9 @@ namespace Trisoft.ISHRemote.HelperClasses
     /// </summary>
     public static class CertificateValidationHelper
     {
-        private static RemoteCertificateValidationCallback _orignalCallback;
+#if NET48
+        private static RemoteCertificateValidationCallback _originalCallback;
+#endif
         private static readonly ILogger _logger = TrisoftCmdletLogger.Instance();
 
         private static bool OnValidateCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
@@ -63,13 +65,14 @@ namespace Trisoft.ISHRemote.HelperClasses
             }
         }
 
+#if NET48
         /// <summary>
         /// Sets our custom AppDomain ssl/certificate overwrite callback using ServicePointManager, including a backup of any existing callback 
         /// </summary>
         public static void OverrideCertificateValidation()
         {
             _logger.WriteWarning("Applying certificate validation overwrite for the AppDomain. (OnValidateCertificate)");
-            _orignalCallback = ServicePointManager.ServerCertificateValidationCallback;
+            _originalCallback = ServicePointManager.ServerCertificateValidationCallback;
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(OnValidateCertificate);
             ServicePointManager.Expect100Continue = true;
         }
@@ -80,7 +83,8 @@ namespace Trisoft.ISHRemote.HelperClasses
         public static void RestoreCertificateValidation()
         {
             _logger.WriteDebug("Restoring backup of the earlier saved certificate validation for the AppDomain. (OnValidateCertificate)");
-            ServicePointManager.ServerCertificateValidationCallback = _orignalCallback;
+            ServicePointManager.ServerCertificateValidationCallback = _originalCallback;
         }
+#endif
     }
 }

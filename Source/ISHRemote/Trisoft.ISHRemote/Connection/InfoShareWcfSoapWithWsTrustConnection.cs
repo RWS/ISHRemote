@@ -294,7 +294,7 @@ namespace Trisoft.ISHRemote.Connection
             EndpointAddress issuerAddress = new EndpointAddress(IssuerWSTrustEndpointUri);
 
             WSTrustTokenParameters tokenParameters = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerBinding, issuerAddress); // WS-Trust 1.3 is 2007
-            tokenParameters.KeyType = SecurityKeyType.SymmetricKey;
+            tokenParameters.KeyType = SecurityKeyType.SymmetricKey; //"http://docs.oasis-open.org/ws-sx/ws-trust/200512/SymmetricKey";
             // CacheIssuedTokens, MaxIssuedCachingTime, and IssuedTokenRenewalThresholdPercentage These properties indicate whether tokens should be
             // cached and for how long.In many cases, these properties don�t need to be set as the defaults(tokens are cached for 60 % of their lifetime) are sufficient.
             tokenParameters.CacheIssuedTokens = true;
@@ -1447,8 +1447,7 @@ namespace Trisoft.ISHRemote.Connection
                 issuerWS2007HttpBinding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Default;
 
                 var tokenParams = WSTrustTokenParameters.CreateWS2007FederationTokenParameters(issuerWS2007HttpBinding, new EndpointAddress(IssuerWSTrustEndpointUri));
-                tokenParams.KeyType = SecurityKeyType.BearerKey; // "http://schemas.microsoft.com/idfx/keytype/bearer";
-
+                tokenParams.KeyType = SecurityKeyType.BearerKey; //"http://schemas.microsoft.com/idfx/keytype/bearer";
                 var clientCredentials = new ClientCredentials();
                 clientCredentials.UserName.UserName = _connectionParameters.Credential.UserName;
                 clientCredentials.UserName.Password = _connectionParameters.Credential.Password;
