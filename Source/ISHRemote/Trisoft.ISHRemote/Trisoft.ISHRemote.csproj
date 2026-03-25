@@ -124,20 +124,26 @@
     <XmlDoc2CmdletDocToolPath>net48\XmlDoc2CmdletDoc.dll</XmlDoc2CmdletDocToolPath>
     <XmlDocToolsPath>net48\XmlDoc2CmdletDoc.dll</XmlDocToolsPath>
   </PropertyGroup>
-  <!-- Trisoft.ISHRemote.dll-Help.xml is generated next to \bin\Debug\ISHRemote\net48\Trisoft.ISHRemote.dll
-       then duplicated next to \bin\Debug\ISHRemote\net6.0\Trisoft.ISHRemote.dll so that debug get-help have proper parameter descriptions
-       then copied to ISHRemote packaging folder where it is delivered in the root and per TargetFramework subfolder
+  <!-- Trisoft.ISHRemote.dll-Help.xml is generated next to \bin\Debug\net48\Trisoft.ISHRemote.dll during net48 build
+       then copied to ISHRemote packaging folder root where it is shared across all frameworks
   -->
   <Target Name="CopyCmdletDoc" AfterTargets="AfterBuild" Condition="'$(TargetFramework)' == 'net48'">
     <PropertyGroup>
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
     </PropertyGroup>
-    <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
-    <MakeDir Directories="$(ProjectDir)bin/$(Configuration)/net6.0" Condition="Exists('$(ProjectDir)bin/$(Configuration)/net6.0')" />
-    <MakeDir Directories="$(ProjectDir)bin/$(Configuration)/net10.0" Condition="Exists('$(ProjectDir)bin/$(Configuration)/net10.0')" />
+    <MakeDir Directories="$(ISHRemoteDir)" Condition="!Exists('$(ISHRemoteDir)')" />
     <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/net6.0" />
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/net10.0" />
+  </Target>
+
+  <!-- Trisoft.ISHRemote.dll-Help.xml is generated next to \bin\Debug\net48\Trisoft.ISHRemote.dll during net48 build
+       then copied to ISHRemote packaging folder root where it is shared across all frameworks
+  -->
+  <Target Name="CopyHelpXmlToFrameworkFolder" BeforeTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(TargetFramework)' != 'net48'">
+    <PropertyGroup>
+      <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
+      <HelpXmlSource>$(ISHRemoteDir)/Trisoft.ISHRemote.dll-Help.xml</HelpXmlSource>
+    </PropertyGroup>
+    <Copy SourceFiles="$(HelpXmlSource)" DestinationFolder="$(TargetDir)" Condition="Exists('$(HelpXmlSource)')" />
   </Target>
 
   <!-- Generating Module Manifest only once -->
@@ -148,6 +154,7 @@
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
       <ISHRemote48DllFilePath>$(ProjectDir)bin/$(Configuration)/net48/Trisoft.ISHRemote.dll</ISHRemote48DllFilePath>
       <ISHRemote60DllFilePath>$(ProjectDir)bin/$(Configuration)/net6.0/Trisoft.ISHRemote.dll</ISHRemote60DllFilePath>
+      <ISHRemote100DllFilePath>$(ProjectDir)bin/$(Configuration)/net10.0/Trisoft.ISHRemote.dll</ISHRemote100DllFilePath>
       <ManifestFilePath>$(ISHRemoteDir)/$(ModuleName).psd1</ManifestFilePath>
       <RootModuleFileName>$(ModuleName).psm1</RootModuleFileName>
       <FormatsToProcessFileName>$(ModuleName).Format.ps1xml</FormatsToProcessFileName>
@@ -158,7 +165,7 @@
   </Target>
 
   <!-- Copy all the required files to folder named ISHRemote which is needed for packaging -->
-  <Target Name="CopyRequiredFilesToPowerShellModuleFolder" AfterTargets="ModuleManifest" Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
+  <Target Name="CopyRequiredFilesToPowerShellModuleFolder" AfterTargets="ModuleManifest">
     <PropertyGroup>
       <LocalPSRepoDir>$(ProjectDir)bin/$(Configuration)</LocalPSRepoDir>
       <ISHRemoteFrameworkDir>$(ProjectDir)bin/$(Configuration)/ISHRemote/$(TargetFramework)</ISHRemoteFrameworkDir>
