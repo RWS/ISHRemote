@@ -9,7 +9,7 @@ High level release notes are on [Github](https://github.com/rws/ISHRemote/releas
 
 This release inherits the v0.1 to v0.14 up to v8.1 development branch and features. All cmdlets and business logic are fully compatible even around authentication. In short, we expect it all to work still :)
 
-The one that is required to run on PowerShell 7.6 LTS hosted by .NET 10. Several big quality of life security improvements regarding implicit authentication and refresh stability. This stability powered the introduction of the `ISHRemoteMcpServer` experiment - an MCP Server that allow natural language quering of your *Tridion Docs* system. Furthermore, ISHRemote v8.2 is the recommended version to use for Tridion Docs 15.3.0 ( #207 #235).
+The one that is required to run on PowerShell 7.6 LTS hosted by .NET 10. Several big quality of life security improvements regarding implicit authentication and refresh stability. This stability powered the introduction of `ISHRemoteMcpServer` - an MCP Server that allow natural language quering of your *Tridion Docs* system. Furthermore, ISHRemote v8.2 is the recommended version to use for Tridion Docs 15.3.0 ( #207 #235).
 
 
 ### Remember
@@ -21,7 +21,7 @@ The below text describes the delta compared to fielded release ISHRemote v8.1.
 
 ## Platform Support for PowerShell 7.6
 
-PowerShell 7.6, a Long Term Service (LTS) release, hosted on .NET 10 (LTS) required code changes because of breaking changes between .NET 8 and .NET 10. When using ISHRemote v8.1 or earlier, the most prominent error on a `New-IshSession` invoke is `Could not load type 'System.IdentityModel.Tokens.SecurityKeyType' from assembly 'System.ServiceModel.Security` which should trigger you to upgrade to this release. Along the way refactored some warnings `X509Certificate2` and `ServicePointManager` usage. The chosen solution is to have 3 runtimes:
+PowerShell 7.6, a Long Term Service (LTS) release hosted on .NET 10 (LTS), required code changes because of breaking changes between .NET 8 and .NET 10. When using ISHRemote v8.1 or earlier, the most prominent error on a `New-IshSession` invoke is `Could not load type 'System.IdentityModel.Tokens.SecurityKeyType' from assembly 'System.ServiceModel.Security` which should trigger you to upgrade to this release. Along the way refactored some warnings `X509Certificate2` and `ServicePointManager` (HTTPS/SSL/TLS) usage. The chosen solution is to have 3 runtimes:
 * Kept Windows-only .NET Framework 4.8 for usage in Windows PowerShell 5.1 with as little code changes as feasible.
 * Kept cross-platform .NET 6.0 for usage in cross-platform PowerShell 7.2 and 7.4 with as little code changes as feasible. Do note that these platforms are out-of-support by Microsoft; in turn ISHRemote considers these deprecated as well.
 * Introduced cross-platform .NET 10.0 for usage in cross-platform PowerShell 7.6. This variation received all possible third-party library updates as well; ranging from Duende.* over System.ServiceModel.* to supporting library like System.Text.Json and more. #235
@@ -29,7 +29,7 @@ PowerShell 7.6, a Long Term Service (LTS) release, hosted on .NET 10 (LTS) requi
 
 ## Stability improved by actively recovering interactive sessions
 
-Every usage of a cmdlet will refresh the security tokens. However, when not using ISHRemote cmdlets or the implicit local or global `$ISHRemoteSessionStateIshSession` or explicit `$ishSession` object, the session expires by default after around 57 minutes when using ISHID or similar on other identity providers. In turn resulting in error `An unsecured or incorrectly secured fault was received from the other party. See the inner FaultException for the fault code and detail.`.
+Every usage of a cmdlet will, when almost expired, refresh the security tokens. However, when not using ISHRemote cmdlets or the implicit local or global `$ISHRemoteSessionStateIshSession` or explicit `$ishSession` object, the session expires by default after around 57 minutes when using ISHID or similar on other identity providers. In turn resulting in error `An unsecured or incorrectly secured fault was received from the other party. See the inner FaultException for the fault code and detail.`.
 
 In this ISHRemote version, the session will attempt to get a new token automatically on every triggered ISHRemote cmdlet. If you created the IShSession object over an interactive browser, you will see the browser again perhaps with or without a credential challenge in the browser. Change is only for protocols `WcfSoapWithOpenIdConnect` and `OpenApiWithOpenIdConnect`; no change for `WcfSoapWithWsTrust`.
 
@@ -47,7 +47,7 @@ Model Concept Protocol ([MCP](https://modelcontextprotocol.io/docs/getting-start
 Combining documented ISHRemote cmdlets with the interaction pattern of MCP Tools to LLMs, we see at least the below purposes...
 1. By offering every ISHRemote cmdlet as an MCP Tool to your LLM, it means you can **ask your system questions** like `Create a new ishsession to https://ish.example.com/ISHWS/`. And yes it will create you that `$ishSession` variable in the background that you can use over the other MCP Tools - or I could say cmdlets. This allows you to use natural language to query your specific instance on `How many user roles are there?` or `which status transitions do you have for a module?`. These requests will be executed using your authenticated `$ishSession`.
 2. As ISHRemote cmdlets understand the API and many of its concepts, it can **explain system concepts** usage questions. This allows you to query `How many statusses are there?`, `Does the system have any privileges?` which could be followed by `These are labels, any way to use these values in an API?`. It can explain existing ISHRemote PowerShell scripts.
-3. And because the MCP Tools look a lot like ISHRemote cmdlets, you can reuse your LLM's PowerShell knowledge to **draft PowerShell scripts**. You could query for `can you write me a powershell script to create a user?` or `Can you suggest a rewrite using the faster search cmdlet?`. Although the LLM will not always offer working code, but it does seem to make sure you don't have a blank sheet in front of you. You now have something that you can debug and get to a working state as you can feed it your runtime errors and it will improve the generated code iteratively.
+3. And because the MCP Tools look a lot like ISHRemote cmdlets, you can reuse your LLM's PowerShell knowledge to **draft PowerShell scripts**. You could query for `Can you write me a powershell script to create a user?` or `Can you suggest a rewrite using the faster search cmdlet?`. Although the LLM will not always offer working code, but it does seem to make sure you don't have a blank sheet in front of you. You now have something that you can debug and get to a working state as you can feed it your runtime errors and it will improve the generated code iteratively.
 
 
 ### ISHRemoteMcpServer Setup using Visual Studio Code
@@ -57,7 +57,7 @@ Below animation give you an overview on what you need to do to set it up. Import
 ![ISHRemote-8.2--ISHRemoteMcpServerSetupDemo 1024x512](./Images/ISHRemote-8.2--ISHRemoteMcpServerSetupDemo.gif)
 
 Below the steps in some more detail...
-1. You need ISHRemote v8.2+ (PreRelease) installed in your PowerShell v7 (not Windows PowerShell!). See [Installation-ISHRemote-8.0.md](./Installation-ISHRemote-8.0.md) for guidance. Make sure that it works by calling the classic `New-IshSession -WsBaseUrl https://ish.example.com/ISHWS/`
+1. You need ISHRemote v8.2+ installed in your PowerShell v7 (not Windows PowerShell!). See [Installation-ISHRemote-8.0.md](./Installation-ISHRemote-8.0.md) for guidance. Make sure that it works by calling the classic `New-IshSession -WsBaseUrl https://ish.example.com/ISHWS/`
 2. Open your installed [Visual Studio Code](https://code.visualstudio.com) preferably to a working folder where you have or plan to have your scripts saved. Now you need to create or extend your `.vscode/mcp.json` with the below code block. Optionally use a different log file path, and use the double backslashes to comply with the json file syntax. Or you can run without client-side logging by removing ` -LogFilePath \"$env:TEMP\\IshRemoteMcpServer.log\"`.
 3. Start the `IshRemoteMcpServer` using the decorator `Start`
 4. Go to your CoPilot, put it in `Agent` mode. After typing a hash (`#`), you should see the registered MCP Tools which look a lot like cmdlet name pop-up, starting with `#Add-IshAnnotation`.
@@ -150,8 +150,8 @@ All cmdlets and business logic are fully compatible.
 
 ## Quality Assurance
 
-Added more Invoke-Pester 5.7.1 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7.5+ hosts where
-* the skipped are about SslPolicyErrors testing
+Added more Invoke-Pester 5.7.1 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7.6+ hosts where
+* the skipped are about SslPolicyErrors testing and `ISHRemoteMcpServer` is PowerShell 7+ only
 * the failed are about IMetadata bound fields (issue #58)
 
 Below is not an official performance compare, but a recurring thing noticed along the way. Using the same client machine, same ISHRemote build and same backend but different PowerShell hosts we noticed a considerable speed up of the Pester tests. However, adding (complicated) tests along the way and knowing that ISHRemote as client library greatly depends on the server-side load, we have to take these numbers at face value.
@@ -170,4 +170,5 @@ Below is not an official performance compare, but a recurring thing noticed alon
 | ISHRemote 8.2.13106.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b2303 | Tests completed in 151.73s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
 | ISHRemote 8.2.13106.0    | PowerShell 7.5.4 on .NET 9.0.10  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 144.6s AND Tests Passed: 1071, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
 | ISHRemote 8.2.13523.0    | PowerShell 7.5.4 on .NET 9.0.10  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 141.61s AND Tests Passed: 1128, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
-| ISHRemote 8.2.13523.0    | PowerShell 7.6.0 on .NET 10.0.5  | LEUDEVDDE...@15.3.0b2303 | Tests completed in s AND Tests Passed: 1128, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.2.13525.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b2303 | Tests completed in 132.15s AND Tests Passed: 1087, Failed: 0, Skipped: 52, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.2.13525.0    | PowerShell 7.6.0 on .NET 10.0.5  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 139.45s AND Tests Passed: 1135, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |

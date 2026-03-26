@@ -9,8 +9,8 @@ This page will try to track work in progress. And because I work on it in free t
 Allow the ISHRemote library to register itself as a local `stdio` transport Mcp server `ISHRemoteMcpServer`. Overall as a thin client layer that pushes the heavy lifting via PowerShell over ISHRemote and in turn HTTPS to a server. Hat tip to [dfinke/PSMCP](https://github.com/dfinke/PSMCP) offering a generic PowerShell library wrapper. The idea is to make ISHRemote offer a self-contained MCP solution.
 
 Main tasks are
-- [ ] Revisit all ISHRemote cmdlet help to be more self-contained and actionable so that an LLM knows what to do next. And perhaps a human as well :)
-- [ ] Add experimental auxiliary scripts to support [Model Context Protocol](https://modelcontextprotocol.io/specification/versioning) like `Invoke-IshRemoteMcpHandleRequest.ps1`, `Register-IshRemoteMcpTool.ps1`, `Register-IshRemoteMcpResources.ps1` or alike `Start-IshRemoteMcpServer.ps1`
+- [x] Revisit all ISHRemote cmdlet help to be more self-contained and actionable so that an LLM knows what to do next. And perhaps a human as well :)
+- [x] Add experimental auxiliary scripts to support [Model Context Protocol](https://modelcontextprotocol.io/specification/versioning) like `Invoke-IshRemoteMcpHandleRequest.ps1`, `Register-IshRemoteMcpTool.ps1`, `Register-IshRemoteMcpResources.ps1` or alike `Start-IshRemoteMcpServer.ps1`
 
 
 ## Install

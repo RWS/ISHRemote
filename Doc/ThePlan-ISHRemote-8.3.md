@@ -1,4 +1,4 @@
-# The Plan of ISHRemote v8.2
+# The Plan of ISHRemote v8.3
 
 This plan brings together input from several stakeholders and outlines where and how we intend to move with ISHRemote. This plan is not set-in-stone and will evolve as we work on the release based on what we learn. This learning includes feedback from people like you, so please let us know what you think!
 
