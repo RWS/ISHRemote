@@ -117,7 +117,7 @@ namespace Trisoft.ISHRemote.Connection
             TokenResponse response = await _httpClient.RequestClientCredentialsTokenAsync(tokenRequest, cancellationToken).ConfigureAwait(false);
             if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new ApplicationException($"GetTokensOverClientCredentialsAsync Access Error[{response.Error}]; either invalid ClientId/ClientSecret combination or expired ClientSecret.");
+                throw new ApplicationException($"GetTokensOverClientCredentialsAsync Access Error[{response.Error}] ErrorDescription[{response.ErrorDescription}]; either invalid ClientId/ClientSecret combination or expired ClientSecret.");
             }
 
             returnTokens = new InfoShareOpenIdConnectTokens
@@ -217,7 +217,7 @@ namespace Trisoft.ISHRemote.Connection
             var loginResult = await oidcClient.LoginAsync(new LoginRequest());
             if (loginResult.IsError)
             {
-                throw new ApplicationException($"GetTokensOverSystemBrowserAsync Error[{loginResult.Error}]");
+                throw new ApplicationException($"GetTokensOverSystemBrowserAsync Error[{loginResult.Error}] ErrorDescription[{loginResult.ErrorDescription}]");
             }
             var result = new InfoShareOpenIdConnectTokens
             {
@@ -244,7 +244,7 @@ namespace Trisoft.ISHRemote.Connection
             // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
             if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new ApplicationException($"RefreshTokensAsync Refresh Error[{response.Error}]; likely an expired Refresh Token so please rebuild a IShSession connection.");
+                throw new ApplicationException($"RefreshTokensAsync Refresh Error[{response.Error}] ErrorDescription[{response.ErrorDescription}]; likely an expired Refresh Token so please rebuild a IShSession connection.");
             }
             returnTokens = new InfoShareOpenIdConnectTokens
             {
