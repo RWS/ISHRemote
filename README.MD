@@ -8,8 +8,7 @@
 
 | Name                     | Platform                                        | Branch         | Status                 |
 |--------------------------|-------------------------------------------------|----------------|------------------------|
-| [ISHRemote](https://www.powershellgallery.com/packages/ISHRemote/) latest         | PowerShell-5.1/NET-4.8 and PowerShell-7+/NET-6+ | master         | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg?branch=master)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
-| [ISHRemote](https://www.powershellgallery.com/packages/ISHRemote/) v1 and earlier | PowerShell-5.1/NET-4.8 | release/v1     | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg?branch=release/v1)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
+| [ISHRemote](https://www.powershellgallery.com/packages/ISHRemote/) latest         | PowerShell-5.1/NET-4.8 and PowerShell-7+/NET-6/NET-10+ | master         | [![](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml/badge.svg?branch=master)](https://github.com/RWS/ISHRemote/actions/workflows/continuous-integration.yml) |
 
 
 # Videos
@@ -36,7 +35,7 @@ Have a look at the [Automating tasks in Tridion Docs using PowerShell](https://y
 
 Below the TLDR; more details are on [Installation-ISHRemote-8.0.md](./Doc/Installation-ISHRemote-8.0.md). This link will guide you on package managers like `PowerShellGet` and newer `PSResourceGet`; cmdlets to install, update and uninstall.
 
-## Install on PowerShell 7.4+ (CoreCLR) powered by .NET 8.0+
+## Install on PowerShell 7.6+ (CoreCLR) powered by .NET 10.0+
 
 Open a PowerShell, then install the ISHRemote module. CurrentUser `-Scope` indicates that you don't have to run PowerShell as Administrator.
 ```powershell
