@@ -12,7 +12,7 @@
   <PropertyGroup>
     <VersionMajor>8</VersionMajor>
     <VersionMinor>2</VersionMinor>
-    <VersionPatch>0</VersionPatch>
+    <VersionPatch>1</VersionPatch>
     <VersionBuild>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</VersionBuild>
     <VersionSuffix Condition="'$(ISHGITHUB_RUN_NUMBER)' == ''">localpreview-$(VersionMajor).0</VersionSuffix>
     <VersionSuffix Condition="'$(ISHGITHUB_RUN_NUMBER)' != ''">cipreview-$(VersionMajor).$(ISHGITHUB_RUN_NUMBER)</VersionSuffix>
@@ -35,7 +35,7 @@
   <PropertyGroup>
     <Major>8</Major>
     <Minor>2</Minor>
-    <Patch>0</Patch>
+    <Patch>1</Patch>
     <Build>$([MSBuild]::Add($([MSBuild]::Multiply(1200, $([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year), 2015)))), $([MSBuild]::Add($([MSBuild]::Multiply(100, $([System.DateTime]::UtcNow.Month))),$([System.DateTime]::UtcNow.Day)))))</Build>
 	  <ModuleVersion>$(Major).$(Minor).$(Patch)</ModuleVersion>
     <ModuleBuildVersion>$(Major).$(Minor).$(Build).$(Patch)</ModuleBuildVersion>
