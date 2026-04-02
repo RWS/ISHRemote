@@ -120,7 +120,7 @@
   </ItemGroup>
 
   <!-- Hack to get XmlDoc2CmdletDoc to work -->
-  <!-- Seemingly XmlDoc2CmdletDoc does not run under .NET 5/6, meaning it needs an explicit 3.1 or older runtime. Download from https://dotnet.microsoft.com/en-us/download/dotnet/3.1 -->
+  <!-- Seemingly XmlDoc2CmdletDoc does not run under .NET 5/6; however a .NET8 fork exists on https://github.com/MatejKafka/XmlDoc2CmdletDoc -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
     <XmlDoc2CmdletDocToolPath>net48\XmlDoc2CmdletDoc.dll</XmlDoc2CmdletDocToolPath>
     <XmlDocToolsPath>net48\XmlDoc2CmdletDoc.dll</XmlDocToolsPath>
@@ -134,13 +134,20 @@
       <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
       <ISHRemoteNet6Dir>$(ProjectDir)bin/$(Configuration)/ISHRemote/net6.0</ISHRemoteNet6Dir>
       <ISHRemoteNet10Dir>$(ProjectDir)bin/$(Configuration)/ISHRemote/net10.0</ISHRemoteNet10Dir>
+      <ISHRemoteNet48HelpXmlFilePath>$(TargetPath)-Help.xml</ISHRemoteNet48HelpXmlFilePath>
     </PropertyGroup>
+    <Error Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteNet48HelpXmlFilePath[$(ISHRemoteNet48HelpXmlFilePath)] does not exist" Condition="!Exists('$(ISHRemoteNet48HelpXmlFilePath)')" />
     <MakeDir Directories="$(ISHRemoteDir)" Condition="!Exists('$(ISHRemoteDir)')" />
     <MakeDir Directories="$(ISHRemoteNet6Dir)" Condition="!Exists('$(ISHRemoteNet6Dir)')" />
     <MakeDir Directories="$(ISHRemoteNet10Dir)" Condition="!Exists('$(ISHRemoteNet10Dir)')" />
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteDir)" />
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteNet6Dir)" />
-    <Copy SourceFiles="$(TargetPath)-Help.xml" DestinationFolder="$(ISHRemoteNet10Dir)" />
+    <Copy SourceFiles="$(ISHRemoteNet48HelpXmlFilePath)" DestinationFolder="$(ISHRemoteDir)" />
+    <Copy SourceFiles="$(ISHRemoteNet48HelpXmlFilePath)" DestinationFolder="$(ISHRemoteNet6Dir)" />
+    <Copy SourceFiles="$(ISHRemoteNet48HelpXmlFilePath)" DestinationFolder="$(ISHRemoteNet10Dir)" />
+    <!-- TestPrerequisite.Tests.ps1 sometimes fails on missing -Help.xml files, so trying to make build fail earlier -->
+    <Error Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteHelpXmlFilePath[$(ISHRemoteDir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteDir)/Trisoft.ISHRemote.dll-Help.xml')" />
+    <Error Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteNet6HelpXmlFilePath[$(ISHRemoteNet6Dir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteNet6Dir)/Trisoft.ISHRemote.dll-Help.xml')" />
+    <Error Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteNet10HelpXmlFilePath[$(ISHRemoteNet10Dir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteNet10Dir)/Trisoft.ISHRemote.dll-Help.xml')" />
+    <Message Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteNet48HelpXmlFilePath[$(ISHRemoteNet48HelpXmlFilePath)] copied to all target directories" Importance="high" />
   </Target>
 
   <!-- Generating Module Manifest only once -->
