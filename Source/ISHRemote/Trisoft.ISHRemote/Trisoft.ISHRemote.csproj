@@ -125,6 +125,14 @@
     <XmlDoc2CmdletDocToolPath>net48\XmlDoc2CmdletDoc.dll</XmlDoc2CmdletDocToolPath>
     <XmlDocToolsPath>net48\XmlDoc2CmdletDoc.dll</XmlDocToolsPath>
   </PropertyGroup>
+  <Target Name="CleanISHRemotePackagingFolder" BeforeTargets="BeforeBuild" Condition="'$(TargetFramework)' == 'net48'">
+    <PropertyGroup>
+      <ISHRemoteDir>$(ProjectDir)bin/$(Configuration)/ISHRemote</ISHRemoteDir>
+    </PropertyGroup>
+    <RemoveDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
+    <Error Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] CleanISHRemotePackagingFolder reports ISHRemoteDir[$(ISHRemoteDir)] could not be cleaned" Condition="Exists('$(ISHRemoteDir)')" />
+    <Message Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] CleanISHRemotePackagingFolder reports ISHRemoteDir[$(ISHRemoteDir)] cleaned" Importance="high" />
+  </Target>
   <!-- Trisoft.ISHRemote.dll-Help.xml is generated next to \bin\Debug\net48\Trisoft.ISHRemote.dll during net48 build
        then copied to ISHRemote packaging folder root 
        then copied per non-net48 framework
@@ -136,7 +144,7 @@
       <ISHRemoteNet10Dir>$(ProjectDir)bin/$(Configuration)/ISHRemote/net10.0</ISHRemoteNet10Dir>
       <ISHRemoteNet48HelpXmlFilePath>$(TargetPath)-Help.xml</ISHRemoteNet48HelpXmlFilePath>
     </PropertyGroup>
-    <Error Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteNet48HelpXmlFilePath[$(ISHRemoteNet48HelpXmlFilePath)] does not exist" Condition="!Exists('$(ISHRemoteNet48HelpXmlFilePath)')" />
+    <Error Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] CopyCmdletDoc reports ISHRemoteNet48HelpXmlFilePath[$(ISHRemoteNet48HelpXmlFilePath)] does not exist" Condition="!Exists('$(ISHRemoteNet48HelpXmlFilePath)')" />
     <MakeDir Directories="$(ISHRemoteDir)" Condition="!Exists('$(ISHRemoteDir)')" />
     <MakeDir Directories="$(ISHRemoteNet6Dir)" Condition="!Exists('$(ISHRemoteNet6Dir)')" />
     <MakeDir Directories="$(ISHRemoteNet10Dir)" Condition="!Exists('$(ISHRemoteNet10Dir)')" />
@@ -144,10 +152,10 @@
     <Copy SourceFiles="$(ISHRemoteNet48HelpXmlFilePath)" DestinationFolder="$(ISHRemoteNet6Dir)" />
     <Copy SourceFiles="$(ISHRemoteNet48HelpXmlFilePath)" DestinationFolder="$(ISHRemoteNet10Dir)" />
     <!-- TestPrerequisite.Tests.ps1 sometimes fails on missing -Help.xml files, so trying to make build fail earlier -->
-    <Error Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteHelpXmlFilePath[$(ISHRemoteDir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteDir)/Trisoft.ISHRemote.dll-Help.xml')" />
-    <Error Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteNet6HelpXmlFilePath[$(ISHRemoteNet6Dir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteNet6Dir)/Trisoft.ISHRemote.dll-Help.xml')" />
-    <Error Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteNet10HelpXmlFilePath[$(ISHRemoteNet10Dir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteNet10Dir)/Trisoft.ISHRemote.dll-Help.xml')" />
-    <Message Text="Trisoft.ISHRemote.csproj CopyCmdletDoc reports ISHRemoteNet48HelpXmlFilePath[$(ISHRemoteNet48HelpXmlFilePath)] copied to all target directories" Importance="high" />
+    <Error Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] CopyCmdletDoc reports ISHRemoteHelpXmlFilePath[$(ISHRemoteDir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteDir)/Trisoft.ISHRemote.dll-Help.xml')" />
+    <Error Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] CopyCmdletDoc reports ISHRemoteNet6HelpXmlFilePath[$(ISHRemoteNet6Dir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteNet6Dir)/Trisoft.ISHRemote.dll-Help.xml')" />
+    <Error Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] CopyCmdletDoc reports ISHRemoteNet10HelpXmlFilePath[$(ISHRemoteNet10Dir)/Trisoft.ISHRemote.dll-Help.xml] does not exist" Condition="!Exists('$(ISHRemoteNet10Dir)/Trisoft.ISHRemote.dll-Help.xml')" />
+    <Message Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] CopyCmdletDoc reports ISHRemoteNet48HelpXmlFilePath[$(ISHRemoteNet48HelpXmlFilePath)] copied to all target directories" Importance="high" />
   </Target>
 
   <!-- Generating Module Manifest only once -->
@@ -164,6 +172,7 @@
     <MakeDir Directories="$(ISHRemoteDir)" Condition="Exists('$(ISHRemoteDir)')" />
     <!-- Adding PSD1 Prerelease section -->
     <Exec Command="$(PowerShellExe) -NoProfile -NonInteractive -command &quot;Import-Module $(ISHRemote48DllFilePath) -Force;$cmdletsToExport=(Get-Module -Name Trisoft.ISHRemote).ExportedCommands.Keys;New-ModuleManifest -Path '$(ManifestFilePath)' -FormatsToProcess '$(FormatsToProcessFileName)' -FunctionsToExport @('Get-IshAuxSessionState','New-IshAuxCompletionResult','Register-IshAuxParameterCompleter','Write-IshRemoteLog','Start-IshRemoteMcpServer','Register-IshRemoteMcpTool','Register-IshRemoteMcpInstructions','Register-IshRemoteMcpResource','Invoke-IshRemoteMcpHandleRequest') -RootModule '$(RootModuleFileName)' -ModuleVersion '$(ModuleVersion)' -Guid '$(ModuleGuid)' -Author '$(Authors)' -CompanyName '$(CompanyName)' -Copyright '$(Copyright)' -Description '$(ModuleDescription)' -PowerShellVersion '$(MinPowerShellVersion)' -ClrVersion '$(MinCLRVersion)' -DotNetFrameworkVersion '$(MinDotNetVersion)' -LicenseUri '$(LicenseUri)' -ProjectUri '$(ProjectUri)' -CmdletsToExport @($cmdletsToExport);(Get-Content -Raw -Path '$(ManifestFilePath)').Replace('# ReleaseNotes = ''''','Prerelease = ''$(Prerelease)''') | Set-Content -Path '$(ManifestFilePath)'&quot;" />
+    <Message Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] ModuleManifest completed" Importance="high" />
   </Target>
 
   <!-- Copy all the required files to folder named ISHRemote which is needed for packaging -->
@@ -179,13 +188,13 @@
       <ISHRemoteScriptFilesToDelete Include="$(LocalPSRepoDir)\ISHRemote\Scripts\**\*.Tests.ps1" />
     </ItemGroup>
 
-    <RemoveDir Directories="$(ISHRemoteFrameworkDir)" Condition="Exists('$(ISHRemoteFrameworkDir)')" />
-    <MakeDir Directories="$(ISHRemoteFrameworkDir)" />
+    <MakeDir Directories="$(ISHRemoteFrameworkDir)" Condition="!Exists('$(ISHRemoteFrameworkDir)')" />
     <Copy SourceFiles="@(ISHRemoteFiles)" DestinationFiles="@(ISHRemoteFiles-&gt;'$(ISHRemoteFrameworkDir)\%(RecursiveDir)%(Filename)%(Extension)')" /><!-- hyphen-gt arrow needs to remain entity gt -->	  
     <Copy SourceFiles="@(ISHRemoteScriptFiles)" DestinationFiles="@(ISHRemoteScriptFiles-&gt;'$(LocalPSRepoDir)\ISHRemote\Scripts\%(RecursiveDir)%(Filename)%(Extension)')" /><!-- hyphen-gt arrow needs to remain entity gt -->
     <Copy SourceFiles="$(ProjectDir)ISHRemote.psm1" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
     <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
     <Delete Files="@(ISHRemoteTestFilesToDelete)" />
+    <Message Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] CopyRequiredFilesToPowerShellModuleFolder completed" Importance="high" />
   </Target>
 
   <Target Name="GenerateLocalPowerShellModule" AfterTargets="CopyRequiredFilesToPowerShellModuleFolder" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' AND '$(TargetFramework)' == 'net48'">
@@ -202,6 +211,7 @@
     <Exec Command="pwsh -NonInteractive -command &quot;Register-PSRepository -Name LocalPSRepo -SourceLocation '$(LocalPSRepo)' -ScriptSourceLocation '$(LocalPSRepo)' -InstallationPolicy Trusted&quot;" />
     <Exec Command="pwsh -NonInteractive -command &quot;Publish-Module -Path '$(ISHRemoteModulePath)' -Repository LocalPsRepo -NuGetApiKey '$(NuGetApiKey)'&quot;" />
     <Exec Command="pwsh -NonInteractive -command &quot;Unregister-PSRepository -Name LocalPSRepo&quot;" />
+    <Message Text="Trisoft.ISHRemote.csproj[$(TargetFramework)] GenerateLocalPowerShellModule completed" Importance="high" /> 
   </Target>
 
   <PropertyGroup>
