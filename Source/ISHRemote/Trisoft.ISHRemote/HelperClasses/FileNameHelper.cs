@@ -29,7 +29,7 @@ namespace Trisoft.ISHRemote.HelperClasses
     internal static class FileNameHelper
     {
         private const int MaximumFolderPathSize = 248;
-        private const int MaximumFilePathSize = 260;
+        private const int MaximumFilePathSize = 259;
 
         private const int MaximumFileNameSize = 120;
 

@@ -29,6 +29,11 @@ Describe "Get-IshDocumentObjData" -Tags "Read" {
 							Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 		$ishObjectTopicA = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 		$ishObjectLibraryA = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderLib.IshFolderRef -IshType ISHLibrary -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
+		
+		$ishLongTitleMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value ("LongTitle" + ("A" * 250)) |
+		Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+		Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
+		$ishObjectLongTitleTopic = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishLongTitleMetadata -FileContent $ditaTopicFileContent
 	}
 	Context "Get-IshDocumentObjData FolderPathGroup" {
 		It "Parameter IshSession/IshObject invalid" {
@@ -53,6 +58,10 @@ Describe "Get-IshDocumentObjData" -Tags "Read" {
 			$fileContent = Get-Content $fileInfo -Raw 
 			Write-Debug ("fileContent.Length[" + $fileContent.Length + "] fileContent.GetType()[" + $fileContent.GetType() + "] fileContent[" +$fileContent+"]")
 			$fileContent -notlike "*ISHRemoteStringCond*" | Should -Be $true
+		}
+		It "FolderPath with long FTITLE returns FileInfo without PathTooLongException" {
+			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectLongTitleTopic -FolderPath (Join-Path $tempFolder $cmdletName)
+			$fileInfo.GetType().Name | Should -BeExactly "FileInfo"
 		}
 	}
 	Context "Get-IshDocumentObjData IshObjectGroup" {
