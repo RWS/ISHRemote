@@ -1,0 +1,79 @@
+name: Feature request / idea
+description: Propose a new cmdlet, parameter or capability — or just drop an idea from your notes.
+title: "Add cmdlet Verb-IshNoun to <capability>"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Drop the idea like a design note — write as much or as little as you like (a blank free-text
+        issue is fine too). Roadmap reasoning lives in `Doc/ThePlan-ISHRemote-*.md` and
+        `Doc/TheExecution-ISHRemote-*.md`, and feature notes in this style are issues like #126, #120,
+        #70 and #229.
+  - type: textarea
+    id: idea
+    attributes:
+      label: Idea
+      description: |
+        A quick drop of the idea — what should ISHRemote be able to do, and what are you trying to
+        automate? What's painful or impossible today? Link any community.rws.com thread.
+      placeholder: |
+        Similar to Get-IshFolderContent, people want to know which IshDocumentObj are directly
+        linked to an IshPublicationOutput (baseline-selected versions only, no LatestAvailable
+        completion).
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: What's possible today (starting point / workaround)
+      description: |
+        The closest existing cmdlet to start from, and how you work around the gap now — a raw
+        `$ishSession.<Service>25.<Method>(...)` SOAP call is a perfect illustration.
+      placeholder: |
+        Starting point is Get-IshPublicationOutputData (it downloads the generated CHM/PDF/ZIP).
+        There is no cmdlet yet that returns the *content objects* used by the publication.
+    validations:
+      required: false
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed cmdlet(s) and parameters
+      description: |
+        Sketch the shape. Conventions: `Verb-IshNoun` (approved verb), **singular** parameter names,
+        `-WhatIf`/`-Confirm` on writes, parameter *groups* (sets) like `IshObjectGroup` /
+        `ParameterGroup` with mandatory/optional + defaults, and typed `Ish*` pipeline output. If you
+        know the backing Web Services API function, name it — SOAP `EventMonitor25.DeleteByProgressId`
+        or OpenAPI `OpenApiISH30Client.GetDocumentObjectListByLogicalIdAsync`. New work biases toward
+        `OpenApiWithOpenIdConnect` where server parity exists (15.3.0+).
+      render: powershell
+      placeholder: |
+        Remove-IshEvent
+          # IshEventGroup (preferred — respects incoming pipeline objects)
+          -IshEvent <IshEvent[]>        # mandatory, typically from Get-IshEvent
+          -DeleteFailedEvent <bool>     # optional, default $true
+          # ParameterGroup
+          -ProgressId <long[]>          # note: ProgressId is not stable API surface
+        # backs onto EventMonitor25.DeleteByProgressId
+    validations:
+      required: false
+  - type: textarea
+    id: ideas
+    attributes:
+      label: Ideas, spikes & related issues
+      description: |
+        Optional parameters, future spikes, scope you explicitly exclude, related issues (#nnn), and
+        which `*.Tests.ps1` already holds suitable multi-version test data to extend.
+      placeholder: |
+        - Optional -AutoCompleteMode (LatestAvailable/LatestReleased) for a later iteration.
+        - Test data: see AddBackgroundTask.Tests.ps1 / AddIshPublicationOutput.Tests.ps1.
+        - Related: #222.
+    validations:
+      required: false
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd be up for opening a PR for this (guidance is welcome).
+          required: false
