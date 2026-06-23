@@ -139,7 +139,7 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			$ishObject.LngRef -gt 0 | Should -Be $true
 		}
 	}
-	Context "Add-IshDocumentObj IshObjectsGroup" {
+	Context "Add-IshDocumentObj IshObjectGroup" {
 		BeforeAll {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
 								Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |

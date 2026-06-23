@@ -50,7 +50,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshAnnotationGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
@@ -58,7 +58,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">AnnotationId</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public string AnnotationId { get; set; }
        
@@ -142,7 +142,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                 //1. Prepare list of annotations to delete depending on the chosen ParameterSet
                 switch(ParameterSetName)
                 {
-                    case "ParametersGroup":
+                    case "ParameterGroup":
                         annotationIdsToDelete.Add(AnnotationId);
                         break;
                     case "IshAnnotationGroup":

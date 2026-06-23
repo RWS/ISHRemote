@@ -134,7 +134,7 @@ Describe "Get-IshAnnotation" -Tags "Create" {
         $annotationIdsP1P2 = @($ishAnnotation1P1.IshRef, $ishAnnotation2P1.IshRef,$ishAnnotation1P2.IshRef, $ishAnnotation2P2.IshRef)
         $annotationIdsP1P2P3 = @($ishAnnotation1P1.IshRef, $ishAnnotation2P1.IshRef,$ishAnnotation1P2.IshRef, $ishAnnotation2P2.IshRef, $ishAnnotation1P3.IshRef)
     }	
-    Context "Get-IshAnnotation ParametersGroup" {
+    Context "Get-IshAnnotation ParameterGroup" {
 		It "Parameter AnnotationId is an empty array" {
 			{Get-IshAnnotation -IshSession $ishsession -AnnotationId @()} | Should -Throw
 		}

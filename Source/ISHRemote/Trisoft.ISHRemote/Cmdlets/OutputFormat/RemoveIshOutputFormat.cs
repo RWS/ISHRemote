@@ -53,7 +53,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -66,7 +66,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <summary>
         /// <para type="description">The IshObject array containing OutputFormats that needs to be deleted. Pipeline</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
 

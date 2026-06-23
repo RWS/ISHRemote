@@ -645,7 +645,7 @@ Describe "Set-IshDocumentObj" -Tags "Create" {
 			$fileInfoToUpdate.Length -lt $fileInfo.Length | Should -Be $true
 		}
 	}
-	Context "Set-IshDocumentObj IshObjectsGroup" {
+	Context "Set-IshDocumentObj IshObjectGroup" {
 		BeforeAll {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Topic $timestamp" |
 								Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |

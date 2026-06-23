@@ -65,7 +65,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshAnnotationGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
@@ -73,14 +73,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">Id of the Annotation</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public string AnnotationId { get; set; }
 
         /// <summary>
         /// <para type="description">The metadata of the Annotation</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshAnnotationGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] Metadata { get; set; }
@@ -88,7 +88,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">The required current metadata of the Annotation</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshAnnotationGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
@@ -194,7 +194,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                         returnFields = (_ishAnnotationsToSet[0] == null) ? new IshFields() : _ishAnnotationsToSet[0].IshFields;
                         break;
 
-                    case "ParametersGroup":
+                    case "ParameterGroup":
                         WriteDebug($"AnnotationId[{AnnotationId}] Metadata.length[{metadata.ToXml().Length}]");
                         if (ShouldProcess(AnnotationId))
                         {

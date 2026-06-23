@@ -49,7 +49,7 @@ Describe "Set-IshAnnotation" -Tags "Create" {
         $annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
         $annotationStatusShared = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSSHARED).Label
         
-        # Add 2 annotations - ParametersGroup
+        # Add 2 annotations - ParameterGroup
         $ishAnnotationPG1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
         $ishAnnotationPGWithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
         $strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationPGWithReplies.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
@@ -63,7 +63,7 @@ Describe "Set-IshAnnotation" -Tags "Create" {
         $ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGWithReplies.IshRef, $strMetadataReply)
         $ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationIAGWithReplies.IshRef, $strMetadataReply)
     }	
-	Context "Set-IshAnnotation ParametersGroup" {
+	Context "Set-IshAnnotation ParameterGroup" {
 		It "Parameter AnnotationId is empty" {
 			{Set-IshAnnotation -IshSession $ishsession -AnnotationId "" -Metadata (Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "update should fail")} | Should -Throw
 		}

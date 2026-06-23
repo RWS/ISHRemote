@@ -31,7 +31,7 @@ Describe "Add-IshBaseline" -Tags "Create" {
 			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should -Be $true 
 		}
 	}
-	Context "Add-IshBaseline IshObjectsGroup" {
+	Context "Add-IshBaseline IshObjectGroup" {
 		BeforeAll {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 			$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName | 
@@ -79,7 +79,7 @@ Describe "Add-IshBaseline" -Tags "Create" {
 			$ishObjects.Count | Should -Be 2
 		}
 	}
-	Context "Add-IshBaseline IshObjectsGroup" {
+	Context "Add-IshBaseline IshObjectGroup" {
 		BeforeAll {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 			$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName | 

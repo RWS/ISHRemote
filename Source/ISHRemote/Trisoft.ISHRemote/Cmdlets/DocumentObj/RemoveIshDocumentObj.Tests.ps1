@@ -145,7 +145,7 @@ Describe "Remove-IshDocumentObj" -Tags "Delete" {
 		}
 	}
 	
-	Context "Remove-IshDocumentObj remove object (IshObjectsGroup)" {
+	Context "Remove-IshDocumentObj remove object (IshObjectGroup)" {
 		It "IshObject passed via pipeline (Topic). Force=Yes" {
 			$ishTopicMetadata = $ishObjectMetadata | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "$($____Pester.CurrentTest.Name) $timestamp"
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -Version '1' -Lng $ishLng -Metadata $ishTopicMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent

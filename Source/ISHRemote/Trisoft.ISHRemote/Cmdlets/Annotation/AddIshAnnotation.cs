@@ -113,7 +113,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshAnnotationGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "MetadataGroup")]
@@ -123,7 +123,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">Publication LogicalId</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string PubLogicalId { get; set; }
@@ -131,7 +131,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">Publication version</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string PubVersion { get; set; }
@@ -139,7 +139,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">Publication language</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string PubLng { get; set; }
@@ -147,28 +147,28 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">LogicalId of the content object</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public string LogicalId { get; set; }
 
         /// <summary>
         /// <para type="description">Version of the content object</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public string Version { get; set; }
 
         /// <summary>
         /// <para type="description">Language of the content object</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public string Lng { get; set; }
 
         /// <summary>
         /// <para type="description">Type of the annotation</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string Type { get; set; }
@@ -176,7 +176,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">Text of the annotation</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string Text { get; set; }
@@ -184,7 +184,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">Status of the annotation</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string Status { get; set; }
@@ -192,7 +192,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">Address of the annotation</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string Address { get; set; }
@@ -200,7 +200,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">Category of the annotation</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string Category { get; set; }
@@ -208,7 +208,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
         /// <summary>
         /// <para type="description">The metadata of the Annotation</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParametersGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "MetadataGroup")]
         [ValidateNotNullOrEmpty]
@@ -273,7 +273,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                     returnFields = metadata;
                 }
 
-                if (ParameterSetName == "ParametersGroup" || ParameterSetName == "IshObjectGroup")
+                if (ParameterSetName == "ParameterGroup" || ParameterSetName == "IshObjectGroup")
                 {
                     // 1.1. Get the latest RevisionId for the given LogicalId/Version/Language of the content object
                     var metadata = (Metadata == null) ? new IshFields() : new IshFields(Metadata);
@@ -294,7 +294,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Annotation
                     }
                     else
                     {
-                        // ParametersGroup
+                        // ParameterGroup
                         var response = IshSession.DocumentObj25.GetMetadata(new GetMetadataRequest(LogicalId,
                             Version,
                             Lng,

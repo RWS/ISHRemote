@@ -53,7 +53,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
@@ -61,14 +61,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         /// <summary>
         /// <para type="description">The IshField[] to merge</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldGroup")]
         public IshField[] MergeField { get; set; }
 
         /// <summary>
         /// <para type="description">Whether the fields in the mergefields parameter will be prepended, appended or overwrite the values in the provided IshFields or IshObject objects</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshFieldGroup")]
         public Enumerations.ValueAction ValueAction
         {
@@ -79,7 +79,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Field
         /// <summary>
         /// <para type="description">Objects to merge the fields in</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
 

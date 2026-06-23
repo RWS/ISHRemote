@@ -120,7 +120,7 @@ Describe "Add-IshUser" -Tags "Create" {
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}
-	Context "Add-IshUser IshObjectsGroup" {
+	Context "Add-IshUser IshObjectGroup" {
 		BeforeAll {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name FISHUSERLANGUAGE -Level None -ValueType Element -Value "VLANGUAGEEN" |
 						Set-IshMetadataField -IshSession $ishSession -Name FUSERGROUP -Level None -ValueType Element -Value "VUSERGROUPDEFAULTDEPARTMENT" |
