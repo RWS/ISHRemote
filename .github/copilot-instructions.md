@@ -100,6 +100,28 @@ Triggers on push/PR to `master` touching `Source/**`, `*.TXT`, `*.MD`. Order:
 **To replicate CI confidence before opening a PR: restore → Release build (must be warning-clean) →
 PSScriptAnalyzer on Scripts.** That is what the agent can realistically validate without a CMS.
 
+## Issue & pull request titles (and dependency PRs)
+Issues and PRs share one title style — an issue title typically becomes the PR title. The shape is
+**`<Verb> <cmdlet | family | component> [with/to <specific parameter or capability>] [for/to <risk
+or purpose>]`**. Derive new titles from the existing tracker rather than inventing a style.
+- **Feature/Task verbs seen in the tracker:** `Add`, `Augment`, `Enhance`, `Extend`, `Enable`,
+  `Replace`, `Refresh`, `Update`, `Rewrite`, `Improve`, `Maintain`. Name the cmdlet or family
+  (`*-IshTranslationJob`), then the specific parameter/capability, then the purpose. Examples:
+  *"Add cmdlet Remove-IshEvent"* (#120); *"Augment Get-IshDocumentObj with protocol
+  OpenApiWithOpenIdConnect implementation"* (#229); *"Extend Set-IshBaselineItem to update a baseline
+  using the incoming IshDocumentObj versions"* (#222).
+- **Bug titles describe the observable symptom and the condition:** *"Get-IshDocumentObjData does not
+  trim long FTITLE on PS 5.1 and when no trailing slash for FolderPath is provided"* (#238).
+- **Before→after changes spell out both values:** *"Update ISHRemoteMcpServer MCP Protocol Version
+  from '0.3.0' to '2024-11-05'"* (#228); *"Replace package references of IdentityModel.OidcClient to
+  Duende.IdentityModel.OidcClient"* (#220).
+- **Commit prefixes** (from `.github/dependabot.yml`): `deps` for NuGet, `ci` for GitHub Actions.
+- **Dependabot PR titles** — keep the repo's before→after style: lead with the **single most
+  significant (most security-relevant / most vulnerable) library** and its `from X to Y` bump, then
+  list the **before→after for every changed or added library** in the grouped PR body. Mirror that
+  same aggregated before→after list into the ReleaseNotes `## Dependencies` section (see
+  `.github/instructions/doc--markdown.instructions.md`).
+
 ## Runtime architecture (how it fits together)
 - `IshSession` (`Objects/Public/IshSession.cs`) is the central runtime object: it loads
   `connectionconfiguration.xml`, selects a protocol (`WcfSoapWithWsTrust`,

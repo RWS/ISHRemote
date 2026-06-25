@@ -56,8 +56,32 @@ Audience: end users upgrading. Tone: friendly, concrete, example-driven. Canonic
 - **Trailing standard sections** (keep these headings, write `n/a` when empty):
   `## Implementation Details` (bullets with GitHub issue refs like `#210` and `Thanks @handle`),
   `## Breaking Changes - Cmdlets`, `## Breaking Changes - Code`, `## Breaking Changes - Platform`,
-  `## Known Issues`, and `## Quality Assurance` (Pester version + a performance comparison table with
-  **anonymized** server names).
+  `## Known Issues`, `## Dependencies` (the aggregated before→after table, see below), and
+  `## Quality Assurance` (Pester version + a performance comparison table with **anonymized** server
+  names) as the final section.
+
+### The `## Dependencies` section — aggregated before→after per library
+ISHRemote pins its NuGet/runtime dependencies inline in the `.csproj` files, and bumps mostly arrive
+as Dependabot PRs (see [.github/dependabot.yml](../../.github/dependabot.yml)). The ReleaseNotes carry
+**one aggregated table** of every dependency that changed since the previous fielded release — added,
+upgraded or removed — placed **at the back, just before `## Quality Assurance`** (the test section).
+Maintain it cumulatively across the minor line: each dependency PR that lands updates or adds a row
+rather than starting a fresh list, so the table mirrors the before→after data from the Dependabot PRs.
+- One row per library, **before → after**. Use `n/a (new)` or `n/a (removed)` when a library is
+  introduced or dropped — the user explicitly wants newly introduced libraries listed too.
+- **Lead with the most security-relevant** change (mirror the PR title — see
+  [copilot-instructions.md](../copilot-instructions.md)); list the rest alphabetically.
+- Note the affected target framework when a bump is conditional (the project multi-targets
+  `net48;net6.0;net10.0`, e.g. `Duende.IdentityModel.OidcClient` differs per TFM).
+
+```markdown
+## Dependencies
+
+| Library | Before | After | Note |
+|---------|--------|-------|------|
+| System.Security.Cryptography.Xml | 4.7.0 | 4.7.1 | security advisory (NU1903) — lead with the vulnerable one |
+| Duende.IdentityModel.OidcClient (net10.0) | n/a (new) | 7.1.0 | replaces IdentityModel.OidcClient (#220) |
+```
 
 ## 2. ThePlan — make the thinking visible (before)
 Audience: stakeholders and contributors; purpose is to **put reasoning out in the open and cluster
