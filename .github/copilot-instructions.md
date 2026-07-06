@@ -141,7 +141,11 @@ or purpose>]`**. Derive new titles from the existing tracker rather than inventi
   `WcfSoapWithOpenIdConnect`, `OpenApiWithOpenIdConnect`), manages the token/connection lifecycle,
   and exposes both SOAP proxies (the `*25` clients, e.g. `IshSession.User25`) and OpenAPI clients
   (`OpenApiISH30Client`, `OpenApiAM10Client`). SOAP is still initialized even under OpenAPI because
-  many cmdlets still depend on it.
+  many cmdlets still depend on it. The generated SOAP proxy classes live in `Service References/`
+  and are the primary contractual truth for API 2.5 calls; `OpenApiISH30.json` (≈1 MB) is the
+  contractual truth for API 3.0. Which call to use, how to read the compatibility table, and how to
+  navigate live docs is documented in
+  `.github/instructions/source-api-webservices--csharp.instructions.md`.
 - `ISHRemote.psm1` loads the runtime-matching DLL: PowerShell Desktop → `net48`; PowerShell
   7.2–7.5 → `net6.0`; PowerShell 7.6+ → `net10.0`.
 - The `net48` build packages everything into `bin/<Config>/ISHRemote/` (framework subfolders +

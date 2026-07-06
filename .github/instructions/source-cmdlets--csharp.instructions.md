@@ -21,6 +21,10 @@ per-record), **ask the implementer what they want** rather than guessing.
 > build new features solely on it. See the repo-wide `.github/copilot-instructions.md` "Legacy &
 > where to invest less". When unsure which path a change should take, **ask the implementer.**
 
+> **Which API call to use, how to read the compatibility table, and how to navigate live docs** —
+> see [`source-api-webservices--csharp.instructions.md`](source-api-webservices--csharp.instructions.md)
+> (auto-injected when editing `Cmdlets/**/*.cs`).
+
 ## 1. License header (mandatory, verbatim)
 Every `.cs` starts with the Apache 2.0 header exactly as in neighbouring files — copy it, don't
 re-type or "modernize" the year/entity text (it is historical and tooling checks for it, see
@@ -225,3 +229,30 @@ thread PS invoked the cmdlet on. Calling them from any other thread throws
   `Task.Run(...)` lambda.
 - The `ILogger` injected into the Connection layer routes through `TrisoftCmdletLogger` which also
   calls `WriteDebug`/`WriteVerbose` — the same pipeline-thread rule applies there.
+
+## 9. Building `ishfields` XML — field names and the live-server dependency
+
+API 2.5 `String` parameters like `xmlRequestedMetadata`, `xmlMetadata`, and `xmlMetadataFilter`
+are all `<ishfields>` XML strings. **Never hand-build `<ishfields>` XML.** Use the established
+helper chain (see `TrisoftCmdlet.cs` and `IshTypeFieldSetup.cs`):
+- `IshSession.IshTypeFieldSetup.ToIshMetadataFields(...)` — for write metadata (`Add*`/`Set*`/`Move*`)
+- `IshSession.IshTypeFieldSetup.ToIshRequestedMetadataFields(...)` — for read metadata (`Get*`/`Find*`)
+- `IshSession.IshTypeFieldSetup.ToIshMetadataFilterFields(...)` — for filter metadata (`Find*`)
+
+These helpers validate field names, levels, and data types against `IshSession.IshTypeFieldDefinition`
+and honour `IshSession.StrictMetadataPreference`.
+
+**Where field names, levels, and data types come from (in order of reliability):**
+
+1. **Sibling cmdlets in the same domain** — copy `DefaultRequestedMetadata` arrays verbatim.
+   Fields already used in a sibling that compiles and passes CI are correct by definition.
+2. **Existing model XML comments** — classes like `IshBaselineItem.cs` embed real API response
+   XML as `/// <remarks>` showing field names in context. Grep `Objects/` for
+   `SelectNodes\|ishfields\|ishfield`.
+3. **Ask the implementer** to run `Get-IshTypeFieldDefinition` on their live system:
+   ```powershell
+   Get-IshTypeFieldDefinition -IshSession $ishSession |
+       Where-Object { $_.ISHType -eq 'ISHModule' } |
+       Format-List ISHType, Level, Name, DataType, IsMultiValue
+   ```
+
