@@ -150,6 +150,10 @@ or purpose>]`**. Derive new titles from the existing tracker rather than inventi
 - MCP server/tool registration lives in `Scripts/Public` (`Start-IshRemoteMcpServer`,
   `Register-IshRemoteMcpTool`, `Invoke-IshRemoteMcpHandleRequest`) and is wired for local use via
   `.vscode/mcp.json`.
+- Tridion Docs domain knowledge (entity hierarchy, field types, filter operators, MCP agent rules)
+  is single-sourced in `Doc/McpInstructions-ISHRemote.md`; read it when working on any MCP,
+  cmdlet, or object code that involves CMS entities or field definitions. At module build time
+  this file is copied next to `Register-IshRemoteMcpInstructions.ps1` in `Scripts/Public/`.
 
 ## Legacy & where to invest less (protocol direction)
 ISHRemote must keep working across a wide range of InfoShare versions, but **not all protocols get
