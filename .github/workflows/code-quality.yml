@@ -1,0 +1,47 @@
+name: Code Quality
+
+# Fast, server-less repo-quality checks kept OUT of continuous-integration.yml, so that editing
+# the public Doc/ or Samples/ material never triggers the heavy Windows build + serial
+# live-server Pester acceptance suite (which needs secrets, cannot run in parallel and takes ~40m).
+#
+# CodeQL static analysis lives in its own codeql.yml. Dependabot is NOT a workflow - it is
+# configured in .github/dependabot.yml and runs natively on GitHub's schedule.
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'Doc/**'
+      - 'Source/ISHRemote/Trisoft.ISHRemote/Samples/**'
+      - 'Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1'
+      - '.github/workflows/code-quality.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'Doc/**'
+      - 'Source/ISHRemote/Trisoft.ISHRemote/Samples/**'
+      - 'Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1'
+      - '.github/workflows/code-quality.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  anonymization:
+    name: Anonymization of public Doc and Samples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Pester Test Anonymization (no live server needed)
+        shell: pwsh
+        run: |
+          if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'5.3.0' })) {
+              Set-PSRepository PSGallery -InstallationPolicy Trusted
+              Install-Module Pester -MinimumVersion 5.3.0 -Force -SkipPublisherCheck -Scope CurrentUser
+          }
+          Import-Module Pester -MinimumVersion 5.3.0
+          $result = Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1 -Output Detailed -PassThru
+          if ($result.FailedCount -gt 0) {
+              throw "Anonymization guard failed: $($result.FailedCount) check(s) found a real URL, internal hostname, private IP or token. Use example.com placeholders or extend the known-exceptions list in the test."
+          }
