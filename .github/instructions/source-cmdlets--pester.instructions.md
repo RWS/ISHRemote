@@ -10,6 +10,9 @@ These are **Pester 5.3+ acceptance/integration tests** that run against a **live
 creates server objects, asserts, and then deletes them. Keep new tests consistent with the patterns
 below or you will create flaky runs for everyone.
 
+> For the reviewer’s binary pass/flag checklist see
+> [`source-codereview-pester.instructions.md`](source-codereview-pester.instructions.md).
+
 ## Required file anatomy
 Every `*.Tests.ps1` follows the same skeleton; copy it from a sibling (e.g. `AddIshUser.Tests.ps1`,
 `AddIshFolder.Tests.ps1`):

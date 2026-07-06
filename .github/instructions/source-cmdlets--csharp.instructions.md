@@ -11,6 +11,9 @@ a new cmdlet, read 2–3 siblings in the same domain **and** the same verb in ot
 match them. When a design choice is ambiguous (a new parameter, a new parameter set, batching vs
 per-record), **ask the implementer what they want** rather than guessing.
 
+> For the reviewer's binary pass/flag checklist see
+> [`source-codereview-csharp.instructions.md`](source-codereview-csharp.instructions.md).
+
 > **Protocol direction (where to invest).** Most cmdlets call the SOAP `*25` proxies, which the
 > product now considers **deprecated**. For new or rewired cmdlets, prefer the **OpenAPI**
 > (`OpenApiWithOpenIdConnect`) path where server parity exists (15.3.0+), falling back to
@@ -127,3 +130,98 @@ catch (Exception e)                  { ThrowTerminatingError(new ErrorRecord(e, 
 ```
 Don't reorder, collapse, or silently swallow these. If you believe the handling can genuinely be
 improved, **challenge it explicitly with the implementer** before changing it.
+
+## 8. Diagnostic logging density
+A `-Debug` or `-Verbose` transcript must contain enough context to reconstruct what happened and
+diagnose a ticket **without** requiring reproduction on a live server.
+
+### 8.1 Which method goes where
+`TrisoftCmdlet` overrides all three write methods to prepend the class name; `WriteVerbose` also
+forwards into `WriteDebug`, so every Verbose message appears in both streams:
+
+| What to log | Method | Visible when |
+|---|---|---|
+| Session origin, phase markers, per-item loop counters, payload sizes | `WriteDebug(...)` | `-Debug` |
+| Empty no-ops, post-call result counts | `WriteVerbose(...)` | `-Verbose` (and `-Debug`) |
+| Stack traces for `TimeoutException` / `CommunicationException` | `WriteVerbose(...)` | `-Verbose` (and `-Debug`) |
+| Full `AggregateException`, OpenAPI error detail, `InnerException` | `WriteWarning(...)` | always |
+| Long-running loops with a known item count | `WriteParentProgress(...)` | always (progress bar) |
+
+**Secrets and PII must never appear in any stream.** Passwords, client secrets, bearer tokens, and
+personal data must not be logged. If you need to confirm a value was set, log its length or a
+masked form instead:
+```csharp
+WriteDebug($"ClientSecret.Length[{ClientSecret.Length}] ClientSecret[{new string('*', ClientSecret.Length)}]");
+```
+
+`WriteProgress` is UI sugar — it is **not** a substitute for Verbose/Debug log lines.
+
+### 8.2 Mandatory log points (copy from siblings)
+**`BeginProcessing` — session confirmation** (one line, after session is resolved):
+```csharp
+WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession} or in turn SessionState.{ISHRemoteSessionStateGlobalIshSession}");
+```
+
+**Phase markers** before each major logical block:
+```csharp
+WriteDebug("Validating");
+// ... then ...
+WriteDebug("Adding");       // or "Updating", "Deleting", "Retrieving"
+```
+
+**Empty-collection early exit** (both update and retrieve skipped):
+```csharp
+WriteVerbose("IshObject is empty, so nothing to update");
+WriteVerbose("IshObject is empty, so nothing to retrieve");
+```
+
+**Per-item loop** — key identifier(s) and `{++current}/{total}` counter:
+```csharp
+WriteDebug($"Id[{ishObject.IshRef}] Metadata.length[{ishObject.IshFields.ToXml().Length}] {++current}/{IshObject.Length}");
+```
+
+**Pre-call parameter summary** (for the `ParameterGroup` path, before the server call):
+```csharp
+WriteDebug($"Id[{Id}] metadata.length[{metadata.ToXml().Length}]");
+WriteDebug($"Finding ActivityFilter[{activityFilter}] MetadataFilter.length[{mf.ToXml().Length}] RequestedMetadata.length[{rm.ToXml().Length}]");
+```
+
+**Post-operation result count** (just before `WriteObject`):
+```csharp
+WriteVerbose("returned object count[" + returnedObjects.Count + "]");
+```
+
+**Exception catch logging** (already part of §7, repeated here for completeness):
+```csharp
+catch (AggregateException ae)      { var f = ae.Flatten(); WriteWarning(f.ToString()); ... }
+catch (TimeoutException te)        { WriteVerbose("TimeoutException Message[" + te.Message + "] StackTrace[" + te.StackTrace + "]"); ... }
+catch (CommunicationException ce)  { WriteVerbose("CommunicationException Message[" + ce.Message + "] StackTrace[" + ce.StackTrace + "]"); ... }
+catch (Exception e)                { if (e.InnerException != null) { WriteWarning(e.InnerException.ToString()); } ... }
+```
+For OpenAPI error responses, surface every structured field before terminating:
+```csharp
+catch (OpenApiISH30Exception<InfoShareProblemDetails> ex)
+{
+    if (ex.Result != null)
+    {
+        WriteWarning($"Status[{ex.Result.Status}] Title[{ex.Result.Title}] EventName[{ex.Result.EventName}] Detail[{ex.Result.Detail}]");
+        foreach (var error in ex.Result.Errors) { WriteWarning($"ErrorEventName[{error.EventName}] ErrorDetail[{error.Detail}]"); }
+    }
+    ThrowTerminatingError(...);
+}
+```
+
+### 8.3 Threading constraint — never call Write* from a non-pipeline thread
+All PowerShell stream methods (`WriteDebug`, `WriteVerbose`, `WriteWarning`, `WriteProgress`,
+`WriteObject`, `ThrowTerminatingError`) **must be called on the PowerShell pipeline thread** — the
+thread PS invoked the cmdlet on. Calling them from any other thread throws
+`InvalidOperationException` at runtime and is very hard to trace.
+
+- All OpenAPI async calls use `.GetAwaiter().GetResult()` — this blocks synchronously **on the
+  pipeline thread** and is the correct pattern for cmdlets. Do not introduce `await` or
+  `Task.Run()`.
+- If an async helper must return diagnostic text, capture it in a local variable and log **after**
+  `.GetAwaiter().GetResult()` returns — never from inside a `.ContinueWith(...)` or
+  `Task.Run(...)` lambda.
+- The `ILogger` injected into the Connection layer routes through `TrisoftCmdletLogger` which also
+  calls `WriteDebug`/`WriteVerbose` — the same pipeline-thread rule applies there.

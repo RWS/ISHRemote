@@ -14,6 +14,9 @@ here is indistinguishable from a compiled cmdlet. There are two tiers:
 - **`Scripts/Private/`** — internal **`*IshAux*` helpers** that support the public ones
   (`Get-IshAuxSessionState`, `New-IshAuxCompletionResult`, `Register-IshAuxParameterCompleter`).
 
+> For the reviewer’s binary pass/flag checklist see
+> [`source-codereview-powershell.instructions.md`](source-codereview-powershell.instructions.md).
+
 ## 0. Public scripts ARE library surface — treat them like cmdlets
 A `Public/` function is shipped and callable, so it carries the **same obligations as a C# cmdlet**
 (see [source-cmdlets--csharp.instructions.md](./source-cmdlets--csharp.instructions.md)):

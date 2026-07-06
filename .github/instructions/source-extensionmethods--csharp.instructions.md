@@ -10,6 +10,9 @@ description: "Structure and intent of the ISHRemote ExtensionMethods layer: an e
 > when something here is ambiguous or missing, **ask the implementer** rather than inventing a
 > contract. These instructions will be refined as the layer matures.
 
+> For the reviewer’s binary pass/flag checklist see
+> [`source-codereview-csharp.instructions.md`](source-codereview-csharp.instructions.md).
+
 ## 0. Why this folder exists (the big picture)
 ISHRemote's **public object model lives in `Objects/`** (e.g. `Objects/Public/IshObject.cs`,
 `IshField.cs`, and the `IshFields` collection). Those POCO-like classes are **part of the public

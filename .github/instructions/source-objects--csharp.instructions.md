@@ -15,6 +15,9 @@ description: "Structure and intent of the ISHRemote Objects layer: the public Is
   plumbing that **groups** public objects parsed from a service response. They are **not** meant to
   reach the pipeline.
 
+> For the reviewer’s binary pass/flag checklist see
+> [`source-codereview-csharp.instructions.md`](source-codereview-csharp.instructions.md).
+
 ## 0. The public objects are a compatibility contract (get approval to change)
 A `public` type/member here is consumed by code we don't control (customer scripts) and by the test
 suite. Therefore:

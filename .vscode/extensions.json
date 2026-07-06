@@ -1,0 +1,17 @@
+{
+    // Recommended extensions for ISHRemote development.
+    // VS Code will prompt "Do you want to install the recommended extensions?" when the
+    // workspace is opened for the first time. Install all of them to get:
+    //   - C# IntelliSense, build errors inline, go-to-definition across the 3 projects
+    //   - PowerShell syntax, debugger (wired to launch.json) and script analysis
+    //   - GitHub Copilot with the .github/instructions/ auto-injection activated
+    "recommendations": [
+        // C# — required to work with Cmdlets/, Objects/, Connection/, ExtensionMethods/
+        "ms-dotnettools.csdevkit",
+        // PowerShell — required for Scripts/, *.Tests.ps1, and the launch.json debug configs
+        "ms-vscode.powershell",
+        // GitHub Copilot — activates .github/copilot-instructions.md and the instructions/ files
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
+    ]
+}

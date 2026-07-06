@@ -87,15 +87,28 @@ CI reports analyzer warnings/errors but does **not** fail the build on them. Sti
 - **Match CI per shell:** under `pwsh` run both `Scripts/Public` and `Cmdlets`; under Windows
   PowerShell 5.1 (`powershell`) run `Cmdlets` only. Both exclude `*GetIshDocumentObj.Tests.ps1`.
 
-## CI pipeline (.github/workflows/continuous-integration.yml, runs on windows-latest)
-Triggers on push/PR to `master` touching `Source/**`, `*.TXT`, `*.MD`. Order:
-1. Update PowerShell to latest stable → `actions/checkout` → setup .NET 6.0.x.
-2. `dotnet restore Source/ISHRemote/ISHRemote.sln`
-3. `dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln`
-4. Install + run PSScriptAnalyzer on `Scripts`.
-5. Pester (PowerShell 7.x and Windows PowerShell 5.1) against the live server secrets.
-6. Optional publish to PSGallery only when the commit message contains
-   `[PublishToPSGalleryAsPreview]` or `[PublishToPSGalleryAsRelease]`.
+## CI pipeline — three workflow files
+There are three separate workflows, each with its own trigger scope:
+
+**`continuous-integration.yml`** (`windows-latest`, secrets available) — triggers on push/PR to
+`master` touching `Source/**`, `*.TXT`, `*.MD`. Two jobs:
+1. **`build`** (fast lane, no live-server secrets): UpdatePWSH → checkout → `dotnet restore
+   Source/ISHRemote/ISHRemote.sln` → `dotnet build --no-restore --no-incremental --configuration
+   release` → PSScriptAnalyzer on `Scripts/` → Pester anonymization check → upload compiled module
+   artifact.
+2. **`live`** (`needs: build`, `concurrency: run-tests-on-ishbaseurl`, queues — never cancels):
+   downloads artifact → Pester PS7 (Scripts/Public + Cmdlets, excludes `*GetIshDocumentObj*` and
+   `*TestAnonymization*`) → Pester PS5.1 (Cmdlets only, same excludes) → optional PSGallery
+   publish when commit message contains `[PublishToPSGalleryAsPreview]` or
+   `[PublishToPSGalleryAsRelease]`.
+
+**`code-quality.yml`** (`ubuntu-latest`, no secrets) — triggers on push/PR touching `Doc/**`,
+`Samples/**`, `*TestAnonymization.Tests.ps1`, or the workflow file itself. Single job: installs
+Pester 5.3+, runs `TestAnonymization.Tests.ps1`, throws on any failure. No build, no live server.
+
+**`codeql.yml`** (`ubuntu-latest`, no secrets) — triggers on push/PR touching `Source/**/*.cs`,
+the workflow file, plus a weekly Monday schedule. `build-mode: none` (scans sources directly
+without a Windows build). Requires Code Scanning enabled in repo Settings.
 
 **To replicate CI confidence before opening a PR: restore → Release build (must be warning-clean) →
 PSScriptAnalyzer on Scripts.** That is what the agent can realistically validate without a CMS.
@@ -164,27 +177,27 @@ path and treat the older paths as maintain-only.
 - `BACKLOG.MD` — the **pre-GitHub** backlog; historical, superseded by GitHub Issues. Don't treat it
   as the current roadmap.
 
-## C# cmdlet conventions & patterns (avoid breaking the build / help generation)
-- Every cmdlet needs triple-slash `///` XML doc comments — they drive `Get-Help`. Include
-  `<para type="synopsis">`, `<para type="description">`, and at least one `<example>`.
-- **XmlDoc2CmdletDoc gotchas (cause `net48` build failures):** any property used as a `[Parameter]`
-  must have a **getter** (not setter-only); `[OutputType(...)]` must use `typeof(IshX)`, not
-  `nameof(IshX)`.
-- Parameter names are **singular** (`IshObject`, `FilePath`), not plural.
-- Implement `-WhatIf`/`-Confirm` (`SupportsShouldProcess = true`) for write operations
-  (`Add/Set/Move/Remove/Publish/Stop`).
-- Preserve backward compatibility; if you must rename, add a `Set-Alias` and keep help.
-- Add a matching `*.Tests.ps1` next to any new cmdlet.
-- **Session resolution in `BeginProcessing`:** use `-IshSession` if set, else SessionState variable
-  `ISHRemoteSessionStateIshSession`, else `global:ISHRemoteSessionStateIshSession`, else throw —
-  copy this from an existing cmdlet such as `AddIshUser.cs`.
-- **Metadata:** convert via `IshSession.IshTypeFieldSetup.ToIshMetadataFields` /
-  `ToIshRequestedMetadataFields`; do not hand-build metadata XML.
-- **Return shape:** after a write, retrieve and return typed `Ish*` objects (not raw service
-  responses), shaped by `DefaultRequestedMetadata` / `PipelineObjectPreference`.
-- **Exception handling:** keep the standard catch order `TrisoftAutomationException` →
-  `AggregateException` → `TimeoutException` → `CommunicationException` → `Exception`, each calling
-  `ThrowTerminatingError(new ErrorRecord(...))`.
+## C# cmdlet conventions & patterns
+Full authoring rules live in
+[`source-cmdlets--csharp.instructions.md`](instructions/source-cmdlets--csharp.instructions.md)
+(auto-injected when editing `Cmdlets/**/*.cs`). The reviewer checklist lives in
+[`source-codereview-csharp.instructions.md`](instructions/source-codereview-csharp.instructions.md)
+(auto-injected for all `Trisoft.ISHRemote/**/*.cs`).
+
+Pester test authoring rules live in
+[`source-cmdlets--pester.instructions.md`](instructions/source-cmdlets--pester.instructions.md)
+(auto-injected for `**/*.Tests.ps1`). The reviewer checklist lives in
+[`source-codereview-pester.instructions.md`](instructions/source-codereview-pester.instructions.md).
+
+Scripts/PowerShell authoring rules live in
+[`source-scripts--powershell.instructions.md`](instructions/source-scripts--powershell.instructions.md)
+(auto-injected for `Scripts/**/*.*`). The reviewer checklist lives in
+[`source-codereview-powershell.instructions.md`](instructions/source-codereview-powershell.instructions.md).
+
+Two build-breakers repeated here because they surface across all tasks:
+- `[OutputType(typeof(IshX))]` — always `typeof`, never `nameof` (`XmlDoc2CmdletDoc` crashes on
+  `nameof` at `net48` build time).
+- Any `[Parameter]` property **must have a getter**; setter-only silently breaks help generation.
 
 ## Don't
 - Don't add a `global.json` (none exists; the build relies on the SDKs present on the runner).

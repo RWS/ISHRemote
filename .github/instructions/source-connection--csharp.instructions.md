@@ -20,6 +20,9 @@ connection front-ends, and then calls the `GetXxx25Channel()` / `GetOpenApi…Cl
 > OIDC-over-SOAP at 15.3.0). Keep the WS-Trust front-end healthy, but **don't pour new feature work
 > into it** — see the repo-wide `.github/copilot-instructions.md` "Legacy & where to invest less".
 
+> For the reviewer's binary pass/flag checklist see
+> [`source-codereview-csharp.instructions.md`](source-codereview-csharp.instructions.md).
+
 ## 0. Portability is the whole point — keep changes inside this folder
 These files are written to be **standalone**. Copy the folder into another C# project and, with only
 a handful of adaptations (see §7), you get **all authentication flavours** against the InfoShare /

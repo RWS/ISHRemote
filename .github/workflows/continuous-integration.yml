@@ -1,5 +1,12 @@
 name: Continuous Integration
 
+# Two-job design:
+#   build  — fast lane: Release build + lint + serverless Pester. No secrets. Parallel-safe.
+#            Uploads the compiled module as an artifact so the live job does not rebuild.
+#   live   — live integration tests against the real Tridion Docs server. Needs secrets.
+#            Runs only after build succeeds (fail-fast). Serialized via concurrency group so
+#            multiple PRs (e.g. Dependabot) queue instead of clobbering the single test server.
+
 on:
   push:
     branches: [ master ]
@@ -21,8 +28,12 @@ env:
   ISHGITHUB_RUN_ID: ${{ github.run_id }}
 
 jobs:
-  build:
 
+  # ---------------------------------------------------------------------------
+  # Fast lane — no secrets, parallel-safe, used by agents and Dependabot PRs.
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build, lint and fast checks
     runs-on: windows-latest
 
     steps:
@@ -47,12 +58,12 @@ jobs:
           echo "ISHGITHUB_RUN_ID[$env:ISHGITHUB_RUN_ID]"
 
     - uses: actions/checkout@v5
-    
+
     - name: Setup .NET 6.0.x
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 6.0.x
-    
+
     - name: Explicit restore of multi-target/conditional ProjectReference and dependencies
       shell: pwsh
       run: |
@@ -62,17 +73,20 @@ jobs:
         # dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET48.csproj
         # dotnet restore Source/ISHRemote/Trisoft.ISHRemote.OpenApiISH30\Trisoft.ISHRemote.OpenApiISH30.NET60.csproj
         dotnet restore Source/ISHRemote/ISHRemote.sln
-    
+
     - name: Build Solution
       shell: pwsh
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
-    
-    - name: Setup PowerShell PSScriptAnalyzer
+
+    - name: Setup PowerShell modules (PSScriptAnalyzer + Pester)
       shell: pwsh
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
         Install-Module PSScriptAnalyzer -ErrorAction Stop
-    
+        if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'5.3.0' })) {
+            Install-Module Pester -MinimumVersion 5.3.0 -Force -SkipPublisherCheck -Scope CurrentUser
+        }
+
     - name: Lint with PSScriptAnalyzer
       shell: pwsh
       run: |
@@ -84,10 +98,45 @@ jobs:
         } else {
             Write-Output "There were $($errors.Count) errors and $($warnings.Count) warnings total."
         }
-    
+
+    - name: Pester Test Anonymization of public Doc and Samples on Windows using PowerShell 7.x
+      shell: pwsh
+      run: |
+        $result = Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1 -Output Detailed -PassThru
+        if ($result.FailedCount -gt 0) {
+            throw "Anonymization guard failed: $($result.FailedCount) check(s) found a real URL, internal hostname, private IP or token. Use example.com placeholders or extend the known-exceptions list in the test."
+        }
+
     - name: Archive ISHRemote module
       uses: actions/upload-artifact@v5
-      with: 
+      with:
+        name: ISHRemote-MainCI-Module
+        path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/
+
+
+  # ---------------------------------------------------------------------------
+  # Live integration tests — requires the single shared Tridion Docs server.
+  # Queued (not cancelled) so Dependabot PRs and pushes never race each other.
+  # ---------------------------------------------------------------------------
+  live:
+    name: Live integration tests (PS 7.x and PS 5.1)
+    runs-on: windows-latest
+    needs: build
+    concurrency:
+      group: run-tests-on-ishbaseurl
+      cancel-in-progress: false
+
+    steps:
+    - name: PowerShell Update to latest stable (initially because 7.2.13/lts had issues, forcing latest stable)
+      uses: bjompen/UpdatePWSHAction@v1.0.1
+      with:
+        ReleaseVersion: 'Stable'
+
+    - uses: actions/checkout@v5
+
+    - name: Download ISHRemote module artifact
+      uses: actions/download-artifact@v4
+      with:
         name: ISHRemote-MainCI-Module
         path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/
 

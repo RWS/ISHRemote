@@ -67,6 +67,8 @@ Any feedback is welcome. Please log a GitHub issue, make sure you submit your ve
 
 # Standards To Respect
 
+> Detailed authoring rules and reviewer checklists are maintained in [`.github/instructions/`](.github/instructions/) and are auto-injected when editing the relevant paths (`Cmdlets/**/*.cs`, `**/*.Tests.ps1`, `Scripts/**/*.ps1`). The summaries below remain for quick human reference.
+
 ## Coding Standards 
 
 * Any code change should 
