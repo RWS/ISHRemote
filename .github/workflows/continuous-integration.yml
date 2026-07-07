@@ -2,20 +2,18 @@ name: Continuous Integration
 
 # Two-job design:
 #   build  — fast lane: Release build + lint + serverless Pester. No secrets. Parallel-safe.
-#            Uploads the compiled module as an artifact so the live job does not rebuild.
+#            Triggers on every push/PR to any branch. Uploads the compiled module as an artifact.
 #   live   — live integration tests against the real Tridion Docs server. Needs secrets.
-#            Runs only after build succeeds (fail-fast). Serialized via concurrency group so
-#            multiple PRs (e.g. Dependabot) queue instead of clobbering the single test server.
+#            Runs only after build succeeds and only for master-targeting pushes/PRs.
+#            Serialized via concurrency group so Dependabot PRs queue instead of racing.
 
 on:
   push:
-    branches: [ master ]
     paths:
       - 'Source/**'
       - '*.TXT'
       - '*.MD'
   pull_request:
-    branches: [ master ]
     paths:
       - 'Source/**'
       - '*.TXT'
@@ -122,6 +120,7 @@ jobs:
     name: Live integration tests (PS 7.x and PS 5.1)
     runs-on: windows-latest
     needs: build
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'pull_request' && github.base_ref == 'master')
     concurrency:
       group: run-tests-on-ishbaseurl
       cancel-in-progress: false
