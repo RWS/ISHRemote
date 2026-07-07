@@ -4,6 +4,11 @@ name: CodeQL
 # Windows-only multi-target build - it scans the sources directly on a fast Linux runner.
 # PowerShell is not a CodeQL-supported language, so only the C# surface (auth, proxies, cmdlets,
 # objects) is analyzed. Runs on C# changes and weekly.
+#
+# NOTE: This workflow uses an advanced configuration (build-mode: none). GitHub repository
+# default CodeQL setup must be DISABLED for this workflow to avoid SARIF submission errors
+# (CodeQL cannot process advanced config when default setup is enabled). See repository
+# Settings → Code Security and Analysis → Code Scanning: ensure "Enable CodeQL" is OFF.
 
 on:
   push:
@@ -37,11 +42,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
