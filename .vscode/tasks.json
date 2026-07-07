@@ -2,6 +2,7 @@
     // Task names intentionally mirror the CI job/step names in
     // .github/workflows/continuous-integration.yml so that a developer running
     // them locally gets the same semantic as the CI "Build, lint and fast checks" job.
+    // ...but deliberately the debug build, and not release build.
     "version": "2.0.0",
     "tasks": [
         {
@@ -33,7 +34,7 @@
                 "build",
                 "--no-restore",
                 "--no-incremental",
-                "--configuration", "release",
+                "--configuration", "debug",
                 "Source/ISHRemote/ISHRemote.sln"
             ],
             "group": {

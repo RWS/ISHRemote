@@ -103,31 +103,46 @@ namespace Trisoft.ISHRemote.Connection
         public void OpenBrowser(string url)
         {
             _logger.WriteDebug($"InfoShareOpenIdConnectSystemBrowser OpenBrowser url[{url}]");
+            // NOTE: this method is only ever called with options.StartUrl — the IDP authorization
+            // endpoint URL. The OIDC redirect callback (http://127.0.0.1:PORT/?code=...) is
+            // returned by listener.WaitForCallbackAsync() and never reaches here.
+            //
+            // Validate that url is a well-formed http/https URI before passing to Process.Start.
+            // Breaks taint flow for CodeQL cs/uncontrolled-process-creation (CWE-78) by rejecting
+            // dangerous schemes (javascript:, file:, cmd:, ms-settings:, etc.). Both http and https
+            // are allowed so that internal/dev IDPs without TLS (IgnoreSslPolicyErrors scenarios)
+            // continue to work. The re-serialised validatedUri.AbsoluteUri is used throughout so
+            // the tainted raw string never reaches any process-creation call.
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri validatedUri) ||
+                (validatedUri.Scheme != Uri.UriSchemeHttps && validatedUri.Scheme != Uri.UriSchemeHttp))
+            {
+                throw new ArgumentException($"InfoShareOpenIdConnectSystemBrowser requires a well-formed http or https url[{url}]");
+            }
             try
             {
-                Process.Start(url);
+                Process.Start(validatedUri.AbsoluteUri);
             }
             catch
             {
                 // Optimized to bypass issue https://github.com/dotnet/corefx/issues/10361
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    //url = url.Replace("&", "^&");
-                    //Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    //validatedUri.AbsoluteUri = validatedUri.AbsoluteUri.Replace("&", "^&");
+                    //Process.Start(new ProcessStartInfo("cmd", $"/c start {validatedUri.AbsoluteUri}") { CreateNoWindow = true });
                     ProcessStartInfo processStartInfo = new ProcessStartInfo
                     {
-                        FileName = url,
+                        FileName = validatedUri.AbsoluteUri,
                         UseShellExecute = true
                     };
                     Process.Start(processStartInfo);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    Process.Start("xdg-open", url);
+                    Process.Start("xdg-open", validatedUri.AbsoluteUri);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    Process.Start("open", url);
+                    Process.Start("open", validatedUri.AbsoluteUri);
                 }
                 else
                 {
