@@ -21,7 +21,21 @@
 		"microsoft-learn": {
 			"type": "http",
 			"url": "https://learn.microsoft.com/api/mcp"
+		},
+		"github": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp/",
+			"headers": {
+				"Authorization": "Bearer ${input:github-pat}"
+			}
 		}
 	},
-	"inputs": []
+	"inputs": [
+		{
+			"id": "github-pat",
+			"type": "promptString",
+			"description": "GitHub Personal Access Token (scopes: repo, security_events)",
+			"password": true
+		}
+	]
 }

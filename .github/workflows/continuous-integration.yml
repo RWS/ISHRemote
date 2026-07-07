@@ -19,6 +19,12 @@ on:
       - '*.TXT'
       - '*.MD'
 
+# Least-privilege default: both jobs only need to read the repository contents
+# (checkout) and use the actions runtime token for artifacts. No job writes back
+# to the GitHub repository — PSGallery publish uses an external NUGET_API_KEY.
+permissions:
+  contents: read
+
 env:
   ISHGITHUB_RUN_NUMBER: ${{ github.run_number }}
   ISHGITHUB_SERVER_URL: ${{ github.server_url }}
