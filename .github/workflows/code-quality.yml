@@ -14,6 +14,12 @@ on:
       - 'Doc/**'
       - 'Source/ISHRemote/Trisoft.ISHRemote/Samples/**'
       - 'Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1'
+      - 'Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAiInstructions.Tests.ps1'
+      - '.github/instructions/**'
+      - '.github/copilot-instructions.md'
+      - '.claude/**'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
       - '.github/workflows/code-quality.yml'
   pull_request:
     branches: [ master ]
@@ -21,6 +27,12 @@ on:
       - 'Doc/**'
       - 'Source/ISHRemote/Trisoft.ISHRemote/Samples/**'
       - 'Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1'
+      - 'Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAiInstructions.Tests.ps1'
+      - '.github/instructions/**'
+      - '.github/copilot-instructions.md'
+      - '.claude/**'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
       - '.github/workflows/code-quality.yml'
   workflow_dispatch:
 
@@ -40,8 +52,24 @@ jobs:
               Set-PSRepository PSGallery -InstallationPolicy Trusted
               Install-Module Pester -MinimumVersion 5.3.0 -Force -SkipPublisherCheck -Scope CurrentUser
           }
-          Import-Module Pester -MinimumVersion 5.3.0
           $result = Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1 -Output Detailed -PassThru
           if ($result.FailedCount -gt 0) {
               throw "Anonymization guard failed: $($result.FailedCount) check(s) found a real URL, internal hostname, private IP or token. Use example.com placeholders or extend the known-exceptions list in the test."
+          }
+
+  ai-instructions:
+    name: AI instruction file consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Pester Test AI Instructions (no live server needed)
+        shell: pwsh
+        run: |
+          if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'5.3.0' })) {
+              Set-PSRepository PSGallery -InstallationPolicy Trusted
+              Install-Module Pester -MinimumVersion 5.3.0 -Force -SkipPublisherCheck -Scope CurrentUser
+          }
+          $result = Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAiInstructions.Tests.ps1 -Output Detailed -PassThru
+          if ($result.FailedCount -gt 0) {
+              throw "AI instruction guard failed: $($result.FailedCount) check(s) found a structural inconsistency. See AGENTS.md > Maintaining these instructions."
           }

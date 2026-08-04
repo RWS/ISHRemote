@@ -1,4 +1,3 @@
-````instructions
 ---
 applyTo: "Source/ISHRemote/Trisoft.ISHRemote/**/*.Tests.ps1"
 description: "Reviewer's checklist for ISHRemote Pester (*.Tests.ps1) pull requests: file anatomy, structure, data lifecycle, session handling, tenant variables, and special test types."
@@ -108,4 +107,3 @@ Authoring detail lives in
   strings, or fixture data — use `https://example.com/ISHWS/` as the canonical placeholder.
 - [ ] Test output printed via `Write-Host` or embedded in `Should` failure messages does not
   contain customer-identifiable data.
-````

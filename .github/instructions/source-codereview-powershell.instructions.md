@@ -1,4 +1,3 @@
-````instructions
 ---
 applyTo: "Source/ISHRemote/Trisoft.ISHRemote/Scripts/**/*.ps1"
 description: "Reviewer's checklist for ISHRemote PowerShell advanced-function pull requests (Scripts/Public and Scripts/Private): naming, file shape, comment-based help, export registration, StrictMode compliance, PSScriptAnalyzer, and backward compatibility."
@@ -76,4 +75,3 @@ Each item is a binary pass/flag. Authoring detail lives in
   public module surface and break existing scripts.
 - [ ] If a rename is unavoidable, the old name is kept as an alias (`Set-Alias OldName NewName`)
   and documented in the release notes.
-````

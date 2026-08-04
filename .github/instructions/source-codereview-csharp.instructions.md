@@ -1,4 +1,3 @@
-````instructions
 ---
 applyTo: "Source/ISHRemote/Trisoft.ISHRemote/**/*.cs"
 description: "Reviewer's checklist for ISHRemote C# pull requests: build hygiene, file/type naming, session lifecycle, pipeline shape, help generation, exception handling, and backward compatibility."
@@ -133,4 +132,3 @@ ticket without requiring reproduction on a live server. Check each log point.
   `WriteObject`, `ThrowTerminatingError`) is called from a non-pipeline thread — all OpenAPI async
   calls use `.GetAwaiter().GetResult()` and no `Task.Run()` / `ContinueWith()` lambdas contain
   any stream writes.
-````
