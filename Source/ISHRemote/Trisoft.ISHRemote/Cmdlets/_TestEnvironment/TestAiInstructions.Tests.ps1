@@ -10,28 +10,28 @@
       2. AI coding agent stub  .claude/rules/<name>.md
       3. AGENTS.md row     the @-ref lazy-load table in AGENTS.md
 
-    Invariants enforced (any violation is a defect — see AGENTS.md > Maintaining these instructions):
-      a. Every canonical file begins with `---` at line 1 (YAML frontmatter); no code fence.
-      b. Frontmatter contains both `applyTo:` and `description:` keys, non-empty.
+    Invariants enforced (any violation is a defect - see AGENTS.md > Maintaining these instructions):
+      a. Every canonical file begins with --- at line 1 (YAML frontmatter); no code fence.
+      b. Frontmatter contains both applyTo: and description: keys, non-empty.
       c. Every canonical file has a matching stub in .claude/rules/ (same <name>, .md suffix).
       d. Every stub has a matching canonical file (no orphaned stubs).
-      e. Every stub has `---` at line 1 and declares a non-empty `paths:` frontmatter key.
-      f. The stub `paths:` value equals the canonical `applyTo:` value (globs kept in sync).
-      g. Every canonical file appears as an @-ref in the AGENTS.md lazy-load table.
-      h. Every @-ref in the AGENTS.md table resolves to an existing canonical file.
+      e. Every stub has --- at line 1 and declares a non-empty paths: frontmatter key.
+      f. The stub paths: value equals the canonical applyTo: value (globs kept in sync).
+      g. Every canonical file appears as an at-ref in the AGENTS.md lazy-load table.
+      h. Every at-ref in the AGENTS.md table resolves to an existing canonical file.
       i. The AGENTS.md lazy-load directive block is present.
       j. .github/copilot-instructions.md references AGENTS.md (pointer, not duplicate).
       k. CLAUDE.md contains the @AGENTS.md import.
       l. No canonical file or AGENTS.md refers to any specific AI harness by product name
          (use "AI coding agent" instead); file path strings are exempted.
 
-    This file scans static text only — it needs no IshSession and no live server — so it
+    This file scans static text only - it needs no IshSession and no live server - so it
     deliberately does NOT dot-source ISHRemote.PesterSetup.ps1.
 #>
 
 # ---------------------------------------------------------------------------
-# Script-scope helpers — dot-sourcing into script scope so they are visible
-# both in BeforeDiscovery (discovery time) and in It blocks (run time).
+# Script-scope helpers - defined at file scope so they are visible both in
+# BeforeDiscovery (discovery time) and in It blocks (run time).
 # Pester v5 executes It scriptblocks in a child scope of the container but
 # script-scope functions defined at the file level are always accessible.
 # ---------------------------------------------------------------------------
@@ -43,7 +43,7 @@ function script:Get-FmValue {
         Handles scalar (key: "value") and list (key:\n  - "value") forms.
     #>
     param([string] $FilePath, [string] $Key)
-    $lines = Get-Content -LiteralPath $FilePath -ErrorAction Stop
+    $lines = Get-Content -LiteralPath $FilePath -Encoding UTF8 -ErrorAction Stop
     if ($lines.Count -eq 0 -or $lines[0] -ne '---') { return $null }
     $close = 1
     while ($close -lt $lines.Count -and $lines[$close] -ne '---') { $close++ }
@@ -95,7 +95,7 @@ function script:Get-HarnessViolation {
 }
 
 # ---------------------------------------------------------------------------
-# BeforeDiscovery — populates variables that drive foreach/TestCases.
+# BeforeDiscovery - populates variables that drive foreach/TestCases.
 # Runs at collection time, before BeforeAll.
 # ---------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ BeforeDiscovery {
         }
     )
 
-    $agentsMdRaw = Get-Content -LiteralPath $agentsMdD -Raw
+    $agentsMdRaw = Get-Content -LiteralPath $agentsMdD -Encoding UTF8 -Raw
     $script:agentsRefCases = @(
         [regex]::Matches($agentsMdRaw,
             '@(\.github/instructions/[\w.-]+\.instructions\.md)') |
@@ -160,9 +160,10 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
 
         It "[<CfName>] line 1 is '---' (YAML frontmatter, no code fence)" `
            -TestCases $script:canonicalCases {
-            (Get-Content -LiteralPath $CfPath -TotalCount 1) | Should -BeExactly '---' -Because (
-                "line 1 must open YAML frontmatter; a code fence makes applyTo: inert. " +
-                "Remove any opening ``` or ```` fence from '$CfName'.")
+            (Get-Content -LiteralPath $CfPath -Encoding UTF8 -TotalCount 1) |
+                Should -BeExactly '---' -Because (
+                    "line 1 must open YAML frontmatter; a code fence makes applyTo: inert. " +
+                    "Remove any opening fence from '$CfName'.")
         }
 
         It "[<CfName>] frontmatter has non-empty 'applyTo:'" `
@@ -191,23 +192,26 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
         It "[<CfName>] has a matching stub in .claude/rules/" `
            -TestCases $script:canonicalCases {
             $stem = Get-Stem $CfName
-            Test-Path -LiteralPath (Join-Path $script:rulesDir "$stem.md") | Should -BeTrue -Because (
-                "'$CfName' requires a stub '$stem.md'. " +
-                "Add .claude/rules/$stem.md with paths: matching applyTo:.")
+            Test-Path -LiteralPath (Join-Path $script:rulesDir ($stem + '.md')) |
+                Should -BeTrue -Because (
+                    "'$CfName' requires a stub '$stem.md'. " +
+                    "Add .claude/rules/$stem.md with paths: matching applyTo:.")
         }
 
         It "[stub <SfName>] has a matching canonical file" `
            -TestCases $script:stubCases {
-            $canonName = "$($SfName -replace '\.md$','').instructions.md"
-            Test-Path -LiteralPath (Join-Path $script:instrDir $canonName) | Should -BeTrue -Because (
-                "stub '$SfName' has no matching canonical '$canonName'. " +
-                "Add the canonical file or remove the orphaned stub.")
+            $canonName = ($SfName -replace '\.md$', '') + '.instructions.md'
+            Test-Path -LiteralPath (Join-Path $script:instrDir $canonName) |
+                Should -BeTrue -Because (
+                    "stub '$SfName' has no matching canonical '$canonName'. " +
+                    "Add the canonical file or remove the orphaned stub.")
         }
 
         It "[stub <SfName>] line 1 is '---' (YAML frontmatter)" `
            -TestCases $script:stubCases {
-            (Get-Content -LiteralPath $SfPath -TotalCount 1) | Should -BeExactly '---' -Because (
-                "stub '$SfName' must open with YAML frontmatter at line 1.")
+            (Get-Content -LiteralPath $SfPath -Encoding UTF8 -TotalCount 1) |
+                Should -BeExactly '---' -Because (
+                    "stub '$SfName' must open with YAML frontmatter at line 1.")
         }
 
         It "[stub <SfName>] frontmatter has non-empty 'paths:'" `
@@ -227,7 +231,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
             $paths   = @(Get-FmValue -FilePath $SfPath -Key 'paths'   | Sort-Object)
             $applyTo | Should -BeExactly $paths -Because (
                 "applyTo: in '$CfName' and paths: in '$SfName' must express the same glob. " +
-                "Update the out-of-sync value — see AGENTS.md > Maintaining these instructions.")
+                "Update the out-of-sync value - see AGENTS.md > Maintaining these instructions.")
         }
     }
 
@@ -239,26 +243,26 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
         }
 
         It 'AGENTS.md contains the lazy-load directive block' {
-            (Get-Content -LiteralPath $script:agentsMd -Raw) |
+            (Get-Content -LiteralPath $script:agentsMd -Encoding UTF8 -Raw) |
                 Should -Match 'Scoped instructions' -Because (
-                    "AGENTS.md must contain '## Scoped instructions' for OpenCode-compatible lazy loading.")
+                    "AGENTS.md must contain the Scoped instructions section for lazy loading.")
         }
 
-        It "[<CfName>] appears as @-ref in AGENTS.md" `
+        It "[<CfName>] appears as at-ref in AGENTS.md" `
            -TestCases $script:canonicalCases {
-            $ref = ".github/instructions/$CfName"
-            (Get-Content -LiteralPath $script:agentsMd -Raw) |
-                Should -Match ([regex]::Escape("@$ref")) -Because (
-                    "'$CfName' must have a row in the AGENTS.md @-ref table. " +
-                    "Add: | <path description> | @$ref |")
+            $expectedRef = '@.github/instructions/' + $CfName
+            (Get-Content -LiteralPath $script:agentsMd -Encoding UTF8 -Raw) |
+                Should -Match ([regex]::Escape($expectedRef)) -Because (
+                    "'$CfName' must have a row in the AGENTS.md at-ref table. " +
+                    "Add: | path description | $expectedRef |")
         }
 
-        It "[@<Ref>] resolves to an existing canonical file" `
+        It "[at-ref <Ref>] resolves to an existing canonical file" `
            -TestCases $script:agentsRefCases {
             $p = Join-Path $RepoRoot ($Ref -replace '/', '\')
             Test-Path -LiteralPath $p | Should -BeTrue -Because (
-                "AGENTS.md references @$Ref but the file does not exist. " +
-                "Add the canonical file or remove the stale @-ref.")
+                "AGENTS.md references '@$Ref' but the file does not exist. " +
+                "Add the canonical file or remove the stale at-ref.")
         }
     }
 
@@ -267,20 +271,23 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
 
         It 'CLAUDE.md exists and contains @AGENTS.md import' {
             Test-Path -LiteralPath $script:claudeMd | Should -BeTrue
-            (Get-Content -LiteralPath $script:claudeMd -Raw) | Should -Match '@AGENTS\.md' -Because (
-                "CLAUDE.md must import AGENTS.md for Claude Code-compatible harnesses.")
+            (Get-Content -LiteralPath $script:claudeMd -Encoding UTF8 -Raw) |
+                Should -Match '@AGENTS\.md' -Because (
+                    "CLAUDE.md must import AGENTS.md for Claude Code-compatible harnesses.")
         }
 
         It '.github/copilot-instructions.md exists and references AGENTS.md' {
             Test-Path -LiteralPath $script:copilotMd | Should -BeTrue
-            (Get-Content -LiteralPath $script:copilotMd -Raw) | Should -Match 'AGENTS\.md' -Because (
-                ".github/copilot-instructions.md must reference AGENTS.md (pointer, not duplicate).")
+            (Get-Content -LiteralPath $script:copilotMd -Encoding UTF8 -Raw) |
+                Should -Match 'AGENTS\.md' -Because (
+                    ".github/copilot-instructions.md must reference AGENTS.md (pointer, not duplicate).")
         }
 
         It '.github/copilot-instructions.md is a short pointer (under 25 lines)' {
-            (Get-Content -LiteralPath $script:copilotMd).Count | Should -BeLessOrEqual 25 -Because (
-                ".github/copilot-instructions.md must be a thin pointer. " +
-                "Full content belongs in AGENTS.md. Keep under 25 lines.")
+            (Get-Content -LiteralPath $script:copilotMd -Encoding UTF8).Count |
+                Should -BeLessOrEqual 25 -Because (
+                    ".github/copilot-instructions.md must be a thin pointer. " +
+                    "Full content belongs in AGENTS.md. Keep under 25 lines.")
         }
     }
 
@@ -289,14 +296,16 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
 
         It "[<CfName>] does not name a specific AI harness product" `
            -TestCases $script:canonicalCases {
-            $violations = Get-HarnessViolation -Lines (Get-Content -LiteralPath $CfPath)
+            $violations = Get-HarnessViolation -Lines (
+                Get-Content -LiteralPath $CfPath -Encoding UTF8)
             $violations | Should -BeNullOrEmpty -Because (
                 "Use 'AI coding agent' instead of a product name. " +
                 "Violations in '$CfName': $($violations -join '; ')")
         }
 
         It 'AGENTS.md does not name a specific AI harness product' {
-            $violations = Get-HarnessViolation -Lines (Get-Content -LiteralPath $script:agentsMd)
+            $violations = Get-HarnessViolation -Lines (
+                Get-Content -LiteralPath $script:agentsMd -Encoding UTF8)
             $violations | Should -BeNullOrEmpty -Because (
                 "AGENTS.md must use 'AI coding agent'. Violations: $($violations -join '; ')")
         }
