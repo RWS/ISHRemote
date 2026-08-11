@@ -27,8 +27,8 @@
     <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.2.24" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.6.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     
-    <PackageReference Include="System.Drawing.Common" Version="8.0.8" Condition="'$(TargetFramework)' == 'net48'" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.8" Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.10" Condition="'$(TargetFramework)' == 'net48'" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.10" Condition="'$(TargetFramework)' == 'net6.0'" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.5" Condition="'$(TargetFramework)' == 'net10.0'" />
 
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
