@@ -61,8 +61,8 @@
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" Condition="'$(TargetFramework)' == 'net10.0'"/><!-- ISHRemote v8.2+ NET10.0 way -->
-    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
-    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.10" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.10" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Text.Encodings.Web" Version="10.0.5" Condition="'$(TargetFramework)' == 'net10.0'"/><!-- ISHRemote v8.2+ NET10.0 way -->
     
     <PackageReference Include="System.Text.Json" Version="8.0.6" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
