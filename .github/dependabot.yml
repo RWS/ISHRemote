@@ -116,3 +116,11 @@ updates:
       # Tracked under issue #209.
       - dependency-name: "XmlDoc2CmdletDoc"
         update-types: ["version-update:semver-major"]
+
+      # System.Numerics.Vectors - lock-stepped with System.ServiceModel packages.
+      # Bumping minor or major independently from the WCF Client family causes
+      # assembly load failures at runtime (Version mismatch on the strong-named
+      # System.Numerics.Vectors assembly). Only patch bumps within the same
+      # minor line are safe without a coordinated WCF upgrade.
+      - dependency-name: "System.Numerics.Vectors"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
