@@ -63,3 +63,56 @@ updates:
           - "*"
         update-types:
           - "major"
+    ignore:
+      # -------------------------------------------------------------------
+      # Packages version-coupled to the .NET runtime target framework.
+      #
+      # The solution multi-targets net48;net6.0;net10.0. The .csproj uses
+      # conditional PackageReference blocks so each TFM pins a different
+      # major version (e.g. 8.x for net48/net6.0, 10.x for net10.0).
+      # Adding net11/net12 in the future is a deliberate codebase decision
+      # that requires PowerShell module changes beyond a .csproj edit, so
+      # major version bumps on these packages must never be auto-proposed.
+      # Security-advisory PRs are NOT suppressed by update-types ignore rules.
+      # -------------------------------------------------------------------
+
+      # WCF Client - co-released from dotnet/wcf; net48/net6.0 must stay on 4.x.
+      # The per-TFM version split is tracked in the codebase; upgrade is a milestone.
+      - dependency-name: "System.ServiceModel.*"
+        update-types: ["version-update:semver-major"]
+
+      # System.Drawing.Common, System.Text.Json, System.Text.Encodings.Web:
+      # net48/net6.0 pin to 8.x; net10.0 pins to 10.x. Dependabot sees the
+      # 8.x references and proposes bumping to 10.x, breaking the net48/net6.0 build.
+      - dependency-name: "System.Drawing.Common"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "System.Text.Json"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "System.Text.Encodings.Web"
+        update-types: ["version-update:semver-major"]
+
+      # Microsoft.Extensions.* - net48 pins to 8.x LTS baseline.
+      # ApiDescription.Client is also build-tooling for NSwag-generated OpenAPI
+      # clients (do not hand-edit); tracked under issue #258.
+      - dependency-name: "Microsoft.Extensions.Logging.Abstractions"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "Microsoft.Extensions.ApiDescription.Client"
+        update-types: ["version-update:semver-major"]
+
+      # Microsoft.PowerShell.Commands.Management - net6.0 pins to 7.2.x,
+      # net10.0 pins to 7.6.x. A major bump is a deliberate PS version decision.
+      - dependency-name: "Microsoft.PowerShell.Commands.Management"
+        update-types: ["version-update:semver-major"]
+
+      # Duende.IdentityModel / OidcClient - net48/net6.0 pin to one major,
+      # net10.0 to the next. Must be upgraded together across all TFMs manually.
+      - dependency-name: "Duende.IdentityModel"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "Duende.IdentityModel.OidcClient"
+        update-types: ["version-update:semver-major"]
+
+      # XmlDoc2CmdletDoc - generates PowerShell XML help from C# XML doc comments.
+      # Major version upgrades require coordinated testing of the net48 help output.
+      # Tracked under issue #209.
+      - dependency-name: "XmlDoc2CmdletDoc"
+        update-types: ["version-update:semver-major"]
