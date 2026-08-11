@@ -44,7 +44,7 @@ jobs:
     name: Anonymization of public Doc and Samples
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Pester Test Anonymization (no live server needed)
         shell: pwsh
         run: |
@@ -61,7 +61,7 @@ jobs:
     name: AI instruction file consistency
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Pester Test AI Instructions (no live server needed)
         shell: pwsh
         run: |

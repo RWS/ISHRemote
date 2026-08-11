@@ -42,7 +42,7 @@ jobs:
 
     steps:
     - name: PowerShell Update to latest stable (initially because 7.2.13/lts had issues, forcing latest stable)
-      uses: bjompen/UpdatePWSHAction@v1.0.1
+      uses: bjompen/UpdatePWSHAction@v1.1.0
       with:
         ReleaseVersion: 'Stable'
 
@@ -61,10 +61,10 @@ jobs:
           echo "ISHGITHUB_REPOSITORY[$env:ISHGITHUB_REPOSITORY]"
           echo "ISHGITHUB_RUN_ID[$env:ISHGITHUB_RUN_ID]"
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
     - name: Setup .NET 6.0.x
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: 6.0.x
 
@@ -112,7 +112,7 @@ jobs:
         }
 
     - name: Archive ISHRemote module
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ISHRemote-MainCI-Module
         path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/
@@ -133,14 +133,14 @@ jobs:
 
     steps:
     - name: PowerShell Update to latest stable (initially because 7.2.13/lts had issues, forcing latest stable)
-      uses: bjompen/UpdatePWSHAction@v1.0.1
+      uses: bjompen/UpdatePWSHAction@v1.1.0
       with:
         ReleaseVersion: 'Stable'
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
     - name: Download ISHRemote module artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: ISHRemote-MainCI-Module
         path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/
@@ -178,7 +178,7 @@ jobs:
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
       run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ISHRemote-MainCI-PesterPrerequisiteOnPowerShellCore
         path: Cmdlets.Pester.Tests.xml
@@ -193,7 +193,7 @@ jobs:
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
       run: Invoke-Pester -Path @('Source/ISHRemote/Trisoft.ISHRemote/Scripts/Public/','Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/') -ExcludePath @('*GetIshDocumentObj.Tests.ps1','*TestAnonymization.Tests.ps1') -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ISHRemote-MainCI-PesterOnPowerShellCore
         path: Cmdlets.Pester.Tests.xml
@@ -232,7 +232,7 @@ jobs:
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
       run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ISHRemote-MainCI-PesterPrerequisiteOnWindowsPowerShell
         path: Cmdlets.Pester.Tests.xml
@@ -247,7 +247,7 @@ jobs:
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
       run: Invoke-Pester -Path @('Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/') -ExcludePath @('*GetIshDocumentObj.Tests.ps1','*TestAnonymization.Tests.ps1') -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ISHRemote-MainCI-PesterOnWindowsPowerShell
         path: Cmdlets.Pester.Tests.xml
