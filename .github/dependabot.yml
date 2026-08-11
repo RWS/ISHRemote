@@ -21,6 +21,21 @@ updates:
 
   # NuGet packages across the multi-target solution (net48;net6.0;net10.0).
   # Security advisories (e.g. the System.Security.Cryptography.Xml NU1903) surface here too.
+  #
+  # Grouping strategy - three named groups, applied in order (first match wins):
+  #
+  #   wcf-client          - all System.ServiceModel.* packages, any version bump type.
+  #                         These packages are co-released from dotnet/wcf and must travel
+  #                         together; mixing versions causes build or runtime failures.
+  #
+  #   nuget-minor-and-patch - every other package, minor and patch bumps only.
+  #                         Low-risk; auto-merge candidate. One PR per week maximum.
+  #
+  #   nuget-major         - every other package, major bumps only.
+  #                         Requires human review; arrives as one PR rather than N separate ones.
+  #
+  # Note: Dependabot matches a package against the first group whose pattern fits.
+  # System.ServiceModel.* is therefore excluded from the two catch-all groups below it.
   - package-ecosystem: "nuget"
     directory: "/Source/ISHRemote"
     schedule:
@@ -34,9 +49,17 @@ updates:
     commit-message:
       prefix: "deps"
     groups:
+      wcf-client:
+        patterns:
+          - "System.ServiceModel.*"
       nuget-minor-and-patch:
         patterns:
           - "*"
         update-types:
           - "minor"
           - "patch"
+      nuget-major:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
