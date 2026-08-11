@@ -90,7 +90,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}
-	Context "Add-IshOutputFormat IshObjectsGroup" {
+	Context "Add-IshOutputFormat IshObjectGroup" {
 		BeforeAll {
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -ValueType Element -Value "TRUE" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -ValueType Element -Value "TRUE" |

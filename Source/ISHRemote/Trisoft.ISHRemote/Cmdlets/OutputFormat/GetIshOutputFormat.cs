@@ -49,7 +49,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -63,7 +63,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <para type="description">The activity filter to limit the amount of objects returned. Default is no filtering.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public Enumerations.ActivityFilter ActivityFilter
         {
@@ -75,7 +75,7 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <para type="description">The metadata filter with the filter fields to limit the amount of objects returned. Default is no filtering.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNull]
         public IshField[] MetadataFilter { get; set; }
 
@@ -83,14 +83,14 @@ namespace Trisoft.ISHRemote.Cmdlets.OutputFormat
         /// <para type="description">The metadata fields to retrieve</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNull]
         public IshField[] RequestedMetadata { get; set; }
 
         /// <summary>
         /// <para type="description">Output formats for which to retrieve the metadata. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
 

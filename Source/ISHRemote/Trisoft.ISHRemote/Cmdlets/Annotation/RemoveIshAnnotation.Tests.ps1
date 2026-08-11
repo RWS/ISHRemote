@@ -48,7 +48,7 @@ Describe "Remove-IshAnnotation" -Tags "Create" {
 		$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
 		$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
 		
-		# Add annotations - ParametersGroup
+		# Add annotations - ParameterGroup
 		$ishAnnotationPG1 = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 		$ishAnnotationPGWithReplies = Add-IshAnnotation -IshSession $ishsession -PubLogicalId $ishObjectPub.IshRef -PubVersion $ishObjectPub.version_version_value -PubLng $ishObjectPub.fishpubsourcelanguages_version_value -LogicalId $ishObjectTopic.IshRef -Version $ishObjectTopic.version_version_value -Lng $ishObjectTopic.doclanguage -Type $annotationType -Text $annotationText -Status $annotationStatus -Category $annotationCategory -Address $annotationAddress
 		$strMetadataReply = "<ishfields><ishfield name='FISHANNOTATIONTEXT' level='reply'>reply to an annotation $($ishAnnotationPGWithReplies.IshRef)</ishfield></ishfields>"  # Deliberate xml to pass straight as string on the proxy function
@@ -90,7 +90,7 @@ Describe "Remove-IshAnnotation" -Tags "Create" {
 		$ishAnnotationReply = $ishsession.Annotation25.CreateReply($ishAnnotationPipelineMixedWithReplies.IshRef, $strMetadataReply)
 	}
 
-	Context "Remove-IshAnnotation ParametersGroup" {
+	Context "Remove-IshAnnotation ParameterGroup" {
 		It "Parameter AnnotationId is empty" {
 			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId ""} | Should -Throw
 		}

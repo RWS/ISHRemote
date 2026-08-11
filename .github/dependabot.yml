@@ -1,0 +1,42 @@
+# Dependabot keeps NuGet packages and GitHub Actions patched, opening grouped PRs to limit noise.
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-reference
+version: 2
+updates:
+  # GitHub Actions referenced by the workflows in .github/workflows/
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "03:00"
+      timezone: "Europe/Brussels"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "ci"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # NuGet packages across the multi-target solution (net48;net6.0;net10.0).
+  # Security advisories (e.g. the System.Security.Cryptography.Xml NU1903) surface here too.
+  - package-ecosystem: "nuget"
+    directory: "/Source/ISHRemote"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "03:00"
+      timezone: "Europe/Brussels"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps"
+    groups:
+      nuget-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

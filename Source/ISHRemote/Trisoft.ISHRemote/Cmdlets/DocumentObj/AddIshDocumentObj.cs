@@ -117,7 +117,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -126,7 +126,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public long FolderId
         {
@@ -139,7 +139,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFilePath")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroupFileContent")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNull]
         public IshFolder IshFolder
         {
@@ -237,7 +237,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">The <see cref="IshObjects"/>s that need to be added.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
 

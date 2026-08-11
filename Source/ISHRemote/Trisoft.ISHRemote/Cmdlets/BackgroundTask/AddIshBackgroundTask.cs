@@ -35,7 +35,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
     /// <summary>
     /// <para type="synopsis">The Add-IshBackgroundTask cmdlet adds fire-and-forget asynchronous processing events to the CMS generic queuing system.</para>
     /// <para type="description">Add-IshBackgroundTask ParameterGroup variation uses BackgroundTask25.CreateBackgroundTask(WithStartAfter) that allows you to submit generic messages. Note that this requires a generic BackgroundTask service message handler.</para>
-    /// <para type="description">Add-IshBackgroundTask IshObjectsGroup requires content object(s) which are transformed as message inputdata and passed to the Background Task.</para>
+    /// <para type="description">Add-IshBackgroundTask IshObjectGroup requires content object(s) which are transformed as message inputdata and passed to the Background Task.</para>
     /// </summary>
     /// <example>
     /// <code>
@@ -104,7 +104,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -112,7 +112,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// <para type="description">Type of the event (e.g. SMARTTAG). Needs a match CMS BackgroundTask service handler entry.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string EventType { get; set; }
 
@@ -127,7 +127,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// <para type="description">Description of the event</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public string EventDescription { get; set; }
 
@@ -135,27 +135,27 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
         /// <para type="description">Date time indicating that the background task should not be picked up and executed before it.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         public DateTime? StartAfter { get; set; }
 
         /// <summary>
         /// <para type="description">The <see cref="IshObjects"/>s that will be used for background task creation.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
 
         /// <summary>
         /// <para type="description">The InputDataTemplate (e.g. IshObjectWithLngRef) indicates whether a list of ishObjects or one ishObject is submitted as input data to the background task.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         public InputDataTemplate InputDataTemplate { get; set; } = InputDataTemplate.IshObjectsWithLngRef;
 
         /// <summary>
         /// <para type="description">The hash id of the background task.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateLength(0, 80)]
         public string HashId { get; set; }
 
@@ -341,7 +341,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                     maximumProgress = _startEventMaxProgress
                 };
 
-                var backgroundTaskInputData = Encoding.Unicode.GetBytes(ParameterSetName == "IshObjectsGroup" ? inputData : RawInputData);
+                var backgroundTaskInputData = Encoding.Unicode.GetBytes(ParameterSetName == "IshObjectGroup" ? inputData : RawInputData);
 
                 if (HashId == null)
                 {
@@ -351,7 +351,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (StartAfter.HasValue)
                 {
                     // Create BackgroundTask
-                    var message = ParameterSetName == "IshObjectsGroup" ?
+                    var message = ParameterSetName == "IshObjectGroup" ?
                         $"Create BackgroundTask EventType[{EventType}] InputData.length[{inputData.Length}] StartAfter[{StartAfter}]" :
                         $"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}] StartAfter[{StartAfter}]";
                     WriteDebug(message);
@@ -375,7 +375,7 @@ namespace Trisoft.ISHRemote.Cmdlets.BackgroundTask
                 if (!StartAfter.HasValue)
                 {
                     // Create BackgroundTask
-                    var message = ParameterSetName == "IshObjectsGroup" ?
+                    var message = ParameterSetName == "IshObjectGroup" ?
                         $"Create BackgroundTask EventType[{EventType}] InputData.length[{inputData.Length}]" :
                         $"Create BackgroundTask EventType[{EventType}] RawInputData.length[{RawInputData.Length}]";
                     WriteDebug(message);

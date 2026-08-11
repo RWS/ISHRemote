@@ -50,7 +50,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -84,7 +84,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">If the metadata is not the same anymore, an error is given and the document object is not removed.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
 
@@ -92,14 +92,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">Array with the objects to remove. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
         /// </summary>
         /// TODO [Should] Promote parameter IshObject to IshObject[] processing
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         public IshObject IshObject { get; set; }
 
         /// <summary>
         /// <para type="description">When the Force switch is set, after deleting the language object, the version object and logical object will be deleted if they don't have any language objects anymore</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public SwitchParameter Force { get; set; }
 
@@ -129,7 +129,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 
                 IshFields requiredCurrentMetadata = new IshFields(RequiredCurrentMetadata);               
 
-                if (ParameterSetName == "IshObjectsGroup")
+                if (ParameterSetName == "IshObjectGroup")
                 {                    
                     long lngRef = Convert.ToInt64(IshObject.ObjectRef[Enumerations.ReferenceType.Lng]);
                     WriteDebug($"Removing lngCardId[{lngRef}]");

@@ -1,0 +1,31 @@
+# CODEOWNERS — auto-requests review from the listed owners on matching paths.
+# Syntax: https://docs.github.com/articles/about-code-owners
+# Owners are the team @RWS/ish plus named maintainer @ddemeyer (so there is always at
+# least one individual). The team and the user must have Write access, otherwise GitHub
+# silently ignores the rule.
+
+# Default owner for everything in the repo (the "implementer" the instructions refer to).
+*                                                            @RWS/ish @ddemeyer
+
+# --- Contract-sensitive surfaces: changes here need implementer approval ---
+
+# Public object model = backward-compatibility contract (PS1 scripts + Pester bind to it),
+# tightly correlated with ISHRemote.Format.ps1xml.
+/Source/ISHRemote/Trisoft.ISHRemote/Objects/                 @RWS/ish @ddemeyer
+/Source/ISHRemote/Trisoft.ISHRemote/ISHRemote.Format.ps1xml  @RWS/ish @ddemeyer
+
+# Self-contained authentication + proxy stack (WS-Trust / OpenID Connect over SOAP & REST).
+/Source/ISHRemote/Trisoft.ISHRemote/Connection/              @RWS/ish @ddemeyer
+
+# Cmdlet surface: names, parameters and parameter sets are public contract.
+/Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/                 @RWS/ish @ddemeyer
+
+# Public PowerShell functions that ship inside the module (exported library surface).
+/Source/ISHRemote/Trisoft.ISHRemote/Scripts/Public/          @RWS/ish @ddemeyer
+
+# Build, versioning and packaging.
+/Source/ISHRemote/Directory.Build.props                      @RWS/ish @ddemeyer
+/Source/ISHRemote/Trisoft.ISHRemote/Trisoft.ISHRemote.csproj @RWS/ish @ddemeyer
+
+# Repo guidance for humans and the cloud agent.
+/.github/                                                    @RWS/ish @ddemeyer

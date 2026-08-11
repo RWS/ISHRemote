@@ -51,7 +51,7 @@ Describe "Add-IshUserRole" -Tags "Create" {
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}
-	Context "Add-IshUserRole IshObjectsGroup" {
+	Context "Add-IshUserRole IshObjectGroup" {
 		BeforeAll {
 			$userRoleName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 			$ishObjectA = Add-IshUserRole -IshSession $ishSession -Name $userRoleName

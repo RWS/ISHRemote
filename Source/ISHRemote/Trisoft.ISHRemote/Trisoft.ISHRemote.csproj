@@ -191,6 +191,7 @@
     <MakeDir Directories="$(ISHRemoteFrameworkDir)" Condition="!Exists('$(ISHRemoteFrameworkDir)')" />
     <Copy SourceFiles="@(ISHRemoteFiles)" DestinationFiles="@(ISHRemoteFiles-&gt;'$(ISHRemoteFrameworkDir)\%(RecursiveDir)%(Filename)%(Extension)')" /><!-- hyphen-gt arrow needs to remain entity gt -->	  
     <Copy SourceFiles="@(ISHRemoteScriptFiles)" DestinationFiles="@(ISHRemoteScriptFiles-&gt;'$(LocalPSRepoDir)\ISHRemote\Scripts\%(RecursiveDir)%(Filename)%(Extension)')" /><!-- hyphen-gt arrow needs to remain entity gt -->
+    <Copy SourceFiles="$(ProjectDir)..\..\..\Doc\McpInstructions-ISHRemote.md" DestinationFolder="$(LocalPSRepoDir)\ISHRemote\Scripts\Public\" /> 
     <Copy SourceFiles="$(ProjectDir)ISHRemote.psm1" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
     <Copy SourceFiles="$(ProjectDir)ISHRemote.Format.ps1xml" DestinationFolder="$(ProjectDir)bin/$(Configuration)/ISHRemote" />
     <Delete Files="@(ISHRemoteTestFilesToDelete)" />

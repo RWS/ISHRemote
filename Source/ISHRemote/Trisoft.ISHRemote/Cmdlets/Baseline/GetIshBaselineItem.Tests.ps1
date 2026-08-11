@@ -60,7 +60,7 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 			$bi[0].ModifiedOnAsSortableDateTime.Substring(8,2) | Should -Be $day
 		}
 	}
-	Context "Get-IshBaselineItem IshObjectsGroup" {
+	Context "Get-IshBaselineItem IshObjectGroup" {
 		BeforeAll {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 			$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName

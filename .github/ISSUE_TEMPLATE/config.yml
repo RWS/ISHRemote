@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: RWS Community — Tridion Docs Developers forum
+    url: https://community.rws.com/product-groups/tridion-docs/
+    about: Questions about usage, the "Web Services API", or Tridion Docs itself (not ISHRemote bugs).
+  - name: Report a security vulnerability
+    url: https://community.rws.com
+    about: Please do not file public issues for security reports — see SECURITY.md and reach out here.
+  - name: ISHRemote documentation & release notes
+    url: https://github.com/RWS/ISHRemote/tree/master/Doc
+    about: Installation, ReleaseNotes, ThePlan and TheExecution background reading.

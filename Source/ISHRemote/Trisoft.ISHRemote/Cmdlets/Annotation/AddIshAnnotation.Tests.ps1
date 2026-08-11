@@ -103,11 +103,11 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 		}
 	}
 
-	Context "Add-IshAnnotation ParametersGroup" {
+	Context "Add-IshAnnotation ParameterGroup" {
 		BeforeAll {
 			$revisionId = $ishObjectTopic.ed
 			$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
-			$annotationText = "by ISHRemote Pester [ParametersGroup] on $timestamp"
+			$annotationText = "by ISHRemote Pester [ParameterGroup] on $timestamp"
 			$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
 			$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
 			$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label
@@ -162,11 +162,11 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 		}
 	}
 	
-	Context "Add-IshAnnotation ParametersGroup override metadata matching parameters" {
+	Context "Add-IshAnnotation ParameterGroup override metadata matching parameters" {
 		BeforeAll {
 			$revisionId = $ishObjectTopic.ed
 			$annotationAddress = "[{""revisionId"":""$revisionId"",""startContainerQuery"":""/*[1]/node()[1]/node()[1]"",""startOffset"":0,""endContainerQuery"":""/*[1]/node()[1]/node()[1]"",""endOffset"":4,""type"":""TEXT_RANGE_SELECTOR""}]"
-			$annotationText = "by ISHRemote Pester [ParametersGroup] on $timestamp"
+			$annotationText = "by ISHRemote Pester [ParameterGroup] on $timestamp"
 			$annotationCategory = (Get-IshLovValue -LovId DANNOTATIONCATEGORY -LovValueId VANNOTATIONCATEGORYCOMMENT).Label
 			$annotationType = (Get-IshLovValue -LovId DANNOTATIONTYPE -LovValueId VANNOTATIONTYPEGENERAL).Label
 			$annotationStatus = (Get-IshLovValue -LovId DANNOTATIONSTATUS -LovValueId VANNOTATIONSTATUSUNSHARED).Label

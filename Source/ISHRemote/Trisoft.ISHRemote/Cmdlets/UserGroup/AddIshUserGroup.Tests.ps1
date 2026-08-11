@@ -51,7 +51,7 @@ Describe "Add-IshUserGroup" -Tags "Create" {
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}
-	Context "Add-IshUserGroup IshObjectsGroup" {
+	Context "Add-IshUserGroup IshObjectGroup" {
 		BeforeAll {
 			$userGroupName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 			$ishObjectA = Add-IshUserGroup -IshSession $ishSession -Name $userGroupName

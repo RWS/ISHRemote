@@ -1,0 +1,90 @@
+{
+    // Task names intentionally mirror the CI job/step names in
+    // .github/workflows/continuous-integration.yml so that a developer running
+    // them locally gets the same semantic as the CI "Build, lint and fast checks" job.
+    // ...but deliberately the debug build, and not release build.
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // Mirrors CI step: "Explicit restore of multi-target/conditional ProjectReference and dependencies"
+            // Must be run at least once after a clean checkout; re-run whenever .csproj files change.
+            "label": "Restore Solution",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "restore",
+                "Source/ISHRemote/ISHRemote.sln"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            // Mirrors CI step: "Build Solution"
+            // Uses Release configuration because TreatWarningsAsErrors=true only fires in Release.
+            // Run "Restore Solution" once first if you see CS0234/CS0518 namespace errors.
+            "label": "Build Solution",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "--no-restore",
+                "--no-incremental",
+                "--configuration", "debug",
+                "Source/ISHRemote/ISHRemote.sln"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            // Mirrors CI step: "Lint with PSScriptAnalyzer"
+            // Requires PSScriptAnalyzer: Install-Module PSScriptAnalyzer -ErrorAction Stop
+            "label": "Lint with PSScriptAnalyzer",
+            "type": "shell",
+            "command": "pwsh",
+            "args": [
+                "-NonInteractive",
+                "-Command",
+                "Invoke-ScriptAnalyzer -Path Source/ISHRemote/Trisoft.ISHRemote/Scripts -Recurse -OutVariable issues; $errors=$issues.Where({$_.Severity -eq 'Error'}); $warnings=$issues.Where({$_.Severity -eq 'Warning'}); Write-Output \"Errors[$($errors.Count)] Warnings[$($warnings.Count)]\"; $issues | Format-Table"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            // Mirrors the CI job name: "Build, lint and fast checks"
+            // Runs all three steps in order: restore → build (Release) → lint.
+            // This is the local equivalent of the CI fast lane (no live-server tests).
+            "label": "Build, lint and fast checks",
+            "dependsOn": [
+                "Restore Solution",
+                "Build Solution",
+                "Lint with PSScriptAnalyzer"
+            ],
+            "dependsOrder": "sequence",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

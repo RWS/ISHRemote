@@ -1,0 +1,101 @@
+name: Bug report
+description: Report a problem with an ISHRemote cmdlet, authentication, or behavior.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please **anonymize** everything you paste:
+        no real server URLs, usernames, passwords, client ids/secrets, or tokens — use
+        `https://example.com/ISHWS/` style placeholders.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened (actual result)
+      description: What did you observe? Include the exact error message text if any.
+      placeholder: e.g. Get-IshDocumentObj throws "[-14] The access is denied ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal repro script (anonymized)
+      description: The smallest cmdlet sequence that reproduces it. Assume an existing `$ishSession`.
+      render: powershell
+      placeholder: |
+        # New-IshSession -WsBaseUrl "https://example.com/ISHWS/" ...
+        Get-IshFolder -BaseFolder Data
+    validations:
+      required: true
+  - type: input
+    id: ishremote-version
+    attributes:
+      label: ISHRemote version
+      description: "`(Get-Module ISHRemote).Version` or `$ishSession.ClientVersion`"
+      placeholder: e.g. 8.2.13525.0
+    validations:
+      required: true
+  - type: textarea
+    id: powershell-host
+    attributes:
+      label: PowerShell host & version
+      description: "Output of `$PSVersionTable` (PSEdition, PSVersion, OS)."
+      render: text
+      placeholder: e.g. PSEdition Core, PSVersion 7.6.0 on .NET 10.0.5, Windows
+    validations:
+      required: true
+  - type: input
+    id: server-version
+    attributes:
+      label: Tridion Docs / InfoShare server version
+      description: "`$ishSession.ServerVersion`, e.g. 14.0.4, 15.2.0, 15.3.0"
+      placeholder: e.g. 15.3.0
+    validations:
+      required: true
+  - type: dropdown
+    id: protocol
+    attributes:
+      label: Protocol
+      description: "`$ishSession.Protocol` — which connection protocol was in use?"
+      options:
+        - "WcfSoapWithWsTrust (legacy, ≤14.x / forced)"
+        - "WcfSoapWithOpenIdConnect (15.x SOAP over OpenID Connect)"
+        - "OpenApiWithOpenIdConnect (REST)"
+        - "Not sure"
+    validations:
+      required: true
+  - type: dropdown
+    id: auth-flow
+    attributes:
+      label: Authentication flow
+      options:
+        - "Interactive System Browser (Authorization Code + PKCE)"
+        - "Client Credentials (-ClientId / -ClientSecret)"
+        - "Username/Password or NetworkCredential (WS-Trust)"
+        - "Not sure"
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Verbose / debug output (anonymized)
+      description: Re-run with `-Verbose` (and `-Debug` if useful) and paste the relevant lines. Scrub URLs/secrets/tokens.
+      render: text
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before submitting
+      options:
+        - label: I removed all real URLs, credentials, client secrets, and tokens from this report.
+          required: true
+        - label: I searched existing issues for a duplicate.
+          required: true

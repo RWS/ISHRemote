@@ -1,22 +1,41 @@
 {
-    "servers": {
-        "IshRemoteMcpServer": {
-            "type": "stdio",
-            "command": "pwsh",
-            "args": [                
-                "-NoProfile",
-                "-Command",
-                "& { Start-IshRemoteMcpServer -CmdletsToRegister ((Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name) -LogFilePath \"D:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log\" }"
-            ]
-        },
-        "IshRemoteMcpServerDEBUG": {
-            "type": "stdio",
-            "command": "pwsh",
-            "args": [                
-                "-NoProfile",
-                "-Command",
-                "${workspaceFolder}\\.vscode\\Debug-IShRemoteMCPServer.ps1"
-            ]
-        }
-    }
+	"servers": {
+		"IshRemoteMcpServer": {
+			"type": "stdio",
+			"command": "pwsh",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"& { Start-IshRemoteMcpServer -CmdletsToRegister ((Get-Command -Module ISHRemote -ListImported -CommandType Cmdlet).Name) -LogFilePath \"${workspaceFolder}\\IshRemoteMcpServer.log\" }"
+			]
+		},
+		"IshRemoteMcpServerDEBUG": {
+			"type": "stdio",
+			"command": "pwsh",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"${workspaceFolder}\\.vscode\\Debug-IShRemoteMCPServer.ps1"
+			]
+		},
+		"microsoft-learn": {
+			"type": "http",
+			"url": "https://learn.microsoft.com/api/mcp"
+		},
+		"github": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp/",
+			"headers": {
+				"Authorization": "Bearer ${input:github-pat}"
+			}
+		}
+	},
+	"inputs": [
+		{
+			"id": "github-pat",
+			"type": "promptString",
+			"description": "GitHub Personal Access Token (scopes: repo, security_events)",
+			"password": true
+		}
+	]
 }

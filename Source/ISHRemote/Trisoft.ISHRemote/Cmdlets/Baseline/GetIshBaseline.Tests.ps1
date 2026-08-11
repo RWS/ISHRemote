@@ -62,7 +62,7 @@ Describe "Get-IshBaseline" -Tags "Read" {
 		}
 	}
 
-	Context "Get-IshBaseline IshObjectsGroup" {
+	Context "Get-IshBaseline IshObjectGroup" {
 		BeforeAll {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 			$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName

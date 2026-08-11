@@ -48,7 +48,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
@@ -62,7 +62,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">The folder identifier where the objects are currently located</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public long FromFolderId
         {
@@ -74,7 +74,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">The IshFolder object where the objects are currently located</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNull]
         public IshFolder FromIshFolder
         {
@@ -86,7 +86,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">The folder identifier where to move the document objects to</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public long ToFolderId
         {
@@ -98,7 +98,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <para type="description">The IshFolder object where to move the document objects to</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNull]
         public IshFolder ToIshFolder
         {
@@ -109,7 +109,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">Array with the object to move. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         public IshObject IshObject { get; set; }
 
         #region Private fields 

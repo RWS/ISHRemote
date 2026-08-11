@@ -38,7 +38,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 		$ishObjects = $ishFolderTopic | Get-IshFolderContent -IshSession $ishSession -VersionFilter ""
 		$createdLngRefs = $ishObjects | select -ExpandProperty LngRef
 	}
-	Context "Add-IshBackgroundTask IshObjectsGroup Parameter IshObject with implicit IshSession since 14SP4/14.0.4" {
+	Context "Add-IshBackgroundTask IshObjectGroup Parameter IshObject with implicit IshSession since 14SP4/14.0.4" {
 		It "Parameter IshObject invalid" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject "INVALIDISHOBJECT" } | Should -Throw
@@ -70,7 +70,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 		}
 	}
 
-	Context "Add-IshBackgroundTask IshObjectsGroup Pipeline IshObject since 14SP4/14.0.4" {
+	Context "Add-IshBackgroundTask IshObjectGroup Pipeline IshObject since 14SP4/14.0.4" {
 		BeforeAll {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishBackgroundTaskIshObjectsPipeline = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
@@ -108,7 +108,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 		}
 	}
     
-    Context "Add-IshBackgroundTask IshObjectsGroup Pipeline IshObject with InputDataTemplate" {
+    Context "Add-IshBackgroundTask IshObjectGroup Pipeline IshObject with InputDataTemplate" {
         BeforeAll {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Level Task -Name INPUTDATAID
         }

@@ -34,7 +34,7 @@ Describe "Set-IshBaseline" -Tags "Create" {
 		}
 	}
 
-	Context "Set-IshBaseline IshObjectsGroup" {
+	Context "Set-IshBaseline IshObjectGroup" {
 		BeforeAll {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 			$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName

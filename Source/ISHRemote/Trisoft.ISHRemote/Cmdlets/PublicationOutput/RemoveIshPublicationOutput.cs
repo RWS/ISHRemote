@@ -51,14 +51,14 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
         /// <para type="description">Array with the publication outputs to remove. This array can be passed through the pipeline or explicitly passed via the parameter.</para>
         /// </summary>
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "IshObjectGroup")]
         [AllowEmptyCollection]
         public IshObject[] IshObject { get; set; }
 
@@ -91,7 +91,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <para type="description">If the metadata is still the same, the publication output is removed.</para>
         /// <para type="description">If the metadata is not the same anymore, an error is given and the publication output is not removed.</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequiredCurrentMetadata { get; set; }
@@ -100,7 +100,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <para type="description">When the Force switch is set, after deleting the publication output object, the publication version object and publication logical object will be deleted if they don't have any publication outputs anymore.
         /// Be carefull using this option, as it will delete the publication (version) and baseline if there are no outputformats left!!</para>
         /// </summary>
-        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectsGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]        
         [ValidateNotNullOrEmpty]
         public SwitchParameter Force { get; set; }
