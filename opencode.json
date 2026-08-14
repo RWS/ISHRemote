@@ -8,7 +8,7 @@
         "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
         "-NoProfile",
         "-Command",
-        "& { Import-Module ISHRemote; Start-IshRemoteMcpServer -CmdletsToRegister ((Get-Command -Module ISHRemote -CommandType Cmdlet).Name) -LogFilePath 'D:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log' }"
+        "& { Import-Module ISHRemote; Start-IshRemoteMcpServer -CmdletsToRegister ((Get-Command -Module ISHRemote -CommandType Cmdlet).Name) }"
       ],
       "enabled": true,
       "timeout": 120000

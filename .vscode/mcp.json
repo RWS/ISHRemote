@@ -2,7 +2,7 @@
 	"servers": {
 		"IshRemoteMcpServer": {
 			"type": "stdio",
-			"command": "pwsh",
+			"command": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
 			"args": [
 				"-NoProfile",
 				"-Command",
@@ -11,7 +11,7 @@
 		},
 		"IshRemoteMcpServerDEBUG": {
 			"type": "stdio",
-			"command": "pwsh",
+			"command": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
 			"args": [
 				"-NoProfile",
 				"-Command",

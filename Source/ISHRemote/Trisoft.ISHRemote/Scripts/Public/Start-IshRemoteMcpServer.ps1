@@ -67,6 +67,11 @@ function Start-IshRemoteMcpServer {
     Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Starting MCP Server"; InputEncoding = [Console]::InputEncoding.EncodingName; OutputEncoding = [Console]::OutputEncoding.EncodingName }
     while ($ActivateWhileLoop) {
         $inputLine = [Console]::In.ReadLine()
+        if ($null -eq $inputLine) {
+            # EOF: client closed the input stream — exit cleanly per MCP stdio transport spec
+            Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "stdin closed (EOF), exiting MCP Server" }
+            break
+        }
         if ([string]::IsNullOrEmpty($inputLine)) { continue }
         try {
             $request = $inputLine | ConvertFrom-Json -ErrorAction Stop
