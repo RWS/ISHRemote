@@ -48,6 +48,25 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
         It "Starts server with single cmdlet in CmdletsToRegister" {
             { Start-IshRemoteMcpServer -CmdletsToRegister @('Get-IshFolder') -ActivateWhileLoop $false } | Should -Not -Throw
         }
+        It "Sets Console InputEncoding and OutputEncoding to UTF-8 without BOM" {
+            # On Windows the default is SBCSCodePageEncoding; the server must switch to UTF-8 so
+            # MCP clients (which always send UTF-8 JSON) are read correctly. Regression test for
+            # the fix in GitHub issue #243.
+            $cmdlets = @('Get-IshFolder')
+            Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $false
+            [Console]::InputEncoding.WebName  | Should -Be 'utf-8'
+            [Console]::OutputEncoding.WebName | Should -Be 'utf-8'
+        }
+        It "Sets Console Out AutoFlush to true on inner StreamWriter" {
+            # Console.SetOut re-wraps in SyncTextWriter; verify the inner StreamWriter has AutoFlush=true
+            # so each JSON-RPC response is flushed immediately to the pipe. Regression test for
+            # the fix in GitHub issue #243.
+            $cmdlets = @('Get-IshFolder')
+            Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $false
+            $field = [Console]::Out.GetType().GetField('_out', [System.Reflection.BindingFlags]::NonPublic -bor [System.Reflection.BindingFlags]::Instance)
+            $innerWriter = $field.GetValue([Console]::Out)
+            $innerWriter.AutoFlush | Should -Be $true
+        }
     }
 }
 

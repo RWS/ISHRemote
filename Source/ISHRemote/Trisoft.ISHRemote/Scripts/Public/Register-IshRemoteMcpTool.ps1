@@ -151,14 +151,13 @@ function Register-IshRemoteMcpTool {
 
         Write-IshRemoteLog -LogEntry @{ Level = 'Verbose'; Message = "Register-IshRemoteMcpTool function[$($CommandInfo.Name)] tool annotations"; TargetFunction = $CommandInfo.Name }
         $annotations = [ordered]@{
-            type       = 'object'
-            destructiveHint = 'true'
-            idempotentHint = 'false'
-            readOnlyHint = 'false'
+            destructiveHint = $true
+            idempotentHint = $false
+            readOnlyHint = $false
         }
         switch -Regex ($CommandInfo.Name) {
-            { $_.StartsWith("Find-IshDocumentObj") -or $_.StartsWith("Find-IshPublicationOutput") } { $annotations.destructiveHint = 'true' ; $annotations.idempotentHint = 'true'; $annotations.readOnlyHint = 'true' }  # mostly because these Find can return the full repository
-            { $_.StartsWith("Get") -or $_.StartsWith("Test") -or $_.StartsWith("Search") -or $_.StartsWith("Find") -or $_.StartsWith("Compare") } { $annotations.destructiveHint = 'false' ; $annotations.idempotentHint = 'true'; $annotations.readOnlyHint = 'true' }
+            { $_.StartsWith("Find-IshDocumentObj") -or $_.StartsWith("Find-IshPublicationOutput") } { $annotations.destructiveHint = $true ; $annotations.idempotentHint = $true; $annotations.readOnlyHint = $true }  # mostly because these Find can return the full repository
+            { $_.StartsWith("Get") -or $_.StartsWith("Test") -or $_.StartsWith("Search") -or $_.StartsWith("Find") -or $_.StartsWith("Compare") } { $annotations.destructiveHint = $false ; $annotations.idempotentHint = $true; $annotations.readOnlyHint = $true }
             { $_.StartsWith("Set") -or $_.StartsWith("New") -or $_.StartsWith("Add") -or $_.StartsWith("Remove") -or $_.StartsWith("Move") -or $_.StartsWith("Stop") -or $_.StartsWith("Publish")} { <#defaults are good#> }
             default { Write-IshRemoteLog -LogEntry @{ Level = 'Warn'; Message = "Unknown verb or cmdlet '$($CommandInfo.Name)', defaulting destructiveHint and idempotentHint to false" } }
         }

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "shell": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "mcp": {
+    "IshRemoteMcpServer": {
+      "type": "local",
+      "command": [
+        "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "-NoProfile",
+        "-Command",
+        "& { Import-Module ISHRemote; Start-IshRemoteMcpServer -CmdletsToRegister ((Get-Command -Module ISHRemote -CommandType Cmdlet).Name) -LogFilePath 'D:\\GITHUB\\ISHRemote\\IshRemoteMcpServer.log' }"
+      ],
+      "enabled": true,
+      "timeout": 120000
+    }
+  },
+  "experimental": {
+    "mcp_timeout": 120000
+  }
+}

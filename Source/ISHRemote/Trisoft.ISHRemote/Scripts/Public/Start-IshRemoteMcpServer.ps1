@@ -53,13 +53,24 @@ function Start-IshRemoteMcpServer {
     # TODO [SHOULD] Convert the instructions to JSON format, from the /Docs/ folder as overall these instructions have values for humans as well :)
     $instructionsJson = Register-IshRemoteMcpInstructions
 
-    Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Starting MCP Server" }
+    # Ensure UTF-8 encoding on stdin/stdout and enable AutoFlush so responses are
+    # immediately visible to the MCP client. On Windows the default is SBCSCodePageEncoding
+    # which causes the client's UTF-8 JSON to be misread, blocking ReadLine() indefinitely.
+    # Console.Out is wrapped in SyncTextWriter so AutoFlush cannot be set directly;
+    # replace it with a StreamWriter over the underlying stdout stream with AutoFlush=true.
+    $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+    [Console]::InputEncoding  = $utf8NoBom
+    [Console]::OutputEncoding = $utf8NoBom
+    $stdoutWriter = [System.IO.StreamWriter]::new([Console]::OpenStandardOutput(), $utf8NoBom)
+    $stdoutWriter.AutoFlush  = $true
+    [Console]::SetOut($stdoutWriter)
+    Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Starting MCP Server"; InputEncoding = [Console]::InputEncoding.EncodingName; OutputEncoding = [Console]::OutputEncoding.EncodingName }
     while ($ActivateWhileLoop) {
         $inputLine = [Console]::In.ReadLine()
         if ([string]::IsNullOrEmpty($inputLine)) { continue }
         try {
             $request = $inputLine | ConvertFrom-Json -ErrorAction Stop
-            if ($request.id) {
+            if ($null -ne $request.id) {
                 # Handle the request and get the response
                 Write-IshRemoteLog -LogEntry @{ Level = 'Info'; Message = "Processing request"; RequestId = $request.id; Request = $inputLine }
                 $jsonResponse = Invoke-IshRemoteMcpHandleRequest -Request $request -ToolsListJson $toolsListJson -ResourcesListJson $resourcesListJson -InstructionsJson $instructionsJson
