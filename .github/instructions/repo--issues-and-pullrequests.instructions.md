@@ -1,11 +1,28 @@
 ---
 applyTo: ".github/**"
-description: "Naming conventions for ISHRemote GitHub issues and pull requests: title shape, verb vocabulary, before-and-after style for version bumps, commit prefixes, and how to format Dependabot grouped-PR bodies and the matching ReleaseNotes Dependencies section."
+description: "Naming conventions for ISHRemote GitHub issues and pull requests: issue types, labels, branch naming, title shape, verb vocabulary, before-and-after style for version bumps, commit prefixes, and how to format Dependabot grouped-PR bodies and the matching ReleaseNotes Dependencies section."
 ---
 
 # ISHRemote Issue and Pull Request Conventions
 
 Issues and PRs share one title style — an issue title typically becomes the PR title.
+
+## Issue types
+
+Issue type is set via the `type:` field in the ISSUE_TEMPLATE YAML — never via labels. The three
+allowed values are `feature`, `bug`, and `task`, matching the default types configured at the
+organization level.
+
+## Branch naming
+
+Branch names follow `<type>/<issue-number>-<kebab-slug>` where the slug is a lowercased
+kebab-case abbreviation of the issue title — long enough to be recognizable, not necessarily
+the full title verbatim.
+
+| Issue type | Branch prefix | Example |
+|---|---|---|
+| Feature or Task | `feature/` | `feature/240-maintain-project-ai` |
+| Bug | `bug/` | `bug/238-get-ishdocumentobjdata-does-not-trim-long-ftitle` |
 
 ## Title shape
 

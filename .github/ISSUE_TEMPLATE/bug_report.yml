@@ -1,6 +1,6 @@
 name: Bug report
 description: Report a problem with an ISHRemote cmdlet, authentication, or behavior.
-labels: ["bug"]
+type: bug
 body:
   - type: markdown
     attributes:

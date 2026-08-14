@@ -1,7 +1,7 @@
 name: Feature request / idea
 description: Propose a new cmdlet, parameter or capability — or just drop an idea from your notes.
 title: "Add cmdlet Verb-IshNoun to <capability>"
-labels: ["enhancement"]
+type: feature
 body:
   - type: markdown
     attributes:
