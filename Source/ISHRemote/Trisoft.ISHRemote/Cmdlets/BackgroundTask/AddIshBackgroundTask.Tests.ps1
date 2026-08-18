@@ -41,31 +41,31 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 	Context "Add-IshBackgroundTask IshObjectGroup Parameter IshObject with implicit IshSession since 14SP4/14.0.4" {
 		It "Parameter IshObject invalid" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject "INVALIDISHOBJECT" } | Should -Throw
+				{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject "INVALIDISHOBJECT" } | Should-Throw
 			}
 		}
 		It "Parameter EventType null" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				{ Add-IshBackgroundTask -EventType $null -IshObject  $ishObjects } | Should -Throw
+				{ Add-IshBackgroundTask -EventType $null -IshObject  $ishObjects } | Should-Throw
 			}
 		}
 		It "Pipeline IshObject Single" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject $ishObjectTopic1_1
-				$ishObjectTopic1_1.Count | Should -BeExactly 1
-				$ishBackgroundTaskIshObjectsParameter.Count | Should -BeExactly 1
-				$ishBackgroundTaskIshObjectsParameter.GetType() | Should -BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
-				$ishBackgroundTaskIshObjectsParameter.EventType | Should -BeExactly $ishEventTypeToPurge
-				$ishBackgroundTaskIshObjectsParameter.userid | Should -BeExactly $ishSession.UserName
+				$ishObjectTopic1_1.Count | Should-Be 1
+				$ishBackgroundTaskIshObjectsParameter.Count | Should-Be 1
+				$ishBackgroundTaskIshObjectsParameter | Should-HaveType Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+				$ishBackgroundTaskIshObjectsParameter.EventType | Should-BeString -CaseSensitive $ishEventTypeToPurge
+				$ishBackgroundTaskIshObjectsParameter.userid | Should-BeString -CaseSensitive $ishSession.UserName
 			}
 		}
 		It "Pipeline IshObject Multiple" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishBackgroundTaskIshObjectsParameter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -IshObject $ishObjects
-				$ishBackgroundTaskIshObjectsParameter.Count | Should -BeExactly 1
-				$ishBackgroundTaskIshObjectsParameter.GetType() | Should -BeExactly Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
-				$ishBackgroundTaskIshObjectsParameter.EventType | Should -BeExactly $ishEventTypeToPurge
-				$ishBackgroundTaskIshObjectsParameter.userid | Should -BeExactly $ishSession.UserName
+				$ishBackgroundTaskIshObjectsParameter.Count | Should-Be 1
+				$ishBackgroundTaskIshObjectsParameter | Should-HaveType Trisoft.ISHRemote.Objects.Public.IshBackgroundTask
+				$ishBackgroundTaskIshObjectsParameter.EventType | Should-BeString -CaseSensitive $ishEventTypeToPurge
+				$ishBackgroundTaskIshObjectsParameter.userid | Should-BeString -CaseSensitive $ishSession.UserName
 			}
 		}
 	}
@@ -79,28 +79,28 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 		}
 		It "Add-IshBackgroundTask returns IshBackgroundTask object" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
-				$ishObjects.Count | Should -BeExactly 10
-				$ishBackgroundTaskIshObjectsPipeline.Count | Should -BeExactly 1
-				$ishBackgroundTaskIshObjectsPipeline.GetType().Name | Should -BeExactly "IshBackgroundTask"
-				$ishBackgroundTaskIshObjectsPipeline.EventType | Should -BeExactly $ishEventTypeToPurge
-				$ishBackgroundTaskIshObjectsPipeline.userid | Should -BeExactly $ishSession.UserName
+				$ishObjects.Count | Should-Be 10
+				$ishBackgroundTaskIshObjectsPipeline.Count | Should-Be 1
+				$ishBackgroundTaskIshObjectsPipeline.GetType().Name | Should-BeString -CaseSensitive "IshBackgroundTask"
+				$ishBackgroundTaskIshObjectsPipeline.EventType | Should-BeString -CaseSensitive $ishEventTypeToPurge
+				$ishBackgroundTaskIshObjectsPipeline.userid | Should-BeString -CaseSensitive $ishSession.UserName
 			}
 		}
 		It "Pipeline IshObject Single" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishBackgroundTaskIshObjectsPipeline = $ishObjectTopic1_1 | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-				$ishObjectTopic1_1.Count | Should -BeExactly 1
-				$ishBackgroundTaskIshObjectsPipeline.Count | Should -BeExactly 1
-				$ishBackgroundTaskIshObjectsPipeline.GetType().Name | Should -BeExactly "IshBackgroundTask"
-				$ishBackgroundTaskIshObjectsPipeline.EventType | Should -BeExactly $ishEventTypeToPurge
-				$ishBackgroundTaskIshObjectsPipeline.userid | Should -BeExactly $ishSession.UserName
+				$ishObjectTopic1_1.Count | Should-Be 1
+				$ishBackgroundTaskIshObjectsPipeline.Count | Should-Be 1
+				$ishBackgroundTaskIshObjectsPipeline.GetType().Name | Should-BeString -CaseSensitive "IshBackgroundTask"
+				$ishBackgroundTaskIshObjectsPipeline.EventType | Should-BeString -CaseSensitive $ishEventTypeToPurge
+				$ishBackgroundTaskIshObjectsPipeline.userid | Should-BeString -CaseSensitive $ishSession.UserName
 			}
 		}
 		It "Pipeline IshObject MetadataBatchSize[10] with LogicalId grouping" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15 -or (([Version]$ishSession.ServerVersion).Major -ge 14 -and ([Version]$ishSession.ServerVersion).Revision -ge 4)) { 
 				$ishSession.MetadataBatchSize = 10
 				$ishBackgroundTasks = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge
-				$ishBackgroundTasks.Count | Should -BeExactly 1
+				$ishBackgroundTasks.Count | Should-Be 1
 			}
 		}
 		AfterAll {
@@ -117,7 +117,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
                 $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectsWithLngRef |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
-				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
+				$backgroundTask.INPUTDATAID -ge 0 | Should-Be $true
 
                 # inputData looks like <ishobjects><ishobject ishtype='ISHMasterDoc' ishref='GUID-X' ishlngref='45679'>...
 				$inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
@@ -127,14 +127,14 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
                 $ishObjectsFromInputData = [xml]$decodedContent
 
-                $ishObjectsFromInputData.ishObjects -ne $null | Should -Be $true
-				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should -Be $ishObjects.LngRef.Count  # all language cards are passed
-                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -ne $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -ne $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -ne $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects -ne $null | Should-Be $true
+				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should-Be $ishObjects.LngRef.Count  # all language cards are passed
+                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -ne $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -ne $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -ne $null | Should-Be $true
             }
         }
         It "Pipeline IshObject with InputDataTemplate IshObjectWithLngRef" {
@@ -142,7 +142,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
                 $backgroundTask = Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectWithLngRef -IshObject $ishObjectTopic1_1 |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
-				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
+				$backgroundTask.INPUTDATAID -ge 0 | Should-Be $true
 
                 # inputData looks like <ishobject ishtype='ISHMasterDoc' ishref='GUID-X' ishlogicalref='45677' ishversionref='45678' ishlngref='45679'> or <ishobject ishtype='ISHBaseline' ishref='GUID-X' ishbaselineref='45798'>
 				$inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
@@ -152,13 +152,13 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
                 $ishObjectFromInputData = [xml]$decodedContent
         
-                $ishObjectFromInputData.ChildNodes.Count | Should -Be 1  # first-and-only IshObject will be passed
-				$ishObjectFromInputData.ishObject -ne $null | Should -Be $true
-                $ishObjectFromInputData.ishObject.ishtype | Should -Be "ISHModule"
-                $ishObjectFromInputData.ishObject.ishref | Should -Be "ISHREMOTE-LOGICALID-TOPIC-FORADDBT1"
-                $ishObjectFromInputData.ishObject.ishlogicalref -ne $null | Should -Be $true
-                $ishObjectFromInputData.ishObject.ishversionref -ne $null | Should -Be $true
-                $ishObjectFromInputData.ishObject.ishlngref -ne $null | Should -Be $true
+                $ishObjectFromInputData.ChildNodes.Count | Should-Be 1  # first-and-only IshObject will be passed
+				$ishObjectFromInputData.ishObject -ne $null | Should-Be $true
+                $ishObjectFromInputData.ishObject.ishtype | Should-Be "ISHModule"
+                $ishObjectFromInputData.ishObject.ishref | Should-Be "ISHREMOTE-LOGICALID-TOPIC-FORADDBT1"
+                $ishObjectFromInputData.ishObject.ishlogicalref -ne $null | Should-Be $true
+                $ishObjectFromInputData.ishObject.ishversionref -ne $null | Should-Be $true
+                $ishObjectFromInputData.ishObject.ishlngref -ne $null | Should-Be $true
             }
         }
         It "Pipeline IshObject with InputDataTemplate IshObjectsWithIshRef" {
@@ -169,7 +169,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
                 $backgroundTask = $localIshObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectsWithIshRef |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
-				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
+				$backgroundTask.INPUTDATAID -ge 0 | Should-Be $true
 
                 # inputData looks like <ishobjects><ishobject ishtype='ISHMasterDoc' ishref='GUID-X'>...
 				$inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
@@ -179,14 +179,14 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
                 $ishObjectsFromInputData = [xml]$decodedContent
         
-                $ishObjectsFromInputData.ishObjects -ne $null | Should -Be $true
-				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should -Be ($ishObjects.IshRef | Select-Object -Unique).Count  # all unique LogicalIds are passed
-                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -eq $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -eq $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -eq $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects -ne $null | Should-Be $true
+				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should-Be ($ishObjects.IshRef | Select-Object -Unique).Count  # all unique LogicalIds are passed
+                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -eq $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -eq $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -eq $null | Should-Be $true
             }
         }
 		It "Pipeline IShObject with InputDataTemplate IshObjectsWithIshRef over Folder25.GetContents [SCTCM-3506]" {
@@ -209,7 +209,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 				# Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
                 $backgroundTask = $localIshObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType $ishEventTypeToPurge -InputDataTemplate IshObjectsWithIshRef |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
-				$backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
+				$backgroundTask.INPUTDATAID -ge 0 | Should-Be $true
 
                 # inputData looks like <ishobjects><ishobject ishtype='ISHMasterDoc' ishref='GUID-X'>...
 				$inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
@@ -219,14 +219,14 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
                 $ishObjectsFromInputData = [xml]$decodedContent
         
-                $ishObjectsFromInputData.ishObjects -ne $null | Should -Be $true
-				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should -Be ($ishObjects.IshRef | Select-Object -Unique).Count  # all unique LogicalIds are passed
-                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -eq $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -eq $null | Should -Be $true
-                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -eq $null | Should -Be $true
+                $ishObjectsFromInputData.ishObjects -ne $null | Should-Be $true
+				$ishObjectsFromInputData.ishobjects.ChildNodes.Count | Should-Be ($ishObjects.IshRef | Select-Object -Unique).Count  # all unique LogicalIds are passed
+                $ishObjectsFromInputData.ishObjects.ishObject.Count -ge 0 | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishtype -ne $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishref -ne $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlogicalref -eq $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishversionref -eq $null | Should-Be $true
+                $ishObjectsFromInputData.ishObjects.ishObject[0].ishlngref -eq $null | Should-Be $true
             }
         }
         It "Pipeline IShObject with InputDataTemplate EventDataWithIshLngRefs, typically skipped to avoid server file artefacts" -Skip {
@@ -237,7 +237,7 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 # Get-IshBackgroundTask is called to get the system field 'INPUTDATAID'
                 $backgroundTask = $ishObjects | Add-IshBackgroundTask -IshSession $ishSession -EventType "FOLDEREXPORT" -InputDataTemplate EventDataWithIshLngRefs |
                 Get-IshBackgroundTask -IshSession $ishSession -RequestedMetadata $requestedMetadata
-			    $backgroundTask.INPUTDATAID -ge 0 | Should -Be $true
+			    $backgroundTask.INPUTDATAID -ge 0 | Should-Be $true
 
                 # inputData looks like <eventdata><lngcardids>13043819, 13058357, 14246721, 13058260</lngcardids></eventdata>, decided to drop optional <foldername>
 			    $inputData = $ishSession.BackgroundTask25.RetrieveDataObjectByIshDataRefs($backgroundTask.INPUTDATAID)
@@ -247,8 +247,8 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
                 $decodedContent = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($rawCdataContent))
                 $eventdataFromInputData = [xml]$decodedContent
 
-                $eventdataFromInputData.eventdata -ne $null | Should -Be $true
-                $eventdataFromInputData.eventdata.lngcardids -ne $null | Should -Be $true
+                $eventdataFromInputData.eventdata -ne $null | Should-Be $true
+                $eventdataFromInputData.eventdata.lngcardids -ne $null | Should-Be $true
             }
 		}
     }
@@ -261,19 +261,19 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 			$ishBackgroundTaskParameters = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $rawData
 		}
 		It "Add-IshBackgroundTask returns IshBackgroundTask object" {
-			$ishBackgroundTaskParameters.Count | Should -BeExactly 1
-			$ishBackgroundTaskParameters.GetType().Name | Should -BeExactly "IshBackgroundTask"
-			$ishBackgroundTaskParameters.EventType | Should -BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskParameters.userid | Should -BeExactly $ishSession.UserName
+			$ishBackgroundTaskParameters.Count | Should-Be 1
+			$ishBackgroundTaskParameters.GetType().Name | Should-BeString -CaseSensitive "IshBackgroundTask"
+			$ishBackgroundTaskParameters.EventType | Should-BeString -CaseSensitive $ishEventTypeToPurge
+			$ishBackgroundTaskParameters.userid | Should-BeString -CaseSensitive $ishSession.UserName
 		}
 		It "Parameter EventDescription null" {
-			{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $null -RawInputData $rawData } | Should -Throw
+			{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $null -RawInputData $rawData } | Should-Throw
 		}
 		It "Parameter EventType null" {
-			{ Add-IshBackgroundTask -EventType $null -EventDescription $eventDescription -RawInputData $rawData } | Should -Throw
+			{ Add-IshBackgroundTask -EventType $null -EventDescription $eventDescription -RawInputData $rawData } | Should-Throw
 		}
 		It "Parameter RawInputData null" {
-			{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $null } | Should -Throw
+			{ Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $null } | Should-Throw
 		}
 		It "Parameter StartAfter Tommorrow" {
 			$dateTomorrow = (Get-Date).AddDays(1)
@@ -283,25 +283,25 @@ Describe "Add-IshBackgroundTask" -Tags "Create" {
 							  +" CultureInfo.Name["+([System.Globalization.CultureInfo]::CurrentCulture).Name+"]" `
 							  +" CultureInfo...ShortDatePattern["+([System.Globalization.CultureInfo]::CurrentCulture).DateTimeFormat.ShortDatePattern+"]"
 			$ishBackgroundTaskStartsAfter = Add-IshBackgroundTask -EventType $ishEventTypeToPurge -EventDescription $eventDescription -RawInputData $rawData -StartAfter $dateTomorrow
-			$ishBackgroundTaskStartsAfter.Count | Should -BeExactly 1
-			($ishBackgroundTaskStartsAfter.executeafterdate -eq $ishBackgroundTaskStartsAfter.creationdate) | Should -Be $false
-			$ishBackgroundTaskStartsAfter.GetType().Name | Should -BeExactly "IshBackgroundTask"
-			$ishBackgroundTaskStartsAfter.EventType | Should -BeExactly $ishEventTypeToPurge
-			$ishBackgroundTaskStartsAfter.userid | Should -BeExactly $ishSession.UserName
+			$ishBackgroundTaskStartsAfter.Count | Should-Be 1
+			($ishBackgroundTaskStartsAfter.executeafterdate -eq $ishBackgroundTaskStartsAfter.creationdate) | Should-Be $false
+			$ishBackgroundTaskStartsAfter.GetType().Name | Should-BeString -CaseSensitive "IshBackgroundTask"
+			$ishBackgroundTaskStartsAfter.EventType | Should-BeString -CaseSensitive $ishEventTypeToPurge
+			$ishBackgroundTaskStartsAfter.userid | Should-BeString -CaseSensitive $ishSession.UserName
 			# Verify returned submitted IshBackgroundTask.StartsAfter date matches provided tomorrow StartsAfter
-			$ishBackgroundTaskStartsAfter.executeafterdate -like "*-*-*T*:*:*" | Should -Be $true
-			$ishBackgroundTaskStartsAfter.executeafterdate.Substring(0, 11) | Should -Be ($dateTomorrow.ToString("yyyy-MM-ddT"))
+			$ishBackgroundTaskStartsAfter.executeafterdate -like "*-*-*T*:*:*" | Should-Be $true
+			$ishBackgroundTaskStartsAfter.executeafterdate.Substring(0, 11) | Should-Be ($dateTomorrow.ToString("yyyy-MM-ddT"))
 			$retrievedExecuteAfter = New-Object DateTime
 			$conversionResult = [DateTime]::TryParseExact($ishBackgroundTaskStartsAfter.executeafterdate, "yyyy-MM-ddTHH:mm:ss", [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref]$retrievedExecuteAfter)
-			$conversionResult | Should -BeExactly $true
-			$retrievedExecuteAfter.Year | Should -Be $dateTomorrow.Year
-			$retrievedExecuteAfter.Month | Should -Be $dateTomorrow.Month
-			$retrievedExecuteAfter.Day | Should -Be $dateTomorrow.Day
+			$conversionResult | Should-BeTrue
+			$retrievedExecuteAfter.Year | Should-Be $dateTomorrow.Year
+			$retrievedExecuteAfter.Month | Should-Be $dateTomorrow.Month
+			$retrievedExecuteAfter.Day | Should-Be $dateTomorrow.Day
 			# Hour and Minute check are skipped; if Client and Server are in different timezone, you get different hours or minutes back
-			# $retrievedExecuteAfter.Hour | Should -Be $dateTomorrow.Hour
-			# $retrievedExecuteAfter.Minute | Should -Be $dateTomorrow.Minute
-			$retrievedExecuteAfter.Second | Should -Be $dateTomorrow.Second
-			$retrievedExecuteAfter.ToString("dd/MM/yyyy") | Should -BeExactly $dateTomorrow.ToString("dd/MM/yyyy")	
+			# $retrievedExecuteAfter.Hour | Should-Be $dateTomorrow.Hour
+			# $retrievedExecuteAfter.Minute | Should-Be $dateTomorrow.Minute
+			$retrievedExecuteAfter.Second | Should-Be $dateTomorrow.Second
+			$retrievedExecuteAfter.ToString("dd/MM/yyyy") | Should-BeString -CaseSensitive $dateTomorrow.ToString("dd/MM/yyyy")	
 		}
 	}
 }

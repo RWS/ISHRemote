@@ -9,26 +9,26 @@ BeforeAll {
 Describe "Add-IshBaseline" -Tags "Create" {
 	Context "Add-IshBaseline ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Add-IshBaseline -IShSession "INVALIDISHSESSION" -Name "INVALIDBASELINENAME" } | Should -Throw
+			{ Add-IshBaseline -IShSession "INVALIDISHSESSION" -Name "INVALIDBASELINENAME" } | Should-Throw
 		}
 	}
 	Context "Add-IshBaseline ParameterGroup" {
 		It "GetType().Name" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshBaseline -Name $baselineName
-			(Get-IshMetadataField -IshObject $ishObject -Level None -Name "FISHDOCUMENTRELEASE").Length -gt 0 | Should -Be $true
-			$ishObject.GetType().Name | Should -BeExactly "IshBaseline"
-			$ishObject.Count | Should -Be 1
+			(Get-IshMetadataField -IshObject $ishObject -Level None -Name "FISHDOCUMENTRELEASE").Length -gt 0 | Should-Be $true
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshBaseline"
+			$ishObject.Count | Should-Be 1
 		}
 		It "GetType().Name with optional IshSession" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshBaseline -IshSession $ishSession -Name $baselineName
-			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Level None -Name "FISHDOCUMENTRELEASE").Length -gt 0 | Should -Be $true
-			$ishObject.GetType().Name | Should -BeExactly "IshBaseline"
-			$ishObject.Count | Should -Be 1
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
-			$ishObject.fishdocumentrelease.Length -ge 1 | Should -Be $true 
-			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should -Be $true 
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Level None -Name "FISHDOCUMENTRELEASE").Length -gt 0 | Should-Be $true
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshBaseline"
+			$ishObject.Count | Should-Be 1
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
+			$ishObject.fishdocumentrelease.Length -ge 1 | Should-Be $true 
+			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should-Be $true 
 		}
 	}
 	Context "Add-IshBaseline IshObjectGroup" {
@@ -56,27 +56,27 @@ Describe "Add-IshBaseline" -Tags "Create" {
 			Start-Sleep -Milliseconds 1000  # Avoids uniquesness error which only up to the second " Cannot insert duplicate key row in object 'dbo.CARD' with unique index 'CARD_NAME_I1'. The duplicate key value is (...A12/10/2016 16:47:16)."
 		}
 		It "Parameter IshObject invalid" {
-			{ Add-IshBaseline -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should -Throw
+			{ Add-IshBaseline -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should-Throw
 		}
 		It "Parameter IshObject Single" {
 			$ishObjects = Add-IshBaseline -IshSession $ishSession -IshObject $ishObjectA
 			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Parameter IshObject Multiple" {
 			$ishObjects = Add-IshBaseline -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
 			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$ishObjects = $ishObjectD | Add-IshBaseline -IshSession $ishSession
 			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$ishObjects = @($ishObjectE,$ishObjectF) | Add-IshBaseline -IshSession $ishSession
 			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 	}
 	Context "Add-IshBaseline IshObjectGroup" {
@@ -103,27 +103,27 @@ Describe "Add-IshBaseline" -Tags "Create" {
 			Start-Sleep -Milliseconds 1000  # Avoids uniquesness error which only up to the second " Cannot insert duplicate key row in object 'dbo.CARD' with unique index 'CARD_NAME_I1'. The duplicate key value is (...A12/10/2016 16:47:16)."
 		}
 		It "Parameter IshObject invalid" {
-			{ Add-IshBaseline -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should -Throw
+			{ Add-IshBaseline -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should-Throw
 		}
 		It "Parameter IshObject Single" {
 			$ishObjects = Add-IshBaseline -IshSession $ishSession -IshObject $ishObjectA
 			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Parameter IshObject Multiple" {
 			$ishObjects = Add-IshBaseline -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)
 			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$ishObjects = $ishObjectD | Add-IshBaseline -IshSession $ishSession
 			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$ishObjects = @($ishObjectE,$ishObjectF) | Add-IshBaseline -IshSession $ishSession
 			$ishObjects | Remove-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 	}
 }

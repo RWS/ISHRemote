@@ -9,10 +9,10 @@ BeforeAll {
 Describe "Get-IshTimeZone" -Tags "Read" {
 	Context "Get-IshTimeZone Parameters" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshTimeZone -IShSession "INVALIDISHSESSION" -Count 2 } | Should -Throw
+			{ Get-IshTimeZone -IShSession "INVALIDISHSESSION" -Count 2 } | Should-Throw
 		}
 		It "Parameter Count invalid" {
-			{ Get-IshTimeZone -IShSession $ishSession -Count "INVALIDCOUNT" } | Should -Throw
+			{ Get-IshTimeZone -IShSession $ishSession -Count "INVALIDCOUNT" } | Should-Throw
 		}
 	}
 	Context "Get-IshTimeZone returns IshApplicationSetting (single) object" {
@@ -20,35 +20,35 @@ Describe "Get-IshTimeZone" -Tags "Read" {
 			$ishApplicationSetting = Get-IshTimeZone -IShSession $ishSession
 		}
 		It "GetType()" {
-			$ishApplicationSetting.GetType().Name | Should -BeExactly "IshApplicationSetting"
+			$ishApplicationSetting.GetType().Name | Should-BeString -CaseSensitive "IshApplicationSetting"
 		}
 		It "IshApplicationSetting.TimeElapsedDbServer" {
-			$ishApplicationSetting.TimeElapsedDbServer -ge 0 | Should -Not -BeNullOrEmpty
+			$ishApplicationSetting.TimeElapsedDbServer -ge 0 | Should-NotBeNull
 		}
 		It "IshApplicationSetting.TimeElapsedAppServer" {
-			$ishApplicationSetting.TimeElapsedAppServer -ge 0 | Should -Not -BeNullOrEmpty
+			$ishApplicationSetting.TimeElapsedAppServer -ge 0 | Should-NotBeNull
 		}
 		It "IshApplicationSetting.TimeElapsedWsCall" {
-			$ishApplicationSetting.TimeElapsedWsCall -ge 0 | Should -Not -BeNullOrEmpty
+			$ishApplicationSetting.TimeElapsedWsCall -ge 0 | Should-NotBeNull
 		}
 		It "IshApplicationSetting.TimeZoneDisplayName" {
-			$ishApplicationSetting.TimeZoneDisplayName.Length -ge 0 | Should -Not -BeNullOrEmpty
+			$ishApplicationSetting.TimeZoneDisplayName.Length -ge 0 | Should-NotBeNull
 		}
 		It "IshApplicationSetting.TimeZoneUtcOffset" {
-			$ishApplicationSetting.TimeZoneUtcOffset -ge 0 | Should -Not -BeNullOrEmpty
+			$ishApplicationSetting.TimeZoneUtcOffset -ge 0 | Should-NotBeNull
 		}
 		It "IshApplicationSetting.TimeZoneIsdaylightsavingtime" {
 			{ $ishApplicationSetting.TimeZoneIsdaylightsavingtime } | Should -Not -Throw
 		}
 		It "IshApplicationSetting.AppServerComputerName" {
-			$ishApplicationSetting.AppServerComputerName.Length -ge 0 | Should -Not -BeNullOrEmpty
+			$ishApplicationSetting.AppServerComputerName.Length -ge 0 | Should-NotBeNull
 		}
 	}
 	Context "Get-IshTimeZone returns IshApplicationSettings (plural) object" {
 		It "Parameter IshSession implicit" {
 			$ishApplicationSettings = Get-IshTimeZone -IShSession $ishSession -Count 2
-			$ishApplicationSettings.GetType().Name | Should -BeExactly "IshApplicationSettings"
-			$ishApplicationSettings.TimeZoneId -ge 0 | Should -Not -BeNullOrEmpty
+			$ishApplicationSettings.GetType().Name | Should-BeString -CaseSensitive "IshApplicationSettings"
+			$ishApplicationSettings.TimeZoneId -ge 0 | Should-NotBeNull
 		}
 	}
 }

@@ -33,38 +33,38 @@ Describe "Get-IshPublicationOutputFolderLocation" -Tags "Read" {
 			$folderPath = Get-IshPublicationOutputFolderLocation -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef
 		}
 		It "Parameter IshSession/LogicalId invalid" {
-			{ Get-IshPublicationOutputFolderLocation -IShSession "INVALIDISHSESSION" -LogicalId "INVALIDLOGICALID" } | Should -Throw
+			{ Get-IshPublicationOutputFolderLocation -IShSession "INVALIDISHSESSION" -LogicalId "INVALIDLOGICALID" } | Should-Throw
 		}
 		It "GetType().Name" {
-			$folderPath.GetType().Name | Should -BeExactly "String"
+			$folderPath.GetType().Name | Should-BeString -CaseSensitive "String"
 		}
 		It "Parameter LogicalId Single" {
-			$folderPath | Should -BeExactly (Join-Path (Join-Path $folderTestRootPath $cmdletName) "Publication")
+			$folderPath | Should-BeString -CaseSensitive (Join-Path (Join-Path $folderTestRootPath $cmdletName) "Publication")
 		}
 		It "Leading IshSession.FolderPathSeparator" {
-			$folderPath[0] | Should -Be $ishSession.FolderPathSeparator
+			$folderPath[0] | Should-Be $ishSession.FolderPathSeparator
 		}
 	}
 	Context "Get-IshPublicationOutputFolderLocation IshObjectGroup" {
 		It "GetType().Name" {
 			$folderPathArray = Get-IshPublicationOutputFolderLocation -IshSession $ishSession -IshObject @($ishObjectPubA,$ishObjectPubB)
-			$folderPathArray.GetType().Name | Should -BeExactly "Object[]"
+			$folderPathArray.GetType().Name | Should-BeString -CaseSensitive "Object[]"
 		}
 		It "Parameter IshObject Single with implicit IshSession" {
 			$folderPathArray = Get-IshPublicationOutputFolderLocation -IshObject $ishObjectPubA
-			$folderPathArray.Count | Should -Be 1
+			$folderPathArray.Count | Should-Be 1
 		}
 		It "Parameter IshObject Multiple with implicit IshSession" {
 			$folderPathArray = Get-IshPublicationOutputFolderLocation -IshObject @($ishObjectPubA,$ishObjectPubB)
-			$folderPathArray.Count | Should -Be 2
+			$folderPathArray.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$folderPathArray = $ishObjectPubA | Get-IshPublicationOutputFolderLocation -IshSession $ishSession
-			$folderPathArray.Count | Should -Be 1
+			$folderPathArray.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$folderPathArray = @($ishObjectPubA,$ishObjectPubB) | Get-IshPublicationOutputFolderLocation -IshSession $ishSession
-			$folderPathArray.Count | Should -Be 2
+			$folderPathArray.Count | Should-Be 2
 		}
 	}
 }

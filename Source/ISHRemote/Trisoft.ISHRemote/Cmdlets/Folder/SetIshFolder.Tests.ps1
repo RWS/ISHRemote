@@ -37,7 +37,7 @@ BeforeAll {
 Describe "Set-IshFolder" -Tags "Create" {
 	Context "Set-IshFolder ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Set-IshFolder -IShSession "INVALIDISHSESSION" } | Should -Throw
+			{ Set-IshFolder -IShSession "INVALIDISHSESSION" } | Should-Throw
 		}
 	}
 	Context "Set-IshFolder returns IshFolder object" {
@@ -45,34 +45,34 @@ Describe "Set-IshFolder" -Tags "Create" {
 			$ishFolderData = Set-IshFolder -IShSession $ishSession -IshFolder $ishFolderA
 		}
 		It "GetType().Name" {
-			$ishFolderData.GetType().Name | Should -BeExactly "IshFolder"
+			$ishFolderData.GetType().Name | Should-BeString -CaseSensitive "IshFolder"
 		}
 		It "ishFolderData.IshFolderRef" {
-			$ishFolderData.IshFolderRef -ge 0 | Should -Be $true
+			$ishFolderData.IshFolderRef -ge 0 | Should-Be $true
 		}
 		It "ishFolderData.IshFolderType" {
-			$ishFolderData.IshFolderType | Should -Not -BeNullOrEmpty
+			$ishFolderData.IshFolderType | Should-NotBeNull
 		}
 		It "ishFolderData.IshField" {
-			$ishFolderData.IshField | Should -Not -BeNullOrEmpty
+			$ishFolderData.IshField | Should-NotBeNull
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
-			$ishFolderData.name.Length -ge 1 | Should -Be $true 
-			$ishFolderData.fdocumenttype.Length -ge 1 | Should -Be $true 
-			$ishFolderData.fdocumenttype_none_element.StartsWith('VDOCTYPE') | Should -Be $true 
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
+			$ishFolderData.name.Length -ge 1 | Should-Be $true 
+			$ishFolderData.fdocumenttype.Length -ge 1 | Should-Be $true 
+			$ishFolderData.fdocumenttype_none_element.StartsWith('VDOCTYPE') | Should-Be $true 
 		}
 	}
 	# Order in renames matters
 	Context "Set-IshFolder FolderPathGroup" {
 		It "Parameter FolderPath invalid" {
-			$exception = { Set-IshFolder -IShSession $ishSession -FolderPath "INVALIDFOLDERPATH" -NewFolderName "FolderPathGroup INVALIDFOLDERPATH" } | Should -Throw -PassThru
+			$exception = { Set-IshFolder -IShSession $ishSession -FolderPath "INVALIDFOLDERPATH" -NewFolderName "FolderPathGroup INVALIDFOLDERPATH" } | Should-Throw
 			# 14.0.4 message is:  [-102001] The folder 'INVALIDFOLDERPATH' does not exist. [name:"'INVALIDFOLDERPATH'"] [102001;InvalidObject]
-			$exception -like "*102001*" | Should -Be $true 
-			$exception -like "*InvalidObject*" | Should -Be $true
+			$exception -like "*102001*" | Should-Be $true 
+			$exception -like "*InvalidObject*" | Should-Be $true
 		}
 		It "Parameter FolderPath $folderTestRootPath" {
-			Set-IshFolder -IshSession $ishSession -FolderPath (Join-Path $folderCmdletRootPath "FolderB") -NewFolderName "FolderPathGroup $cmdletName" | Should -Not -BeNullOrEmpty
+			Set-IshFolder -IshSession $ishSession -FolderPath (Join-Path $folderCmdletRootPath "FolderB") -NewFolderName "FolderPathGroup $cmdletName" | Should-NotBeNull
 		}
 	}
 	Context "Set-IshFolder BaseFolderGroup" {
@@ -83,23 +83,23 @@ Describe "Set-IshFolder" -Tags "Create" {
 			$ishFolderEditorTemplateOriginalName = Get-IshFolder -IShSession $ishSession -BaseFolder EditorTemplate | Get-IshMetadataField -IshSession $ishSession -Name "FNAME"
 		}
 		It "Parameter BaseFolder invalid" {
-			{ Set-IshFolder -IShSession $ishSession -BaseFolder None } | Should -Throw
+			{ Set-IshFolder -IShSession $ishSession -BaseFolder None } | Should-Throw
 		}
 		It "Parameter BaseFolder Data" {
 			Set-IshFolder -IShSession $ishSession -BaseFolder Data -NewFolderName "Set-IshFolder BaseFolderGroup Data"
-			Set-IshFolder -IShSession $ishSession -BaseFolder Data -NewFolderName $ishFolderDataOrginalName | Should -Not -BeNullOrEmpty
+			Set-IshFolder -IShSession $ishSession -BaseFolder Data -NewFolderName $ishFolderDataOrginalName | Should-NotBeNull
 		}
 		It "Parameter BaseFolder System" {
 			Set-IshFolder -IShSession $ishSession -BaseFolder System -NewFolderName "Set-IshFolder BaseFolderGroup System"
-			Set-IshFolder -IShSession $ishSession -BaseFolder System -NewFolderName $ishFolderSystemOriginalName | Should -Not -BeNullOrEmpty
+			Set-IshFolder -IShSession $ishSession -BaseFolder System -NewFolderName $ishFolderSystemOriginalName | Should-NotBeNull
 		}
 		It "Parameter BaseFolder Favorites" {
 			Set-IshFolder -IShSession $ishSession -BaseFolder Favorites -NewFolderName "Set-IshFolder BaseFolderGroup Favorites"
-			Set-IshFolder -IShSession $ishSession -BaseFolder Favorites -NewFolderName $ishFolderFavoritesOriginalName | Should -Not -BeNullOrEmpty
+			Set-IshFolder -IShSession $ishSession -BaseFolder Favorites -NewFolderName $ishFolderFavoritesOriginalName | Should-NotBeNull
 		}
 		It "Parameter BaseFolder EditorTemplate" {
 			Set-IshFolder -IShSession $ishSession -BaseFolder EditorTemplate -NewFolderName "Set-IshFolder BaseFolderGroup EditorTemplate" 
-			Set-IshFolder -IShSession $ishSession -BaseFolder EditorTemplate -NewFolderName $ishFolderEditorTemplateOriginalName | Should -Not -BeNullOrEmpty
+			Set-IshFolder -IShSession $ishSession -BaseFolder EditorTemplate -NewFolderName $ishFolderEditorTemplateOriginalName | Should-NotBeNull
 		}
 	}
 	Context "Set-IshFolder FolderIdsGroup" {
@@ -111,43 +111,43 @@ Describe "Set-IshFolder" -Tags "Create" {
 			[long]$ishFolderGFolderRef = (Get-IshFolder -IShSession $ishSession -FolderPath (Join-Path $folderCmdletRootPath "FolderG")).IshFolderRef
 		}
 		It "Parameter FolderId invalid" {
-			{ Set-IshFolder -IShSession $ishSession -FolderId "INVALIDFOLDERID" } | Should -Throw
+			{ Set-IshFolder -IShSession $ishSession -FolderId "INVALIDFOLDERID" } | Should-Throw
 		}
 		It "Parameter FolderId Single" {
-			Set-IshFolder -IshSession $ishSession -FolderId $ishFolderCFolderRef -NewFolderName "FolderIdsGroup C Rename" | Should -Not -BeNullOrEmpty
+			Set-IshFolder -IshSession $ishSession -FolderId $ishFolderCFolderRef -NewFolderName "FolderIdsGroup C Rename" | Should-NotBeNull
 		}
 		It "Parameter FolderId Multiple" {
-			{ Set-IshFolder -IshSession $ishSession -FolderId $ishFolderDFolderRef,$ishFolderEFolderRef -NewFolderName "FolderIdsGroup D,E Rename" } | Should -Throw
+			{ Set-IshFolder -IshSession $ishSession -FolderId $ishFolderDFolderRef,$ishFolderEFolderRef -NewFolderName "FolderIdsGroup D,E Rename" } | Should-Throw
 		}
 		It "Pipeline FolderId Single" {
 			$ishObjects = @($ishFolderDFolderRef,$ishFolderEFolderRef) | Set-IshFolder -IshSession $ishSession -ReadAccess $readAccessTestRootOriginal
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 		It "Pipeline FolderId Multiple" {
 			$ishObjects = @($ishFolderFFolderRef,$ishFolderGFolderRef) | Set-IshFolder -IshSession $ishSession -ReadAccess $readAccessTestRootOriginal
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 	}
 	# Most cmdldets take IshFolder pipeline to apply on, this one will apply the incoming IshFolder
 	Context "Set-IshFolder IshFoldersGroup" {
 		It "Parameter IshFolder invalid" {
-			{ Set-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should -Throw
+			{ Set-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should-Throw
 		}
 		It "Parameter IshFolder Single with implicit IshSession" {
 			$ishFolders = Set-IshFolder -IshFolder $ishFolderK
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter IshFolder Multiple with implicit IshSession" {
 			$ishFolders = Set-IshFolder -IshFolder @($ishFolderL,$ishFolderM)
-			$ishFolders.Count | Should -Be 2
+			$ishFolders.Count | Should-Be 2
 		}
 		It "Pipeline IshFolder Single" {
 			$ishFolders = $ishFolderN | Set-IshFolder -IshSession $ishSession
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Pipeline IshFolder Multiple" {
 			$ishFolders = @($ishFolderO,$ishFolderP) | Set-IshFolder -IshSession $ishSession 
-			$ishFolders.Count | Should -Be 2
+			$ishFolders.Count | Should-Be 2
 		}
 	}
 }

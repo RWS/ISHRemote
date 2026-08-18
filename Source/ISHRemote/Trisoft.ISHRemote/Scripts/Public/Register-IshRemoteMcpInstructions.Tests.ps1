@@ -14,7 +14,7 @@ Describe "Register-IshRemoteMcpInstructions" -Skip:($PSVersionTable.PSVersion.Ma
 
         It "Should return non-empty string" {
             $result = Register-IshRemoteMcpInstructions
-            $result | Should -Not -BeNullOrEmpty
+            $result | Should-NotBeNull
         }
     }
 
@@ -24,51 +24,51 @@ Describe "Register-IshRemoteMcpInstructions" -Skip:($PSVersionTable.PSVersion.Ma
         }
 
         It "Should contain New-IshSession cmdlet reference" {
-            $instructions | Should -Match "New-IShSession"
+            $instructions | Should-MatchString "New-IShSession"
         }
 
         It "Should contain Get-IshTypeFieldDefinition reference" {
-            $instructions | Should -Match "Get-IshTypeFieldDefinition"
+            $instructions | Should-MatchString "Get-IshTypeFieldDefinition"
         }
 
         It "Should contain FilterOperator reference" {
-            $instructions | Should -Match "FilterOperator"
+            $instructions | Should-MatchString "FilterOperator"
         }
 
         It "Should contain field types (String, Number, DateTime, LongText)" {
-            $instructions | Should -Match "String"
-            $instructions | Should -Match "Number"
-            $instructions | Should -Match "DateTime"
-            $instructions | Should -Match "LongText"
+            $instructions | Should-MatchString "String"
+            $instructions | Should-MatchString "Number"
+            $instructions | Should-MatchString "DateTime"
+            $instructions | Should-MatchString "LongText"
         }
 
         It "Should contain ISHType object references" {
-            $instructions | Should -Match "IShUser"
-            $instructions | Should -Match "IShFolder"
-            $instructions | Should -Match "IShDocumentObj"
+            $instructions | Should-MatchString "IShUser"
+            $instructions | Should-MatchString "IShFolder"
+            $instructions | Should-MatchString "IShDocumentObj"
         }
 
         It "Should contain level references (logical, version, lng)" {
-            $instructions | Should -Match "logical"
-            $instructions | Should -Match "version"
-            $instructions | Should -Match "lng"
+            $instructions | Should-MatchString "logical"
+            $instructions | Should-MatchString "version"
+            $instructions | Should-MatchString "lng"
         }
 
         It "Should mention PSNoteType properties" {
-            $instructions | Should -Match "PSNoteType"
+            $instructions | Should-MatchString "PSNoteType"
         }
 
         It "Should contain Get-Help cmdlet reference" {
-            $instructions | Should -Match "Get-Help"
+            $instructions | Should-MatchString "Get-Help"
         }
 
         It "Should mention case-sensitivity" {
-            $instructions | Should -Match "case-sensitive"
+            $instructions | Should-MatchString "case-sensitive"
         }
 
         It "Should contain wildcard operator guidance" {
-            $instructions | Should -Match "percentage"
-            $instructions | Should -Match "%"
+            $instructions | Should-MatchString "percentage"
+            $instructions | Should-MatchString "%"
         }
     }
 }

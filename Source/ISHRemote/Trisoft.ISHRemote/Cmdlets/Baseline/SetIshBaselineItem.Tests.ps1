@@ -9,7 +9,7 @@ BeforeAll {
 Describe "Set-IshBaselineItem" {
 	Context "Set-IshBaselineItem ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Set-IshBaselineItem -IShSession "INVALIDISHSESSION" } | Should -Throw
+			{ Set-IshBaselineItem -IShSession "INVALIDISHSESSION" } | Should-Throw
 		}
 	}
 	Context "Set-IshBaselineItem returns IshObject" {
@@ -21,22 +21,22 @@ Describe "Set-IshBaselineItem" {
 			$ishObject = Set-IshBaselineItem -IshObject $ishObject -LogicalId "$cmdletName--AAA" -Version "3" # new
 		}
 		It "GetType()" {
-			$ishObject.GetType().Name | Should -BeExactly "IshBaseline"
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshBaseline"
 		}
 		It "$ishObject.IshRef" {
-			$ishObject.IshRef | Should -Not -BeNullOrEmpty
+			$ishObject.IshRef | Should-NotBeNull
 		}
 		It "3 News" {
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should -Be 3
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should-Be 3
 		}
 		It "3 News and 1 Update" {
 			Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--A" -Version "4" # update
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should -Be 3
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should-Be 3
 		}
 		It "3 News and 1 Update and 2 Removes" {
 			Remove-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--A" # remove
 			Remove-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--AA" # remove
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should -Be 1
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should-Be 1
 		}
 	}
 	Context "Set-IshBaseline IshBaselineItemsGroup" {
@@ -52,37 +52,37 @@ Describe "Set-IshBaselineItem" {
 			$ishObjectItemMultiple = Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectMultiple
 		}
 		It "Setup IshBaselineItem Test Single GetType()" {
-			($ishObjectItemSingle).GetType().Name | Should -BeExactly "IshBaselineItem"
+			($ishObjectItemSingle).GetType().Name | Should-BeString -CaseSensitive "IshBaselineItem"
 		}
 		It "Setup IshBaselineItem Test Multiple GetType()" {
-			($ishObjectItemMultiple).GetType().Name | Should -BeExactly "Object[]"
+			($ishObjectItemMultiple).GetType().Name | Should-BeString -CaseSensitive "Object[]"
 		}
 		It "Parameter IshBaselineItem invalid" {
-			{ Set-IshBaselineItem -IShSession $ishSession -IshBaselineItem "INVALIDBASELINE" } | Should -Throw
+			{ Set-IshBaselineItem -IShSession $ishSession -IshBaselineItem "INVALIDBASELINE" } | Should-Throw
 		}
 		It "Parameter IshBaselineItem Single" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " A")
 			$ishObjectA = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 			$ishObjectA = Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectA -IshBaselineItem $ishObjectItemSingle
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectA).Count | Should -Be 1
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectA).Count | Should-Be 1
 		}
 		It "Parameter IshBaselineItem Multiple" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " B")
 			$ishObjectB = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 			$ishObjectB = Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectB -IshBaselineItem $ishObjectItemMultiple
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectB).Count | Should -Be 2
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectB).Count | Should-Be 2
 		}
 		It "Pipeline IshBaselineItem Single" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " C")
 			$ishObjectC = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 			$ishObjectC = $ishObjectItemSingle | Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectC
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectC).Count | Should -Be 1
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectC).Count | Should-Be 1
 		}
 		It "Pipeline IshBaselineItem Multiple" {
 			$baselineName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " D")
 			$ishObjectD = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 			$ishObjectD = $ishObjectItemMultiple | Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectD
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectD).Count | Should -Be 2
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectD).Count | Should-Be 2
 		}
 	}
 }

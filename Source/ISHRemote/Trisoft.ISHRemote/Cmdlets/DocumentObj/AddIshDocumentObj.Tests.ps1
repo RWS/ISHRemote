@@ -36,81 +36,81 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -FolderId $ishFolderTopic.IshFolderRef -IshType ISHModule -Lng $ishLng -Metadata $ishTopicMetadata -FileContent $ditaTopicFileContent
 		}
 		It "GetType().Name" {
-			$ishObject.GetType().Name | Should -BeExactly "IshDocumentObj"
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshDocumentObj"
 		}
 		It "ishObject.IshData" {
 			{ $ishObject.IshData } | Should -Not -Throw
 		}
 		It "ishObject.IshField" {
-			$ishObject.IshField | Should -Not -BeNullOrEmpty
+			$ishObject.IshField | Should-NotBeNull
 		}
 		It "ishObject.IshRef" {
-			$ishObject.IshRef | Should -Not -BeNullOrEmpty
+			$ishObject.IshRef | Should-NotBeNull
 		}
 		It "ishObject.IshType" {
-			$ishObject.IshType | Should -Not -BeNullOrEmpty
+			$ishObject.IshType | Should-NotBeNull
 		}
 		# Double check following 3 ReferenceType enum usage 
 		It "ishObject.ObjectRef" {
-			$ishObject.ObjectRef | Should -Not -BeNullOrEmpty
+			$ishObject.ObjectRef | Should-NotBeNull
 		}
 		It "ishObject.VersionRef" {
-			$ishObject.VersionRef | Should -Not -BeNullOrEmpty
+			$ishObject.VersionRef | Should-NotBeNull
 		}
 		It "ishObject.LngRef" {
-			$ishObject.LngRef | Should -Not -BeNullOrEmpty
+			$ishObject.LngRef | Should-NotBeNull
 		}
 		It "ishObject ConvertTo-Json" {
-			(ConvertTo-Json $ishObject).Length -gt 2 | Should -Be $true
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should-Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
 			#logical
-			$ishObject.ftitle_logical_value.Length -ge 1 | Should -Be $true 
+			$ishObject.ftitle_logical_value.Length -ge 1 | Should-Be $true 
 			#version
-			$ishObject.version_version_value.Length -ge 1 | Should -Be $true 
+			$ishObject.version_version_value.Length -ge 1 | Should-Be $true 
 			#language
-			$ishObject.fstatus.Length -ge 1 | Should -Be $true 
-			$ishObject.fstatus_lng_element.StartsWith('VSTATUS') | Should -Be $true 
-			$ishObject.doclanguage.Length -ge 1 | Should -Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
-			$ishObject.doclanguage_lng_element.StartsWith('VLANGUAGE') | Should -Be $true 
+			$ishObject.fstatus.Length -ge 1 | Should-Be $true 
+			$ishObject.fstatus_lng_element.StartsWith('VSTATUS') | Should-Be $true 
+			$ishObject.doclanguage.Length -ge 1 | Should-Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
+			$ishObject.doclanguage_lng_element.StartsWith('VLANGUAGE') | Should-Be $true 
 		}
 	}
 	Context "Add-IshDocumentObj ParameterGroupFileContent" {
 		It "Parameter IshSession/Lng/FileContent invalid" {
-			{ Add-IshDocumentObj -IShSession "INVALIDISHSESSION" -Lng "INVALIDLANGUAGE" -FileContent "INVALIDFILECONTENT" } | Should -Throw
+			{ Add-IshDocumentObj -IShSession "INVALIDISHSESSION" -Lng "INVALIDLANGUAGE" -FileContent "INVALIDFILECONTENT" } | Should-Throw
 		}
 		It "Parameter Lng/FileContent invalid" {
-			{ Add-IshDocumentObj -IShSession $ishSession -Lng "INVALIDLANGUAGE" -FileContent "INVALIDFILECONTENT" } | Should -Throw
+			{ Add-IshDocumentObj -IShSession $ishSession -Lng "INVALIDLANGUAGE" -FileContent "INVALIDFILECONTENT" } | Should-Throw
 		}
 		It "Parameter FileContent invalid" {
-			{ Add-IshDocumentObj -IShSession $ishSession -Lng $ishLng -FileContent "INVALIDFILECONTENT" } | Should -Throw
+			{ Add-IshDocumentObj -IShSession $ishSession -Lng $ishLng -FileContent "INVALIDFILECONTENT" } | Should-Throw
 		}
 		It "All Parameters (Topic)" {
 			$ishTopicMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Topic $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 			    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic -IshType ISHModule -LogicalId "MYOWNGENERATEDLOGICALIDTOPIC" -Version '2' -Lng $ishLng -Metadata $ishTopicMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
-			$ishObject.LngRef -gt 0 | Should -Be $true
+			$ishObject.LngRef -gt 0 | Should-Be $true
 		}
 		It "All Parameters (Map)" {
 			$ishMapMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Map $timestamp" |
 						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 			                  Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderMap -IshType ISHMasterDoc -LogicalId "MYOWNGENERATEDLOGICALIDMAP" -Version '3' -Lng $ishLng -Metadata $ishMapMetadata -Edt "EDTXML" -FileContent $ditaMapFileContent
-			$ishObject.LngRef -gt 0 | Should -Be $true
+			$ishObject.LngRef -gt 0 | Should-Be $true
 		}
 		It "All Parameters (Lib)" {
 			$ishLibMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Lib $timestamp" |
 						      Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 			    			  Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderLib -IshType ISHLibrary -LogicalId "MYOWNGENERATEDLOGICALIDLIB" -Version '4' -Lng $ishLng -Metadata $ishLibMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
-			$ishObject.LngRef -gt 0 | Should -Be $true
+			$ishObject.LngRef -gt 0 | Should-Be $true
 		}
 	}
 	Context "Add-IshDocumentObj ParameterGroupFilePath" {
 		It "Parameter IshSession/Lng/FilePath invalid" {
-			{ Add-IshDocumentObj -IShSession "INVALIDISHSESSION" -Lng "INVALIDLANGUAGE" -FilePath "INVALIDFILEPATH" } | Should -Throw
+			{ Add-IshDocumentObj -IShSession "INVALIDISHSESSION" -Lng "INVALIDLANGUAGE" -FilePath "INVALIDFILEPATH" } | Should-Throw
 		}
 		It "All Parameters (Image like EDTJPEG)" {
 			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Image $timestamp" |
@@ -128,7 +128,7 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			}
 			$bmp.Save($tempFilePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderImage -IshType ISHIllustration -LogicalId "MYOWNGENERATEDLOGICALIDIMAGE" -Version '5' -Lng $ishLng -Resolution $ishResolution -Metadata $ishImageMetadata -Edt "EDTJPEG" -FilePath $tempFilePath
-			$ishObject.LngRef -gt 0 | Should -Be $true
+			$ishObject.LngRef -gt 0 | Should-Be $true
 		}
 		It "All Parameters (Other like EDT-TEXT)" {
 			$ishOtherMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Other $timestamp" |
@@ -136,7 +136,7 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 			Get-Process | Out-File $tempFilePath
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderOther -IshType ISHTemplate -LogicalId "MYOWNGENERATEDLOGICALIDOTHER" -Version '6' -Lng $ishLng -Metadata $ishOtherMetadata -Edt "EDT-TEXT" -FilePath $tempFilePath
-			$ishObject.LngRef -gt 0 | Should -Be $true
+			$ishObject.LngRef -gt 0 | Should-Be $true
 		}
 	}
 	Context "Add-IshDocumentObj IshObjectGroup" {
@@ -146,7 +146,7 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 								Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
 		}
 		It "Parameter IshObject invalid" {
-			{ Add-IshDocumentObj -IshSession $ishSession -IshFolder "INVALIDISHFOLDER" -IshObject "INVALIDISHOBJECT" } | Should -Throw
+			{ Add-IshDocumentObj -IshSession $ishSession -IshFolder "INVALIDISHFOLDER" -IshObject "INVALIDISHOBJECT" } | Should-Throw
 		}
 		It "Parameter IshObject Single with implicit IshSession" {
 			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
@@ -154,7 +154,7 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			             Get-IshDocumentObjData
 			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObject
 			$ishObjectArray = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshObject $ishObject
-			$ishObjectArray.Count | Should -Be 1
+			$ishObjectArray.Count | Should-Be 1
 		}
 		It "Parameter IshObject Multiple with implicit IshSession" {
 			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
@@ -165,7 +165,7 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			              Get-IshDocumentObjData
 			Remove-IshDocumentObj -IshObject $ishObjectB
 			$ishObjectArray = Add-IshDocumentObj -IshFolder $ishFolderTopic -IshObject @($ishObjectA,$ishObjectB)
-			$ishObjectArray.Count | Should -Be 2
+			$ishObjectArray.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
@@ -173,7 +173,7 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			              Get-IshDocumentObjData -IshSession $ishSession
 			Remove-IshDocumentObj -IshSession $ishSession -IshObject $ishObjectC
 			$ishObjectArray = $ishObjectC | Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic
-			$ishObjectArray.Count | Should -Be 1
+			$ishObjectArray.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			# Create an object, Delete it, Recreate it using parameter IshObject as if the incoming object came from another repository
@@ -184,7 +184,7 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			$ishObjects = @($ishObjectD,$ishObjectE)
 			$ishObjects | Remove-IshDocumentObj -IshSession $ishSession
 			$ishObjectArray = $ishObjects | Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderTopic
-			$ishObjects.Count -eq $ishObjectArray.Count | Should -Be $true
+			$ishObjects.Count -eq $ishObjectArray.Count | Should-Be $true
 		}
 	}
 }

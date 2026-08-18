@@ -17,7 +17,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             Mock -ModuleName ISHRemote Write-IshRemoteLog { }
         }
         It "Validates CmdletsToRegister parameter is mandatory" {
-            { Start-IshRemoteMcpServer -ActivateWhileLoop $false -CmdletsToRegister @() } | Should -Throw
+            { Start-IshRemoteMcpServer -ActivateWhileLoop $false -CmdletsToRegister @() } | Should-Throw
         }
         It "Starts server with CmdletsToRegister parameter" {
             $cmdlets = @('Get-IshFolder', 'Set-IshFolder')
@@ -32,7 +32,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             Mock -ModuleName ISHRemote Register-IshRemoteMcpTool { return "{}" }
             $cmdlets = @('Get-IshFolder')
             Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $false
-            Should -Invoke -ModuleName ISHRemote Register-IshRemoteMcpTool -ParameterFilter { 
+            Should-Invoke -ModuleName ISHRemote Register-IshRemoteMcpTool -ParameterFilter { 
                 $FunctionNameFullLoad -contains 'Get-Help' -and $FunctionNameFullLoad -contains 'New-IshSession'
             }
         }
@@ -41,7 +41,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             $cmdlets = @('Get-IshFolder')
             $cmdletsFullLoad = @('Get-IshDocumentObj', 'Set-IshDocumentObj')
             Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -CmdletsToRegisterFullLoad $cmdletsFullLoad -ActivateWhileLoop $false
-            Should -Invoke -ModuleName ISHRemote Register-IshRemoteMcpTool -ParameterFilter { 
+            Should-Invoke -ModuleName ISHRemote Register-IshRemoteMcpTool -ParameterFilter { 
                 $FunctionNameFullLoad -contains 'Get-IshDocumentObj' -and $FunctionNameFullLoad -contains 'Set-IshDocumentObj' -and -not ($FunctionNameFullLoad -contains 'Get-Help') -and -not ($FunctionNameFullLoad -contains 'New-IshSession')
             }
         }
@@ -54,8 +54,8 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             # the fix in GitHub issue #243.
             $cmdlets = @('Get-IshFolder')
             Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $false
-            [Console]::InputEncoding.WebName  | Should -Be 'utf-8'
-            [Console]::OutputEncoding.WebName | Should -Be 'utf-8'
+            [Console]::InputEncoding.WebName  | Should-Be 'utf-8'
+            [Console]::OutputEncoding.WebName | Should-Be 'utf-8'
         }
         It "Sets Console Out AutoFlush to true on inner StreamWriter" {
             # Console.SetOut re-wraps in SyncTextWriter; verify the inner StreamWriter has AutoFlush=true
@@ -65,7 +65,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $false
             $field = [Console]::Out.GetType().GetField('_out', [System.Reflection.BindingFlags]::NonPublic -bor [System.Reflection.BindingFlags]::Instance)
             $innerWriter = $field.GetValue([Console]::Out)
-            $innerWriter.AutoFlush | Should -Be $true
+            $innerWriter.AutoFlush | Should-Be $true
         }
     }
     Context "Start-IshRemoteMcpServer with ActivateWhileLoop=true and stdin EOF" {

@@ -136,20 +136,20 @@ Describe "Get-IshAnnotation" -Tags "Create" {
     }	
     Context "Get-IshAnnotation ParameterGroup" {
 		It "Parameter AnnotationId is an empty array" {
-			{Get-IshAnnotation -IshSession $ishsession -AnnotationId @()} | Should -Throw
+			{Get-IshAnnotation -IshSession $ishsession -AnnotationId @()} | Should-Throw
 		}
 		It "Parameter AnnotationId contains non-existing Ids" {
 			$ishAnnotations = Get-IshAnnotation -IshSession $ishsession -AnnotationId @("GUID-NON-EXISTING1","GUID-NON-EXISTING1")
-            $ishAnnotations.Count | Should -Be 0
-            $ishAnnotations | Should -Be $null
+            $ishAnnotations.Count | Should-Be 0
+            $ishAnnotations | Should-Be $null
 		}
 		It "Get without RequestedMetadata and MetadataFilter" {
 			$ishAnnotations = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotation1P1.IshRef, $ishAnnotation2P1.IshRef)
-			$ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
+			$ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
 		}
-		It "Get with RequstedMetadata and without MetadataFilter" {
+		It "Get with RequestedMetadata and without MetadataFilter" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTATIONREPLIES" -Level Annotation
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession `
                                                 -AnnotationId @($ishAnnotation1P1.IshRef, $ishAnnotation2P1.IshRef) `
@@ -157,107 +157,107 @@ Describe "Get-IshAnnotation" -Tags "Create" {
             $repliesValue1 = Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTATIONREPLIES" -Level Annotation -ValueType Value
             $repliesValue2 = Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTATIONREPLIES" -Level Annotation -ValueType Value
 
-			$ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
-            $repliesValue1 | Should -Be ""
-            $repliesValue2 | Should -Be ""
+			$ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
+            $repliesValue1 | Should-Be ""
+            $repliesValue2 | Should-Be ""
 		}
-		It "Get with RequstedMetadata and with MetadataFilter" {
+		It "Get with RequestedMetadata and with MetadataFilter" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTATIONREPLIES" -Level Annotation
             $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator Like -Value "by #1%"
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession `
                                                 -AnnotationId @($ishAnnotation1P1.IshRef, $ishAnnotation2P1.IshRef) `
                                                 -RequestedMetadata $requestedMetadata `
                                                 -MetadataFilter $metadataFilter
-			$ishAnnotations.Count | Should -BeExactly 1
+			$ishAnnotations.Count | Should-Be 1
 
             $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator Like -Value "by%"
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession `
                                                 -AnnotationId @($ishAnnotation1P1.IshRef, $ishAnnotation2P1.IshRef) `
                                                 -RequestedMetadata $requestedMetadata `
                                                 -MetadataFilter $metadataFilter
-			$ishAnnotations.Count | Should -BeExactly 2
+			$ishAnnotations.Count | Should-Be 2
 		}
     }
 
     Context "Get-IshAnnotation IshObjectGroup" {
         It "Get for Map object" {
             $ishAnnotations = $ishObjectMap1 | Get-IshAnnotation -IshSession $ishsession
-            $ishAnnotations.Count | Should -BeExactly 0
+            $ishAnnotations.Count | Should-Be 0
         }
         It "Get for Image object" {
             $ishAnnotations =  $ishObjectImage | Get-IshAnnotation -IshSession $ishsession
-            $ishAnnotations.Count | Should -BeExactly 0
+            $ishAnnotations.Count | Should-Be 0
         }
         It "Get for Publication1 without RequestedMetadata" {
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshObject $ishObjectPub1
-            $ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
+            $ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
         }
         It "Get for Publication1 with RequestedMetadata" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshObject $ishObjectPub1 -RequestedMetadata $requestedMetadata
-            $ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
-            $ishAnnotations[0].fishannotproposedchngtxt_annotation_value | Should -BeExactly $proposedChngText
-            $ishAnnotations[1].fishannotproposedchngtxt_annotation_value | Should -BeExactly $proposedChngText
-            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
-            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
+            $ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
+            $ishAnnotations[0].fishannotproposedchngtxt_annotation_value | Should-BeString -CaseSensitive $proposedChngText
+            $ishAnnotations[1].fishannotproposedchngtxt_annotation_value | Should-BeString -CaseSensitive $proposedChngText
+            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
+            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
         }
          It "Get for Publication1 with RequestedMetadata, Pipeline" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = $ishObjectPub1 | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
-            $ishAnnotations.Count | Should -BeExactly 2
-            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
-            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
+            $ishAnnotations.Count | Should-Be 2
+            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
+            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
         }
          It "Get for Publication1,Publication2 with RequestedMetadata, Pipeline" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = @($ishObjectPub1, $ishObjectPub2) | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
-            $ishAnnotations.Count | Should -BeExactly 4
-            $annotationIdsP1P2 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[1].IshRef | Should -Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[2].IshRef | Should -Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[3].IshRef | Should -Be $true
+            $ishAnnotations.Count | Should-Be 4
+            $annotationIdsP1P2 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1P2 -contains $ishAnnotations[1].IshRef | Should-Be $true
+            $annotationIdsP1P2 -contains $ishAnnotations[2].IshRef | Should-Be $true
+            $annotationIdsP1P2 -contains $ishAnnotations[3].IshRef | Should-Be $true
         }
         It "Get for Topic without RequestedMetadata" {
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshObject $ishObjectTopic1
-            $ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
+            $ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
         }
         It "Get for Topic with RequestedMetadata" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshObject $ishObjectTopic1 -RequestedMetadata $requestedMetadata
-            $ishAnnotations.Count | Should -BeExactly 2
-            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
-            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
+            $ishAnnotations.Count | Should-Be 2
+            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
+            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
         }
         It "Get for Topic with RequestedMetadata, Pipeline" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = $ishObjectTopic1 | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
-            $ishAnnotations.Count | Should -BeExactly 2
-            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
-            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
+            $ishAnnotations.Count | Should-Be 2
+            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
+            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
         }
         It "Get for Topic1, Topic2 with RequestedMetadata, Pipeline" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = @($ishObjectTopic1, $ishObjectTopic2) | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
-            $ishAnnotations.Count | Should -BeExactly 4
-            $annotationIdsP1P2 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[1].IshRef | Should -Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[2].IshRef | Should -Be $true
-            $annotationIdsP1P2 -contains $ishAnnotations[3].IshRef | Should -Be $true
+            $ishAnnotations.Count | Should-Be 4
+            $annotationIdsP1P2 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1P2 -contains $ishAnnotations[1].IshRef | Should-Be $true
+            $annotationIdsP1P2 -contains $ishAnnotations[2].IshRef | Should-Be $true
+            $annotationIdsP1P2 -contains $ishAnnotations[3].IshRef | Should-Be $true
         }
 		It "Get for Publication3 where annotation has 2 replies"{
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
 			$ishAnnotations = $ishObjectPub3 | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
-			$ishAnnotations.Count | Should -BeExactly 2
-			$replyIdsP3 -contains $ishAnnotations[0].ReplyRef | Should -Be $true 
-			$replyIdsP3 -contains $ishAnnotations[1].ReplyRef | Should -Be $true 
+			$ishAnnotations.Count | Should-Be 2
+			$replyIdsP3 -contains $ishAnnotations[0].ReplyRef | Should-Be $true 
+			$replyIdsP3 -contains $ishAnnotations[1].ReplyRef | Should-Be $true 
 		}
     }
     Context "Get-IshAnnotation IshObjectGroup mixed IshObjects from Get-IshFolderContent" {
@@ -265,10 +265,10 @@ Describe "Get-IshAnnotation" -Tags "Create" {
             $ishAnnotations = Get-IshFolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) -Recurse |
                               Get-IshFolderContent -IshSession $ishsession |
                               Get-IshAnnotation -IshSession $ishsession
-            $ishAnnotations.Count | Should -BeExactly 6
+            $ishAnnotations.Count | Should-Be 6
 			foreach($ishAnnotation in $ishAnnotations)
 			{
-				$annotationIdsP1P2P3 -contains $ishAnnotation.IshRef | Should -Be $true
+				$annotationIdsP1P2P3 -contains $ishAnnotation.IshRef | Should-Be $true
 			}
          }
 
@@ -276,57 +276,57 @@ Describe "Get-IshAnnotation" -Tags "Create" {
             $ishObjects = Get-Ishfolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) -Recurse |
                           Get-IshFolderContent -IshSession $ishsession                              
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshObject $ishObjects 
-            $ishAnnotations.Count | Should -BeExactly 6
+            $ishAnnotations.Count | Should-Be 6
 			foreach($ishAnnotation in $ishAnnotations)
 			{
-				$annotationIdsP1P2P3 -contains $ishAnnotation.IshRef | Should -Be $true
+				$annotationIdsP1P2P3 -contains $ishAnnotation.IshRef | Should-Be $true
 			}
         }
     }
     Context "Get-IshAnnotation IshAnnotationGroup" {
         It "Get array of IshAnnotation without RequestedMetadata" {
 			$ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshAnnotation @($ishAnnotation1P1, $ishAnnotation2P1)
-			$ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
+			$ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
 		}
         It "Get array of IshAnnotation with RequestedMetadata" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshAnnotation @($ishAnnotation1P1, $ishAnnotation2P1) -RequestedMetadata $requestedMetadata
-			$ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
-            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
-            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
+			$ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
+            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
+            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
 		}
         It "Get single IshAnnotation without RequestedMetadata" {
 			$ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotation1P1
-			$ishAnnotations.Count | Should -BeExactly 1
-            $ishAnnotations.IshRef | Should -BeExactly $ishAnnotation1P1.IshRef
+			$ishAnnotations.Count | Should-Be 1
+            $ishAnnotations.IshRef | Should-BeString -CaseSensitive $ishAnnotation1P1.IshRef
 		}
         It "Get single IshAnnotation with RequestedMetadata" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = Get-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotation1P1 -RequestedMetadata $requestedMetadata
-			$ishAnnotations.Count | Should -BeExactly 1
-            $ishAnnotations.IshRef | Should -BeExactly $ishAnnotation1P1.IshRef
-            Get-IshMetadataField -IshObject $ishAnnotations -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
+			$ishAnnotations.Count | Should-Be 1
+            $ishAnnotations.IshRef | Should-BeString -CaseSensitive $ishAnnotation1P1.IshRef
+            Get-IshMetadataField -IshObject $ishAnnotations -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
 		}
 
         It "Get with RequestedMetadata, pipeline single object" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = $ishAnnotation1P1 | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
-			$ishAnnotations.Count | Should -BeExactly 1
-            $annotationIdsP1 -contains $ishAnnotations.IshRef | Should -Be $true
-            Get-IshMetadataField -IshObject $ishAnnotations -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
+			$ishAnnotations.Count | Should-Be 1
+            $annotationIdsP1 -contains $ishAnnotations.IshRef | Should-Be $true
+            Get-IshMetadataField -IshObject $ishAnnotations -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
         }
         It "Get with RequestedMetadata, pipeline array" {
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation
             $ishAnnotations = @($ishAnnotation1P1, $ishAnnotation2P1) | Get-IshAnnotation -IshSession $ishsession -RequestedMetadata $requestedMetadata
-			$ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
-            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
-            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should -BeExactly $proposedChngText
+			$ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
+            Get-IshMetadataField -IshObject $ishAnnotations[0] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
+            Get-IshMetadataField -IshObject $ishAnnotations[1] -Name "FISHANNOTPROPOSEDCHNGTXT" -Level Annotation | Should-BeString -CaseSensitive $proposedChngText
         }
     }
 }

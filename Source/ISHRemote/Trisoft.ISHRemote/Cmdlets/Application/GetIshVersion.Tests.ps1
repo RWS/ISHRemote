@@ -9,7 +9,7 @@ BeforeAll {
 Describe "Get-IshVersion" -Tags "Read" {
 	Context "Get-IshVersion Parameters" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshVersion -IshSession "INVALIDISHSESSION" } | Should -Throw
+			{ Get-IshVersion -IshSession "INVALIDISHSESSION" } | Should-Throw
 		}
 	}
 
@@ -18,19 +18,19 @@ Describe "Get-IshVersion" -Tags "Read" {
 			$ishVersion = Get-IshVersion -IshSession $ishSession
 		}
 		It "GetType()" {
-			$ishVersion.GetType().Name | Should -BeExactly "IshVersion"
+			$ishVersion.GetType().Name | Should-BeString -CaseSensitive "IshVersion"
 		}
 		It "IshVersion.MajorVersion" {
-			$ishVersion.MajorVersion -ge 0 | Should -Be $true
+			$ishVersion.MajorVersion -ge 0 | Should-Be $true
 		}
 		It "IshVersion.MinorVersion" {
-			$ishVersion.MinorVersion -ge 0 | Should -Be $true
+			$ishVersion.MinorVersion -ge 0 | Should-Be $true
 		}
 		It "IshVersion.BuildVersion" {
-			$ishVersion.BuildVersion -ge 0 | Should -Be $true
+			$ishVersion.BuildVersion -ge 0 | Should-Be $true
 		}
 		It "IshSession.RevisionVersion" {
-			$ishVersion.RevisionVersion -ge 0 | Should -Be $true
+			$ishVersion.RevisionVersion -ge 0 | Should-Be $true
 		}
 	}
 
@@ -39,19 +39,19 @@ Describe "Get-IshVersion" -Tags "Read" {
 			$ishVersion = Get-IshVersion
 		}
 		It "GetType()" {
-			$ishVersion.GetType().Name | Should -BeExactly "IshVersion"
+			$ishVersion.GetType().Name | Should-BeString -CaseSensitive "IshVersion"
 		}
 		It "IshVersion.MajorVersion" {
-			$ishVersion.MajorVersion -ge 0 | Should -Be $true
+			$ishVersion.MajorVersion -ge 0 | Should-Be $true
 		}
 		It "IshVersion.MinorVersion" {
-			$ishVersion.MinorVersion -ge 0 | Should -Be $true
+			$ishVersion.MinorVersion -ge 0 | Should-Be $true
 		}
 		It "IshVersion.BuildVersion" {
-			$ishVersion.BuildVersion -ge 0 | Should -Be $true
+			$ishVersion.BuildVersion -ge 0 | Should-Be $true
 		}
 		It "IshSession.RevisionVersion" {
-			$ishVersion.RevisionVersion -ge 0 | Should -Be $true
+			$ishVersion.RevisionVersion -ge 0 | Should-Be $true
 		}
 	}
 }

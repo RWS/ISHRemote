@@ -83,7 +83,7 @@ Describe 'Public Doc and Samples stay anonymized' {
                     }
                 }
             }
-            , $leak.ToArray()
+            $leak.ToArray()
         }
 
         # Scans every text file under Doc/ and Samples/, returning '<relative path>  L<line>: <match>'.
@@ -114,22 +114,22 @@ Describe 'Public Doc and Samples stay anonymized' {
                     }
                 }
             }
-            , $finding.ToArray()
+            $finding.ToArray()
         }
     }
 
     It 'rules flag a non-anonymized sample (guard-for-the-guard)' {
-        Get-IshContentLeak -Line 'connect to https://realhost.acme.local/ISHWS/ now' | Should -Not -BeNullOrEmpty
-        Get-IshContentLeak -Line 'internal box at 10.20.30.40' | Should -Not -BeNullOrEmpty
+        Get-IshContentLeak -Line 'connect to https://realhost.acme.local/ISHWS/ now' | Should-NotBeNull
+        Get-IshContentLeak -Line 'internal box at 10.20.30.40' | Should-NotBeNull
     }
 
     It 'rules ignore the agreed example.com placeholders' {
-        Get-IshContentLeak -Line 'New-IshSession -WsBaseUrl https://ish.example.com/ISHWS/' | Should -BeNullOrEmpty
-        Get-IshContentLeak -Line 'Generate "https://hostname/InfoShareWS/" "username" "password"' | Should -BeNullOrEmpty
+        Get-IshContentLeak -Line 'New-IshSession -WsBaseUrl https://ish.example.com/ISHWS/' | Should-BeNull
+        Get-IshContentLeak -Line 'Generate "https://hostname/InfoShareWS/" "username" "password"' | Should-BeNull
     }
 
     It 'Doc and Samples contain no real URL, internal hostname, private IP or token' {
         $finding = Get-IshAnonymizationFinding
-        $finding | Should -BeNullOrEmpty -Because 'public material must use example.com placeholders (see .github/instructions/doc--markdown.instructions.md)'
+        $finding | Should-BeNull -Because 'public material must use example.com placeholders (see .github/instructions/doc--markdown.instructions.md)'
     }
 }

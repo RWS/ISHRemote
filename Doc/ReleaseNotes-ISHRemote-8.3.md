@@ -26,6 +26,7 @@ The below text describes the delta compared to fielded release ISHRemote v8.2.
 ## Implementation Details
 
 * Fixed `Start-IshRemoteMcpServer` failing to connect on Windows with newer MCP clients (e.g. OpenCode 1.18.11, protocol `2025-11-25`) with errors `MCP error -32001: Request timed out` and `Failed to get tools`. Three root causes: (1) `initialize` requests with `"id":0` were silently dropped because PowerShell treats `0` as falsy; (2) `[Console]::InputEncoding` defaults to OEM code page (`ibm437`) when `pwsh.exe` is spawned with redirected stdio on Windows, causing `ReadLine()` to block forever on UTF-8 JSON — fixed by explicitly setting UTF-8 encoding and replacing `Console.Out` with an auto-flushing `StreamWriter` via `[Console]::SetOut()`; (3) `Register-IshRemoteMcpTool` emitted an invalid `type: "object"` field in `ToolAnnotations` and used string `"true"`/`"false"` instead of boolean `$true`/`$false` for hint values, causing strict MCP schema validation to reject the tools list. Server name updated from `"PowerShell MCP Server (Template)"` to `"ISHRemote MCP Server"` and version bumped to `0.3.0`. Also fixed the server looping forever on stdin EOF (orphaned `pwsh` processes) by breaking the while loop when `ReadLine()` returns `$null`. See #243 and #261. Thanks @ddemeyer
+* Migrated all 58 `*.Tests.ps1` files from Pester v5 to Pester v6 (`Should -Be` to `Should-Be`, `Should -BeExactly` to `Should-BeString -CaseSensitive`, `Should -Not -BeNullOrEmpty` to `Should-NotBeNull`, `Should -Throw "msg"` to `Should-Throw -ExceptionMessage "msg"`, etc.). CI install gates updated to `-MinimumVersion 6.0.0`. Classic `Should -Not -Throw` retained as there is no `Should-NotThrow` equivalent in Pester 6. See #242.
 
 
 ## Breaking Changes - Cmdlets
@@ -58,7 +59,7 @@ All cmdlets and business logic are fully compatible.
 
 ## Quality Assurance
 
-Added more Invoke-Pester 5.7.1 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7.6+ hosts where
+Added more Invoke-Pester 6.0.0 Tests, see Github actions for the Windows PowerShell 5.1 and PowerShell 7.6+ hosts where
 * the skipped are about SslPolicyErrors testing and `ISHRemoteMcpServer` is PowerShell 7+ only
 * the failed are about IMetadata bound fields (issue #58)
 
@@ -80,3 +81,5 @@ Below is not an official performance compare, but a recurring thing noticed alon
 | ISHRemote 8.2.13523.0    | PowerShell 7.5.4 on .NET 9.0.10  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 141.61s AND Tests Passed: 1128, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
 | ISHRemote 8.2.13525.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b2303 | Tests completed in 132.15s AND Tests Passed: 1087, Failed: 0, Skipped: 52, Inconclusive: 0, NotRun: 0 |
 | ISHRemote 8.2.13525.0    | PowerShell 7.6.0 on .NET 10.0.5  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 139.45s AND Tests Passed: 1135, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.2.13525.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b3005 | Tests completed in 124.16s AND Tests Passed: 1260, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.3.14018.0    | PowerShell 7.6.5 on .NET 10.0.11 | LEUDEVDDE...@15.3.0b3005 | Tests completed in 117.22s AND Tests Passed: 1260, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |

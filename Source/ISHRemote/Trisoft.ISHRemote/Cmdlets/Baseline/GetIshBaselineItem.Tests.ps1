@@ -9,7 +9,7 @@ BeforeAll {
 Describe "Get-IshBaselineItem" -Tags "Read" {
 	Context "Get-IshBaselineItem ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshBaselineItem -IShSession "INVALIDISHSESSION" } | Should -Throw
+			{ Get-IshBaselineItem -IShSession "INVALIDISHSESSION" } | Should-Throw
 		}
 	}
 	Context "Get-IshBaselineItem returns IshBaselineItem object" {
@@ -20,27 +20,27 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 		}
 		It "Parameter IshSession explicit" {
 			$ishBaselineItem = (Get-IshBaselineItem -IShSession $ishSession -IshObject $ishObject)[0]
-			$ishBaselineItem.GetType().Name | Should -BeExactly "IshBaselineItem"
-			$ishBaselineItem.IshRef | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.LogicalId | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.Version | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.Author | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.CreatedOn | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.CreatedOnAsSortableDateTime | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.ModifiedOn | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should -Not -BeNullOrEmpty
+			$ishBaselineItem.GetType().Name | Should-BeString -CaseSensitive "IshBaselineItem"
+			$ishBaselineItem.IshRef | Should-NotBeNull
+			$ishBaselineItem.LogicalId | Should-NotBeNull
+			$ishBaselineItem.Version | Should-NotBeNull
+			$ishBaselineItem.Author | Should-NotBeNull
+			$ishBaselineItem.CreatedOn | Should-NotBeNull
+			$ishBaselineItem.CreatedOnAsSortableDateTime | Should-NotBeNull
+			$ishBaselineItem.ModifiedOn | Should-NotBeNull
+			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should-NotBeNull
 		}
 		It "Parameter IshSession implicit" {
 			$ishBaselineItem = (Get-IshBaselineItem -IshObject $ishObject)[0]
-			$ishBaselineItem.GetType().Name | Should -BeExactly "IshBaselineItem"
-			$ishBaselineItem.IshRef | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.LogicalId | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.Version | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.Author | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.CreatedOn | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.CreatedOnAsSortableDateTime | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.ModifiedOn | Should -Not -BeNullOrEmpty
-			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should -Not -BeNullOrEmpty		
+			$ishBaselineItem.GetType().Name | Should-BeString -CaseSensitive "IshBaselineItem"
+			$ishBaselineItem.IshRef | Should-NotBeNull
+			$ishBaselineItem.LogicalId | Should-NotBeNull
+			$ishBaselineItem.Version | Should-NotBeNull
+			$ishBaselineItem.Author | Should-NotBeNull
+			$ishBaselineItem.CreatedOn | Should-NotBeNull
+			$ishBaselineItem.CreatedOnAsSortableDateTime | Should-NotBeNull
+			$ishBaselineItem.ModifiedOn | Should-NotBeNull
+			$ishBaselineItem.ModifiedOnAsSortableDateTime | Should-NotBeNull		
 		}
 		It "ModifiedOn and CreatedOn Sortable Date Converstion #157" {
 			# Note that this test will always pass from day 13 to day 31 of the month because of the parsing fall back, 
@@ -50,14 +50,14 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 			$bi = (Get-IshBaselineItem -IshObject $ishObject)
 			# Neutral parsing could lead to DateTime.Min ... 
 			# Can happen with ([System.Globalization.CultureInfo]::CurrentCulture).DateTimeFormat.ShortDatePattern = "MM/dd/yyyy"
-			$bi[0].ModifiedOn | Should -Not -Be "0001-01-01T00:00:00"
-			$bi[0].ModifiedOnAsSortableDateTime | Should -Not -Be "0001-01-01T00:00:00.0000000"
+			$bi[0].ModifiedOn | Should-NotBe "0001-01-01T00:00:00"
+			$bi[0].ModifiedOnAsSortableDateTime | Should-NotBe "0001-01-01T00:00:00.0000000"
 			# Where ModifiedOn is Sunday, August 6, 2023 5:23:45 PM
-			(Get-Date -Date $bi[0].ModifiedOn).Day | Should -Be $day  
-			(Get-Date -Date $bi[0].ModifiedOn).Month | Should -Be $month
+			(Get-Date -Date $bi[0].ModifiedOn).Day | Should-Be $day  
+			(Get-Date -Date $bi[0].ModifiedOn).Month | Should-Be $month
 			# Where ModifiedOnAsSortableDateTime is  2023-08-06T17:23:45 which is in the future at the time of writing
-			$bi[0].ModifiedOnAsSortableDateTime.Substring(5,2) | Should -Be $month
-			$bi[0].ModifiedOnAsSortableDateTime.Substring(8,2) | Should -Be $day
+			$bi[0].ModifiedOnAsSortableDateTime.Substring(5,2) | Should-Be $month
+			$bi[0].ModifiedOnAsSortableDateTime.Substring(8,2) | Should-Be $day
 		}
 	}
 	Context "Get-IshBaselineItem IshObjectGroup" {
@@ -80,21 +80,21 @@ Describe "Get-IshBaselineItem" -Tags "Read" {
 			Set-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectD -LogicalId "$cmdletName--DD" -Version "2"
 		}
 		It "Parameter IshObject invalid" {
-			{ Get-IshBaselineItem -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should -Throw
+			{ Get-IshBaselineItem -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should-Throw
 		}
 		It "Parameter IshObject Single" {
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectA).Count | Should -Be 2
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObjectA).Count | Should-Be 2
 		}
 		It "Parameter IshObject Multiple" {
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)).Count | Should -Be 4
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)).Count | Should-Be 4
 		}
 		It "Pipeline IshObject Single" {
 			$ishBaselineItems = $ishObjectD | Get-IshBaselineItem -IshSession $ishSession
-			$ishBaselineItems.Count | Should -Be 2
+			$ishBaselineItems.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Multiple" {
 			$ishBaselineItems = @($ishObjectA,$ishObjectB,$ishObjectC,$ishObjectD) | Get-IshBaselineItem -IshSession $ishSession
-			$ishBaselineItems.Count | Should -Be 8
+			$ishBaselineItems.Count | Should-Be 8
 		}
 	}
 }

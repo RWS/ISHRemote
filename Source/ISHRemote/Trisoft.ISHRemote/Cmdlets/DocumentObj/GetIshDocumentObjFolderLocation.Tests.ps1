@@ -34,38 +34,38 @@ Describe "Get-IshDocumentObjFolderLocation" -Tags "Read" {
 			$folderPath = Get-IShDocumentObjFolderLocation -IshSession $ishSession -LogicalId $ishObjectTopicA.IshRef
 		}
 		It "Parameter IshSession/LogicalId invalid" {
-			{ Get-IshDocumentObjFolderLocation -IShSession "INVALIDISHSESSION" -LogicalId "INVALIDLOGICALID" } | Should -Throw
+			{ Get-IshDocumentObjFolderLocation -IShSession "INVALIDISHSESSION" -LogicalId "INVALIDLOGICALID" } | Should-Throw
 		}
 		It "GetType().Name" {
-			$folderPath.GetType().Name | Should -BeExactly "String"
+			$folderPath.GetType().Name | Should-BeString -CaseSensitive "String"
 		}
 		It "Parameter LogicalId Single" {
-			$folderPath | Should -BeExactly (Join-Path (Join-Path $folderTestRootPath $cmdletName) "Topic")
+			$folderPath | Should-BeString -CaseSensitive (Join-Path (Join-Path $folderTestRootPath $cmdletName) "Topic")
 		}
 		It "Leading IshSession.FolderPathSeparator" {
-			$folderPath[0] | Should -Be $ishSession.FolderPathSeparator
+			$folderPath[0] | Should-Be $ishSession.FolderPathSeparator
 		}
 	}
 	Context "Get-IshDocumentObjFolderLocation IshObjectGroup" {
 		It "GetType().Name" {
 			$folderPathArray = Get-IShDocumentObjFolderLocation -IshSession $ishSession -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
-			$folderPathArray.GetType().Name | Should -BeExactly "Object[]"
+			$folderPathArray.GetType().Name | Should-BeString -CaseSensitive "Object[]"
 		}
 		It "Parameter IshObject Single with implicit IshSession" {
 			$folderPathArray = Get-IShDocumentObjFolderLocation -IshObject $ishObjectTopicA
-			$folderPathArray.Count | Should -Be 1
+			$folderPathArray.Count | Should-Be 1
 		}
 		It "Parameter IshObject Multiple with implicit IshSession" {
 			$folderPathArray = Get-IShDocumentObjFolderLocation -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
-			$folderPathArray.Count | Should -Be 2
+			$folderPathArray.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$folderPathArray = $ishObjectTopicA | Get-IShDocumentObjFolderLocation -IshSession $ishSession
-			$folderPathArray.Count | Should -Be 1
+			$folderPathArray.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$folderPathArray = @($ishObjectTopicA,$ishObjectLibraryA) | Get-IShDocumentObjFolderLocation -IshSession $ishSession
-			$folderPathArray.Count | Should -Be 2
+			$folderPathArray.Count | Should-Be 2
 		}
 	}
 }

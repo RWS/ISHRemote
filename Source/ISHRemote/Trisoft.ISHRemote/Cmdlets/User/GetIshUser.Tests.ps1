@@ -9,7 +9,7 @@ BeforeAll {
 Describe "Get-IshUser" -Tags "Create" {
 	Context "Get-IshUser ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshUser -IShSession "INVALIDISHSESSION" -Name "INVALIDUSERNAME" } | Should -Throw
+			{ Get-IshUser -IShSession "INVALIDISHSESSION" -Name "INVALIDUSERNAME" } | Should-Throw
 		}
 	}
 	Context "Get-IshUser ParameterGroup" {
@@ -22,14 +22,14 @@ Describe "Get-IshUser" -Tags "Create" {
 		}
 		It "Parameter IshSession Implicit" {
 			$ishObject = Get-IshUser -Id $ishObject.IshRef
-			$ishObject.GetType().Name | Should -BeExactly "IshUser"
-			$ishObject.Count | Should -Be 1
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshUser"
+			$ishObject.Count | Should-Be 1
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off with PASSWORD" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference
 			$requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name PASSWORD -Level None
 			$ishSession.StrictMetadataPreference = "Off"
-			{ Get-IshUser -IshSession $ishSession -Id $ishObject.IshRef -RequestedMetadata $requestedMetadata } | Should -Throw
+			{ Get-IshUser -IshSession $ishSession -Id $ishObject.IshRef -RequestedMetadata $requestedMetadata } | Should-Throw
 			$ishSession.StrictMetadataPreference = "Continue"
 			{ Get-IshUser -IshSession $ishSession -Id $ishObject.IshRef -RequestedMetadata $requestedMetadata } | Should -Not -Throw
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
@@ -46,20 +46,20 @@ Describe "Get-IshUser" -Tags "Create" {
 			$ishSession.DefaultRequestedMetadata = "Descriptive"
 			$ishObject = Get-IshUser -IshSession $ishSession
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
-			$ishObject.GetType().Name | Should -BeExactly "IshUser"
-			$ishObject.IshField.Length | Should -Be 10
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshUser"
+			$ishObject.IshField.Length | Should-Be 10
 		}
 		It "Parameter IshSession.DefaultRequestedMetadata=Basic on My-Metadata" {
 			$oldDefaultRequestedMetadata = $ishSession.DefaultRequestedMetadata
 			$ishSession.DefaultRequestedMetadata = "Basic"
 			$ishObject = Get-IshUser -IshSession $ishSession
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
-			$ishObject.GetType().Name | Should -BeExactly "IshUser"
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshUser"
 			if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16) {
-				$ishObject.IshField.Length | Should -Be 27
+				$ishObject.IshField.Length | Should-Be 27
 			}
 			else {
-				$ishObject.IshField.Length | Should -Be 25
+				$ishObject.IshField.Length | Should-Be 25
 			}
 		}
 		It "Parameter IshSession.DefaultRequestedMetadata=All on My-Metadata" {
@@ -67,8 +67,8 @@ Describe "Get-IshUser" -Tags "Create" {
 			$ishSession.DefaultRequestedMetadata = "All"
 			$ishObject = Get-IshUser -IshSession $ishSession
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
-			$ishObject.GetType().Name | Should -BeExactly "IshUser"
-			$ishObject.IshField.Length | Should -Be 29
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshUser"
+			$ishObject.IshField.Length | Should-Be 29
 		}
 	}
 }

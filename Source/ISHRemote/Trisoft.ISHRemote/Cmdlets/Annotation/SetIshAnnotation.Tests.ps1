@@ -65,17 +65,17 @@ Describe "Set-IshAnnotation" -Tags "Create" {
     }	
 	Context "Set-IshAnnotation ParameterGroup" {
 		It "Parameter AnnotationId is empty" {
-			{Set-IshAnnotation -IshSession $ishsession -AnnotationId "" -Metadata (Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "update should fail")} | Should -Throw
+			{Set-IshAnnotation -IshSession $ishsession -AnnotationId "" -Metadata (Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "update should fail")} | Should-Throw
 		}
 		It "Parameter AnnotationId non-existing Id" {
-			{Set-IshAnnotation -IshSession $ishsession -AnnotationId "GUID-NON-EXISTING" -Metadata (Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "update should fail")} | Should -Throw
+			{Set-IshAnnotation -IshSession $ishsession -AnnotationId "GUID-NON-EXISTING" -Metadata (Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "update should fail")} | Should-Throw
 		}
 		It "Set without RequiredCurrentMetadata" {
             $annotationTextUpdated = $ishAnnotationPG1.fishannotationtext_annotation_value + "updated"
             $metadataUpdate = Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
             $ishAnnotation = Set-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPG1.IshRef -Metadata $metadataUpdate
-            $ishAnnotation.IshRef | Should -BeExactly $ishAnnotationPG1.IshRef
- 			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+            $ishAnnotation.IshRef | Should-BeString -CaseSensitive $ishAnnotationPG1.IshRef
+            $ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
 		It "Set with Metadata and RequiredCurrentMetadata (exception)" {
             $metadataUpdate = Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "Update should fail"
@@ -83,7 +83,7 @@ Describe "Set-IshAnnotation" -Tags "Create" {
             {Set-IshAnnotation -IshSession $ishsession `
                               -AnnotationId $ishAnnotationPG1.IshRef `
                               -Metadata $metadataUpdate `
-                              -RequiredCurrentMetadata $requiredCurrentMetadata} | Should -Throw
+                              -RequiredCurrentMetadata $requiredCurrentMetadata} | Should-Throw
 		}
 		It "Set with Metadata and RequiredCurrentMetadata" {
             $requiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -Name "FISHANNOTATIONSTATUS" -Value $annotationStatus -ValueType Value -Level Annotation
@@ -93,8 +93,8 @@ Describe "Set-IshAnnotation" -Tags "Create" {
                                                -AnnotationId $ishAnnotationPG1.IshRef `
                                                -Metadata $metadataUpdate `
                                                -RequiredCurrentMetadata $requiredCurrentMetadata
-            $ishAnnotation.IshRef | Should -BeExactly $ishAnnotationPG1.IshRef
- 			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+            $ishAnnotation.IshRef | Should-BeString -CaseSensitive $ishAnnotationPG1.IshRef
+            $ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
 
 		It "Annotation with replies, Set without RequiredCurrentMetadata" {
@@ -102,8 +102,8 @@ Describe "Set-IshAnnotation" -Tags "Create" {
             $metadataUpdate = Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
             $ishAnnotation = Set-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPGWithReplies.IshRef -Metadata $metadataUpdate
             # TODO [Could] Pester 5 conversion showed that $ishAnnotation contains 2 identical objects, fixed by selecting array[0]
-            $ishAnnotation[0].IshRef | Should -BeExactly $ishAnnotationPGWithReplies.IshRef
- 			$ishAnnotation[0].fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+            $ishAnnotation[0].IshRef | Should-BeString -CaseSensitive $ishAnnotationPGWithReplies.IshRef
+            $ishAnnotation[0].fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
 		It "Annotation with replies, Set with RequiredCurrentMetadata (exception)" {
             $metadataUpdate = Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "Update should fail"
@@ -111,7 +111,7 @@ Describe "Set-IshAnnotation" -Tags "Create" {
             {Set-IshAnnotation -IshSession $ishsession `
                               -AnnotationId $ishAnnotationPGWithReplies.IshRef `
                               -Metadata $metadataUpdate `
-                              -RequiredCurrentMetadata $requiredCurrentMetadata} | Should -Throw
+                              -RequiredCurrentMetadata $requiredCurrentMetadata} | Should-Throw
 		}
 		It "Annotation with replies, Set with RequiredCurrentMetadata" {
             $requiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -Name "FISHANNOTATIONSTATUS" -Value $annotationStatus -ValueType Value -Level Annotation
@@ -122,8 +122,8 @@ Describe "Set-IshAnnotation" -Tags "Create" {
                                                -Metadata $metadataUpdate `
                                                -RequiredCurrentMetadata $requiredCurrentMetadata
             # TODO [Could] Pester 5 conversion showed that $ishAnnotation contains 2 identical objects, fixed by selecting array[0]
-            $ishAnnotation[0].IshRef | Should -BeExactly $ishAnnotationPGWithReplies.IshRef
- 			$ishAnnotation[0].fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+            $ishAnnotation[0].IshRef | Should-BeString -CaseSensitive $ishAnnotationPGWithReplies.IshRef
+            $ishAnnotation[0].fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
     }
 
@@ -132,8 +132,8 @@ Describe "Set-IshAnnotation" -Tags "Create" {
             $annotationTextUpdated = $ishAnnotationIAG1.fishannotationtext_annotation_value + "updated"
             $metadataUpdate = Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
             $ishAnnotation = Set-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAG1 -Metadata $metadataUpdate
-            $ishAnnotation.IshRef | Should -BeExactly $ishAnnotationIAG1.IshRef
- 			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+            $ishAnnotation.IshRef | Should-BeString -CaseSensitive $ishAnnotationIAG1.IshRef
+            $ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
 		It "Set with RequiredCurrentMetadata (exception)" {
             $metadataUpdate = Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "Update should fail"
@@ -141,7 +141,7 @@ Describe "Set-IshAnnotation" -Tags "Create" {
             {Set-IshAnnotation -IshSession $ishsession `
                               -IshAnnotation $ishAnnotationIAG1 `
                               -Metadata $metadataUpdate `
-                              -RequiredCurrentMetadata $requiredCurrentMetadata} | Should -Throw
+                              -RequiredCurrentMetadata $requiredCurrentMetadata} | Should-Throw
 		}
 		It "Set with RequiredCurrentMetadata" {
             $requiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -Name "FISHANNOTATIONSTATUS" -Value $annotationStatus -ValueType Value -Level Annotation
@@ -151,8 +151,8 @@ Describe "Set-IshAnnotation" -Tags "Create" {
                                                -IshAnnotation $ishAnnotationIAG1 `
                                                -Metadata $metadataUpdate `
                                                -RequiredCurrentMetadata $requiredCurrentMetadata
-            $ishAnnotation.IshRef | Should -BeExactly $ishAnnotationIAG1.IshRef
- 			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+            $ishAnnotation.IshRef | Should-BeString -CaseSensitive $ishAnnotationIAG1.IshRef
+            $ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
 
 		It "Annotation with replies, Set without RequiredCurrentMetadata" {
@@ -160,8 +160,8 @@ Describe "Set-IshAnnotation" -Tags "Create" {
             $metadataUpdate = Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value $annotationTextUpdated
             $ishAnnotation = Set-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAGWithReplies -Metadata $metadataUpdate
             # TODO [Could] Pester 5 conversion showed that $ishAnnotation contains 2 identical objects, fixed by selecting array[0]
-            $ishAnnotation[0].IshRef | Should -BeExactly $ishAnnotationIAGWithReplies.IshRef
- 			$ishAnnotation[0].fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+            $ishAnnotation[0].IshRef | Should-BeString -CaseSensitive $ishAnnotationIAGWithReplies.IshRef
+            $ishAnnotation[0].fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
 		It "Annotation with replies, Set with RequiredCurrentMetadata (exception)" {
             $metadataUpdate = Set-IshMetadataField -Name "FISHANNOTATIONTEXT" -Level Annotation -Value "Update should fail"
@@ -169,7 +169,7 @@ Describe "Set-IshAnnotation" -Tags "Create" {
             {Set-IshAnnotation -IshSession $ishsession `
                                -IshAnnotation $ishAnnotationIAGWithReplies `
                                -Metadata $metadataUpdate `
-                               -RequiredCurrentMetadata $requiredCurrentMetadata} | Should -Throw
+                               -RequiredCurrentMetadata $requiredCurrentMetadata} | Should-Throw
 		}
 		It "Annotation with replies, Set with RequiredCurrentMetadata" {
             $requiredCurrentMetadata = Set-IshRequiredCurrentMetadataField -Name "FISHANNOTATIONSTATUS" -Value $annotationStatus -ValueType Value -Level Annotation
@@ -180,8 +180,8 @@ Describe "Set-IshAnnotation" -Tags "Create" {
                                                -Metadata $metadataUpdate `
                                                -RequiredCurrentMetadata $requiredCurrentMetadata
             # TODO [Could] Pester 5 conversion showed that $ishAnnotation contains 2 identical objects, fixed by selecting array[0]
-            $ishAnnotation[0].IshRef | Should -BeExactly $ishAnnotationIAGWithReplies.IshRef
- 			$ishAnnotation[0].fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+            $ishAnnotation[0].IshRef | Should-BeString -CaseSensitive $ishAnnotationIAGWithReplies.IshRef
+            $ishAnnotation[0].fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
     }
 
@@ -190,13 +190,13 @@ Describe "Set-IshAnnotation" -Tags "Create" {
             $ishAnnotationsPub = $ishObjectPub | Get-IshAnnotation -IshSession $ishSession
             foreach($ishAnnotation in $ishAnnotationsPub)
             {
-                $ishAnnotation.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+                $ishAnnotation.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
             }
             $ishAnnotationsSet = $ishAnnotationsPub | Set-IshAnnotation -IshSession $ishsession `
                                                                         -Metadata (Set-IshMetadataField -Name "FISHANNOTATIONSTATUS" -Level Annotation -Value $annotationStatusShared)
             foreach($ishAnnotation in $ishAnnotationsSet)
             {
-                $ishAnnotation.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatusShared
+                $ishAnnotation.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatusShared
             }
 		}
 
@@ -209,7 +209,7 @@ Describe "Set-IshAnnotation" -Tags "Create" {
                                                                                                          -RequiredCurrentMetadata $requiredCurrentMetadata
             foreach($ishAnnotation in $ishAnnotationsSet)
             {
-                $ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+                $ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
             }
 		}
     }

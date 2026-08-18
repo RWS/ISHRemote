@@ -36,22 +36,22 @@ Describe "Remove-IshFolder" -Tags "Create" {
 	}
 	Context "Remove-IshFolder FolderIdGroup" {
 		It "Parameter IshSession invalid" {
-			{ Remove-IshFolder -IShSession "INVALIDISHSESSION" -FolderId "-7" } | Should -Throw
+			{ Remove-IshFolder -IShSession "INVALIDISHSESSION" -FolderId "-7" } | Should-Throw
 		}
 		It "Parameter FolderId 0" {
 			{ Remove-IshFolder -IShSession $ishSession -FolderId 0 } | Should -Not -Throw
 		}
 		It "Parameter FolderId \General\" {
-			{ Remove-IshFolder -IShSession $ishSession -FolderId (Get-IshFolder -IshSession $ishSession -BaseFolder Data).IshFolderRef } | Should -Throw
+			{ Remove-IshFolder -IShSession $ishSession -FolderId (Get-IshFolder -IshSession $ishSession -BaseFolder Data).IshFolderRef } | Should-Throw
 		}
 		It "Remove-IshFolder returns nothing" {
 			$ishFolder = Remove-IshFolder -IshSession $ishSession -FolderId $ishFolderFolderIdGroup.IshFolderRef 
-			$ishFolder -eq $null | Should -Be $true
+			$ishFolder -eq $null | Should-Be $true
 		}
 	}
 	Context "Remove-IshFolder FolderPathGroup" {
 		It "Parameter FolderPathGroup invalid" {
-			{ Remove-IshFolder -IShSession $ishSession -FolderPath "INVALIDFOLDERPATH" } | Should -Throw
+			{ Remove-IshFolder -IShSession $ishSession -FolderPath "INVALIDFOLDERPATH" } | Should-Throw
 		}
 		It "Parameter FolderPathGroup FolderPathGroup" {
 			{ Remove-IshFolder -IShSession $ishSession -FolderPath ($folderTestRootPath + $ishSession.FolderPathSeparator + $cmdletName + $ishSession.FolderPathSeparator +  "FolderPathGroup") } | Should -Not -Throw
@@ -65,7 +65,7 @@ Describe "Remove-IshFolder" -Tags "Create" {
 			$ishFolderEditorTemplate = Get-IshFolder -IShSession $ishSession -BaseFolder EditorTemplate
 		}
 		It "Parameter IshFolder invalid" {
-			{ Remove-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should -Throw
+			{ Remove-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should-Throw
 		}
 		It "Parameter IshFolder Single with implicit IshSession" {
 			{ Remove-IshFolder -IshFolder $ishFolderIshFoldersGroup } | Should -Not -Throw
@@ -74,7 +74,7 @@ Describe "Remove-IshFolder" -Tags "Create" {
 			{ Remove-IshFolder -IshFolder @($ishFolderIshFoldersGroupA,$ishFolderIshFoldersGroupB) } | Should -Not -Throw
 		}
 		It "Pipeline IshFolder" {
-			{  @($ishFolderData,$ishFolderSystem,$ishFolderFavorites) | Remove-IshFolder -IshSession $ishSession } | Should -Throw
+			{  @($ishFolderData,$ishFolderSystem,$ishFolderFavorites) | Remove-IshFolder -IshSession $ishSession } | Should-Throw
 		}
 		It "Pipeline IshFolder Multiple" {
 			{  @($ishFolderIshFoldersGroupC,$ishFolderIshFoldersGroupD) | Remove-IshFolder -IshSession $ishSession } | Should -Not -Throw
@@ -83,7 +83,7 @@ Describe "Remove-IshFolder" -Tags "Create" {
 	Context "Remove-IshFolder Recurse" {
 		It "Parameter FolderIdGroup" {
 			$ishFolder = Remove-IshFolder -IshSession $ishSession -FolderId $ishFolderAllYourBase.IshFolderRef -Recurse
-			$ishFolder -eq $null | Should -Be $true
+			$ishFolder -eq $null | Should-Be $true
 		}
 	}
 }

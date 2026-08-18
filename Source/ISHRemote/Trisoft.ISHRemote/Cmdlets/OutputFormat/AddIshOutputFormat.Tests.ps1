@@ -9,7 +9,7 @@ BeforeAll {
 Describe "Add-IshOutputFormat" -Tags "Create" {
 	Context "Add-IshOutputFormat ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Add-IshOutputFormat -IShSession "INVALIDISHSESSION" -Name "INVALIDOUTPUTFORMATNAME" } | Should -Throw
+			{ Add-IshOutputFormat -IShSession "INVALIDISHSESSION" -Name "INVALIDOUTPUTFORMATNAME" } | Should-Throw
 		}
 	}
 	Context "Add-IshOutputFormat ParameterGroup" {
@@ -23,9 +23,9 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -ValueType Element -Value "TRUE" } # new mandatory field
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONSTOEXPORT" -Level None -ValueType Element -Value "VRESOLUTIONSTOEXPORTALLRESOLUTIONS" } # new mandatory field since 13SP2/13.0.2
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
-			$ishObject.GetType().Name | Should -BeExactly "IshOutputFormat"
-			$ishObject.Count | Should -Be 1
-			(ConvertTo-Json $ishObject).Length -gt 2 | Should -Be $true
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshOutputFormat"
+			$ishObject.Count | Should-Be 1
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should-Be $true
 		}
 		It "Parameter Metadata" {
 			$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
@@ -37,8 +37,8 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -ValueType Element -Value "TRUE" } # new mandatory field
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONSTOEXPORT" -Level None -ValueType Element -Value "VRESOLUTIONSTOEXPORTALLRESOLUTIONS" } # new mandatory field since 13SP2/13.0.2
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
-			$ishObject.Count | Should -Be 1
-			$ishObject.IshRef -Like "VOUTPUTFORMAT*" | Should -Be $true
+			$ishObject.Count | Should-Be 1
+			$ishObject.IshRef -Like "VOUTPUTFORMAT*" | Should-Be $true
 		}
 		It "Parameter Metadata return descriptive metadata" {
 			$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
@@ -51,10 +51,10 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -ValueType Element -Value "TRUE" } # new mandatory field
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONSTOEXPORT" -Level None -ValueType Element -Value "VRESOLUTIONSTOEXPORTALLRESOLUTIONS" } # new mandatory field since 13SP2/13.0.2
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
-			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name "FISHOUTPUTFORMATNAME" -Level None).Length -gt 1 | Should -Be $true
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name "FISHOUTPUTFORMATNAME" -Level None).Length -gt 1 | Should-Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
 			$outputFormatName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FISHCLEANUP" -Level None -ValueType Element -Value "TRUE" |
 			            Set-IshMetadataField -IshSession $ishSession -Name "FISHKEEPDTDSYSTEMID" -Level None -ValueType Element -Value "TRUE" |
@@ -65,9 +65,9 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -ValueType Element -Value "TRUE" } # new mandatory field
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONSTOEXPORT" -Level None -ValueType Element -Value "VRESOLUTIONSTOEXPORTALLRESOLUTIONS" } # new mandatory field since 13SP2/13.0.2
 			$ishObject = Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP"
-			$ishObject.fishoutputformatname.Length -ge 1 | Should -Be $true 
-			$ishObject.fishoutputedt.Length -ge 1 | Should -Be $true 
-			$ishObject.fishoutputedt_none_element | Should -Be "EDTZIP"
+			$ishObject.fishoutputformatname.Length -ge 1 | Should-Be $true 
+			$ishObject.fishoutputedt.Length -ge 1 | Should-Be $true 
+			$ishObject.fishoutputedt_none_element | Should-Be "EDTZIP"
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off" {
 		    $strictMetadataPreference = $ishSession.StrictMetadataPreference
@@ -86,7 +86,7 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 						Set-IshMetadataField -IshSession $ishSession -Name "INVALIDFIELDNAME" -Level None -Value "SomethingInvalidFieldName"
 			if (([Version]$ishSession.ServerVersion).Major -ge 13) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHGUIDTOFILENAME" -Level None -ValueType Element -Value "TRUE" } # new mandatory field
 			if (([Version]$ishSession.ServerVersion).Major -ge 14 -or (([Version]$ishSession.ServerVersion).Major -ge 13 -and ([Version]$ishSession.ServerVersion).Revision -ge 2)) { $metadata = $metadata | Set-IshMetadataField -IshSession $ishSession -Name "FISHRESOLUTIONSTOEXPORT" -Level None -ValueType Element -Value "VRESOLUTIONSTOEXPORTALLRESOLUTIONS" } # new mandatory field since 13SP2/13.0.2
-			{ Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" } | Should -Throw
+			{ Add-IshOutputFormat -IshSession $ishSession -Name $outputFormatName -Metadata $metadata -Edt "EDTZIP" } | Should-Throw
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}
@@ -129,27 +129,27 @@ Describe "Add-IshOutputFormat" -Tags "Create" {
 			Start-Sleep -Milliseconds 1000  # Avoids uniquesness error which only up to the second " Cannot insert duplicate key row in object 'dbo.CARD' with unique index 'CARD_NAME_I1'. The duplicate key value is (VUSERROLEADD-IshOutputFormat20161012164716068A12/10/2016 16:47:16)."
 		}
 		It "Parameter IshObject invalid" {
-			{ Add-IshOutputFormat -IShSession $ishSession -IshObject "INVALIDOUTPUTFORMAT" } | Should -Throw
+			{ Add-IshOutputFormat -IShSession $ishSession -IshObject "INVALIDOUTPUTFORMAT" } | Should-Throw
 		}
 		It "Parameter IshObject Single with optional IshSession" {
 			$ishObjects = Add-IshOutputFormat -IshObject $ishObjectA
 			$ishObjects | Remove-IshOutputFormat
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Parameter IshObject Multiple with optional IshSession" {
 			$ishObjects = Add-IshOutputFormat -IshObject @($ishObjectB,$ishObjectC)
 			$ishObjects | Remove-IshOutputFormat
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$ishObjects = $ishObjectD | Add-IshOutputFormat -IshSession $ishSession
 			$ishObjects | Remove-IshOutputFormat -IshSession $ishSession
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$ishObjects = @($ishObjectE,$ishObjectF) | Add-IshOutputFormat -IshSession $ishSession
 			$ishObjects | Remove-IshOutputFormat -IshSession $ishSession
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 	}
 }

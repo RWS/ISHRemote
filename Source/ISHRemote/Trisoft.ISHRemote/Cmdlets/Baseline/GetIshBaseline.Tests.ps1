@@ -22,7 +22,7 @@ Describe "Get-IshBaseline" -Tags "Read" {
 	}
 	Context "Get-IshBaseline ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshBaseline -IShSession "INVALIDISHSESSION" } | Should -Throw
+			{ Get-IshBaseline -IShSession "INVALIDISHSESSION" } | Should-Throw
 		}
 	}
 	Context "Get-IshBaseline returns IshBaseline object" {
@@ -45,20 +45,20 @@ Describe "Get-IshBaseline" -Tags "Read" {
 		}
 		It "Parameter IshSession explicit" {
 			$ishObject = Get-IshBaseline -IShSession $ishSession -Id $baselineId -RequestedMetadata $requestedMetadata -MetadataFilter $metadataFilter
-			$ishObject.GetType().Name | Should -BeExactly "IshBaseline"
-			$ishObject.IshRef -ge 0 | Should -Be $true
-			$ishObject.IshType | Should -Not -BeNullOrEmpty
-			$ishObject.IshField | Should -Not -BeNullOrEmpty
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshBaseline"
+			$ishObject.IshRef -ge 0 | Should-Be $true
+			$ishObject.IshType | Should-NotBeNull
+			$ishObject.IshField | Should-NotBeNull
 		}
 		It "Parameter IshSession/RequestedMetadata implicit" {
 			$ishObject = Get-IshBaseline -Id $baselineId -MetadataFilter $metadataFilter
-			$ishObject.GetType().Name | Should -BeExactly "IshBaseline"
-			$ishObject.IshRef -ge 0 | Should -Be $true
-			$ishObject.IshType | Should -Not -BeNullOrEmpty
-			$ishObject.IshField | Should -Not -BeNullOrEmpty
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
-			$ishObject.fishdocumentrelease.Length -ge 1 | Should -Be $true 
-			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should -Be $true 
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshBaseline"
+			$ishObject.IshRef -ge 0 | Should-Be $true
+			$ishObject.IshType | Should-NotBeNull
+			$ishObject.IshField | Should-NotBeNull
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
+			$ishObject.fishdocumentrelease.Length -ge 1 | Should-Be $true 
+			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should-Be $true 
 		}
 	}
 
@@ -74,22 +74,22 @@ Describe "Get-IshBaseline" -Tags "Read" {
 			$ishObjectD = Add-IshBaseline -IshSession $ishSession -Name $baselineName
 		}
 		It "Parameter IshObject invalid" {
-			{ Get-IshBaseline -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should -Throw
+			{ Get-IshBaseline -IShSession $ishSession -IshObject "INVALIDBASELINE" } | Should-Throw
 		}
 		It "Parameter IshObject Single" {
-			(Get-IshBaseline -IshSession $ishSession -IshObject $ishObjectA).IshRef.Length -ge 0 | Should -Be $true
+			(Get-IshBaseline -IshSession $ishSession -IshObject $ishObjectA).IshRef.Length -ge 0 | Should-Be $true
 		}
 		It "Parameter IshObject Multiple" {
-			(Get-IshBaseline -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)).Count | Should -Be 2
+			(Get-IshBaseline -IshSession $ishSession -IshObject @($ishObjectB,$ishObjectC)).Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$ishObjects = $ishObjectD | Get-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$ishSession.MetadataBatchSize = 2
 			$ishObjects = @($ishObjectA,$ishObjectB,$ishObjectC,$ishObjectD) | Get-IshBaseline -IshSession $ishSession
-			$ishObjects.Count | Should -Be 4
+			$ishObjects.Count | Should-Be 4
 		}
 	}
 }

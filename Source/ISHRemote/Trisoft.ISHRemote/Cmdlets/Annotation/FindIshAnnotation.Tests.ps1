@@ -94,17 +94,17 @@ Describe "Find-IshAnnotation" -Tags "Create" {
             $ishAnnotations = Find-IshAnnotation -IshSession $ishsession `
                                                 -RequestedMetadata $requestedMetadata `
                                                 -MetadataFilter $metadataFilter
-			$ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
+			$ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
 		}
 		It "Find all annotations from Publication1 without RequestedMetadata" {
             $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHPUBLOGICALID -Level Annotation -FilterOperator Equal -Value $ishObjectPub1.IshRef
             $ishAnnotations = Find-IshAnnotation -IshSession $ishsession `
                                                  -MetadataFilter $metadataFilter
-			$ishAnnotations.Count | Should -BeExactly 2
-            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should -Be $true
-            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should -Be $true
+			$ishAnnotations.Count | Should-Be 2
+            $annotationIdsP1 -contains $ishAnnotations[0].IshRef | Should-Be $true
+            $annotationIdsP1 -contains $ishAnnotations[1].IshRef | Should-Be $true
 		}
 		It "Find only 1 annotation from Publication1" {
             $requestedMetadata = Set-IshRequestedMetadataField -IshSession $ishSession -Name "FISHANNOTATIONREPLIES" -Level Annotation
@@ -113,16 +113,16 @@ Describe "Find-IshAnnotation" -Tags "Create" {
             $ishAnnotations = Find-IshAnnotation -IshSession $ishsession `
                                                 -RequestedMetadata $requestedMetadata `
                                                 -MetadataFilter $metadataFilter
-			$ishAnnotations.Count | Should -BeExactly 1
-            $ishAnnotation1P1.IshRef | Should -BeExactly $ishAnnotations.IshRef
+			$ishAnnotations.Count | Should-Be 1
+            $ishAnnotation1P1.IshRef | Should-BeString -CaseSensitive $ishAnnotations.IshRef
 		}
         It "Find annotations and replies from Publication2 without RequestedMetadata" {
             $metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHPUBLOGICALID -Level Annotation -FilterOperator Equal -Value $ishObjectPub2.IshRef
             $ishAnnotations = Find-IshAnnotation -IshSession $ishsession `
                                                  -MetadataFilter $metadataFilter
-			$ishAnnotations.Count | Should -BeExactly 2
-            $replyIdsP2 -contains $ishAnnotations[0].ReplyRef | Should -Be $true
-            $replyIdsP2 -contains $ishAnnotations[1].ReplyRef | Should -Be $true
+			$ishAnnotations.Count | Should-Be 2
+            $replyIdsP2 -contains $ishAnnotations[0].ReplyRef | Should-Be $true
+            $replyIdsP2 -contains $ishAnnotations[1].ReplyRef | Should-Be $true
 		}
     }
 	Context "Find-IshAnnotation using FilterOperator cilike since 15/15.0.0" {
@@ -134,10 +134,10 @@ Describe "Find-IshAnnotation" -Tags "Create" {
 				$ishAnnotations = Find-IshAnnotation -IshSession $ishsession `
 													-RequestedMetadata $requestedMetadata `
 													-MetadataFilter $metadataFilter
-				$ishAnnotations.Count | Should -BeExactly 4
+				$ishAnnotations.Count | Should-Be 4
 				foreach($ishAnnotation in $ishAnnotations)
 				{
-					$ishAnnotation.fishannotationtext_annotation_value.Contains("ISHRemote Pester on") | Should -Be $true
+					$ishAnnotation.fishannotationtext_annotation_value.Contains("ISHRemote Pester on") | Should-Be $true
 				}
 			}
 		}
@@ -149,8 +149,8 @@ Describe "Find-IshAnnotation" -Tags "Create" {
 				$ishAnnotation = Find-IshAnnotation -IshSession $ishsession `
 													-RequestedMetadata $requestedMetadata `
 													-MetadataFilter $metadataFilter
-				$ishAnnotation.Count | Should -BeExactly 1
-				$ishAnnotation.fishannotationtext_annotation_value | Should -Be "by #1 ISHRemote Pester on $timestamp"
+				$ishAnnotation.Count | Should-Be 1
+				$ishAnnotation.fishannotationtext_annotation_value | Should-Be "by #1 ISHRemote Pester on $timestamp"
 			}
 		}
 		It "FilterOperator cilike with matching casing of the original and filter values" {
@@ -161,10 +161,10 @@ Describe "Find-IshAnnotation" -Tags "Create" {
 				$ishAnnotations = Find-IshAnnotation -IshSession $ishsession `
 													-RequestedMetadata $requestedMetadata `
 													-MetadataFilter $metadataFilter
-				$ishAnnotations.Count | Should -BeExactly 2
+				$ishAnnotations.Count | Should-Be 2
 				foreach($ishAnnotation in $ishAnnotations)
 				{
-					$ishAnnotation.fishannotationtext_annotation_value.Contains("by ISHRemote Pester") | Should -Be $true
+					$ishAnnotation.fishannotationtext_annotation_value.Contains("by ISHRemote Pester") | Should-Be $true
 				}
 			}
 		}
@@ -174,9 +174,9 @@ Describe "Find-IshAnnotation" -Tags "Create" {
 				$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator CiLike -Value ""
 				$exception = { Find-IshAnnotation -IshSession $ishsession `
 													-RequestedMetadata $requestedMetadata `
-													-MetadataFilter $metadataFilter } | Should -Throw -PassThru
-				$exception -like "*102014*" | Should -Be $true 
-				$exception -like "*InvalidNumberOfFilterValuesForOperator*" | Should -Be $true
+													-MetadataFilter $metadataFilter } | Should-Throw
+				$exception -like "*102014*" | Should-Be $true 
+				$exception -like "*InvalidNumberOfFilterValuesForOperator*" | Should-Be $true
 			}
 		}	
 		It "FilterOperator cilike with filter on LovFieldValue status field" {
@@ -185,9 +185,9 @@ Describe "Find-IshAnnotation" -Tags "Create" {
 				$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FSTATUS -Level Annotation -FilterOperator CiLike -Value "DraFT%"
 				$exception = { Find-IshAnnotation -IshSession $ishsession `
 													-RequestedMetadata $requestedMetadata `
-													-MetadataFilter $metadataFilter } | Should -Throw -PassThru
-				$exception -like "*102013*" | Should -Be $true 
-				$exception -like "*InvalidOperatorForFieldType*" | Should -Be $true
+													-MetadataFilter $metadataFilter } | Should-Throw
+				$exception -like "*102013*" | Should-Be $true 
+				$exception -like "*InvalidOperatorForFieldType*" | Should-Be $true
 			}
 		}
     }
@@ -198,10 +198,10 @@ Describe "Find-IshAnnotation" -Tags "Create" {
 				$metadataFilter = Set-IshMetadataFilterField -IshSession $ishSession -Name FISHANNOTATIONTEXT -Level Annotation -FilterOperator CiLike -Value "%ishreMOTE pEsTEr ON%"
 				$exception = { Find-IshAnnotation -IshSession $ishsession `
 								-RequestedMetadata $requestedMetadata `
-								-MetadataFilter $metadataFilter } | Should -Throw -PassThru
+								-MetadataFilter $metadataFilter } | Should-Throw
 				# 14.0.4 message is: [-105002] The XML of xmlMetadataFilter did not pass schema ISHAnnotationFilterFields validation. The 'ishoperator' attribute is invalid - The value 'cilike' is invalid according to its datatype 'IshOperator' - The Enumeration constraint failed. [105002;SchemaValidationFailure]
-				$exception -like "*105002*" | Should -Be $true 
-				$exception -like "*SchemaValidationFailure*" | Should -Be $true
+				$exception -like "*105002*" | Should-Be $true 
+				$exception -like "*SchemaValidationFailure*" | Should-Be $true
 			}
 		}	
     }

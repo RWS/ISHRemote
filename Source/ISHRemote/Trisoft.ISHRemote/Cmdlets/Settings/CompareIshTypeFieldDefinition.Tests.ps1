@@ -26,70 +26,70 @@ Describe "Compare-IshTypeFieldDefinition" -Tags "Read" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition $differenceIshTypeFieldDefinitions
 		}
 		It "GetType().Name" {
-			$ishTypeFieldDefinitionCompares[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinitionCompare"
+			$ishTypeFieldDefinitionCompares[0].GetType().Name | Should-BeString -CaseSensitive "IshTypeFieldDefinitionCompare"
 		}
 		It "Parameter Left invalid" {
-			{ Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition "INVALIDREFERENCELIST" -RightIshTypeFieldDefinition "INVALIDDIFFERENCELIST" } | Should -Throw
+			{ Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition "INVALIDREFERENCELIST" -RightIshTypeFieldDefinition "INVALIDDIFFERENCELIST" } | Should-Throw
 		}
 		It "Parameter Right invalid" {
-			{ Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition "INVALIDDIFFERENCELIST" } | Should -Throw
+			{ Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition "INVALIDDIFFERENCELIST" } | Should-Throw
 		}
 		It "Parameter Left/Right using IncludeIdentical" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition $differenceIshTypeFieldDefinitions -IncludeIdentical
-			$ishTypeFieldDefinitionCompares.Count | Should -Be 9
+			$ishTypeFieldDefinitionCompares.Count | Should-Be 9
 		}
 		It "Parameter Left/Right" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition $differenceIshTypeFieldDefinitions
-			$ishTypeFieldDefinitionCompares.Count | Should -Be 7  # =9entries-2equals
+			$ishTypeFieldDefinitionCompares.Count | Should-Be 7  # =9entries-2equals
 		}
 		It "Parameter Left/Right using ExcludeDifferent" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition $differenceIshTypeFieldDefinitions -ExcludeDifferent
-			$ishTypeFieldDefinitionCompares.Count | Should -Be 3  # =9entries-2equals-2x2diff
+			$ishTypeFieldDefinitionCompares.Count | Should-Be 3  # =9entries-2equals-2x2diff
 		}
 		It "Parameter Left/Right using ExcludeDifferent/ExcludeLeftUnique" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition $differenceIshTypeFieldDefinitions -ExcludeDifferent -ExcludeLeftUnique
-			$ishTypeFieldDefinitionCompares.Count | Should -Be 1  # =9entries-2equals-2x2diff-2left
+			$ishTypeFieldDefinitionCompares.Count | Should-Be 1  # =9entries-2equals-2x2diff-2left
 		}
 		It "Parameter Left/Right using ExcludeDifferent/ExcludeRightUnique" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition $differenceIshTypeFieldDefinitions -ExcludeDifferent -ExcludeRightUnique
-			$ishTypeFieldDefinitionCompares.Count | Should -Be 2  # =9entries-2equals-2x2diff-1right
+			$ishTypeFieldDefinitionCompares.Count | Should-Be 2  # =9entries-2equals-2x2diff-1right
 		}
 		It "Parameter Left/Right using IncludeIdentical/ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshTypeFieldDefinition $differenceIshTypeFieldDefinitions -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique
-			$ishTypeFieldDefinitionCompares.Count | Should -Be 2  # =9entries-2x2diff-2left-1right
+			$ishTypeFieldDefinitionCompares.Count | Should-Be 2  # =9entries-2x2diff-2left-1right
 		}
 		# More tests possible for the IshTypeFieldDefinition properties
 		# Perhaps also test that there CardFields and TableFields present
 	}
 	Context "Compare-IshTypeFieldDefinition using IshSession" {
 		It "Parameter Left invalid" {
-			{ Compare-IshTypeFieldDefinition -LeftIshSession "INVALIDREFERENCEISHSESSION" -RightIshSession "INVALIDDIFFERENCEISHSESSION" } | Should -Throw
+			{ Compare-IshTypeFieldDefinition -LeftIshSession "INVALIDREFERENCEISHSESSION" -RightIshSession "INVALIDDIFFERENCEISHSESSION" } | Should-Throw
 		}
 		It "Parameter Right invalid" {
-			{ Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshSession "INVALIDDIFFERENCEISHSESSION" } | Should -Throw
+			{ Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshSession "INVALIDDIFFERENCEISHSESSION" } | Should-Throw
 		}
 		It "Parameter Left/Right same IshSession" {
 			{ Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshSession $ishSession } | Should -Not -Throw
 		}
 		It "Parameter Left/Right same IshSession using IncludeIdentical" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshSession $ishSession -IncludeIdentical
-			$ishTypeFieldDefinitionCompares.Count -eq $ishSession.IshTypeFieldDefinition.Count | Should -Be $true
+			$ishTypeFieldDefinitionCompares.Count -eq $ishSession.IshTypeFieldDefinition.Count | Should-Be $true
 		}
 		It "Parameter Left/Right same IshSession using ExcludeDifferent" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshSession $ishSession -ExcludeDifferent
-			$ishTypeFieldDefinitionCompares.Count | Should -Be 0
+			$ishTypeFieldDefinitionCompares.Count | Should-Be 0
 		}
 		It "Parameter Left/Right same IshSession using ExcludeLeftUnique" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshSession $ishSession -ExcludeLeftUnique
-			$ishTypeFieldDefinitionCompares.Count | Should -Be 0
+			$ishTypeFieldDefinitionCompares.Count | Should-Be 0
 		}
 		It "Parameter Left/Right same IshSession using IncludeIdentical/ExcludeRightUnique" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshSession $ishSession -IncludeIdentical -ExcludeRightUnique
-			$ishTypeFieldDefinitionCompares.Count -eq $ishSession.IshTypeFieldDefinition.Count | Should -Be $true
+			$ishTypeFieldDefinitionCompares.Count -eq $ishSession.IshTypeFieldDefinition.Count | Should-Be $true
 		}
 		It "Parameter Left/Right same IshSession using IncludeIdentical/ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
 			$ishTypeFieldDefinitionCompares = Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique
-			$ishTypeFieldDefinitionCompares.Count -eq $ishSession.IshTypeFieldDefinition.Count | Should -Be $true
+			$ishTypeFieldDefinitionCompares.Count -eq $ishSession.IshTypeFieldDefinition.Count | Should-Be $true
 		}
 	}
 	Context "Compare-IshTypeFieldDefinition mixing IshSession and TriDKXmlSetupFilePath" {
@@ -99,46 +99,46 @@ Describe "Compare-IshTypeFieldDefinition" -Tags "Read" {
 			$referenceIshTypeFieldDefinitions = Get-IshTypeFieldDefinition -TriDKXmlSetupFilePath $tempFilePath1
 		}
 		It "Parameter Left is IshSession and Right is TriDKXmlSetupFilePath" {
-			(Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshTypeFieldDefinition $referenceIshTypeFieldDefinitions).Count -ge 460 | Should -Be $true
+			(Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshTypeFieldDefinition $referenceIshTypeFieldDefinitions).Count -ge 460 | Should-Be $true
 		}
 		It "Parameter Left is IshSession and Right is TriDKXmlSetupFilePath using ExcludeDifferent" {
-			(Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -ExcludeDifferent).Count -ge 460 | Should -Be $true
+			(Compare-IshTypeFieldDefinition -LeftIshSession $ishSession -RightIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -ExcludeDifferent).Count -ge 460 | Should-Be $true
 		}
 		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using IncludeIdentical" {
-			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical).Count -ge 460 | Should -Be $true
+			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical).Count -ge 460 | Should-Be $true
 		}
 		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent" {
-			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeDifferent).Count -ge 460 | Should -Be $true
+			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeDifferent).Count -ge 460 | Should-Be $true
 		}
 		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique" {
-			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique).Count -ge 460 | Should -Be $true
+			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique).Count -ge 460 | Should-Be $true
 		}
         if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 1) -or ([Version]$ishSession.ServerVersion).Major -ge 16)
         {
 		    It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should -Be 9
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should-Be 9
 		    }
 		    It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique/ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 8
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should-Be 8
 		    }
             It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 1
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should-Be 1
 		    }
         }
         else
         {
             It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should -Be 9
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeRightUnique).Count | Should-Be 9
 		    }
 		    It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeLeftUnique/ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 8
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeLeftUnique -ExcludeRightUnique).Count | Should-Be 8
 		    }
             It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
-			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 1
+			    (Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -IncludeIdentical -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should-Be 1
 		    }
         }
 		It "Parameter Left is TriDKXmlSetupFilePath and Right is IshSession using ExcludeDifferent/ExcludeLeftUnique/ExcludeRightUnique" {
-			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should -Be 0
+			(Compare-IshTypeFieldDefinition -LeftIshTypeFieldDefinition $referenceIshTypeFieldDefinitions -RightIshSession $ishSession -ExcludeDifferent -ExcludeLeftUnique -ExcludeRightUnique).Count | Should-Be 0
 		}
 	}
 }

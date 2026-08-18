@@ -9,34 +9,34 @@ BeforeAll {
 Describe "Add-IshUserGroup" -Tags "Create" {
 	Context "Add-IshUserGroup ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Add-IshUserGroup -IShSession "INVALIDISHSESSION" -Name "INVALIDUSERGROUPNAME" } | Should -Throw
+			{ Add-IshUserGroup -IShSession "INVALIDISHSESSION" -Name "INVALIDUSERGROUPNAME" } | Should-Throw
 		}
 	}
 	Context "Add-IshUserGroup ParameterGroup" {
 		It "GetType().Name" {
 			$userGroupName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Name")
 			$ishObject = Add-IshUserGroup -IshSession $ishSession -Name $userGroupName
-			$ishObject.GetType().Name | Should -BeExactly "IshUserGroup"
-			$ishObject.Count | Should -Be 1
-			(ConvertTo-Json $ishObject).Length -gt 2 | Should -Be $true
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshUserGroup"
+			$ishObject.Count | Should-Be 1
+			(ConvertTo-Json $ishObject).Length -gt 2 | Should-Be $true
 		}
 		It "Parameter Metadata" {
 			$userGroupName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FDESCRIPTION" -Level None -Value "Description of $userGroupName"
 			$ishObject = Add-IshUserGroup -IshSession $ishSession -Name $userGroupName -Metadata $metadata
-			$ishObject.Count | Should -Be 1
-			$ishObject.IshRef -Like "VUSER*" | Should -Be $true
+			$ishObject.Count | Should-Be 1
+			$ishObject.IshRef -Like "VUSER*" | Should-Be $true
 		}
 		It "Parameter Metadata return descriptive metadata" {
 			$userGroupName = ($cmdletName + " " + (Get-Date -Format "yyyyMMddHHmmssfff") + " Metadata")
 			$metadata = Set-IshMetadataField -IshSession $ishSession -Name "FDESCRIPTION" -Level None -Value "Description of $userGroupName"
 			$ishObject = Add-IshUserGroup -IshSession $ishSession -Name $userGroupName -Metadata $metadata
-			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should -Be $true
-			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERGROUPNAME -Level None).Length -gt 1 | Should -Be $true
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
-			$ishObject.fishobjectactive.Length -ge 1 | Should -Be $true 
-			$ishObject.fishusergroupname.Length -ge 1 | Should -Be $true 
-			$ishObject.fishusergroupname_none_element.StartsWith('VUSERGROUP') | Should -Be $true 
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FDESCRIPTION -Level None).Length -gt 1 | Should-Be $true
+			(Get-IshMetadataField -IshSession $ishSession -IshObject $ishObject -Name FISHUSERGROUPNAME -Level None).Length -gt 1 | Should-Be $true
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
+			$ishObject.fishobjectactive.Length -ge 1 | Should-Be $true 
+			$ishObject.fishusergroupname.Length -ge 1 | Should-Be $true 
+			$ishObject.fishusergroupname_none_element.StartsWith('VUSERGROUP') | Should-Be $true 
 		}
 		It "Parameter Metadata StrictMetadataPreference=Off" {
 			$strictMetadataPreference = $ishSession.StrictMetadataPreference
@@ -47,7 +47,7 @@ Describe "Add-IshUserGroup" -Tags "Create" {
 						Set-IshMetadataField -IshSession $ishSession -Name "READ-ACCESS" -Level None -Value "SomethingReadAccess"  |
 						Set-IshMetadataField -IshSession $ishSession -Name "OWNER" -Level None -Value "SomethingOwner" |
 						Set-IshMetadataField -IshSession $ishSession -Name "INVALIDFIELDNAME" -Level None -Value "SomethingInvalidFieldName"
-			{ Add-IshUserGroup -IshSession $ishSession -Name $userGroupName -Metadata $metadata } | Should -Throw
+			{ Add-IshUserGroup -IshSession $ishSession -Name $userGroupName -Metadata $metadata } | Should-Throw
 			$ishSession.StrictMetadataPreference = $strictMetadataPreference
 		}
 	}
@@ -73,27 +73,27 @@ Describe "Add-IshUserGroup" -Tags "Create" {
 			Start-Sleep -Milliseconds 1000  # Avoids uniquesness error which only up to the second " Cannot insert duplicate key row in object 'dbo.CARD' with unique index 'CARD_NAME_I1'. The duplicate key value is (...A12/10/2016 16:47:16)."
 		}
 		It "Parameter IshObject invalid" {
-			{ Add-IshUserGroup -IShSession $ishSession -IshObject "INVALIDUSERGROUP" } | Should -Throw
+			{ Add-IshUserGroup -IShSession $ishSession -IshObject "INVALIDUSERGROUP" } | Should-Throw
 		}
 		It "Parameter IshObject Single with implicit IshSession" {
 			$ishObjects = Add-IshUserGroup -IshObject $ishObjectA
 			$ishObjects | Remove-IshUserGroup
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Parameter IshObject Multiple with implicit IshSession" {
 			$ishObjects = Add-IshUserGroup -IshObject @($ishObjectB,$ishObjectC)
 			$ishObjects | Remove-IshUserGroup
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$ishObjects = $ishObjectD | Add-IshUserGroup -IshSession $ishSession
 			$ishObjects | Remove-IshUserGroup -IshSession $ishSession
-			$ishObjects.Count | Should -Be 1
+			$ishObjects.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$ishObjects = @($ishObjectE,$ishObjectF) | Add-IshUserGroup -IshSession $ishSession
 			$ishObjects | Remove-IshUserGroup -IshSession $ishSession
-			$ishObjects.Count | Should -Be 2
+			$ishObjects.Count | Should-Be 2
 		}
 	}
 }
