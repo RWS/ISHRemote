@@ -33,7 +33,15 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// </summary>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -IshUserName "username" -IshUserPassword  "userpassword"
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/"
+    /// Get-IshPublicationOutput -LogicalId GUID-03081B9A-11E4-4862-845B-27339E0C400D |
+    /// Get-IshPublicationOutputData -FolderPath C:\TEMP\20260818\
+    /// </code>
+    /// <para>Retrieves all PublicationOutputs of the given logical id and downloads them.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/"
     /// $requestedMetadataRetrieve = Set-IshRequestedMetadataField -IshSession $ishSession -Name 'FISHOUTPUTFORMATREF' -Level "Lng" |
     ///                              Set-IshRequestedMetadataField -IshSession $ishSession -Name 'FISHPUBLNGCOMBINATION' -Level "Lng" |
     ///                              Set-IshRequestedMetadataField -IshSession $ishSession -Name 'FISHPUBSTATUS' -Level "Lng" |
@@ -109,9 +117,10 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                     {
                         // Get language ref
                         long lngRef = Convert.ToInt64(ishObject.ObjectRef[Enumerations.ReferenceType.Lng]);
-                        string xmlIshDataObject = IshSession.PublicationOutput25.GetDataObjectInfoByIshLngRef(lngRef);
 
-                        // Put the xml in a dataobject
+                        // File extension is always sourced from GetDataObjectInfoByIshLngRef to guarantee
+                        // an identical output filename regardless of the download protocol used.
+                        string xmlIshDataObject = IshSession.PublicationOutput25.GetDataObjectInfoByIshLngRef(lngRef);
                         XmlDocument xmlIshDataObjectDocument = new XmlDocument();
                         xmlIshDataObjectDocument.LoadXml(xmlIshDataObject);
                         XmlElement ishDataObjectElement =
@@ -120,28 +129,51 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                         string tempFilePath = FileNameHelper.GetDefaultPublicationOutputFileName(tempLocation, ishObject,
                             ishDataObject.FileExtension);
 
-                        WriteDebug($"Writing lngRef[{lngRef}] to [{tempFilePath}] {++current}/{ishObjects.Length}");
-
-                        //Create the file.
-                        using (FileStream fs = File.Create(tempFilePath))
+                        switch (IshSession.Protocol)
                         {
-                            for (int offset = 0; offset < ishDataObject.Size; offset += IshSession.ChunkSize)
-                            {
-                                int size = IshSession.ChunkSize;
-                                long offsetCount = offset;
-                                byte[] byteArray = new byte[IshSession.ChunkSize];
-                                var response =
-                                    IshSession.PublicationOutput25.GetNextDataObjectChunkByIshLngRef(
-                                        new PublicationOutput25ServiceReference.GetNextDataObjectChunkByIshLngRefRequest(
-                                            lngRef,
-                                            ishDataObject.Ed,
-                                            offsetCount,
-                                            size));
-                                offsetCount = response.offSet;
-                                size = response.size;
-                                byteArray = response.bytes;
-                                fs.Write(byteArray, 0, size);
-                            }
+                            case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                                if (IshSession.ServerIshVersion.MajorVersion > 15 ||
+                                    (IshSession.ServerIshVersion.MajorVersion == 15 && IshSession.ServerIshVersion.MinorVersion >= 1))
+                                {
+                                    // Single streaming HTTP GET via OpenAPI — replaces the entire SOAP chunk loop.
+                                    // IshSession.ChunkSize is reused as the CopyTo buffer size to keep memory usage
+                                    // bounded while avoiding unnecessary syscall overhead.
+                                    WriteDebug($"Writing lngRef[{lngRef}] via OpenAPI stream to [{tempFilePath}] {++current}/{ishObjects.Length}");
+                                    using (var fileResponse = IshSession.OpenApiISH30Client
+                                               .GetPublicationContentByLanguageCardIdAsync(lngRef)
+                                               .GetAwaiter().GetResult())
+                                    using (FileStream fs = File.Create(tempFilePath))
+                                    {
+                                        fileResponse.Stream.CopyTo(fs, IshSession.ChunkSize);
+                                    }
+                                    break;
+                                }
+                                // Server < 15.1 does not expose the REST endpoint; fall back to SOAP chunk loop.
+                                goto case Enumerations.Protocol.WcfSoapWithOpenIdConnect;
+                            case Enumerations.Protocol.WcfSoapWithWsTrust:
+                            case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                                WriteDebug($"Writing lngRef[{lngRef}] to [{tempFilePath}] {++current}/{ishObjects.Length}");
+                                using (FileStream fs = File.Create(tempFilePath))
+                                {
+                                    for (int offset = 0; offset < ishDataObject.Size; offset += IshSession.ChunkSize)
+                                    {
+                                        int size = IshSession.ChunkSize;
+                                        long offsetCount = offset;
+                                        byte[] byteArray = new byte[IshSession.ChunkSize];
+                                        var response =
+                                            IshSession.PublicationOutput25.GetNextDataObjectChunkByIshLngRef(
+                                                new PublicationOutput25ServiceReference.GetNextDataObjectChunkByIshLngRefRequest(
+                                                    lngRef,
+                                                    ishDataObject.Ed,
+                                                    offsetCount,
+                                                    size));
+                                        offsetCount = response.offSet;
+                                        size = response.size;
+                                        byteArray = response.bytes;
+                                        fs.Write(byteArray, 0, size);
+                                    }
+                                }
+                                break;
                         }
 
                         // Append file info list
