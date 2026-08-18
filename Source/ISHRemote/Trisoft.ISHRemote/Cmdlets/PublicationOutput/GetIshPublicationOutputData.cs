@@ -187,6 +187,18 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
             {
                 ThrowTerminatingError(new ErrorRecord(trisoftAutomationException, base.GetType().Name, ErrorCategory.InvalidOperation, null));
             }
+            catch (OpenApiISH30.OpenApiISH30Exception<OpenApiISH30.InfoShareProblemDetails> openApiISH30Exception)
+            {
+                if (openApiISH30Exception.Result != null)
+                {
+                    WriteWarning($"Status[{openApiISH30Exception.Result.Status}] Title[{openApiISH30Exception.Result.Title}] EventName[{openApiISH30Exception.Result.EventName}] Detail[{openApiISH30Exception.Result.Detail}]");
+                    foreach (var error in openApiISH30Exception.Result.Errors)
+                    {
+                        WriteWarning($"ErrorEventName[{error.EventName}] ErrorDetail[{error.Detail}]");
+                    }
+                }
+                ThrowTerminatingError(new ErrorRecord(openApiISH30Exception, base.GetType().Name, ErrorCategory.InvalidOperation, null));
+            }
             catch (AggregateException aggregateException)
             {
                 var flattenedAggregateException = aggregateException.Flatten();
@@ -205,6 +217,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
             }
             catch (Exception exception)
             {
+                if (exception.InnerException != null) { WriteWarning(exception.InnerException.ToString()); }
                 ThrowTerminatingError(new ErrorRecord(exception, base.GetType().Name, ErrorCategory.NotSpecified, null));
             }
         }
