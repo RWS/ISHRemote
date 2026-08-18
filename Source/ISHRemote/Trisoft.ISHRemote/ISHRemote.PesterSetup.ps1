@@ -2,9 +2,9 @@
 # Tests Header dot-sourced import PS1 file for *.Tests.ps1 files
 #
 
-# Quick check if you are using Pester 5, or default installed Pester 3.4.0 (#132)
+# Quick check if you are using Pester 6, or default installed Pester 3.4.0 (#132, #242)
 $pesterVersion = [version](Get-Command Invoke-Pester).Version
-if ($pesterVersion -lt [version]("5.3.0")) { Write-Warning ("ISHRemote.PesterSetup.ps1 Invoke-Pester version["+$pesterVersion+"] while 5.3+ is expected!") }
+if ($pesterVersion -lt [version]("6.0.0")) { Write-Warning ("ISHRemote.PesterSetup.ps1 Invoke-Pester version["+$pesterVersion+"] while 6.0+ is expected!") }
 
 $DebugPreference   = "SilentlyContinue"   # Continue or SilentlyContinue
 $VerbosePreference = "SilentlyContinue"   # Continue or SilentlyContinue

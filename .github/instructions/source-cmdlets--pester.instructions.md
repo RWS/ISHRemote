@@ -5,7 +5,7 @@ description: "How ISHRemote Pester (*.Tests.ps1) acceptance tests are structured
 
 # ISHRemote Pester Test Conventions
 
-These are **Pester 5.3+ acceptance/integration tests** that run against a **live Tridion Docs
+These are **Pester 6.0+ acceptance/integration tests** that run against a **live Tridion Docs
 (InfoShare) tenant**. They are not unit tests — almost every `It` makes real Web Services API calls,
 creates server objects, asserts, and then deletes them. Keep new tests consistent with the patterns
 below or you will create flaky runs for everyone.

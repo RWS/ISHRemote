@@ -48,9 +48,9 @@ jobs:
       - name: Pester Test Anonymization (no live server needed)
         shell: pwsh
         run: |
-          if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'5.3.0' })) {
+          if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'6.0.0' })) {
               Set-PSRepository PSGallery -InstallationPolicy Trusted
-              Install-Module Pester -MinimumVersion 5.3.0 -Force -SkipPublisherCheck -Scope CurrentUser
+              Install-Module Pester -MinimumVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
           }
           $result = Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1 -Output Detailed -PassThru
           if ($result.FailedCount -gt 0) {
@@ -65,9 +65,9 @@ jobs:
       - name: Pester Test AI Instructions (no live server needed)
         shell: pwsh
         run: |
-          if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'5.3.0' })) {
+          if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'6.0.0' })) {
               Set-PSRepository PSGallery -InstallationPolicy Trusted
-              Install-Module Pester -MinimumVersion 5.3.0 -Force -SkipPublisherCheck -Scope CurrentUser
+              Install-Module Pester -MinimumVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
           }
           $result = Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAiInstructions.Tests.ps1 -Output Detailed -PassThru
           if ($result.FailedCount -gt 0) {

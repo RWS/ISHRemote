@@ -91,7 +91,7 @@ Any feedback is welcome. Please log a GitHub issue, make sure you submit your ve
 
 ## Testing Standards
 
-Initial testing was based on Pester 3.4.0 which came as part of Windows 10/2016, to introduce support for PowerShell 7+ we switched to Pester 5+ ([#115](https://github.com/RWS/ISHRemote/issues/115)|[#132](https://github.com/RWS/ISHRemote/issues/132)). To force an upgrade from pre-packaged Pester 3.4.0, have a look at [Pester Installation](https://pester.dev/docs/introduction/installation), although on most systems it comes down to
+Initial testing was based on Pester 3.4.0 which came as part of Windows 10/2016, to introduce support for PowerShell 7+ we switched to Pester 5+ ([#115](https://github.com/RWS/ISHRemote/issues/115)|[#132](https://github.com/RWS/ISHRemote/issues/132)), and later upgraded to Pester 6+ ([#242](https://github.com/RWS/ISHRemote/issues/242)). To force an upgrade from pre-packaged Pester 3.4.0, have a look at [Pester Installation](https://pester.dev/docs/introduction/installation), although on most systems it comes down to
 `Install-Module -Name Pester -Force -SkipPublisherCheck`.
 * Most Pester tests are acceptance test, enriched which some unit tests where possible.
 * Using a central `ISHRemote.PesterSetup.ps1` (with optional `ISHRemote.PesterSetup.Debug.ps1` override) in all `*.Tests.ps1` to specify the variables (not initialization) consistently
@@ -104,7 +104,7 @@ In `ISHRemote.PesterSetup.Debug.ps1` override the global variables used for test
 ## Release Build and Publish To PowerShell Gallery
 
 Rought steps to release...
-1. Use Visual Studio to build a `Debug` build. Run an `Invoke-Pester` (minimally Pester v5.3.0) on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
+1. Use Visual Studio to build a `Debug` build. Run an `Invoke-Pester` (minimally Pester v6.0.0) on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
 1. Use Visual Studio to build a `Release` build. Change `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\ISHRemote.PesterSetup.ps1` to forcefully load `\bin\release\` (instead of `\bin\debug\`). Run an `Invoke-Pester` on `C:\GITHUB\ishremote\Source\ISHRemote\Trisoft.ISHRemote`. All steps should be green.
 1. The folder content of `C:\GITHUB\ISHRemote\Source\ISHRemote\Trisoft.ISHRemote\bin\Release\` will be published
     1. Check all files, especially `Scripts` that you have all files.

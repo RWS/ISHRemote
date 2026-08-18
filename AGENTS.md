@@ -55,7 +55,7 @@ CI reports analyzer findings but does not fail the build on them. Still, keep `S
   Without a reachable server, most tests cannot pass.
 - **Build before testing.** Tests import the compiled module from `bin\debug\ISHRemote` (local) or
   `bin\release\ISHRemote` (CI).
-- Use **Pester 5.3.0+**: `Install-Module -Name Pester -Force -SkipPublisherCheck`.
+- Use **Pester 6.0.0+**: `Install-Module -Name Pester -Force -SkipPublisherCheck`.
 - **Run order (fast → broad), from repo root:**
   1. `Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed`
   2. `Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/<Domain>/ -Output Detailed`
