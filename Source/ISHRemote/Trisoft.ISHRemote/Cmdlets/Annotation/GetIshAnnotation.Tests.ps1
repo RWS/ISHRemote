@@ -36,7 +36,7 @@ Describe "Get-IshAnnotation" -Tags "Create" {
             }
         }
         $bmp.Save($tempFilePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
-        $ishObjectImage = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderImage -IshType ISHIllustration -LogicalId "MYOWNGENERATEDLOGICALIDIMAGE" -Version '1' -Lng $ishLng -Resolution $ishResolution -Metadata $ishImageMetadata -Edt "EDTJPEG" -FilePath $tempFilePath
+        $ishObjectImage = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderImage -IshType ISHIllustration -LogicalId "GETISHANNOTATION-MYOWNGENERATEDLOGICALIDIMAGE" -Version '1' -Lng $ishLng -Resolution $ishResolution -Metadata $ishImageMetadata -Edt "EDTJPEG" -FilePath $tempFilePath
 
         ## Publication 1
         #add topic

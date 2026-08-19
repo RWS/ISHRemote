@@ -1,3 +1,4 @@
+#pester:no-parallel #Mock -ModuleName uses cross-module mocking which installs hooks into the ISHRemote module's session state. In a parallel runspace, each worker loads its own ISHRemote module instance, but the mock infrastructure that Mock -ModuleName relies on requires the parent session's module context. This causes the worker runspace to hang waiting for something that never resolves.
 BeforeAll {
     $cmdletName = "Start-IshRemoteMcpServer"
     Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 on PSVersion[" + $psversionTable.PSVersion + "] over BeforeAll-block for MyCommand[" + $cmdletName + "]...")

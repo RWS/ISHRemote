@@ -1,3 +1,4 @@
+#pester:no-parallel # renames the BaseFolders which could confuse other parallel tests
 BeforeAll {
 	$cmdletName = "Set-IshFolder"
 	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 on PSVersion[" + $psversionTable.PSVersion + "] over BeforeAll-block for MyCommand[" + $cmdletName + "]...")

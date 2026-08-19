@@ -66,14 +66,14 @@ Describe "Remove-IshDocumentObj" -Tags "Delete" {
 		}	
 		It "Parameters (Map). Force=Yes" {
 			$ishMapMetadata = $ishObjectMetadata | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "$($____Pester.CurrentTest.Name) $timestamp"
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderMap -IshType ISHMasterDoc -LogicalId "MYOWNGENERATEDLOGICALIDMAP" -Version '3' -Lng $ishLng -Metadata $ishMapMetadata -Edt "EDTXML" -FileContent $ditaMapFileContent
+			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderMap -IshType ISHMasterDoc -LogicalId "REMOVEISHDOCUMENTOBJ-MYOWNGENERATEDLOGICALIDMAP" -Version '3' -Lng $ishLng -Metadata $ishMapMetadata -Edt "EDTXML" -FileContent $ditaMapFileContent
             Remove-IshDocumentObj -IshSession $ishSession -LogicalId $ishObject.IshRef -Version $ishObject.version_version_value -Lng $ishObject.doclanguage -Force
 			$ishObjectRetrieved = Get-IshDocumentObj -IshSession $ishSession -IshObject $ishObject	            
             $ishObjectRetrieved.length -eq 0 | Should-Be $true
 		}
 		It "Parameters (Lib). Force=Yes" {
 			$ishLibMetadata = $ishObjectMetadata | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "$($____Pester.CurrentTest.Name) $timestamp"
-			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderLib -IshType ISHLibrary -LogicalId "MYOWNGENERATEDLOGICALIDLIB" -Version '4' -Lng $ishLng -Metadata $ishLibMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
+			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderLib -IshType ISHLibrary -LogicalId "REMOVEISHDOCUMENTOBJ-MYOWNGENERATEDLOGICALIDLIB" -Version '4' -Lng $ishLng -Metadata $ishLibMetadata -Edt "EDTXML" -FileContent $ditaTopicFileContent
 			$ishObject.LngRef -gt 0 | Should-Be $true
             Remove-IshDocumentObj -IshSession $ishSession -LogicalId $ishObject.IshRef -Version $ishObject.version_version_value -Lng $ishObject.doclanguage -Force
 			$ishObjectRetrieved = Get-IshDocumentObj -IshSession $ishSession -IshObject $ishObject	            

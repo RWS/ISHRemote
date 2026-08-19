@@ -1,3 +1,4 @@
+#pester:no-parallel # Checks if the remote system is ready which will fail if other tests are already creating folders
 BeforeAll {
 	$cmdletName = "TestPrerequisite.Tests.ps1"
 	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 on PSVersion[" + $psversionTable.PSVersion + "] over BeforeAll-block for MyCommand[" + $cmdletName + "]...")

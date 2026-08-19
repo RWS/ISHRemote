@@ -1,3 +1,4 @@
+#pester:no-parallel #this test manipulates SessionState variables directly and calls cmdlets that use WriteDebug, both of which are fragile in parallel runspaces.
 BeforeAll {
 	$cmdletName = "Get-IshTypeFieldDefinition"
 	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 on PSVersion[" + $psversionTable.PSVersion + "] over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
