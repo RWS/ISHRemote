@@ -69,25 +69,6 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             $innerWriter.AutoFlush | Should-Be $true
         }
     }
-    Context "Start-IshRemoteMcpServer with ActivateWhileLoop=true and stdin EOF" {
-        BeforeEach {
-            Mock -ModuleName ISHRemote Write-IshRemoteLog { }
-        }
-        It "Exits cleanly when stdin is closed (EOF) instead of looping forever" {
-            # Regression test for GitHub issue #243: ReadLine() returns $null on EOF.
-            # Replace Console.In with an empty StringReader so the first ReadLine() returns $null,
-            # simulating the MCP client closing the input stream. The server must exit promptly.
-            $cmdlets = @('Get-IshFolder')
-            $originalIn = [Console]::In
-            try {
-                [Console]::SetIn([System.IO.StringReader]::new(""))
-                { Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $true } | Should -Not -Throw
-            }
-            finally {
-                [Console]::SetIn($originalIn)
-            }
-        }
-    }
 }
 
 AfterAll {

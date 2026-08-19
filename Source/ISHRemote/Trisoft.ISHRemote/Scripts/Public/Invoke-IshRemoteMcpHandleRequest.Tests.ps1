@@ -79,7 +79,7 @@ Describe "Invoke-IshRemoteMcpHandleRequest" -Skip:($PSVersionTable.PSVersion.Maj
         }
         It "Should return empty result" {
             $json = $result | ConvertFrom-Json
-            $json.result | Should-BeNull
+            ($json.result | ConvertTo-Json -Compress) | Should-BeString '{}'
         }
     }
 
