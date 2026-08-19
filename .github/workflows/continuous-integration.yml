@@ -82,14 +82,12 @@ jobs:
       shell: pwsh
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
 
-    - name: Setup PowerShell modules (PSScriptAnalyzer + Pester)
+    - name: Setup PowerShell 7.x modules (PSScriptAnalyzer + Pester)
       shell: pwsh
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
         Install-Module PSScriptAnalyzer -ErrorAction Stop
-        if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'6.0.0' })) {
-            Install-Module Pester -MinimumVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
-        }
+        Install-Module Pester -MinimumVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
 
     - name: Lint with PSScriptAnalyzer
       shell: pwsh
@@ -106,6 +104,7 @@ jobs:
     - name: Pester Test Anonymization of public Doc and Samples on Windows using PowerShell 7.x
       shell: pwsh
       run: |
+        Import-Module Pester -MinimumVersion 6.0.0 -Force
         $result = Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1 -Output Detailed -PassThru
         if ($result.FailedCount -gt 0) {
             throw "Anonymization guard failed: $($result.FailedCount) check(s) found a real URL, internal hostname, private IP or token. Use example.com placeholders or extend the known-exceptions list in the test."
@@ -176,7 +175,9 @@ jobs:
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
-      run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
+      run: |
+        Import-Module Pester -MinimumVersion 6.0.0 -Force
+        Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v7
       with:
@@ -192,6 +193,7 @@ jobs:
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
       run: |
+          Import-Module Pester -MinimumVersion 6.0.0 -Force
           $config = New-PesterConfiguration
           $config.Run.Path = @('Source/ISHRemote/Trisoft.ISHRemote/Scripts/Public/','Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/')
           $config.Run.ExcludePath = @('*TestPrerequisite.Tests.ps1','*TestAnonymization.Tests.ps1')
@@ -205,6 +207,12 @@ jobs:
         name: ISHRemote-MainCI-PesterOnPowerShellCore
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
+
+    - name: Setup PowerShell 5.1 modules (Pester)
+      shell: powershell
+      run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Pester -MinimumVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
 
     - name: Pester Test Preparation (...products.com) using Windows PowerShell 5.1
       shell: powershell
@@ -237,7 +245,9 @@ jobs:
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
-      run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
+      run: |
+        Import-Module Pester -MinimumVersion 6.0.0 -Force
+        Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v7
       with:
@@ -253,6 +263,7 @@ jobs:
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
       run: |
+          Import-Module Pester -MinimumVersion 6.0.0 -Force
           $config = New-PesterConfiguration
           $config.Run.Path = @('Source/ISHRemote/Trisoft.ISHRemote/Scripts/Public/','Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/')
           $config.Run.ExcludePath = @('*TestPrerequisite.Tests.ps1','*TestAnonymization.Tests.ps1')
