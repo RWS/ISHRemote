@@ -81,5 +81,6 @@ Below is not an official performance compare, but a recurring thing noticed alon
 | ISHRemote 8.2.13523.0    | PowerShell 7.5.4 on .NET 9.0.10  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 141.61s AND Tests Passed: 1128, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
 | ISHRemote 8.2.13525.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b2303 | Tests completed in 132.15s AND Tests Passed: 1087, Failed: 0, Skipped: 52, Inconclusive: 0, NotRun: 0 |
 | ISHRemote 8.2.13525.0    | PowerShell 7.6.0 on .NET 10.0.5  | LEUDEVDDE...@15.3.0b2303 | Tests completed in 139.45s AND Tests Passed: 1135, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
-| ISHRemote 8.2.13525.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b3005 | Tests completed in 124.16s AND Tests Passed: 1260, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
-| ISHRemote 8.3.14018.0    | PowerShell 7.6.5 on .NET 10.0.11 | LEUDEVDDE...@15.3.0b3005 | Tests completed in 117.22s AND Tests Passed: 1260, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.3.14019.0    | Windows PowerShell 5.1 on .NET 4.8.1 | LEUDEVDDE...@15.3.0b3005 | Tests completed in 123.35s AND Tests Passed: 1260, Failed: 0, Skipped: 54, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.3.14019.0    | PowerShell 7.6.5 on .NET 10.0.11 | LEUDEVDDE...@15.3.0b3005 | Tests completed in 149.16s AND Tests Passed: 1310, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 |
+| ISHRemote 8.3.14019.0    | PowerShell 7.6.5 on .NET 10.0.11 | LEUDEVDDE...@15.3.0b3005 | Tests completed in 79.77s AND Tests Passed: 1270, Failed: 0, Skipped: 4, Inconclusive: 0, NotRun: 0 (`$config.Run.Parallel = $true`) |

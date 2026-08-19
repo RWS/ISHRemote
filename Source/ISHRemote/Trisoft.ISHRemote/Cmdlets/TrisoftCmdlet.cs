@@ -81,19 +81,19 @@ namespace Trisoft.ISHRemote.Cmdlets
         void ILogger.WriteVerbose(string message)
         {
             try { WriteVerbose(message); }
-            catch (PSInvalidOperationException) { }
+            catch (Exception) { }
         }
 
         void ILogger.WriteDebug(string message)
         {
             try { WriteDebug(message); }
-            catch (PSInvalidOperationException) { }
+            catch (Exception) { }
         }
 
         void ILogger.WriteWarning(string message)
         {
             try { WriteWarning(message); }
-            catch (PSInvalidOperationException) { }
+            catch (Exception) { }
         }
 
         void ILogger.WriteProgress(string activity, string statusDescription, int percentComplete)
@@ -104,7 +104,7 @@ namespace Trisoft.ISHRemote.Cmdlets
                 record.PercentComplete = percentComplete;
                 base.WriteProgress(record);
             }
-            catch (PSInvalidOperationException) { }
+            catch (Exception) { }
         }
 
         void ILogger.WriteParentProgress(string activity, string statusDescription, int percentComplete)
@@ -115,13 +115,13 @@ namespace Trisoft.ISHRemote.Cmdlets
                 record.PercentComplete = percentComplete;
                 base.WriteProgress(record);
             }
-            catch (PSInvalidOperationException) { }
+            catch (Exception) { }
         }
 
         void ILogger.WriteError(Exception ex, object errorObject)
         {
             try { WriteError(new ErrorRecord(ex, string.Empty, ErrorCategory.NotSpecified, errorObject)); }
-            catch (PSInvalidOperationException) { }
+            catch (Exception) { }
         }
 
 
@@ -238,8 +238,12 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// </summary>
         public new void WriteVerbose(string message)
         {
-            base.WriteVerbose(base.GetType().Name + "  " + message);
-            WriteDebug(message);
+            try
+            {
+                base.WriteVerbose(base.GetType().Name + "  " + message);
+                WriteDebug(message);
+            }
+            catch (Exception) { }
         }
 
         /// <summary>
@@ -247,7 +251,8 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// </summary>
         public new void WriteDebug(string message)
         {
-            base.WriteDebug($"{base.GetType().Name} {DateTime.Now.ToString("yyyyMMdd.HHmmss.fff")} {message}");
+            try { base.WriteDebug($"{base.GetType().Name} {DateTime.Now.ToString("yyyyMMdd.HHmmss.fff")} {message}"); }
+            catch (Exception) { }
         }
 
         /// <summary>
@@ -255,7 +260,8 @@ namespace Trisoft.ISHRemote.Cmdlets
         /// </summary>
         public new void WriteWarning(string message)
         {
-            base.WriteWarning(base.GetType().Name + "  " + message);
+            try { base.WriteWarning(base.GetType().Name + "  " + message); }
+            catch (Exception) { }
         }
 
         /// <summary>
