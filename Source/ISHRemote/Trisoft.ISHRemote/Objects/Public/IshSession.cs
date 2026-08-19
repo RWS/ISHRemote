@@ -124,7 +124,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _logger.WriteDebug($"Enabling Tls, Tls11, Tls12 and Tls13 security protocols on AppDomain. Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
             if (_ignoreSslPolicyErrors)
             {
-                CertificateValidationHelper.OverrideCertificateValidation();
+                CertificateValidationHelper.OverrideCertificateValidation(_logger);
             }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
 #endif

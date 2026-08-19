@@ -34,7 +34,7 @@ namespace Trisoft.ISHRemote.Cmdlets
     ///                and: http://technet.microsoft.com/en-us/library/dd819489.aspx
     /// Progress Record: http://community.bartdesmet.net/blogs/bart/archive/2006/11/26/PowerShell-_2D00_-A-cmdlet-that-reports-progress-_2D00_-A-simple-file-downloader-cmdlet.aspx
     /// </summary>
-    public abstract class TrisoftCmdlet : PSCmdlet
+    public abstract class TrisoftCmdlet : PSCmdlet, ILogger
     {
         /// <summary>
         /// Sleep constant used to slow down the progress bars to check the messages.
@@ -65,8 +65,7 @@ namespace Trisoft.ISHRemote.Cmdlets
 
         protected TrisoftCmdlet()
         {
-            Logger = TrisoftCmdletLogger.Instance();
-            TrisoftCmdletLogger.Initialize(this);
+            Logger = this;
             const int parentActivityId = 1111; //whatever number
             const int childActivityId = 2222;
             _parentProgressRecord = new ProgressRecord(parentActivityId, base.GetType().Name, "Processing...");
@@ -74,6 +73,55 @@ namespace Trisoft.ISHRemote.Cmdlets
             _childProgressRecord = new ProgressRecord(childActivityId, base.GetType().Name + " subtask ", "Subprocessing...");
             _childProgressRecord.ParentActivityId = parentActivityId;
             _childProgressRecord.SecondsRemaining = -1;
+        }
+
+        // ILogger explicit implementations — route through the PSCmdlet stream methods on this
+        // instance so logging is always scoped to the runspace that owns this cmdlet. This removes
+        // the need for the process-wide TrisoftCmdletLogger singleton (see GitHub issue #265).
+        void ILogger.WriteVerbose(string message)
+        {
+            try { WriteVerbose(message); }
+            catch (PSInvalidOperationException) { }
+        }
+
+        void ILogger.WriteDebug(string message)
+        {
+            try { WriteDebug(message); }
+            catch (PSInvalidOperationException) { }
+        }
+
+        void ILogger.WriteWarning(string message)
+        {
+            try { WriteWarning(message); }
+            catch (PSInvalidOperationException) { }
+        }
+
+        void ILogger.WriteProgress(string activity, string statusDescription, int percentComplete)
+        {
+            try
+            {
+                var record = new ProgressRecord(3333, activity, statusDescription);
+                record.PercentComplete = percentComplete;
+                base.WriteProgress(record);
+            }
+            catch (PSInvalidOperationException) { }
+        }
+
+        void ILogger.WriteParentProgress(string activity, string statusDescription, int percentComplete)
+        {
+            try
+            {
+                var record = new ProgressRecord(4444, activity, statusDescription);
+                record.PercentComplete = percentComplete;
+                base.WriteProgress(record);
+            }
+            catch (PSInvalidOperationException) { }
+        }
+
+        void ILogger.WriteError(Exception ex, object errorObject)
+        {
+            try { WriteError(new ErrorRecord(ex, string.Empty, ErrorCategory.NotSpecified, errorObject)); }
+            catch (PSInvalidOperationException) { }
         }
 
 
