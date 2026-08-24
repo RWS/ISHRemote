@@ -75,11 +75,17 @@ Authoring detail for each topic lives in the companion instruction files injecte
 ## 6. Exception handling
 
 - [ ] Catch ladder is in this exact order:
-  `TrisoftAutomationException` → `AggregateException` → `TimeoutException` →
+  `TrisoftAutomationException` → *(OpenAPI cmdlets only)* `OpenApiISH30Exception<InfoShareProblemDetails>` → `AggregateException` → `TimeoutException` →
   `CommunicationException` → `Exception`.
+- [ ] `OpenApiISH30Exception<InfoShareProblemDetails>` catch is present whenever the cmdlet makes
+  OpenAPI calls; SOAP-only cmdlets may omit it. When present it calls `WriteWarning` for each
+  structured error field (`Status`, `Title`, `EventName`, `Detail`, per-error `ErrorEventName`/`ErrorDetail`) before `ThrowTerminatingError`.
 - [ ] Every catch calls `ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name,
   ErrorCategory.XXX, null))` with the correct `ErrorCategory` — no silent swallows, no plain
   `throw`.
+- [ ] `catch (Exception)` calls `WriteWarning(e.InnerException.ToString())` when `InnerException`
+  is non-null, before `ThrowTerminatingError` — surfaces the root cause of wrapped exceptions such
+  as `HttpRequestException`.
 - [ ] The order is not reordered, collapsed, or partially removed without explicit sign-off from
   the implementer.
 

@@ -127,13 +127,15 @@ Close `ProcessRecord`/`EndProcessing` with this exact catch ladder (copy from a 
 and the per-type `ErrorCategory` matter; each ends in `ThrowTerminatingError`:
 ```csharp
 catch (TrisoftAutomationException e) { ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name, ErrorCategory.InvalidOperation, null)); }
+catch (OpenApiISH30.OpenApiISH30Exception<OpenApiISH30.InfoShareProblemDetails> e) {if (e.Result != null) { WriteWarning($"Status[{e.Result.Status}] Title[{e.Result.Title}] EventName[{e.Result.EventName}] Detail[{e.Result.Detail}]"); foreach (var error in e.Result.Errors) { WriteWarning($"ErrorEventName[{error.EventName}] ErrorDetail[{error.Detail}]"); } } ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name, ErrorCategory.InvalidOperation, null)); }
 catch (AggregateException e)         { var f = e.Flatten(); WriteWarning(f.ToString()); ThrowTerminatingError(new ErrorRecord(f, base.GetType().Name, ErrorCategory.NotSpecified, null)); }
-catch (TimeoutException e)           { WriteVerbose(...); ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name, ErrorCategory.OperationTimeout, null)); }
-catch (CommunicationException e)     { WriteVerbose(...); ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name, ErrorCategory.OperationStopped, null)); }
-catch (Exception e)                  { ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name, ErrorCategory.NotSpecified, null)); }
+catch (TimeoutException e)           { WriteVerbose("TimeoutException Message[" + e.Message + "] StackTrace[" + e.StackTrace + "]"); ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name, ErrorCategory.OperationTimeout, null)); }
+catch (CommunicationException e)     { WriteVerbose("CommunicationException Message[" + e.Message + "] StackTrace[" + e.StackTrace + "]"); ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name, ErrorCategory.OperationStopped, null)); }
+catch (Exception e)                  { if (e.InnerException != null) { WriteWarning(e.InnerException.ToString()); } ThrowTerminatingError(new ErrorRecord(e, base.GetType().Name, ErrorCategory.NotSpecified, null)); }
 ```
-Don't reorder, collapse, or silently swallow these. If you believe the handling can genuinely be
-improved, **challenge it explicitly with the implementer** before changing it.
+The `OpenApiISH30Exception` catch is only required when the cmdlet makes OpenAPI calls; SOAP-only
+cmdlets may omit it. Don't reorder, collapse, or silently swallow these. If you believe the
+handling can genuinely be improved, **challenge it explicitly with the implementer** before changing it.
 
 ## 8. Diagnostic logging density
 A `-Debug` or `-Verbose` transcript must contain enough context to reconstruct what happened and
