@@ -82,16 +82,14 @@ jobs:
       shell: pwsh
       run: dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
 
-    - name: Setup PowerShell modules (PSScriptAnalyzer + Pester)
+    - name: Module Setup using PowerShell 7.x (PSScriptAnalyzer + Pester)
       shell: pwsh
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
         Install-Module PSScriptAnalyzer -ErrorAction Stop
-        if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { $_.Version -ge [version]'5.3.0' })) {
-            Install-Module Pester -MinimumVersion 5.3.0 -Force -SkipPublisherCheck -Scope CurrentUser
-        }
+        Install-Module Pester -MinimumVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
 
-    - name: Lint with PSScriptAnalyzer
+    - name: Lint with PSScriptAnalyzer using PowerShell 7.x
       shell: pwsh
       run: |
         Invoke-ScriptAnalyzer -Path Source/ISHRemote/Trisoft.ISHRemote/Scripts -Recurse -Outvariable issues
@@ -103,9 +101,10 @@ jobs:
             Write-Output "There were $($errors.Count) errors and $($warnings.Count) warnings total."
         }
 
-    - name: Pester Test Anonymization of public Doc and Samples on Windows using PowerShell 7.x
+    - name: Pester Test Anonymization of public Doc and Samples using PowerShell 7.x
       shell: pwsh
       run: |
+        Import-Module Pester -MinimumVersion 6.0.0 -Force
         $result = Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestAnonymization.Tests.ps1 -Output Detailed -PassThru
         if ($result.FailedCount -gt 0) {
             throw "Anonymization guard failed: $($result.FailedCount) check(s) found a real URL, internal hostname, private IP or token. Use example.com placeholders or extend the known-exceptions list in the test."
@@ -145,7 +144,13 @@ jobs:
         name: ISHRemote-MainCI-Module
         path: Source/ISHRemote/Trisoft.ISHRemote/bin/Release/ISHRemote/
 
-    - name: Pester Test Preparation (...products.com) on Windows using PowerShell 7.x
+    - name: Module Setup on PowerShell 7.x (Pester)
+      shell: pwsh
+      run: |
+        Set-PSRepository PSGallery -InstallationPolicy Trusted
+        Install-Module Pester -MinimumVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
+
+    - name: Pester Test Preparation (...products.com) on PowerShell 7.x
       shell: pwsh
       env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
@@ -168,7 +173,7 @@ jobs:
         Add-Content -Path $filePath -Value '  $ishLngCombination = ''en-us'''
         Add-Content -Path $filePath -Value '}'
 
-    - name: Pester Test Prerequisites on Windows using PowerShell 7.x
+    - name: Pester Test Prerequisites on PowerShell 7.x
       shell: pwsh
       env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
@@ -176,14 +181,16 @@ jobs:
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
-      run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
+      run: |
+        Import-Module Pester -MinimumVersion 6.0.0 -Force
+        Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v7
       with:
         name: ISHRemote-MainCI-PesterPrerequisiteOnPowerShellCore
         path: Cmdlets.Pester.Tests.xml
 
-    - name: Pester Test Cmdlets on Windows using PowerShell 7.x
+    - name: Pester Test Cmdlets on PowerShell 7.x
       shell: pwsh
       env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
@@ -191,7 +198,15 @@ jobs:
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
-      run: Invoke-Pester -Path @('Source/ISHRemote/Trisoft.ISHRemote/Scripts/Public/','Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/') -ExcludePath @('*GetIshDocumentObj.Tests.ps1','*TestAnonymization.Tests.ps1') -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
+      run: |
+          Import-Module Pester -MinimumVersion 6.0.0 -Force
+          $config = New-PesterConfiguration
+          $config.Run.Path = @('Source/ISHRemote/Trisoft.ISHRemote/Scripts/Public/','Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/')
+          $config.Run.ExcludePath = @('*TestPrerequisite.Tests.ps1','*TestAnonymization.Tests.ps1')
+          $config.Run.Parallel = $false # can be $true on PS7, will run serially on PS5.1
+          $config.Output.Verbosity = 'Detailed'
+          $config.Run.PassThru = $true
+          Invoke-Pester -Configuration $config | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v7
       with:
@@ -199,7 +214,13 @@ jobs:
         path: Cmdlets.Pester.Tests.xml
       if: ${{ always() }}
 
-    - name: Pester Test Preparation (...products.com) using Windows PowerShell 5.1
+    - name: Module Setup on Windows PowerShell 5.1 (Pester)
+      shell: powershell
+      run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Pester -MinimumVersion 6.0.0 -Force -SkipPublisherCheck -Scope CurrentUser
+
+    - name: Pester Test Preparation (...products.com) on Windows PowerShell 5.1
       shell: powershell
       env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
@@ -222,7 +243,7 @@ jobs:
         Add-Content -Path $filePath -Value '  $ishLngCombination = ''en-us'''
         Add-Content -Path $filePath -Value '}'
 
-    - name: Pester Test Prerequisites using Windows PowerShell 5.1
+    - name: Pester Test Prerequisites on Windows PowerShell 5.1
       shell: powershell
       env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
@@ -230,14 +251,16 @@ jobs:
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
-      run: Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
+      run: |
+        Import-Module Pester -MinimumVersion 6.0.0 -Force
+        Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v7
       with:
         name: ISHRemote-MainCI-PesterPrerequisiteOnWindowsPowerShell
         path: Cmdlets.Pester.Tests.xml
 
-    - name: Pester Test Cmdlets using Windows PowerShell 5.1
+    - name: Pester Test Cmdlets on Windows PowerShell 5.1
       shell: powershell
       env:
         ISH_BASE_URL: ${{ secrets.ISH_BASE_URL }}
@@ -245,7 +268,15 @@ jobs:
         ISH_PASSWORD: ${{ secrets.ISH_PASSWORD }}
         ISH_CLIENT_ID: ${{ secrets.ISH_CLIENT_ID }}
         ISH_CLIENT_SECRET: ${{ secrets.ISH_CLIENT_SECRET }}
-      run: Invoke-Pester -Path @('Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/') -ExcludePath @('*GetIshDocumentObj.Tests.ps1','*TestAnonymization.Tests.ps1') -Output Detailed -Passthru | Export-CliXml -Path Cmdlets.Pester.Tests.xml
+      run: |
+          Import-Module Pester -MinimumVersion 6.0.0 -Force
+          $config = New-PesterConfiguration
+          $config.Run.Path = @('Source/ISHRemote/Trisoft.ISHRemote/Scripts/Public/','Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/')
+          $config.Run.ExcludePath = @('*TestPrerequisite.Tests.ps1','*TestAnonymization.Tests.ps1')
+          $config.Run.Parallel = $false # can be $true on PS7, will run serially on PS5.1
+          $config.Output.Verbosity = 'Detailed'
+          $config.Run.PassThru = $true
+          Invoke-Pester -Configuration $config | Export-CliXml -Path Cmdlets.Pester.Tests.xml
     - name: Upload test results
       uses: actions/upload-artifact@v7
       with:
@@ -303,15 +334,4 @@ jobs:
           echo ("Found recent module[ISHRemote] of version["+($remoteModule.Version)+"]. Skipping publish of module with version[$fullVersion]!")
         }
 
-    - name: "Info: How to publish to Internal/Nexus Repositories"
-      shell: pwsh
-      run: |
-        echo "Either the steps below or in-house https://jenkins-docs.web.sdldev.net/job/Publish-ISHRemote/ job that downloads and publishes to Nexus"
-        echo "1. Login to Github, navigate to $env:ISHGITHUB_SERVER_URL/$env:ISHGITHUB_REPOSITORY/actions/runs/$env:ISHGITHUB_RUN_ID"
-        echo "2. Download ISHRemote-MainCI-Module artefact to C:\TEMP\ISHRemote\ISHRemote-MainCI-Module.zip"
-        echo "3. In a PowerShell Session..."
-        echo "3a. Remove-Item -Path C:\TEMP\ISHRemote\ToPublish -Recurse -Force"
-        echo "3b. Expand-Archive -Path C:\TEMP\ISHRemote\ISHRemote-MainCI-Module.zip -DestinationPath C:\TEMP\ISHRemote\ToPublish\ -Force"
-        echo "3c. Publish-Module -Path C:\TEMP\ISHRemote\ToPublish\ISHRemote.psd1 -Repository $psRepository -NuGetApiKey $nuGetApiKey -Force"
-        echo "3d. Find-Module -Name ISHRemote -Repository $psRepository -AllowPrerelease"
 

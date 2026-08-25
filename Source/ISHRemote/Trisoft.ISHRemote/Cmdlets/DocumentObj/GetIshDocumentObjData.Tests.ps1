@@ -37,12 +37,12 @@ Describe "Get-IshDocumentObjData" -Tags "Read" {
 	}
 	Context "Get-IshDocumentObjData FolderPathGroup" {
 		It "Parameter IshSession/IshObject invalid" {
-			{ Get-IshDocumentObjData -IShSession "INVALIDISHSESSION" -IshObject "INVALIDISHOBJECT" } | Should -Throw
+			{ Get-IshDocumentObjData -IShSession "INVALIDISHSESSION" -IshObject "INVALIDISHOBJECT" } | Should-Throw
 		}
 		It "FileInfo.Name contains 4 = signs" {
 			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $tempFolder $cmdletName)
-			$fileInfo.GetType().Name | Should -BeExactly "FileInfo"
-			$fileInfo.Name -like "*=*=*=*=*.*" | Should -Be $true
+			$fileInfo.GetType().Name | Should-BeString -CaseSensitive "FileInfo"
+			$fileInfo.Name -like "*=*=*=*=*.*" | Should-Be $true
 		}
 		It "Parameter IshFeature matching features (so everything equals source file)" {
 			$ishFeatures = Set-IshFeature -Name "ISHRemoteStringCond" -Value "StringOne" |
@@ -50,40 +50,40 @@ Describe "Get-IshDocumentObjData" -Tags "Read" {
 			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $tempFolder $cmdletName) -IshFeature $ishFeatures
 			$fileContent = Get-Content $fileInfo -Raw
 			Write-Debug ("fileContent.Length[" + $fileContent.Length + "] fileContent.GetType()[" + $fileContent.GetType() + "] fileContent[" +$fileContent+"]")
-			($fileContent -like "*ISHRemoteStringCond*") | Should -Be $true
+			($fileContent -like "*ISHRemoteStringCond*") | Should-Be $true
 		}
 		It "Parameter IshFeature not matching features (so everything filtered away)" {
 			$ishFeatures = Set-IshFeature -Name "INVALIDFEATURE" -Value "INVALIDVALUE"
 			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectTopicA -FolderPath (Join-Path $tempFolder $cmdletName) -IshFeature $ishFeatures
 			$fileContent = Get-Content $fileInfo -Raw 
 			Write-Debug ("fileContent.Length[" + $fileContent.Length + "] fileContent.GetType()[" + $fileContent.GetType() + "] fileContent[" +$fileContent+"]")
-			$fileContent -notlike "*ISHRemoteStringCond*" | Should -Be $true
+			$fileContent -notlike "*ISHRemoteStringCond*" | Should-Be $true
 		}
 		It "FolderPath with long FTITLE returns FileInfo without PathTooLongException" {
 			$fileInfo = Get-IshDocumentObjData -IshSession $ishSession -IshObject $ishObjectLongTitleTopic -FolderPath (Join-Path $tempFolder $cmdletName)
-			$fileInfo.GetType().Name | Should -BeExactly "FileInfo"
+			$fileInfo.GetType().Name | Should-BeString -CaseSensitive "FileInfo"
 		}
 	}
 	Context "Get-IshDocumentObjData IshObjectGroup" {
 		It "GetType().Name" {
 			$ishobjects = Get-IshDocumentObjData -IshSession $ishSession -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
-			$ishobjects.GetType().Name | Should -BeExactly "Object[]"
+			$ishobjects.GetType().Name | Should-BeString -CaseSensitive "Object[]"
 		}
 		It "Parameter IshObject Single with implicit IshSession" {
 			$ishobjects = Get-IshDocumentObjData -IshObject $ishObjectTopicA
-			$ishobjects.Count | Should -Be 1
+			$ishobjects.Count | Should-Be 1
 		}
 		It "Parameter IshObject Multiple with implicit IshSession" {
 			$ishobjects = Get-IshDocumentObjData -IshObject @($ishObjectTopicA,$ishObjectLibraryA)
-			$ishobjects.Count | Should -Be 2
+			$ishobjects.Count | Should-Be 2
 		}
 		It "Pipeline IshObject Single" {
 			$ishobjects = $ishObjectTopicA | Get-IshDocumentObjData -IshSession $ishSession
-			$ishobjects.Count | Should -Be 1
+			$ishobjects.Count | Should-Be 1
 		}
 		It "Pipeline IshObject Multiple" {
 			$ishobjects = @($ishObjectTopicA,$ishObjectLibraryA) | Get-IshDocumentObjData -IshSession $ishSession
-			$ishobjects.Count | Should -Be 2
+			$ishobjects.Count | Should-Be 2
 		}
 	}
 }

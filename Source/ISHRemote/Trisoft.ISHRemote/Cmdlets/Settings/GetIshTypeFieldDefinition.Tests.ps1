@@ -1,3 +1,4 @@
+#pester:no-parallel #this test manipulates SessionState variables directly and calls cmdlets that use WriteDebug, both of which are fragile in parallel runspaces.
 BeforeAll {
 	$cmdletName = "Get-IshTypeFieldDefinition"
 	Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 on PSVersion[" + $psversionTable.PSVersion + "] over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
@@ -17,19 +18,19 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 			$ishTypeFieldDefinitions = Get-IshTypeFieldDefinition
 		}
 		It "GetType().Name" {
-			$ishTypeFieldDefinitions[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
+			$ishTypeFieldDefinitions[0].GetType().Name | Should-BeString -CaseSensitive "IshTypeFieldDefinition"
 		}
 		It "ishTypeFieldDefinitions[0].ISHType" {
-			$ishTypeFieldDefinitions[0].ISHType | Should -Not -BeNullOrEmpty
+			$ishTypeFieldDefinitions[0].ISHType | Should-NotBeNull
 		}
 		It "ishTypeFieldDefinitions[0].Level" {
-			$ishTypeFieldDefinitions[0].Level | Should -Not -BeNullOrEmpty
+			$ishTypeFieldDefinitions[0].Level | Should-NotBeNull
 		}
 		It "ishTypeFieldDefinitions[0].Name" {
-			$ishTypeFieldDefinitions[0].Name | Should -Not -BeNullOrEmpty
+			$ishTypeFieldDefinitions[0].Name | Should-NotBeNull
 		}
 		It "ishTypeFieldDefinitions[0].DataType" {
-			$ishTypeFieldDefinitions[0].DataType | Should -Not -BeNullOrEmpty
+			$ishTypeFieldDefinitions[0].DataType | Should-NotBeNull
 		}
 		It "FXYEDITOR is not a standard field for <13.0.x" {
 			# Making sure the implicit IshSession stored in SessionState is temporarily removed
@@ -37,7 +38,7 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 			$executioncontext.SessionState.PSVariable.Set("ISHRemoteSessionStateIshSession", $null)
 			$restoreGlobalIshSession=$executioncontext.SessionState.PSVariable.GetValue("global:ISHRemoteSessionStateIshSession")
 			$executioncontext.SessionState.PSVariable.Set("global:ISHRemoteSessionStateIshSession", $null)
-			(Get-IshTypeFieldDefinition | Where-Object -Property Name -EQ -Value "FXYEDITOR").Count | Should -Be 0
+			(Get-IshTypeFieldDefinition | Where-Object -Property Name -EQ -Value "FXYEDITOR").Count | Should-Be 0
 			$executioncontext.SessionState.PSVariable.Set("ISHRemoteSessionStateIshSession", $restoreLocalIshSession)
 			$executioncontext.SessionState.PSVariable.Set("global:ISHRemoteSessionStateIshSession", $restoreGlobalIshSession)
 		}
@@ -46,46 +47,46 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 	}
 	Context "Get-IshTypeFieldDefinition without IshSession only TriDKXmlSetupFilePath" {
 		It "Parameter TriDKXmlSetupFilePath invalid" {
-			{ Get-IshTypeFieldDefinition -TriDKXmlSetupFilePath "INVALIDFILEPATH" } | Should -Throw
+			{ Get-IshTypeFieldDefinition -TriDKXmlSetupFilePath "INVALIDFILEPATH" } | Should-Throw
 		}
 		It "Parameter TriDKXmlSetup without IshSession" {
 			$WarningPreference="SilentlyContinue"
 			$tridkXmlSetupUserContent | Out-File $tempFilePath
 			$ishTypeFieldDefinitions = Get-IshTypeFieldDefinition -TriDKXmlSetupFilePath $tempFilePath
-			$ishTypeFieldDefinitions.Count | Should -Be 6
+			$ishTypeFieldDefinitions.Count | Should-Be 6
 		}
 	}
 	Context "Get-IshTypeFieldDefinition with IshSession loads matching resource entry or Settings25" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshTypeFieldDefinition -IShSession "INVALIDISHSESSION" } | Should -Throw
+			{ Get-IshTypeFieldDefinition -IShSession "INVALIDISHSESSION" } | Should-Throw
 		}
 		It "IshSession.IshTypeFieldDefinition[0].GetType().Name" {
 			Get-IshTypeFieldDefinition -IshSession $ishSession
-			$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should -BeExactly "IshTypeFieldDefinition"
+			$ishSession.IshTypeFieldDefinition[0].GetType().Name | Should-BeString -CaseSensitive "IshTypeFieldDefinition"
 		}
 		It "Table ISHBackgroundTask" {
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'Task').Count | Should -Be 15
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'History').Count | Should -Be 9
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnRead -EQ $true).Count | Should -Be 24 # all columns are allowed to be read
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should -Be 20 # all columns are explicit api parameters and cannot be set over metadata
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsMultiValue -EQ $false).Count | Should -Be 24 # all columns are single value
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsSystem -EQ $true).Count | Should -Be 24 # all columns are system columns
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'STATUS').DataSource | Should -Be 'DBACKGROUNDTASKSTATUS'
-			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').DataSource | Should -Be 'ISHUser'
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'Task').Count | Should-Be 15
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Level -EQ 'History').Count | Should-Be 9
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnRead -EQ $true).Count | Should-Be 24 # all columns are allowed to be read
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should-Be 20 # all columns are explicit api parameters and cannot be set over metadata
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsMultiValue -EQ $false).Count | Should-Be 24 # all columns are single value
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property IsSystem -EQ $true).Count | Should-Be 24 # all columns are system columns
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'STATUS').DataSource | Should-Be 'DBACKGROUNDTASKSTATUS'
+			(Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHBackgroundTask' | Where-Object -Property Name -EQ 'USERID').DataSource | Should-Be 'ISHUser'
 		}
 		It "Table ISHEvent" {
-		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should -Be 11
-		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Detail').Count | Should -Be 12
-		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnRead -EQ $true).Count | Should -Be 23 # all columns are allowed to be read
-		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should -Be 11 # all columns are explicit api parameters and cannot be set over metadata
-		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsMultiValue -EQ $false).Count | Should -Be 23 # all columns are single value
-		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsSystem -EQ $true).Count | Should -Be 23 # all columns are system columns
-		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').DataSource | Should -Be 'ISHUser'
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Progress').Count | Should-Be 11
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Level -EQ 'Detail').Count | Should-Be 12
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnRead -EQ $true).Count | Should-Be 23 # all columns are allowed to be read
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property AllowOnCreate -EQ $false).Count | Should-Be 11 # all columns are explicit api parameters and cannot be set over metadata
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsMultiValue -EQ $false).Count | Should-Be 23 # all columns are single value
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property IsSystem -EQ $true).Count | Should-Be 23 # all columns are system columns
+		    (Get-IshTypeFieldDefinition -IshSession $ishSession | Where-Object -Property ISHType -EQ 'ISHEvent' | Where-Object -Property Name -EQ 'USERID').DataSource | Should-Be 'ISHUser'
 		}
 	}
 	Context "Get-IshTypeFieldDefinition with IshSession/TriDKXmlSetupFilePath loads if ServerVersion<13.0.0" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshTypeFieldDefinition -IShSession "INVALIDISHSESSION" -TriDKXmlSetupFilePath "INVALIDFILEPATH" } | Should -Throw
+			{ Get-IshTypeFieldDefinition -IShSession "INVALIDISHSESSION" -TriDKXmlSetupFilePath "INVALIDFILEPATH" } | Should-Throw
 		}
 	}
     Context "Get-IshTypeFieldDefinition and Metadata bound fields" {
@@ -96,8 +97,8 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 			# Initially test was 14s long doing a 'foreach($typeDefinition in $typeDefinitions)', now testing the first array entry
 			if ($typeDefinitions.Length -gt 0)
 			{
-				$typeDefinitions[0].AllowOnSmartTagging | Should -Not -BeNullOrEmpty
-				$typeDefinitions[0].AllowOnSmartTagging | Should -BeOfType System.Boolean
+				$typeDefinitions[0].AllowOnSmartTagging | Should-NotBeNull
+				$typeDefinitions[0].AllowOnSmartTagging | Should-HaveType System.Boolean
 			}
         }
 		It "Check Metadata bound field - if configured in Extension XML settings"{
@@ -106,9 +107,9 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
 			{
 				foreach($typeDefinitionMetadataBinding in $typeDefinitionsMetadataBinding)
 				{
-					$typeDefinitionMetadataBinding.DataSource | Should -Not -BeNullOrEmpty
-					$typeDefinitionMetadataBinding.ReferenceMetadataBinding | Should -Not -BeNullOrEmpty
-					($typeDefinitionMetadataBinding.DataSource -eq $typeDefinitionMetadataBinding.ReferenceMetadataBinding) | Should -Be $true
+					$typeDefinitionMetadataBinding.DataSource | Should-NotBeNull
+					$typeDefinitionMetadataBinding.ReferenceMetadataBinding | Should-NotBeNull
+					($typeDefinitionMetadataBinding.DataSource -eq $typeDefinitionMetadataBinding.ReferenceMetadataBinding) | Should-Be $true
 				}
 			}
 		}
@@ -120,9 +121,9 @@ Describe "Get-IshTypeFieldDefinition" -Tags "Read" {
         It "Check CRUST, MM and SDB length"{
             if ($typeDefinitions.Length -gt 0)
 			{
-				$typeDefinitions[0].CRUST.Length | Should -Be 5
-				$typeDefinitions[0].MM.Length | Should -Be 2
-				$typeDefinitions[0].SDB.Length | Should -Be 3
+				$typeDefinitions[0].CRUST.Length | Should-Be 5
+				$typeDefinitions[0].MM.Length | Should-Be 2
+				$typeDefinitions[0].SDB.Length | Should-Be 3
             }
         }
     }

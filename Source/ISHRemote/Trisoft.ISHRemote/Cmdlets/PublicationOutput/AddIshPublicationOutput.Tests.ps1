@@ -30,54 +30,54 @@ Describe "Add-IshPublicationOutput" -Tags "Create" {
 		$ishMapMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Map $timestamp" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
 						Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft
-		$ishObjectMap = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderMap -IshType ISHMasterDoc -LogicalId "MYOWNGENERATEDLOGICALIDMAP" -Version '3' -Lng $ishLng -Metadata $ishMapMetadata -Edt "EDTXML" -FileContent $ditaMapFileContent
+		$ishObjectMap = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderMap -IshType ISHMasterDoc -LogicalId "ADDISHPUBLICATIONTOUTPUT-MYOWNGENERATEDLOGICALIDMAP" -Version '3' -Lng $ishLng -Metadata $ishMapMetadata -Edt "EDTXML" -FileContent $ditaMapFileContent
 
 		$ishFolderPub = Add-IshFolder -IshSession $ishSession -ParentFolderId($global:ishFolderCmdlet.IshFolderRef) -FolderType ISHPublication -FolderName "Pub" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
 		$ishPubMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Pub $timestamp" |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHMASTERREF" -Level Version -ValueType Element -Value $ishObjectMap.IshRef |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHPUBSOURCELANGUAGES" -Level Version -ValueType Element -Value $ishLng |
 						Set-IshMetadataField -IshSession $ishSession -Name "FISHREQUIREDRESOLUTIONS" -Level Version -ValueType Element -Value $ishResolution
-		$ishObjectPub = Add-IshPublicationOutput -IshSession $ishSession -IshFolder $ishFolderPub -LogicalId "MYOWNGENERATEDLOGICALIDPUB" -Version '1' -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Metadata $ishPubMetadata
+		$ishObjectPub = Add-IshPublicationOutput -IshSession $ishSession -IshFolder $ishFolderPub -LogicalId "ADDISHPUBLICATIONTOUTPUT-MYOWNGENERATEDLOGICALIDPUB" -Version '1' -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Metadata $ishPubMetadata
 
 		$tempFilePath = (New-TemporaryFile).FullName
 	}
     Context "Add-IshPublicationOutput returns IshObject object" {
         It "GetType().Name" {
-			$ishObjectPub.GetType().Name | Should -BeExactly "IshPublicationOutput"
+			$ishObjectPub.GetType().Name | Should-BeString -CaseSensitive "IshPublicationOutput"
 		}
 		It "ishObjectPub.IshField" {
-			$ishObjectPub.IshField | Should -Not -BeNullOrEmpty
+			$ishObjectPub.IshField | Should-NotBeNull
 		}
 		It "ishObjectPub.IshRef" {
-			$ishObjectPub.IshRef | Should -Not -BeNullOrEmpty
+			$ishObjectPub.IshRef | Should-NotBeNull
 		}
 		It "ishObjectPub.IshType" {
-			$ishObjectPub.IshType | Should -Not -BeNullOrEmpty
+			$ishObjectPub.IshType | Should-NotBeNull
 		}
 		# Double check following 3 ReferenceType enum usage 
 		It "ishObjectPub.ObjectRef" {
-			$ishObjectPub.ObjectRef | Should -Not -BeNullOrEmpty
+			$ishObjectPub.ObjectRef | Should-NotBeNull
 		}
 		It "ishObjectPub.VersionRef" {
-			$ishObjectPub.VersionRef | Should -Not -BeNullOrEmpty
+			$ishObjectPub.VersionRef | Should-NotBeNull
 		}
 		It "ishObjectPub.LngRef" {
-			$ishObjectPub.LngRef | Should -Not -BeNullOrEmpty
+			$ishObjectPub.LngRef | Should-NotBeNull
 		}
 		It "ishObjectPub ConvertTo-Json" {
-			(ConvertTo-Json $ishObjectPub).Length -gt 2 | Should -Be $true
+			(ConvertTo-Json $ishObjectPub).Length -gt 2 | Should-Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
 			#logical
-			$ishObjectPub.ftitle_logical_value.Length -ge 1 | Should -Be $true 
+			$ishObjectPub.ftitle_logical_value.Length -ge 1 | Should-Be $true 
 			#version
-			$ishObjectPub.version_version_value.Length -ge 1 | Should -Be $true 
+			$ishObjectPub.version_version_value.Length -ge 1 | Should-Be $true 
 			#language
-			$ishObjectPub.fishpubstatus.Length -ge 1 | Should -Be $true 
-			$ishObjectPub.fishpubstatus_lng_element.StartsWith('VPUBSTATUS') | Should -Be $true 
-			$ishObjectPub.fishpublngcombination.Length -ge 1 | Should -Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
-			#$ishObjectPub.fishpublngcombination_lng_element.StartsWith('VLANGUAGE') | Should -Be $true # Note that fishpublngcombination is a string like 'en+fr+nl' so doesn't have element name
+			$ishObjectPub.fishpubstatus.Length -ge 1 | Should-Be $true 
+			$ishObjectPub.fishpubstatus_lng_element.StartsWith('VPUBSTATUS') | Should-Be $true 
+			$ishObjectPub.fishpublngcombination.Length -ge 1 | Should-Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
+			#$ishObjectPub.fishpublngcombination_lng_element.StartsWith('VLANGUAGE') | Should-Be $true # Note that fishpublngcombination is a string like 'en+fr+nl' so doesn't have element name
 		}
 	}
 }

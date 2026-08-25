@@ -29,44 +29,44 @@ Describe "Search-IshDocumentObjData" -Tags "Read" {
 	}
 	Context "Search-IshDocumentObj SimpleQueryGroup" {
 		It "Parameter IshSession invalid" {
-			{ Search-IshDocumentObj -IShSession "INVALIDISHSESSION" -SimpleQuery "INVALIDQUERY IS NOT INVALID IT IS JUST A QUERY" } | Should -Throw
+			{ Search-IshDocumentObj -IShSession "INVALIDISHSESSION" -SimpleQuery "INVALIDQUERY IS NOT INVALID IT IS JUST A QUERY" } | Should-Throw
 		}
 		It "Parameter MaxHitsToReturn invalid" {
-			{ Search-IshDocumentObj -MaxHitsToReturn "INVALIDMAXHITSTORETURN" -SimpleQuery "INVALIDQUERY IS NOT INVALID IT IS JUST A QUERY" } | Should -Throw
-			{ Search-IshDocumentObj -MaxHitsToReturn -3 -SimpleQuery "INVALIDQUERY IS NOT INVALID IT IS JUST A QUERY" } | Should -Throw
+			{ Search-IshDocumentObj -MaxHitsToReturn "INVALIDMAXHITSTORETURN" -SimpleQuery "INVALIDQUERY IS NOT INVALID IT IS JUST A QUERY" } | Should-Throw
+			{ Search-IshDocumentObj -MaxHitsToReturn -3 -SimpleQuery "INVALIDQUERY IS NOT INVALID IT IS JUST A QUERY" } | Should-Throw
 		}
 		It "Parameter MaxHitsToReturn" {
 			$ishObject = Search-IshDocumentObj -MaxHitsToReturn 3 -SimpleQuery "*"
-			$ishObject.Count -eq 3 | Should -Be $true 
+			$ishObject.Count -eq 3 | Should-Be $true 
 		}
 		It "Parameter RequestedMetadata" {
 			$requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
 			$ishObject = Search-IshDocumentObj -IShSession $ishSession -MaxHitsToReturn 2 -SimpleQuery "*" -RequestedMetadata $requestedMetadata
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
 			#logical
-			$ishObject[0].ftitle_logical_value.Length -ge 1 | Should -Be $true 
+			$ishObject[0].ftitle_logical_value.Length -ge 1 | Should-Be $true 
 			#version
-			$ishObject[0].version_version_value.Length -ge 1 | Should -Be $true 
+			$ishObject[0].version_version_value.Length -ge 1 | Should-Be $true 
 			#language
-			$ishObject[0].fstatus.Length -ge 1 | Should -Be $true 
-			$ishObject[0].fstatus_lng_element.StartsWith('VSTATUS') | Should -Be $true 
-			$ishObject[0].doclanguage.Length -ge 1 | Should -Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
-			$ishObject[0].doclanguage_lng_element.StartsWith('VLANGUAGE') | Should -Be $true
-			$ishObject[0].fishstatustype -ge 0  | Should -Be $true  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
+			$ishObject[0].fstatus.Length -ge 1 | Should-Be $true 
+			$ishObject[0].fstatus_lng_element.StartsWith('VSTATUS') | Should-Be $true 
+			$ishObject[0].doclanguage.Length -ge 1 | Should-Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
+			$ishObject[0].doclanguage_lng_element.StartsWith('VLANGUAGE') | Should-Be $true
+			$ishObject[0].fishstatustype -ge 0  | Should-Be $true  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
 		}
 		It "Parameter Count" {
 			$count = Search-IshDocumentObj -SimpleQuery "*" -Count
-			$count -ge 0 | Should -Be $true 
+			$count -ge 0 | Should-Be $true 
 		}
 		It "Search-IshDocumentObj returns IshObject objects" {
 			$ishObject = Search-IshDocumentObj -IShSession $ishSession -MaxHitsToReturn 2 -SimpleQuery "*"
-			$ishObject[0].IshField | Should -Not -BeNullOrEmpty
-			$ishObject[0].IshRef | Should -Not -BeNullOrEmpty
-			$ishObject[0].IshType | Should -Not -BeNullOrEmpty
-			$ishObject[0].ObjectRef | Should -Not -BeNullOrEmpty
-			$ishObject[0].VersionRef | Should -Not -BeNullOrEmpty
-			$ishObject[0].LngRef | Should -Not -BeNullOrEmpty
-			$ishObject[0].fishstatustype -ge 0  | Should -Be $false  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
+			$ishObject[0].IshField | Should-NotBeNull
+			$ishObject[0].IshRef | Should-NotBeNull
+			$ishObject[0].IshType | Should-NotBeNull
+			$ishObject[0].ObjectRef | Should-NotBeNull
+			$ishObject[0].VersionRef | Should-NotBeNull
+			$ishObject[0].LngRef | Should-NotBeNull
+			$ishObject[0].fishstatustype -ge 0  | Should-Be $false  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
 		}
 	}
 	Context "Search-IshDocumentObj XmlQueryQueryGroup" {
@@ -111,47 +111,47 @@ Describe "Search-IshDocumentObjData" -Tags "Read" {
 			$xmlQueryAllVersions = $xmlQueryAllVersions -replace "#!#ISHRemoteParameter:UserLanguage#!#", $ishSession.UserLanguage
 		}
 		It "Parameter IshSession invalid" {
-			{ Search-IshDocumentObj -IShSession "INVALIDISHSESSION" -XmlQuery "INVALIDQUERY" } | Should -Throw
+			{ Search-IshDocumentObj -IShSession "INVALIDISHSESSION" -XmlQuery "INVALIDQUERY" } | Should-Throw
 		}
 		It "Parameter XmlQuery invalid" {
-			{ Search-IshDocumentObj -IShSession $ishSession -XmlQuery "INVALIDQUERY" } | Should -Throw
+			{ Search-IshDocumentObj -IShSession $ishSession -XmlQuery "INVALIDQUERY" } | Should-Throw
 		}
 		It "Parameter MaxHitsToReturn invalid" {
-			{ Search-IshDocumentObj -MaxHitsToReturn "INVALIDMAXHITSTORETURN" -XmlQuery $xmlQueryLatestVersion } | Should -Throw
-			{ Search-IshDocumentObj -MaxHitsToReturn -4 -XmlQuery $xmlQueryLatestVersion } | Should -Throw
+			{ Search-IshDocumentObj -MaxHitsToReturn "INVALIDMAXHITSTORETURN" -XmlQuery $xmlQueryLatestVersion } | Should-Throw
+			{ Search-IshDocumentObj -MaxHitsToReturn -4 -XmlQuery $xmlQueryLatestVersion } | Should-Throw
 		}
 		It "Parameter MaxHitsToReturn" {
 			$ishObject = Search-IshDocumentObj -MaxHitsToReturn 4 -XmlQuery $xmlQueryLatestVersion
-			$ishObject.Count -eq 4 | Should -Be $true 
+			$ishObject.Count -eq 4 | Should-Be $true 
 		}
 		It "Parameter RequestedMetadata" {
 			$requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
 			$ishObject = Search-IshDocumentObj -IShSession $ishSession -MaxHitsToReturn 2 -XmlQuery $xmlQueryLatestVersion -RequestedMetadata $requestedMetadata
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
 			#logical
-			$ishObject[0].ftitle_logical_value.Length -ge 1 | Should -Be $true 
+			$ishObject[0].ftitle_logical_value.Length -ge 1 | Should-Be $true 
 			#version
-			$ishObject[0].version_version_value.Length -ge 1 | Should -Be $true 
+			$ishObject[0].version_version_value.Length -ge 1 | Should-Be $true 
 			#language
-			$ishObject[0].fstatus.Length -ge 1 | Should -Be $true 
-			$ishObject[0].fstatus_lng_element.StartsWith('VSTATUS') | Should -Be $true 
-			$ishObject[0].doclanguage.Length -ge 1 | Should -Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
-			$ishObject[0].doclanguage_lng_element.StartsWith('VLANGUAGE') | Should -Be $true
-			$ishObject[0].fishstatustype -ge 0  | Should -Be $true  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
+			$ishObject[0].fstatus.Length -ge 1 | Should-Be $true 
+			$ishObject[0].fstatus_lng_element.StartsWith('VSTATUS') | Should-Be $true 
+			$ishObject[0].doclanguage.Length -ge 1 | Should-Be $true  # Field names like DOC-LANGUAGE get stripped of the hyphen, otherwise you get $ishObject.'doc-language' and now you get the more readable $ishObject.doclanguage
+			$ishObject[0].doclanguage_lng_element.StartsWith('VLANGUAGE') | Should-Be $true
+			$ishObject[0].fishstatustype -ge 0  | Should-Be $true  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
 		}
 		It "Parameter Count" {
 			$count = Search-IshDocumentObj -XmlQuery $xmlQueryAllVersions -Count
-			$count -ge 0 | Should -Be $true 
+			$count -ge 0 | Should-Be $true 
 		}
 		It "Search-IshDocumentObj returns IshObject objects" {
 			$ishObject = Search-IshDocumentObj -IShSession $ishSession -MaxHitsToReturn 2 -XmlQuery $xmlQueryLatestVersion
-			$ishObject[0].IshField | Should -Not -BeNullOrEmpty
-			$ishObject[0].IshRef | Should -Not -BeNullOrEmpty
-			$ishObject[0].IshType | Should -Not -BeNullOrEmpty
-			$ishObject[0].ObjectRef | Should -Not -BeNullOrEmpty
-			$ishObject[0].VersionRef | Should -Not -BeNullOrEmpty
-			$ishObject[0].LngRef | Should -Not -BeNullOrEmpty
-			$ishObject[0].fishstatustype -ge 0  | Should -Be $false  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
+			$ishObject[0].IshField | Should-NotBeNull
+			$ishObject[0].IshRef | Should-NotBeNull
+			$ishObject[0].IshType | Should-NotBeNull
+			$ishObject[0].ObjectRef | Should-NotBeNull
+			$ishObject[0].VersionRef | Should-NotBeNull
+			$ishObject[0].LngRef | Should-NotBeNull
+			$ishObject[0].fishstatustype -ge 0  | Should-Be $false  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
 		}
 	}
 }

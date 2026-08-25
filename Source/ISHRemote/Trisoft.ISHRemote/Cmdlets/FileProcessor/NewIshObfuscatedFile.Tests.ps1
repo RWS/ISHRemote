@@ -64,26 +64,26 @@ Describe "New-IshObfuscatedFile" -Tags "Read" {
 												-FilePath $taskFilePath
 		}
 		It "GetType().Name" {
-			$taskFileInfo.GetType().Name | Should -BeExactly "FileInfo"
+			$taskFileInfo.GetType().Name | Should-BeString -CaseSensitive "FileInfo"
 		}
 		It "OutputFilePath" {
-			($taskFileInfo.FullName -eq (Join-Path -Path $outputFolder -ChildPath "task==1=en.xml")) | Should -Be $True
+			($taskFileInfo.FullName -eq (Join-Path -Path $outputFolder -ChildPath "task==1=en.xml")) | Should-Be $True
 		}
 		It "Task Result String Comparison" {
-			(Get-Content -Path $taskFileInfo -Raw) -eq $ditaObfuscatedTaskFileContent | Should -Be $True
+			(Get-Content -Path $taskFileInfo -Raw) -eq $ditaObfuscatedTaskFileContent | Should-Be $True
 		}
 		It "BookMap Result String Comparison without XmlAttributesToObfuscate @navtitle" {
 			$bookMapFileInfo = New-IshObfuscatedFile -FolderPath $outputFolder -FilePath $bookMapFilePath
-			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaObfuscatedBookMapWithoutNavtitleFileContent | Should -Be $True
+			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaObfuscatedBookMapWithoutNavtitleFileContent | Should-Be $True
 		}
 		It "BookMap Result String Comparison with XmlAttributesToObfuscate @navtitle" {
 			$bookMapFileInfo = New-IshObfuscatedFile -FolderPath $outputFolder -FilePath $bookMapFilePath -XmlAttributesToObfuscate @("navtitle")
-			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaObfuscatedBookMapWithNavtitleFileContent | Should -Be $True
+			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaObfuscatedBookMapWithNavtitleFileContent | Should-Be $True
 		}
 		It "Image Result Comparison" {
 			$imageFilePath = New-IshObfuscatedFile -FolderPath $outputFolder `
 											       -FilePath $imageFilePath
-			$imageFilePath.Count -gt 0 | Should -Be $True
+			$imageFilePath.Count -gt 0 | Should-Be $True
 		}
 		It "Parameter XmlFileExtensions invalid" {
 			{
@@ -97,19 +97,19 @@ Describe "New-IshObfuscatedFile" -Tags "Read" {
 		}
 		It "Parameter FilePath Single" {
 			$fileInfoArray =New-IshObfuscatedFile -FolderPath $outputFolder -FilePath $taskFilePath
-			$fileInfoArray.Count | Should -Be 1
+			$fileInfoArray.Count | Should-Be 1
 		}
 		It "Parameter FilePath Multiple" {
 			$fileInfoArray = New-IshObfuscatedFile -FolderPath $outputFolder -FilePath @($taskFilePath,$bookMapFilePath)
-			$fileInfoArray.Count | Should -Be 2
+			$fileInfoArray.Count | Should-Be 2
 		}
 		It "Pipeline FilePath Single" {
 			$fileInfos = Get-Item -Path $taskFilePath
-			($fileInfos | New-IshObfuscatedFile -FolderPath $outputFolder).Count | Should -Be 1
+			($fileInfos | New-IshObfuscatedFile -FolderPath $outputFolder).Count | Should-Be 1
 		}
 		It "Pipeline FilePath Multiple" {
 			$fileInfos = @((Get-Item -Path $taskFilePath), (Get-Item -Path $bookMapFilePath))
-			($fileInfos | New-IshObfuscatedFile -FolderPath $outputFolder).Count | Should -Be 2
+			($fileInfos | New-IshObfuscatedFile -FolderPath $outputFolder).Count | Should-Be 2
 		}
 	}
 }

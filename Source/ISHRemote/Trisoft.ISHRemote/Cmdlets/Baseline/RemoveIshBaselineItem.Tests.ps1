@@ -19,25 +19,25 @@ Describe "Remove-IshBaselineItem" {
 		}
 		
 		It "Parameter IshSession invalid" {
-			{Remove-IshBaselineItem -IShSession "INVALIDISHSESSION" -IshObject $ishObject -LogicalId "$cmdletName--A"} | Should -Throw
+			{Remove-IshBaselineItem -IShSession "INVALIDISHSESSION" -IshObject $ishObject -LogicalId "$cmdletName--A"} | Should-Throw
 		}
 		
 		It "GetType()" {
-			$ishObjectRemove.GetType().Name | Should -BeExactly "IshBaseline"
+			$ishObjectRemove.GetType().Name | Should-BeString -CaseSensitive "IshBaseline"
 		}
 		
 		It "$ishObject.IshRef" {
-			$ishObjectRemove.IshRef | Should -Not -BeNullOrEmpty
+			$ishObjectRemove.IshRef | Should-NotBeNull
 		}
 		
 		It "Remove 1 item" {
 			$ishObjectRemove = Remove-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--AA"
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should -Be 1
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should-Be 1
 		}
 
 		It "Remove the last item" {
 			$ishObjectRemove = Remove-IshBaselineItem -IshSession $ishSession -IshObject $ishObject -LogicalId "$cmdletName--A"
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should -Be 0
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject).Count | Should-Be 0
 		}
 	}
 	
@@ -56,16 +56,16 @@ Describe "Remove-IshBaselineItem" {
 		
 		It "Remove the same item from two baselines" {
 			$ishObjects = Remove-IshBaselineItem -IshSession $ishSession -IshObject @($ishObject1, $ishObject2) -LogicalId "$cmdletName--AA"
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject1).Count | Should -Be 1
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject2).Count | Should -Be 1
-			$ishObjects.Count | Should -Be 2
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject1).Count | Should-Be 1
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject2).Count | Should-Be 1
+			$ishObjects.Count | Should-Be 2
 		}
 		
 		It "Remove item existing only in one of baselines" {
 			$ishObjects = Remove-IshBaselineItem -IshSession $ishSession -IshObject @($ishObject1, $ishObject2) -LogicalId "$cmdletName--A1"
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject1).Count | Should -Be 0
-			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject2).Count | Should -Be 1
-			$ishObjects.Count | Should -Be 2
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject1).Count | Should-Be 0
+			(Get-IshBaselineItem -IshSession $ishSession -IshObject $ishObject2).Count | Should-Be 1
+			$ishObjects.Count | Should-Be 2
 		}
 	}	
 }

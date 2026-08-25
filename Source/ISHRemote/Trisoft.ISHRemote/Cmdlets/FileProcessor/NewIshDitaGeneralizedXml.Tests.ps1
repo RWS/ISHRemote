@@ -69,10 +69,10 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 												-FilePath $taskFilePath
 		}
 		It "GetType().Name" {
-			$taskFileInfo.GetType().Name | Should -BeExactly "FileInfo"
+			$taskFileInfo.GetType().Name | Should-BeString -CaseSensitive "FileInfo"
 		}
 		It "Task Result String Comparison" {
-			(Get-Content -Path $taskFileInfo -Raw) -eq $ditaGeneralizedTaskFileContent | Should -Be $True
+			(Get-Content -Path $taskFileInfo -Raw) -eq $ditaGeneralizedTaskFileContent | Should-Be $True
 		}
 		It "BookMap without Attributes options Result String Comparison" {
 			$bookMapFileInfo = Get-Item $bookMapFilePath | 
@@ -80,7 +80,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 							                             -GeneralizedCatalogFilePath $generalizedCatalogFilePath `
 														 -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 														 -FolderPath $outputFolder
-			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaGeneralizedBookMapFileContent | Should -Be $True
+			(Get-Content -Path $bookMapFileInfo -Raw) -eq $ditaGeneralizedBookMapFileContent | Should-Be $True
 		}
 		It "Parameter SpecializedCatalogFilePath invalid" {
 			{
@@ -91,7 +91,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
-			} | Should -Throw
+			} | Should-Throw
 		}
 		It "Parameter GeneralizedCatalogFilePath invalid" {
 			{
@@ -102,7 +102,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
-			} | Should -Throw
+			} | Should-Throw
 		}
 		It "Parameter GeneralizationCatalogMappingFilePath invalid" {
 			{
@@ -113,7 +113,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
-			} | Should -Throw
+			} | Should-Throw
 		}
 		It "Parameter FilePath invalid will result in warning" {
 			{
@@ -134,7 +134,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath $taskFilePath
-			$fileInfoArray.Count | Should -Be 1
+			$fileInfoArray.Count | Should-Be 1
 		}
 		It "Parameter FilePath Multiple" {
 			$fileInfoArray = New-IshDitaGeneralizedXml -SpecializedCatalogFilePath $specializedCatalogFilePath `
@@ -144,7 +144,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
 											  -FolderPath $outputFolder `
 											  -FilePath @($taskFilePath,$bookMapFilePath)
-			$fileInfoArray.Count | Should -Be 2
+			$fileInfoArray.Count | Should-Be 2
 		}
 		It "Pipeline FilePath Single" {
 			$fileInfos = Get-Item -Path $taskFilePath
@@ -153,7 +153,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
-											  -FolderPath $outputFolder).Count | Should -Be 1
+											  -FolderPath $outputFolder).Count | Should-Be 1
 		}
 		It "Pipeline FilePath Multiple" {
 			$fileInfos = @((Get-Item -Path $taskFilePath), (Get-Item -Path $bookMapFilePath))
@@ -162,7 +162,7 @@ Describe "New-IshDitaGeneralizedXml" -Tags "Read" {
 											  -GeneralizationCatalogMappingFilePath $generalizationCatalogMappingFilePath `
 											  -AttributesToGeneralizeToProps $attributesToGeneralizeToProps `
 											  -AttributesToGeneralizeToBase $attributesToGeneralizeToBase `
-											  -FolderPath $outputFolder).Count | Should -Be 2
+											  -FolderPath $outputFolder).Count | Should-Be 2
 		}
 	}
 }

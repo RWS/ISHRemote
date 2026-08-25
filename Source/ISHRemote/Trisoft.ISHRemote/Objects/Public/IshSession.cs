@@ -51,6 +51,7 @@ namespace Trisoft.ISHRemote.Objects.Public
         private IshVersion _serverVersion;
         private IshVersion _clientVersion;
         private IshTypeFieldSetup _ishTypeFieldSetup;
+        private readonly object _ishTypeFieldSetupLock = new object();
         private Enumerations.StrictMetadataPreference _strictMetadataPreference = Enumerations.StrictMetadataPreference.Continue;
         private NameHelper _nameHelper;
         private Enumerations.PipelineObjectPreference _pipelineObjectPreference = Enumerations.PipelineObjectPreference.PSObjectNoteProperty;
@@ -124,7 +125,7 @@ namespace Trisoft.ISHRemote.Objects.Public
             _logger.WriteDebug($"Enabling Tls, Tls11, Tls12 and Tls13 security protocols on AppDomain. Timeout[{_timeout}] IgnoreSslPolicyErrors[{_ignoreSslPolicyErrors}]");
             if (_ignoreSslPolicyErrors)
             {
-                CertificateValidationHelper.OverrideCertificateValidation();
+                CertificateValidationHelper.OverrideCertificateValidation(_logger);
             }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
 #endif
@@ -302,44 +303,49 @@ namespace Trisoft.ISHRemote.Objects.Public
             {
                 if (_ishTypeFieldSetup == null)
                 {
-                    if (_serverVersion.MajorVersion >= 13) 
+                    lock (_ishTypeFieldSetupLock)
                     {
-                        switch (Protocol)
+                        if (_ishTypeFieldSetup == null)
                         {
-                            case Enumerations.Protocol.OpenApiWithOpenIdConnect:
-                                // TODO [Must] Add OpenApi implementation
-                            case Enumerations.Protocol.WcfSoapWithWsTrust:
-                            case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
-                                _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
-                                _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null), ServerIshVersion);
-                                break;
-                        }
-                        _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
-                    }
-                    else
-                    {
-                        _logger.WriteDebug($"Loading TriDKXmlSetupFullExport_12_00_01...");
-                        var triDKXmlSetupHelper = new TriDKXmlSetupHelper(_logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
-                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition)
-                        {
-                            StrictMetadataPreference = Enumerations.StrictMetadataPreference.Off    // Otherwise custom metadata fields are always removed as they are unknown for the default TriDKXmlSetup Resource
-                        };
-                    }
+                            if (_serverVersion.MajorVersion >= 13) 
+                            {
+                                switch (Protocol)
+                                {
+                                    case Enumerations.Protocol.OpenApiWithOpenIdConnect:
+                                        // TODO [Must] Add OpenApi implementation
+                                    case Enumerations.Protocol.WcfSoapWithWsTrust:
+                                    case Enumerations.Protocol.WcfSoapWithOpenIdConnect:
+                                        _logger.WriteDebug($"Loading Settings25.RetrieveFieldSetupByIshType...");
+                                        _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, Settings25.RetrieveFieldSetupByIshType(null), ServerIshVersion);
+                                        break;
+                                }
+                                _ishTypeFieldSetup.StrictMetadataPreference = _strictMetadataPreference;
+                            }
+                            else
+                            {
+                                _logger.WriteDebug($"Loading TriDKXmlSetupFullExport_12_00_01...");
+                                var triDKXmlSetupHelper = new TriDKXmlSetupHelper(_logger, Properties.Resouces.ISHTypeFieldSetup.TriDKXmlSetupFullExport_12_00_01);
+                                _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, triDKXmlSetupHelper.IshTypeFieldDefinition)
+                                {
+                                    StrictMetadataPreference = Enumerations.StrictMetadataPreference.Off    // Otherwise custom metadata fields are always removed as they are unknown for the default TriDKXmlSetup Resource
+                                };
+                            }
 
-                    if (_serverVersion.MajorVersion == 13 || (_serverVersion.MajorVersion == 14 && _serverVersion.RevisionVersion < 4))
-                    {
-                        // Loading/Merging Settings ISHMetadataBinding for 13/13.0.0 up till 14SP4/14.0.4 setup
-                        // Note that IMetadataBinding was introduced in 2016/12.0.0 but there was no dynamic FieldSetup retrieval
-                        // Passing IshExtensionConfig object to IshTypeFieldSetup constructor
-                        _logger.WriteDebug($"Loading Settings25.GetMetadata for field[" + FieldElements.ExtensionConfiguration + "]...");
-                        IshFields metadata = new IshFields();
-                        metadata.AddField(new IshRequestedMetadataField(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value));  // do not pass over IshTypeFieldSetup.ToIshRequestedMetadataFields, as we are initializing that object
-                        string xmlIshObjects = Settings25.GetMetadata(metadata.ToXml());
-                        var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
-                        string xmlSettingsExtensionConfig = ishFields.GetFieldValue(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value);
-                        IshSettingsExtensionConfig.MergeIntoIshTypeFieldSetup(_logger, _ishTypeFieldSetup, xmlSettingsExtensionConfig);
+                            if (_serverVersion.MajorVersion == 13 || (_serverVersion.MajorVersion == 14 && _serverVersion.RevisionVersion < 4))
+                            {
+                                // Loading/Merging Settings ISHMetadataBinding for 13/13.0.0 up till 14SP4/14.0.4 setup
+                                // Note that IMetadataBinding was introduced in 2016/12.0.0 but there was no dynamic FieldSetup retrieval
+                                // Passing IshExtensionConfig object to IshTypeFieldSetup constructor
+                                _logger.WriteDebug($"Loading Settings25.GetMetadata for field[" + FieldElements.ExtensionConfiguration + "]...");
+                                IshFields metadata = new IshFields();
+                                metadata.AddField(new IshRequestedMetadataField(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value));  // do not pass over IshTypeFieldSetup.ToIshRequestedMetadataFields, as we are initializing that object
+                                string xmlIshObjects = Settings25.GetMetadata(metadata.ToXml());
+                                var ishFields = new IshObjects(xmlIshObjects).Objects[0].IshFields;
+                                string xmlSettingsExtensionConfig = ishFields.GetFieldValue(FieldElements.ExtensionConfiguration, Enumerations.Level.None, Enumerations.ValueType.Value);
+                                IshSettingsExtensionConfig.MergeIntoIshTypeFieldSetup(_logger, _ishTypeFieldSetup, xmlSettingsExtensionConfig);
+                            }
+                        }
                     }
-                    
                 }
                 return _ishTypeFieldSetup;
             }
@@ -491,7 +497,10 @@ namespace Trisoft.ISHRemote.Objects.Public
             }
             internal set
             {
-                _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, value);
+                lock (_ishTypeFieldSetupLock)
+                {
+                    _ishTypeFieldSetup = new IshTypeFieldSetup(_logger, value);
+                }
             }
         }
 

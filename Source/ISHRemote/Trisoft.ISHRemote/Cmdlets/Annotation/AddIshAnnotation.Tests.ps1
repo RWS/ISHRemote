@@ -60,46 +60,46 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 			$ishAnnotation = Add-IshAnnotation -IshSession $ishsession -Metadata $ishAnnotationMetadata
 		}
 		It "GetType().Name" {
-			$ishAnnotation.GetType().Name | Should -BeExactly "IshAnnotation"
+			$ishAnnotation.GetType().Name | Should-BeString -CaseSensitive "IshAnnotation"
 		}
 		It "ishAnnotation.IshField" {
-			$ishAnnotation.IshField | Should -Not -BeNullOrEmpty
+			$ishAnnotation.IshField | Should-NotBeNull
 		}
 		It "ishAnnotation.IshRef" {
-			$ishAnnotation.IshRef | Should -Not -BeNullOrEmpty
+			$ishAnnotation.IshRef | Should-NotBeNull
 		}
 		It "ishAnnotation.IshType" {
-			$ishAnnotation.IshType | Should -Not -BeNullOrEmpty
+			$ishAnnotation.IshType | Should-NotBeNull
 		}
 		It "ishAnnotation.ObjectRef" {
-			$ishAnnotation.ObjectRef | Should -Not -BeNullOrEmpty
+			$ishAnnotation.ObjectRef | Should-NotBeNull
 		}
         It "ishAnnotation PubLogicalId" {
-			$ishAnnotation.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			$ishAnnotation.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		}
         It "ishAnnotation PubVersion" {
-			$ishAnnotation.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			$ishAnnotation.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		}
         It "ishAnnotation PubLng" {
-			$ishAnnotation.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			$ishAnnotation.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		}
         It "ishAnnotation RevisionId" {
-			$ishAnnotation.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+			$ishAnnotation.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 		}
 		It "ishAnnotation Address" {
-			$ishAnnotation.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+			$ishAnnotation.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 		}
 		It "ishAnnotation Text" {
-			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationText
+			$ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationText
 		}
 		It "ishAnnotation Category" {
-			$ishAnnotation.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+			$ishAnnotation.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 		}
 		It "ishAnnotation Type" {
-			$ishAnnotation.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+			$ishAnnotation.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 		}
 		It "Metadata is null" {
-			{Add-IshAnnotation -IshSession $ishsession -Metadata $null} | Should -Throw
+			{Add-IshAnnotation -IshSession $ishsession -Metadata $null} | Should-Throw
 		}
 	}
 
@@ -125,40 +125,40 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 								-Address $annotationAddress
         }
 		It "ishAnnotation RevisionId" {
-			$ishAnnotation.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+			$ishAnnotation.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 		}
         It "ishAnnotation PubLogicalId" {
-			$ishAnnotation.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			$ishAnnotation.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		}
         It "ishAnnotation PubVersion" {
-			$ishAnnotation.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			$ishAnnotation.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		}
         It "ishAnnotation PubLng" {
-			$ishAnnotation.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			$ishAnnotation.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		}
 		It "ishAnnotation LogicalId" {
-			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should -BeExactly $ishObjectTopic.IshRef
+			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.IshRef
 		}
 		It "ishAnnotation Version" {
-			$ishAnnotation.fishcontentobjversion_annotation_value | Should -BeExactly $ishObjectTopic.version_version_value
+			$ishAnnotation.fishcontentobjversion_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.version_version_value
 		}
 		It "ishAnnotation Lng" {
-			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should -BeExactly $ishObjectTopic.doclanguage
+			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.doclanguage
 		}		
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
 		}
 		It "ishAnnotation Address" {
-			$ishAnnotation.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+			$ishAnnotation.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 		}
 		It "ishAnnotation Text" {
-			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationText
+			$ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationText
 		}
 		It "ishAnnotation Category" {
-			$ishAnnotation.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+			$ishAnnotation.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 		}
 		It "ishAnnotation Type" {
-			$ishAnnotation.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+			$ishAnnotation.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 		}
 	}
 	
@@ -199,43 +199,43 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 								-Metadata $metadataProvided
 		}                       
 		It "ishAnnotation Address" {
-			$ishAnnotation.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+			$ishAnnotation.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 		}
 		It "ishAnnotation Text" {
-			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationText
+			$ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationText
 		}
 		It "ishAnnotation Category" {
-			$ishAnnotation.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+			$ishAnnotation.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 		}
 		It "ishAnnotation Type" {
-			$ishAnnotation.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+			$ishAnnotation.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 		}
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
 		}
 		It "ishAnnotation PublogicalId" {
-			$ishAnnotation.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			$ishAnnotation.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		}
 		It "ishAnnotation PubVersion" {
-			$ishAnnotation.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			$ishAnnotation.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		}
         It "ishAnnotation PubLng" {
-			$ishAnnotation.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			$ishAnnotation.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		}
 		It "ishAnnotation RevisionId" {
-			$ishAnnotation.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+			$ishAnnotation.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 		}
 		It "ishAnnotation LogicalId" {
-			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should -BeExactly $ishObjectTopic.IshRef
+			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.IshRef
 		}
 		It "ishAnnotation Version" {
-			$ishAnnotation.fishcontentobjversion_annotation_value | Should -BeExactly $ishObjectTopic.version_version_value
+			$ishAnnotation.fishcontentobjversion_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.version_version_value
 		}
 		It "ishAnnotation Lng" {
-			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should -BeExactly $ishObjectTopic.doclanguage
+			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.doclanguage
 		}
 		It "ishAnnotation ProposedChngText" {
-			$ishAnnotation.fishannotproposedchngtxt_annotation_value | Should -BeExactly $proposedChangeText
+			$ishAnnotation.fishannotproposedchngtxt_annotation_value | Should-BeString -CaseSensitive $proposedChangeText
 		}
 	}	
 	
@@ -259,40 +259,40 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 								-Address $annotationAddress
 		}                
 		It "ishAnnotation RevisionId" {
-			$ishAnnotation.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+			$ishAnnotation.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 		}
 		It "ishAnnotation LogicalId" {
-			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should -BeExactly $ishObjectTopic.IshRef
+			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.IshRef
 		}
 		It "ishAnnotation Version" {
-			$ishAnnotation.fishcontentobjversion_annotation_value | Should -BeExactly $ishObjectTopic.version_version_value
+			$ishAnnotation.fishcontentobjversion_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.version_version_value
 		}
 		It "ishAnnotation Lng" {
-			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should -BeExactly $ishObjectTopic.doclanguage
+			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.doclanguage
 		}		
 		It "ishAnnotation PublogicalId" {
-			$ishAnnotation.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			$ishAnnotation.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		}
 		It "ishAnnotation PubVersion" {
-			$ishAnnotation.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			$ishAnnotation.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		}
         It "ishAnnotation PubLng" {
-			$ishAnnotation.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			$ishAnnotation.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		}
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
 		}
 		It "ishAnnotation Address" {
-			$ishAnnotation.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+			$ishAnnotation.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 		}
 		It "ishAnnotation Text" {
-			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationText
+			$ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationText
 		}
 		It "ishAnnotation Category" {
-			$ishAnnotation.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+			$ishAnnotation.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 		}
 		It "ishAnnotation Type" {
-			$ishAnnotation.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+			$ishAnnotation.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 		}
 		It "IshObject is of invalid type (IshPublication)" {
 			{$ishAnnotation = Add-IshAnnotation -IshSession $ishsession `
@@ -305,7 +305,7 @@ Describe "Add-IshAnnotation" -Tags "Create" {
                             -Status $annotationStatus `
                             -Category $annotationCategory `
                             -Address $annotationAddress
-			} | Should -Throw
+			} | Should-Throw
 		}
 	}
 
@@ -343,43 +343,43 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 								-Metadata $metadataProvided
 		}                       
 		It "ishAnnotation RevisionId" {
-			$ishAnnotation.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+			$ishAnnotation.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 		}
 		It "ishAnnotation LogicalId" {
-			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should -BeExactly $ishObjectTopic.IshRef
+			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.IshRef
 		}
 		It "ishAnnotation Version" {
-			$ishAnnotation.fishcontentobjversion_annotation_value | Should -BeExactly $ishObjectTopic.version_version_value
+			$ishAnnotation.fishcontentobjversion_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.version_version_value
 		}
 		It "ishAnnotation Lng" {
-			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should -BeExactly $ishObjectTopic.doclanguage
+			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.doclanguage
 		}	
 		It "ishAnnotation PublogicalId" {
-			$ishAnnotation.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			$ishAnnotation.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		}
 		It "ishAnnotation PubVersion" {
-			$ishAnnotation.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			$ishAnnotation.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		}
         It "ishAnnotation PubLng" {
-			$ishAnnotation.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			$ishAnnotation.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		}
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
 		}
 		It "ishAnnotation Address" {
-			$ishAnnotation.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+			$ishAnnotation.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 		}
 		It "ishAnnotation Text" {
-			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationText
+			$ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationText
 		}
 		It "ishAnnotation Category" {
-			$ishAnnotation.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+			$ishAnnotation.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 		}
 		It "ishAnnotation Type" {
-			$ishAnnotation.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+			$ishAnnotation.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 		}
 		It "ishAnnotation ProposedChngText" {
-			$ishAnnotation.fishannotproposedchngtxt_annotation_value | Should -BeExactly $proposedChangeText
+			$ishAnnotation.fishannotproposedchngtxt_annotation_value | Should-BeString -CaseSensitive $proposedChangeText
 		}
 	}
 	
@@ -402,40 +402,40 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 												-Address $annotationAddress
 		}		                               
 		It "ishAnnotation RevisionId" {
-			$ishAnnotation.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+			$ishAnnotation.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 		}
 		It "ishAnnotation LogicalId" {
-			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should -BeExactly $ishObjectTopic.IshRef
+			$ishAnnotation.fishcontentobjlogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.IshRef
 		}
 		It "ishAnnotation PublogicalId" {
-			$ishAnnotation.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			$ishAnnotation.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		}
 		It "ishAnnotation PubVersion" {
-			$ishAnnotation.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			$ishAnnotation.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		}
         It "ishAnnotation PubLng" {
-			$ishAnnotation.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			$ishAnnotation.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		}		
         It "ishAnnotation Version" {
-			$ishAnnotation.fishcontentobjversion_annotation_value | Should -BeExactly $ishObjectTopic.version_version_value
+			$ishAnnotation.fishcontentobjversion_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.version_version_value
 		}
 		It "ishAnnotation Lng" {
-			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should -BeExactly $ishObjectTopic.doclanguage
+			$ishAnnotation.fishcontentobjlanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.doclanguage
 		}		
 		It "ishAnnotation Status" {
-			$ishAnnotation.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+			$ishAnnotation.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
 		}
 		It "ishAnnotation Address" {
-			$ishAnnotation.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+			$ishAnnotation.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 		}
 		It "ishAnnotation Text" {
-			$ishAnnotation.fishannotationtext_annotation_value | Should -BeExactly $annotationText
+			$ishAnnotation.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationText
 		}
 		It "ishAnnotation Category" {
-			$ishAnnotation.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+			$ishAnnotation.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 		}
 		It "ishAnnotation Type" {
-			$ishAnnotation.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+			$ishAnnotation.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 		}
 	}
 
@@ -471,43 +471,43 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 													-IshAnnotation $ishAnnotation
 		}
 		It "ishAnnotation RevisionId" {
-			$ishAnnotationUpdated.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+			$ishAnnotationUpdated.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 		}
 		It "ishAnnotation LogicalId" {
-			$ishAnnotationUpdated.fishcontentobjlogicalid_annotation_value | Should -BeExactly $ishObjectTopic.IshRef
+			$ishAnnotationUpdated.fishcontentobjlogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.IshRef
 		}
 		It "ishAnnotation PublogicalId" {
-			$ishAnnotation.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			$ishAnnotation.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		}
 		It "ishAnnotation PubVersion" {
-			$ishAnnotation.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			$ishAnnotation.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		}
         It "ishAnnotation PubLng" {
-			$ishAnnotation.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			$ishAnnotation.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		}
 		It "ishAnnotation Version" {
-			$ishAnnotationUpdated.fishcontentobjversion_annotation_value | Should -BeExactly $ishObjectTopic.version_version_value
+			$ishAnnotationUpdated.fishcontentobjversion_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.version_version_value
 		}
 		It "ishAnnotation Lng" {
-			$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should -BeExactly $ishObjectTopic.doclanguage
+			$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.doclanguage
 		}		
 		It "ishAnnotation Status" {
-			$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+			$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
 		}
 		It "ishAnnotation Address" {
-			$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+			$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 		}
 		It "ishAnnotation Text" {
-			$ishAnnotationUpdated.fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+			$ishAnnotationUpdated.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
 		It "ishAnnotation Category" {
-			$ishAnnotationUpdated.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+			$ishAnnotationUpdated.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 		}
 		It "ishAnnotation Type" {
-			$ishAnnotationUpdated.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+			$ishAnnotationUpdated.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 		}
 		It "ishAnnotation ProposedChngText" {
-			$ishAnnotationUpdated.fishannotproposedchngtxt_annotation_value | Should -BeExactly $proposedChangeTextUpdated
+			$ishAnnotationUpdated.fishannotproposedchngtxt_annotation_value | Should-BeString -CaseSensitive $proposedChangeTextUpdated
 		}
 	}
 
@@ -556,49 +556,49 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 			$ishAnnotationsUpdated = @($ishAnnotation1, $ishAnnotation2) | Add-IshAnnotation -IshSession $ishsession
 		}
 		It "ishAnnotations array count" {
-			$ishAnnotationsUpdated.Count | Should -BeExactly 2
+			$ishAnnotationsUpdated.Count | Should-Be 2
 		}
 		
 		foreach($ishAnnotationUpdated in $ishAnnotationsUpdated)
 		{
 			It "ishAnnotation RevisionId" {
-				$ishAnnotationUpdated.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+				$ishAnnotationUpdated.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 			}
 			It "ishAnnotation LogicalId" {
-				$ishAnnotationUpdated.fishcontentobjlogicalid_annotation_value | Should -BeExactly $ishObjectTopic.IshRef
+				$ishAnnotationUpdated.fishcontentobjlogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.IshRef
 			}
 			It "ishAnnotation Version" {
-				$ishAnnotationUpdated.fishcontentobjversion_annotation_value | Should -BeExactly $ishObjectTopic.version_version_value
+				$ishAnnotationUpdated.fishcontentobjversion_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.version_version_value
 			}
 			It "ishAnnotation Lng" {
-				$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should -BeExactly $ishObjectTopic.doclanguage
+				$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.doclanguage
 			}	
 		    It "ishAnnotation PublogicalId" {
-			    $ishAnnotationUpdated.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			    $ishAnnotationUpdated.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		    }
 		    It "ishAnnotation PubVersion" {
-			    $ishAnnotationUpdated.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			    $ishAnnotationUpdated.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		    }
             It "ishAnnotation PubLng" {
-			    $ishAnnotationUpdated.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			    $ishAnnotationUpdated.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		    }	
 			It "ishAnnotation Status" {
-				$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+				$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
 			}
 			It "ishAnnotation Address" {
-				$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+				$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 			}
 			It "ishAnnotation Text" {
-				$ishAnnotationUpdated.fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+				$ishAnnotationUpdated.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 			}
 			It "ishAnnotation Category" {
-				$ishAnnotationUpdated.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+				$ishAnnotationUpdated.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 			}
 			It "ishAnnotation Type" {
-				$ishAnnotationUpdated.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+				$ishAnnotationUpdated.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 			}
 			It "ishAnnotation ProposedChngText" {
-				$ishAnnotationUpdated.fishannotproposedchngtxt_annotation_value | Should -BeExactly $proposedChangeTextUpdated
+				$ishAnnotationUpdated.fishannotproposedchngtxt_annotation_value | Should-BeString -CaseSensitive $proposedChangeTextUpdated
 			}
 		}
 	}
@@ -633,43 +633,43 @@ Describe "Add-IshAnnotation" -Tags "Create" {
 			$ishAnnotationUpdated = $ishAnnotation | Add-IshAnnotation -IshSession $ishsession
 		}
 		It "ishAnnotation RevisionId" {
-			$ishAnnotationUpdated.fishrevisionid_annotation_value | Should -BeExactly $revisionId
+			$ishAnnotationUpdated.fishrevisionid_annotation_value | Should-BeString -CaseSensitive $revisionId
 		}
 		It "ishAnnotation LogicalId" {
-			$ishAnnotationUpdated.fishcontentobjlogicalid_annotation_value | Should -BeExactly $ishObjectTopic.IshRef
+			$ishAnnotationUpdated.fishcontentobjlogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.IshRef
 		}
 		It "ishAnnotation Version" {
-			$ishAnnotationUpdated.fishcontentobjversion_annotation_value | Should -BeExactly $ishObjectTopic.version_version_value
+			$ishAnnotationUpdated.fishcontentobjversion_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.version_version_value
 		}
 		It "ishAnnotation Lng" {
-			$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should -BeExactly $ishObjectTopic.doclanguage
+			$ishAnnotationUpdated.fishcontentobjlanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectTopic.doclanguage
 		}	
 		It "ishAnnotation PublogicalId" {
-			$ishAnnotation.fishpublogicalid_annotation_value | Should -BeExactly $ishObjectPub.IshRef
+			$ishAnnotation.fishpublogicalid_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.IshRef
 		}
 		It "ishAnnotation PubVersion" {
-			$ishAnnotation.fishpubversion_annotation_value | Should -BeExactly $ishObjectPub.version_version_value
+			$ishAnnotation.fishpubversion_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.version_version_value
 		}
         It "ishAnnotation PubLng" {
-			$ishAnnotation.fishpublanguage_annotation_value | Should -BeExactly $ishObjectPub.fishpubsourcelanguages_version_value
+			$ishAnnotation.fishpublanguage_annotation_value | Should-BeString -CaseSensitive $ishObjectPub.fishpubsourcelanguages_version_value
 		}	
 		It "ishAnnotation Status" {
-			$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should -BeExactly $annotationStatus
+			$ishAnnotationUpdated.fishannotationstatus_annotation_value | Should-BeString -CaseSensitive $annotationStatus
 		}
 		It "ishAnnotation Address" {
-			$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should -BeExactly $annotationAddress
+			$ishAnnotationUpdated.fishannotationaddress_annotation_value | Should-BeString -CaseSensitive $annotationAddress
 		}
 		It "ishAnnotation Text" {
-			$ishAnnotationUpdated.fishannotationtext_annotation_value | Should -BeExactly $annotationTextUpdated
+			$ishAnnotationUpdated.fishannotationtext_annotation_value | Should-BeString -CaseSensitive $annotationTextUpdated
 		}
 		It "ishAnnotation Category" {
-			$ishAnnotationUpdated.fishannotationcategory_annotation_value | Should -BeExactly $annotationCategory
+			$ishAnnotationUpdated.fishannotationcategory_annotation_value | Should-BeString -CaseSensitive $annotationCategory
 		}
 		It "ishAnnotation Type" {
-			$ishAnnotationUpdated.fishannotationtype_annotation_value | Should -BeExactly $annotationType
+			$ishAnnotationUpdated.fishannotationtype_annotation_value | Should-BeString -CaseSensitive $annotationType
 		}
 		It "ishAnnotation ProposedChngText" {
-			$ishAnnotationUpdated.fishannotproposedchngtxt_annotation_value | Should -BeExactly $proposedChangeTextUpdated
+			$ishAnnotationUpdated.fishannotproposedchngtxt_annotation_value | Should-BeString -CaseSensitive $proposedChangeTextUpdated
 		}
 	}
 }

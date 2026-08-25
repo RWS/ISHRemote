@@ -30,8 +30,8 @@ Triggers on push/PR touching `Doc/**`, `Samples/**`,
 `.github/copilot-instructions.md`, `.claude/**`, `AGENTS.md`, `CLAUDE.md`, or the workflow file
 itself. Parallel jobs (no `needs:` dependency between them):
 
-- **`anonymization`**: installs Pester 5.3+, runs `TestAnonymization.Tests.ps1`, throws on failure.
-- **`ai-instructions`**: installs Pester 5.3+, runs `TestAiInstructions.Tests.ps1`, throws on
+- **`anonymization`**: installs Pester 6.0+, runs `TestAnonymization.Tests.ps1`, throws on failure.
+- **`ai-instructions`**: installs Pester 6.0+, runs `TestAiInstructions.Tests.ps1`, throws on
   failure.
 
 No build, no live server. Runs on `ubuntu-latest` to keep it fast and free of Windows-only overhead.

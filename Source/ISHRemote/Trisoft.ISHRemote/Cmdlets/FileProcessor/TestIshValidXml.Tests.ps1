@@ -60,39 +60,39 @@ Describe "Test-IshValidXml" -Tags "Read" {
 	Context "Test-IshValidXml" {
 		It "GetType().Name" {
 			$result = Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath $task1FilePath
-			$result.GetType().Name | Should -BeExactly "Boolean"
+			$result.GetType().Name | Should-BeString -CaseSensitive "Boolean"
 		}
 		It "Parameter XmlCatalogFilePath invalid" {
 			{
 				Test-IshValidXml -XmlCatalogFilePath "INVALID" -FilePath $task1FilePath
-			} | Should -Throw
+			} | Should-Throw
 		}
 		It "Parameter FilePath invalid" {
-			Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath "INVALID" | Should -Be $False
+			Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath "INVALID" | Should-Be $False
 		}
 		It "Parameter FilePath Single" {
 			$resultArray = Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath $task1FilePath
-			$resultArray.Count | Should -Be 1
-			$resultArray[0] | Should -Be $True
+			$resultArray.Count | Should-Be 1
+			$resultArray[0] | Should-Be $True
 		}
 		It "Parameter FilePath Multiple" {
 			$resultArray = Test-IshValidXml -XmlCatalogFilePath $catalogFilePath -FilePath @($task1FilePath,$task2FilePath)
-			$resultArray.Count | Should -Be 2
-			$resultArray[0] | Should -Be $True
-			$resultArray[1] | Should -Be $False
+			$resultArray.Count | Should-Be 2
+			$resultArray[0] | Should-Be $True
+			$resultArray[1] | Should-Be $False
 		}
 		It "Pipeline FilePath Single" {
 			$fileInfoArray = Get-Item -Path $task2FilePath
 			$resultArray = $fileInfoArray | Test-IshValidXml -XmlCatalogFilePath $catalogFilePath
-			$resultArray.Count | Should -Be 1
-			$resultArray[0] | Should -Be $False
+			$resultArray.Count | Should-Be 1
+			$resultArray[0] | Should-Be $False
 		}
 		It "Pipeline FilePath Multiple" {
 			$fileInfoArray = @((Get-Item -Path $bookMap2FilePath), (Get-Item -Path $bookMap3FilePath))
 			$resultArray = $fileInfoArray | Test-IshValidXml -XmlCatalogFilePath $catalogFilePath
-			$resultArray.Count | Should -Be 2
-			$resultArray[0] | Should -Be $False
-			$resultArray[1] | Should -Be $False
+			$resultArray.Count | Should-Be 2
+			$resultArray[0] | Should-Be $False
+			$resultArray[1] | Should-Be $False
 		}
 	}
 }

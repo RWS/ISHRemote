@@ -31,28 +31,28 @@ Describe "Invoke-IshRemoteMcpHandleRequest" -Skip:($PSVersionTable.PSVersion.Maj
         }
         It "Should return jsonrpc 2.0" {
             $json = $result | ConvertFrom-Json
-            $json.jsonrpc | Should -Be "2.0"
+            $json.jsonrpc | Should-Be "2.0"
         }
         It "Should return matching request id" {
             $json = $result | ConvertFrom-Json
-            $json.id | Should -Be 1
+            $json.id | Should-Be 1
         }
         It "Should contain protocolVersion" {
             $json = $result | ConvertFrom-Json
-            $json.result.protocolVersion | Should -Be "2024-11-05"
+            $json.result.protocolVersion | Should-Be "2024-11-05"
         }
         It "Should contain capabilities" {
             $json = $result | ConvertFrom-Json
-            $json.result.capabilities | Should -Not -BeNullOrEmpty
+            $json.result.capabilities | Should-NotBeNull
         }
         It "Should contain instructions" {
             $json = $result | ConvertFrom-Json
-            $json.result.instructions | Should -Be "test instructions"
+            $json.result.instructions | Should-Be "test instructions"
         }
         It "Should contain serverInfo" {
             $json = $result | ConvertFrom-Json
-            $json.result.serverInfo.name | Should -Not -BeNullOrEmpty
-            $json.result.serverInfo.version | Should -Not -BeNullOrEmpty
+            $json.result.serverInfo.name | Should-NotBeNull
+            $json.result.serverInfo.version | Should-NotBeNull
         }
     }
 
@@ -71,15 +71,15 @@ Describe "Invoke-IshRemoteMcpHandleRequest" -Skip:($PSVersionTable.PSVersion.Maj
         }
         It "Should return jsonrpc 2.0" {
             $json = $result | ConvertFrom-Json
-            $json.jsonrpc | Should -Be "2.0"
+            $json.jsonrpc | Should-Be "2.0"
         }
         It "Should return matching request id" {
             $json = $result | ConvertFrom-Json
-            $json.id | Should -Be 2
+            $json.id | Should-Be 2
         }
         It "Should return empty result" {
             $json = $result | ConvertFrom-Json
-            $json.result | Should -BeNullOrEmpty
+            ($json.result | ConvertTo-Json -Compress) | Should-BeString '{}'
         }
     }
 
@@ -99,15 +99,15 @@ Describe "Invoke-IshRemoteMcpHandleRequest" -Skip:($PSVersionTable.PSVersion.Maj
         }
         It "Should return jsonrpc 2.0" {
             $json = $result | ConvertFrom-Json
-            $json.jsonrpc | Should -Be "2.0"
+            $json.jsonrpc | Should-Be "2.0"
         }
         It "Should return matching request id" {
             $json = $result | ConvertFrom-Json
-            $json.id | Should -Be 3
+            $json.id | Should-Be 3
         }
         It "Should contain tools list" {
             $json = $result | ConvertFrom-Json
-            $json.result.tools | Should -Not -BeNullOrEmpty
+            $json.result.tools | Should-NotBeNull
         }
     }
 
@@ -131,23 +131,23 @@ Describe "Invoke-IshRemoteMcpHandleRequest" -Skip:($PSVersionTable.PSVersion.Maj
         }
         It "Should return jsonrpc 2.0" {
             $json = $result | ConvertFrom-Json
-            $json.jsonrpc | Should -Be "2.0"
+            $json.jsonrpc | Should-Be "2.0"
         }
         It "Should return matching request id" {
             $json = $result | ConvertFrom-Json
-            $json.id | Should -Be 4
+            $json.id | Should-Be 4
         }
         It "Should contain result content" {
             $json = $result | ConvertFrom-Json
-            $json.result.content | Should -Not -BeNullOrEmpty
+            $json.result.content | Should-NotBeNull
         }
         It "Should have content type text" {
             $json = $result | ConvertFrom-Json
-            $json.result.content[0].type | Should -Be "text"
+            $json.result.content[0].type | Should-Be "text"
         }
         It "Should have isError false" {
             $json = $result | ConvertFrom-Json
-            $json.result.isError | Should -Be $false
+            $json.result.isError | Should-Be $false
         }
     }
 
@@ -184,15 +184,15 @@ Describe "Invoke-IshRemoteMcpHandleRequest" -Skip:($PSVersionTable.PSVersion.Maj
         }
         It "Should return error response" {
             $json = $result | ConvertFrom-Json
-            $json.error | Should -Not -BeNullOrEmpty
+            $json.error | Should-NotBeNull
         }
         It "Should return error code -32601" {
             $json = $result | ConvertFrom-Json
-            $json.error.code | Should -Be -32601
+            $json.error.code | Should-Be -32601
         }
         It "Should return 'Method not found' message" {
             $json = $result | ConvertFrom-Json
-            $json.error.message | Should -Be "Method not found"
+            $json.error.message | Should-Be "Method not found"
         }
     }
 }

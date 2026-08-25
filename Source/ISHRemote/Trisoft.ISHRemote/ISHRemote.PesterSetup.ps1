@@ -2,9 +2,9 @@
 # Tests Header dot-sourced import PS1 file for *.Tests.ps1 files
 #
 
-# Quick check if you are using Pester 5, or default installed Pester 3.4.0 (#132)
+# Quick check if you are using Pester 6, or default installed Pester 3.4.0 (#132, #242)
 $pesterVersion = [version](Get-Command Invoke-Pester).Version
-if ($pesterVersion -lt [version]("5.3.0")) { Write-Warning ("ISHRemote.PesterSetup.ps1 Invoke-Pester version["+$pesterVersion+"] while 5.3+ is expected!") }
+if ($pesterVersion -lt [version]("6.0.0")) { Write-Warning ("ISHRemote.PesterSetup.ps1 Invoke-Pester version["+$pesterVersion+"] while 6.0+ is expected!") }
 
 $DebugPreference   = "SilentlyContinue"   # Continue or SilentlyContinue
 $VerbosePreference = "SilentlyContinue"   # Continue or SilentlyContinue
@@ -128,17 +128,30 @@ $isLinuxContainerized = $baseUrl.Contains('.sdldev.net')
 #{
 	$webServicesConnectionConfigurationUrl = $webServicesBaseUrl + "connectionconfiguration.xml"
 	Write-Host "Running ISHRemote.PesterSetup.ps1 Detect version over webServicesConnectionConfigurationUrl[$webServicesConnectionConfigurationUrl] webServicesConnectionConfigurationUrl.Length[$($webServicesConnectionConfigurationUrl.Length)]"
-	# $connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl #Only PS7#-SkipCertificateCheck 
-	$connectionConfigurationRaw = (Invoke-WebRequest -Uri $webServicesConnectionConfigurationUrl -UseBasicParsing).Content #as Kestrel/IIS behave differently
-	$connectionConfigurationRaw -match "<infosharesoftwareversion>(?<myVersion>.*)</infosharesoftwareversion>"  # Straight string handling avoids UTF8-BOM cross-platform handling
-	[version]$infosharesoftwareversion = $matches['myVersion']
-	if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
-	{
-		$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -WarningAction SilentlyContinue
+	try {
+		# $connectionConfigurationRaw = Invoke-RestMethod -Uri $webServicesConnectionConfigurationUrl #Only PS7#-SkipCertificateCheck 
+		$connectionConfigurationRaw = (Invoke-WebRequest -Uri $webServicesConnectionConfigurationUrl -UseBasicParsing).Content #as Kestrel/IIS behave differently
+		if (-not ($connectionConfigurationRaw -match "<infosharesoftwareversion>(?<myVersion>.*)</infosharesoftwareversion>"))  # Straight string handling avoids UTF8-BOM cross-platform handling
+		{
+			throw "ISHRemote.PesterSetup.ps1: Could not find <infosharesoftwareversion> in response from $webServicesConnectionConfigurationUrl. Response length[$($connectionConfigurationRaw.Length)]"
+		}
+		[version]$infosharesoftwareversion = $matches['myVersion']
+		if ($infosharesoftwareversion.Major -lt 15) # 14SP4 and earlier, initialize ONE session over -IshUserName/-IshPassword
+		{
+			$global:ishSession = New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -WarningAction SilentlyContinue
+		}
+		else # 15 and later, initialize ONE session over -ClientId/-ClientSecret
+		{
+			$global:ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret -WarningAction SilentlyContinue
+		}
+		if ($null -eq $global:ishSession)
+		{
+			throw "ISHRemote.PesterSetup.ps1: New-IshSession returned null for webServicesBaseUrl[$webServicesBaseUrl]"
+		}
 	}
-	else # 15 and later, initialize ONE session over -ClientId/-ClientSecret
-	{
-		$global:ishSession = New-IshSession -Protocol WcfSoapWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret -WarningAction SilentlyContinue
+	catch {
+		Write-Error "ISHRemote.PesterSetup.ps1: Session initialization failed on PSVersion[$($PSVersionTable.PSVersion)] webServicesBaseUrl[$webServicesBaseUrl]: $_"
+		throw
 	}
 #}
 $ishSession = $global:ishSession

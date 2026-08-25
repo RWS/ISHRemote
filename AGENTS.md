@@ -30,11 +30,23 @@ C# classes; a few advanced functions are PowerShell scripts. Cmdlets follow `Ver
    ```
    dotnet restore Source/ISHRemote/ISHRemote.sln
    ```
-2. **Build:**
+2. **Build — local iteration (use this when making and verifying code changes):**
+   ```
+   dotnet build --no-restore --no-incremental --configuration debug Source/ISHRemote/ISHRemote.sln
+   ```
+   `ISHRemote.PesterSetup.ps1` loads `bin\debug\ISHRemote` locally (outside GitHub Actions) and
+   `bin\release\ISHRemote` in CI. Building `release` locally does **not** update what the tests
+   load — always build `debug` when iterating locally.
+
+   > **Locked DLL:** If the debug build fails with a file-locked error on a `.dll` inside
+   > `bin\Debug\ISHRemote\`, a `powershell.exe` or `pwsh.exe` process has the module loaded.
+   > Close all PowerShell sessions that imported ISHRemote (including any running Pester test
+   > sessions), then retry the build.
+
+3. **Build — pre-PR validation (mirrors CI, catches warning regressions):**
    ```
    dotnet build --no-restore --no-incremental --configuration release Source/ISHRemote/ISHRemote.sln
    ```
-   - Use `Debug` for local iteration; tests load `bin\debug\ISHRemote` locally and `bin\release\ISHRemote` in CI.
    - **Release fails on any warning** (`TreatWarningsAsErrors=true`). Keep the tree warning-clean.
    - The `net48` target requires **both** `pwsh.exe` (PowerShell 7) and `powershell.exe` (Windows PowerShell 5.1).
 
@@ -55,7 +67,7 @@ CI reports analyzer findings but does not fail the build on them. Still, keep `S
   Without a reachable server, most tests cannot pass.
 - **Build before testing.** Tests import the compiled module from `bin\debug\ISHRemote` (local) or
   `bin\release\ISHRemote` (CI).
-- Use **Pester 5.3.0+**: `Install-Module -Name Pester -Force -SkipPublisherCheck`.
+- Use **Pester 6.0.0+**: `Install-Module -Name Pester -Force -SkipPublisherCheck`.
 - **Run order (fast → broad), from repo root:**
   1. `Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/_TestEnvironment/TestPrerequisite.Tests.ps1 -Output Detailed`
   2. `Invoke-Pester -Path Source/ISHRemote/Trisoft.ISHRemote/Cmdlets/<Domain>/ -Output Detailed`

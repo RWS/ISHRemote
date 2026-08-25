@@ -23,7 +23,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net;
 using System.Text.RegularExpressions;
 using Trisoft.ISHRemote.Interfaces;
-using Trisoft.ISHRemote.Cmdlets;
 
 namespace Trisoft.ISHRemote.HelperClasses
 {
@@ -36,7 +35,6 @@ namespace Trisoft.ISHRemote.HelperClasses
 #if NET48
         private static RemoteCertificateValidationCallback _originalCallback;
 #endif
-        private static readonly ILogger _logger = TrisoftCmdletLogger.Instance();
 
         private static bool OnValidateCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
@@ -69,9 +67,9 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// <summary>
         /// Sets our custom AppDomain ssl/certificate overwrite callback using ServicePointManager, including a backup of any existing callback 
         /// </summary>
-        public static void OverrideCertificateValidation()
+        public static void OverrideCertificateValidation(ILogger logger)
         {
-            _logger.WriteWarning("Applying certificate validation overwrite for the AppDomain. (OnValidateCertificate)");
+            logger.WriteWarning("Applying certificate validation overwrite for the AppDomain. (OnValidateCertificate)");
             _originalCallback = ServicePointManager.ServerCertificateValidationCallback;
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(OnValidateCertificate);
             ServicePointManager.Expect100Continue = true;
@@ -80,9 +78,9 @@ namespace Trisoft.ISHRemote.HelperClasses
         /// <summary>
         /// Removes our custom AppDomain ssl/certificate overwrite callback using ServicePointManager by restoring our ealier backup of any existing callback 
         /// </summary>
-        public static void RestoreCertificateValidation()
+        public static void RestoreCertificateValidation(ILogger logger)
         {
-            _logger.WriteDebug("Restoring backup of the earlier saved certificate validation for the AppDomain. (OnValidateCertificate)");
+            logger.WriteDebug("Restoring backup of the earlier saved certificate validation for the AppDomain. (OnValidateCertificate)");
             ServicePointManager.ServerCertificateValidationCallback = _originalCallback;
         }
 #endif

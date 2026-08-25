@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     $cmdletName = "Remove-IshPublicationOutput"
     Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
     . (Join-Path (Split-Path -Parent $PSCommandPath) "\..\..\ISHRemote.PesterSetup.ps1")
@@ -30,28 +30,28 @@ Describe "Remove-IshPublicationOutput" -Tags "Delete" {
 
     Context "Remove-IshPublicationOutput check exceptions" {
         It "-LogicalId does not exist. Force=Yes" {
-            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId "NON-EXISTING-LOGICAL-ID" -Version "1" -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Force} | Should -Throw
+            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId "NON-EXISTING-LOGICAL-ID" -Version "1" -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Force} | Should-Throw
         }    
         It "-LogicalId does not exist" {
-            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId "NON-EXISTING-LOGICAL-ID" -Version "1" -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml} | Should -Throw
+            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId "NON-EXISTING-LOGICAL-ID" -Version "1" -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml} | Should-Throw
         }
         It "-Version does not exist. Force=Yes" {
-            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "999" -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Force} | Should -Throw
+            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "999" -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Force} | Should-Throw
         }    
         It "-Version does not exist" {
-            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "999" -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml} | Should -Throw
+            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "999" -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml} | Should-Throw
         }
         It "-LanguageCombination does not exist. Force=Yes" {
-            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "1" -LanguageCombination "NON-EXISTING-LANGUAGE-COMBINATION" -OutputFormat $ishOutputFormatDitaXml -Force} | Should -Throw
+            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "1" -LanguageCombination "NON-EXISTING-LANGUAGE-COMBINATION" -OutputFormat $ishOutputFormatDitaXml -Force} | Should-Throw
         }    
         It "-LanguageCombination does not exist" {
-            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "1" -LanguageCombination "NON-EXISTING-LANGUAGE-COMBINATION" -OutputFormat $ishOutputFormatDitaXml} | Should -Throw
+            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "1" -LanguageCombination "NON-EXISTING-LANGUAGE-COMBINATION" -OutputFormat $ishOutputFormatDitaXml} | Should-Throw
         }
         It "-OutputFormat does not exist. Force=Yes" {
-            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "999" -LanguageCombination $ishLngCombination -OutputFormat "NON-EXISTING-OUTPUT-FORMAT" -Force} | Should -Throw
+            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "999" -LanguageCombination $ishLngCombination -OutputFormat "NON-EXISTING-OUTPUT-FORMAT" -Force} | Should-Throw
         }    
         It "-OutputFormat does not exist" {
-            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "999" -LanguageCombination $ishLngCombination -OutputFormat "NON-EXISTING-OUTPUT-FORMAT"} | Should -Throw
+            {Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishObjectPubA.IshRef -Version "999" -LanguageCombination $ishLngCombination -OutputFormat "NON-EXISTING-OUTPUT-FORMAT"} | Should-Throw
         }
     }
 
@@ -62,7 +62,7 @@ Describe "Remove-IshPublicationOutput" -Tags "Delete" {
             Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishPub.IshRef -Version $ishPub.version_version_value -LanguageCombination $ishPub.fishpublngcombination -OutputFormat $ishPub.fishoutputformatref_lng_element -Force
             $requestedMetadataRetrieve = Set-IshRequestedMetadataField -IshSession $ishSession -Name 'FTITLE' -Level Logical
             $publicationOutput = Get-IshPublicationOutput -IshSession $ishSession -LogicalId $ishPub.IshRef -RequestedMetadata $requestedMetadataRetrieve
-            $publicationOutput.length -eq 0 | Should -Be $true
+            $publicationOutput.length -eq 0 | Should-Be $true
         }
     }
 }

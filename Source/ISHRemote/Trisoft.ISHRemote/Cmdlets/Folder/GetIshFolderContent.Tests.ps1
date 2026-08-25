@@ -36,7 +36,7 @@ Describe "Get-IshFolderContent" -Tags "Read" {
 	}
 	Context "Get-IshFolderContent ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Get-IshFolderContent -IShSession "INVALIDISHSESSION" } | Should -Throw
+			{ Get-IshFolderContent -IShSession "INVALIDISHSESSION" } | Should-Throw
 		}
 	}
 	Context "Get-IshFolderContent returns latest IshObject[] object" {
@@ -45,51 +45,51 @@ Describe "Get-IshFolderContent" -Tags "Read" {
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -RequestedMetadata $requestedMetadata
 		}
 		It "GetType().Name" {
-			$ishObjects.GetType().Name | Should -BeExactly "Object[]"
+			$ishObjects.GetType().Name | Should-BeString -CaseSensitive "Object[]"
 		}
 		It "ishObjects.Count" {
-			$ishObjects.Length | Should -BeExactly $ishTopicCount  
+			$ishObjects.Length | Should-Be $ishTopicCount  
 		}
 		It "[0]GetType().BaseType.Name" {
 			# Used to be IshObject, but more specific ISHType like IshDocumentObj or IshPublicationOutput is put on the pipeline
-			$ishObjects[0].GetType().Name | Should -BeExactly "IshDocumentObj"  
+			$ishObjects[0].GetType().Name | Should-BeString -CaseSensitive "IshDocumentObj"  
 		}
 		It "ishObjects[0].IshData" {
 			{ $ishObjects[0].IshData } | Should -Not -Throw
 		}
 		It "ishObjects[0].IshField" {
-			$ishObjects[0].IshField | Should -Not -BeNullOrEmpty
+			$ishObjects[0].IshField | Should-NotBeNull
 		}
 		It "ishObjects[0].IshRef" {
-			$ishObjects[0].IshRef | Should -Not -BeNullOrEmpty
+			$ishObjects[0].IshRef | Should-NotBeNull
 		}
 		It "ishObjects[0].IshType" {
-			$ishObjects[0].IshType | Should -Not -BeNullOrEmpty
+			$ishObjects[0].IshType | Should-NotBeNull
 		}
 		It "ishObjects[0].ObjectRef" {
 			# Double check following 3 ReferenceType enum usage 
-			$ishObjects[0].ObjectRef | Should -Not -BeNullOrEmpty
+			$ishObjects[0].ObjectRef | Should-NotBeNull
 		}
 		It "ishObjects[0].VersionRef" {
-			$ishObjects[0].VersionRef | Should -Not -BeNullOrEmpty
+			$ishObjects[0].VersionRef | Should-NotBeNull
 		}
 		It "ishObjects[0].LngRef" {
-			$ishObjects[0].LngRef | Should -Not -BeNullOrEmpty
+			$ishObjects[0].LngRef | Should-NotBeNull
 		}
 		It "ishObjects[0] ConvertTo-Json" {
-			(ConvertTo-Json $ishObjects[0]).Length -gt 2 | Should -Be $true
+			(ConvertTo-Json $ishObjects[0]).Length -gt 2 | Should-Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
 			#logical
-			$ishObjects[0].ftitle_logical_value.Length -ge 1 | Should -Be $true 
+			$ishObjects[0].ftitle_logical_value.Length -ge 1 | Should-Be $true 
 			#version
-			$ishObjects[0].version_version_value.Length -ge 1 | Should -Be $true 
-			$ishObjects[0].version_version_value -ge 2 | Should -Be $true 
+			$ishObjects[0].version_version_value.Length -ge 1 | Should-Be $true 
+			$ishObjects[0].version_version_value -ge 2 | Should-Be $true 
 			#language
-			$ishObjects[0].fstatus.Length -ge 1 | Should -Be $true 
-			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should -Be $true
-			$ishObjects[0].fishstatustype -ge 0 | Should -Be $true
+			$ishObjects[0].fstatus.Length -ge 1 | Should-Be $true 
+			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should-Be $true
+			$ishObjects[0].fishstatustype -ge 0 | Should-Be $true
 		}
 	}
 	Context "Get-IshFolderContent with empty VersionFilter returns IshObject[] object" {
@@ -98,86 +98,86 @@ Describe "Get-IshFolderContent" -Tags "Read" {
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -VersionFilter "" -IshFolder $ishFolderTopic -RequestedMetadata $requestedMetadata
 		}
 		It "GetType().Name" {
-			$ishObjects.GetType().Name | Should -BeExactly "Object[]"
+			$ishObjects.GetType().Name | Should-BeString -CaseSensitive "Object[]"
 		}
 		It "ishObjects.Count" {
             $totalLngObjects = $ishTopicCount*2
-			$ishObjects.Length | Should -BeExactly $totalLngObjects
+			$ishObjects.Length | Should-Be $totalLngObjects
 		}
 		It "[0]GetType().BaseType.Name" {
 			# Used to be IshObject, but more specific ISHType like IshDocumentObj or IshPublicationOutput is put on the pipeline
-			$ishObjects[0].GetType().Name | Should -BeExactly "IshDocumentObj"  
+			$ishObjects[0].GetType().Name | Should-BeString -CaseSensitive "IshDocumentObj"  
 		}
 		It "ishObjects[0].IshData" {
 			{ $ishObjects[0].IshData } | Should -Not -Throw
 		}
 		It "ishObjects[0].IshField" {
-			$ishObjects[0].IshField | Should -Not -BeNullOrEmpty
+			$ishObjects[0].IshField | Should-NotBeNull
 		}
 		It "ishObjects[0].IshRef" {
-			$ishObjects[0].IshRef | Should -Not -BeNullOrEmpty
+			$ishObjects[0].IshRef | Should-NotBeNull
 		}
 		It "ishObjects[0].IshType" {
-			$ishObjects[0].IshType | Should -Not -BeNullOrEmpty
+			$ishObjects[0].IshType | Should-NotBeNull
 		}
 		
 		It "ishObjects[0].ObjectRef" {
 			# Double check following 3 ReferenceType enum usage 
-			$ishObjects[0].ObjectRef | Should -Not -BeNullOrEmpty
-			$ishObjects[0].VersionRef | Should -Not -BeNullOrEmpty
-			$ishObjects[0].LngRef | Should -Not -BeNullOrEmpty
+			$ishObjects[0].ObjectRef | Should-NotBeNull
+			$ishObjects[0].VersionRef | Should-NotBeNull
+			$ishObjects[0].LngRef | Should-NotBeNull
 		}
 		It "ishObjects[0] ConvertTo-Json" {
-			(ConvertTo-Json $ishObjects[0]).Length -gt 2 | Should -Be $true
+			(ConvertTo-Json $ishObjects[0]).Length -gt 2 | Should-Be $true
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
 			#logical
-			$ishObjects[0].ftitle_logical_value.Length -ge 1 | Should -Be $true 
+			$ishObjects[0].ftitle_logical_value.Length -ge 1 | Should-Be $true 
 			#version
-			$ishObjects[0].version_version_value.Length -ge 1 | Should -Be $true 
+			$ishObjects[0].version_version_value.Length -ge 1 | Should-Be $true 
 			#language
-			$ishObjects[0].fstatus.Length -ge 1 | Should -Be $true 
-			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should -Be $true 
-			$ishObjects[0].fishstatustype -ge 0 | Should -Be $true
+			$ishObjects[0].fstatus.Length -ge 1 | Should-Be $true 
+			$ishObjects[0].fstatus_lng_element.StartsWith('VSTATUS') | Should-Be $true 
+			$ishObjects[0].fishstatustype -ge 0 | Should-Be $true
         }
         It "ishObjects[0].version_version_value" { 
             # First version
-            ($ishobjects | Where-Object version_version_value -eq 1 | Select-Object).Length | Should -BeExactly $ishTopicCount 
+            ($ishobjects | Where-Object version_version_value -eq 1 | Select-Object).Length | Should-Be $ishTopicCount 
             # Second version
-            ($ishobjects | Where-Object version_version_value -eq 2 | Select-Object).Length | Should -BeExactly $ishTopicCount 
+            ($ishobjects | Where-Object version_version_value -eq 2 | Select-Object).Length | Should-Be $ishTopicCount 
 		}
 	}
 	Context "Get-IshFolderContent BaseFolderGroup" {
 		It "Parameter BaseFolder invalid" {
-			{ Get-IshFolderContent -IShSession $ishSession -BaseFolder None } | Should -Throw
+			{ Get-IshFolderContent -IShSession $ishSession -BaseFolder None } | Should-Throw
 		}
 		It "Parameter BaseFolder Data" {
-			(Get-IshFolderContent -IShSession $ishSession -BaseFolder Data).Count -eq 0 | Should -Be $true
+			(Get-IshFolderContent -IShSession $ishSession -BaseFolder Data).Count -eq 0 | Should-Be $true
 		}
 		It "Parameter BaseFolder System" {
-			(Get-IshFolderContent -IShSession $ishSession -BaseFolder System).Count -eq 0 | Should -Be $true
+			(Get-IshFolderContent -IShSession $ishSession -BaseFolder System).Count -eq 0 | Should-Be $true
 		}
 		It "Parameter BaseFolder Favorites" {
 			{ Get-IshFolderContent -IShSession $ishSession -BaseFolder Favorites } | Should -Not -Throw
 		}
 		It "Parameter BaseFolder EditorTemplate" {
-			(Get-IshFolderContent -IShSession $ishSession -BaseFolder EditorTemplate).Count -eq 0 | Should -Be $true
+			(Get-IshFolderContent -IShSession $ishSession -BaseFolder EditorTemplate).Count -eq 0 | Should-Be $true
 		}
 	}
 	Context "Get-IshFolderContent FolderPathGroup" {
 		It "Parameter FolderPath invalid" {
-			$exception = { Get-IshFolderContent -IShSession $ishSession -FolderPath "INVALIDFOLDERPATH" } | Should -Throw -PassThru
+			$exception = { Get-IshFolderContent -IShSession $ishSession -FolderPath "INVALIDFOLDERPATH" } | Should-Throw
 			# 14.0.4 message is:  [-102001] The folder 'INVALIDFOLDERPATH' does not exist. [name:"'INVALIDFOLDERPATH'"] [102001;InvalidObject]
-			$exception -like "*102001*" | Should -Be $true 
-			$exception -like "*InvalidObject*" | Should -Be $true
+			$exception -like "*102001*" | Should-Be $true 
+			$exception -like "*InvalidObject*" | Should-Be $true
 		}
 		It "Parameter FolderPath $folderTestRootPath" {
-			(Get-IshFolderContent -IshSession $ishSession -FolderPath $folderTestRootPath).Count -ge 0 | Should -Be $true
+			(Get-IshFolderContent -IshSession $ishSession -FolderPath $folderTestRootPath).Count -ge 0 | Should-Be $true
 		}
 		It "Parameter FolderPath Topic" {
 			$folderPath = Get-IshFolderLocation -IshSession $ishSession -IshFolder $ishFolderTopic
-			(Get-IshFolderContent -IshSession $ishSession -FolderPath $folderPath).Count | Should -Be $ishTopicCount
+			(Get-IshFolderContent -IshSession $ishSession -FolderPath $folderPath).Count | Should-Be $ishTopicCount
 		}
 	}
 	Context "Get-IshFolderContent FolderIdsGroup" {
@@ -188,20 +188,20 @@ Describe "Get-IshFolderContent" -Tags "Read" {
 			[long]$ishFolderEditorTemplateFolderRef = (Get-IshFolder -IShSession $ishSession -BaseFolder EditorTemplate).IshFolderRef
 		}
 		It "Parameter FolderId invalid" {
-			{ Get-IshFolderContent -IShSession $ishSession -FolderId "INVALIDFOLDERID" } | Should -Throw
+			{ Get-IshFolderContent -IShSession $ishSession -FolderId "INVALIDFOLDERID" } | Should-Throw
 		}
 		It "Parameter FolderId from System" {
-			(Get-IshFolderContent -IshSession $ishSession -FolderId $ishFolderSystemFolderRef).Count -eq 0 | Should -Be $true
+			(Get-IshFolderContent -IshSession $ishSession -FolderId $ishFolderSystemFolderRef).Count -eq 0 | Should-Be $true
 		}
 		<# FolderId[] ValueFromPipeline is not implemented
 		It "Pipeline FolderId" {
 			$ishObjects = @($ishFolderDataFolderRef,$ishFolderSystemFolderRef,$ishFolderFavoritesFolderRef,$ishFolderEditorTemplateFolderRef) | Get-IshFolderContent -IshSession $ishSession
-			$ishObjects.Count -ge 0 | Should -Be $true
+			$ishObjects.Count -ge 0 | Should-Be $true
 		}
 		It "Pipeline FolderId MetadataBatchSize[1]" {
 			$ishSession.MetadataBatchSize = 1
 			$ishObjects = @($ishFolderDataFolderRef,$ishFolderSystemFolderRef,$ishFolderFavoritesFolderRef,$ishFolderEditorTemplateFolderRef) | Get-IshFolderContent -IshSession $ishSession
-			$ishObjects.Count -ge 0 | Should -Be $true
+			$ishObjects.Count -ge 0 | Should-Be $true
 		}
 		#>
 	}
@@ -211,22 +211,22 @@ Describe "Get-IshFolderContent" -Tags "Read" {
 			$ishFolderSystem = Get-IshFolder -IShSession $ishSession -BaseFolder System
 		}
 		It "Parameter IshFolder invalid" {
-			{ Get-IshFolderContent -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should -Throw
+			{ Get-IshFolderContent -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should-Throw
 		}
 		It "Parameter IshFolder Single with implicit IshSession" {
-			(Get-IshFolderContent -IshFolder $ishFolderSystem).Count -eq 0 | Should -Be $true
+			(Get-IshFolderContent -IshFolder $ishFolderSystem).Count -eq 0 | Should-Be $true
 		}
 		It "Parameter IshFolder Multiple with implicit IshSession" {
 			$ishObjects = Get-IshFolderContent -IshFolder @($ishFolderData,$ishFolderSystem)
-			$ishObjects.Count -eq 0| Should -Be $true
+			$ishObjects.Count -eq 0| Should-Be $true
 		}
 		It "Pipeline IshFolder Single" {
 			$ishObjects = $ishFolderData | Get-IshFolderContent -IshSession $ishSession
-			$ishObjects.Count -eq 0 | Should -Be $true
+			$ishObjects.Count -eq 0 | Should-Be $true
 		}
 		It "Pipeline IshFolder Multiple" {
 			$ishObjects = @($ishFolderData,$ishFolderSystem) | Get-IshFolderContent -IshSession $ishSession
-			$ishObjects.Count -eq 0| Should -Be $true
+			$ishObjects.Count -eq 0| Should-Be $true
 		}
 	}
 	Context "Get-IshFolderContent IshFoldersGroup mixing MetadataFilter and VersionFilter/LanguagesFilter" {
@@ -245,69 +245,69 @@ Describe "Get-IshFolderContent" -Tags "Read" {
 			$ishDocumentObjsLanguageFilterOverridesMetadatafilter = Get-IshFolderContent -IshSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter $ishLng -MetadataFilter $metadataFilter
 		}
 		It "Parameter VersionFilter" {
-			$ishDocumentObjsVersionOne.Count | Should -Be $ishTopicCount
-			$ishDocumentObjsVersionLatest.Count | Should -Be $ishTopicCount
-			$ishDocumentObjsVersionOne.Count -eq $ishDocumentObjsVersionLatest.Count | Should -Be $true
+			$ishDocumentObjsVersionOne.Count | Should-Be $ishTopicCount
+			$ishDocumentObjsVersionLatest.Count | Should-Be $ishTopicCount
+			$ishDocumentObjsVersionOne.Count -eq $ishDocumentObjsVersionLatest.Count | Should-Be $true
 		}
 		It "Parameter LanguagesFilter" {
-			$ishDocumentObjsAllLanguages.Count | Should -Be $ishTopicCount
-			$ishDocumentObjsExplicitLanguage.Count | Should -Be $ishTopicCount
-			$ishDocumentObjsAllLanguages.Count -eq $ishDocumentObjsExplicitLanguage.Count | Should -Be $true
+			$ishDocumentObjsAllLanguages.Count | Should-Be $ishTopicCount
+			$ishDocumentObjsExplicitLanguage.Count | Should-Be $ishTopicCount
+			$ishDocumentObjsAllLanguages.Count -eq $ishDocumentObjsExplicitLanguage.Count | Should-Be $true
 		}
 		It "Parameter LanguagesFilter and matching status MetadataFilter" {
-			$ishDocumentObjsExplicitLanguageAndStatus.Count -eq $ishDocumentObjsExplicitLanguage.Count | Should -Be $true
+			$ishDocumentObjsExplicitLanguageAndStatus.Count -eq $ishDocumentObjsExplicitLanguage.Count | Should-Be $true
 		}
 		It "Parameter LanguagesFilter and non-matching status MetadataFilter" {
-			$ishDocumentObjsExplicitLanguageAndWrong.Count | Should -Be 0
+			$ishDocumentObjsExplicitLanguageAndWrong.Count | Should-Be 0
 		}
 		It "Parameter LanguagesFilter and matching language MetadataFilter" {
-			$ishDocumentObjsExplicitLanguageAndLanguage.Count | Should -Be $ishTopicCount
+			$ishDocumentObjsExplicitLanguageAndLanguage.Count | Should-Be $ishTopicCount
 		}
 		It "Parameter LanguagesFilter overrides MetadataFilter (non-matching language filter)" {
-			$ishDocumentObjsLanguageFilterOverridesMetadatafilter.Count | Should -Be 3
+			$ishDocumentObjsLanguageFilterOverridesMetadatafilter.Count | Should-Be 3
 		}
 	}
 	Context "Get-IshFolderContent use LanguagesFilter" {
 		It "LanguagesFilter on '$ishLngLabel' language" {
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter "$ishLngLabel"  # en
-			$ishObjects.Count | Should -Be $ishTopicCount
+			$ishObjects.Count | Should-Be $ishTopicCount
 		}
 		It "LanguagesFilter on '$ishLngTarget2Label, $ishLngLabel' languages" {
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter @("$ishLngTarget2Label", "$ishLngLabel")  # de, en
-			$ishObjects.Count | Should -Be $ishTopicCount
+			$ishObjects.Count | Should-Be $ishTopicCount
 		}
 		It "LanguagesFilter on '$ishLngTarget1Label' language (filtering out results)" {
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -LanguagesFilter @("$ishLngTarget1Label")  # es
-			$ishObjects.Count | Should -Be 0
+			$ishObjects.Count | Should-Be 0
 		}
 		It "LanguagesFilter overrides MetadataFilter" {
 			$metadataFilter = Set-IshMetadataFilterField -Name "DOC-LANGUAGE" -Level Lng -Value "$ishLngTarget1Label" -ValueType Value  # es
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter -LanguagesFilter @("$ishLngTarget2Label", "$ishLngLabel")  # de, en
-			$ishObjects.Count | Should -Be $ishTopicCount
+			$ishObjects.Count | Should-Be $ishTopicCount
 		}
 	}
 	Context "Get-IshFolderContent use MetadataFilter" {
 		It "Metadata filter on FSTATUS" {
 			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value $ishStatusDraft -ValueType Element
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
-			$ishObjects.Count | Should -Be $ishTopicCount
+			$ishObjects.Count | Should-Be $ishTopicCount
 		}
 		It "Metadata filter on FSTATUS (filtering out results)" {
 			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value $ishStatusReleased -ValueType Element
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
-			$ishObjects.Count | Should -Be 0
+			$ishObjects.Count | Should-Be 0
 		}
 		It "Metadata filter on FSTATUS,DOC-LANGUAGE" {
 			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value $ishStatusDraft -ValueType Element |
 							  Set-IshMetadataFilterField -Name "DOC-LANGUAGE" -Level Lng -Value "$ishLngLabel" -ValueType Value  # en
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter
-			$ishObjects.Count | Should -Be $ishTopicCount
+			$ishObjects.Count | Should-Be $ishTopicCount
 		}
 		It "Metadata filter on (FSTATUS, DOC-LANGUAGE) with LanguagesFilter override" {
 			$metadataFilter = Set-IshMetadataFilterField -Name "FSTATUS" -Level Lng -Value $ishStatusDraft -ValueType Element |
 							  Set-IshMetadataFilterField -Name "DOC-LANGUAGE" -Level Lng -Value "$ishLngLabel" -ValueType Value  # en
 			$ishObjects = Get-IshFolderContent -IShSession $ishSession -IshFolder $ishFolderTopic -MetadataFilter $metadataFilter -LanguagesFilter @("$ishLngTarget2Label", "$ishLngTarget1Label")  # de, es
-			$ishObjects.Count | Should -Be 0
+			$ishObjects.Count | Should-Be 0
 		}		
 	}
 }

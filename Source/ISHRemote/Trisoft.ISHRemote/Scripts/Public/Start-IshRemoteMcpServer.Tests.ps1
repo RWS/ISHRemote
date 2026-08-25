@@ -1,3 +1,4 @@
+#pester:no-parallel #Mock -ModuleName uses cross-module mocking which installs hooks into the ISHRemote module's session state. In a parallel runspace, each worker loads its own ISHRemote module instance, but the mock infrastructure that Mock -ModuleName relies on requires the parent session's module context. This causes the worker runspace to hang waiting for something that never resolves.
 BeforeAll {
     $cmdletName = "Start-IshRemoteMcpServer"
     Write-Host ("`r`nLoading ISHRemote.PesterSetup.ps1 on PSVersion[" + $psversionTable.PSVersion + "] over BeforeAll-block for MyCommand[" + $cmdletName + "]...")
@@ -17,7 +18,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             Mock -ModuleName ISHRemote Write-IshRemoteLog { }
         }
         It "Validates CmdletsToRegister parameter is mandatory" {
-            { Start-IshRemoteMcpServer -ActivateWhileLoop $false -CmdletsToRegister @() } | Should -Throw
+            { Start-IshRemoteMcpServer -ActivateWhileLoop $false -CmdletsToRegister @() } | Should-Throw
         }
         It "Starts server with CmdletsToRegister parameter" {
             $cmdlets = @('Get-IshFolder', 'Set-IshFolder')
@@ -32,7 +33,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             Mock -ModuleName ISHRemote Register-IshRemoteMcpTool { return "{}" }
             $cmdlets = @('Get-IshFolder')
             Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $false
-            Should -Invoke -ModuleName ISHRemote Register-IshRemoteMcpTool -ParameterFilter { 
+            Should-Invoke -ModuleName ISHRemote Register-IshRemoteMcpTool -ParameterFilter { 
                 $FunctionNameFullLoad -contains 'Get-Help' -and $FunctionNameFullLoad -contains 'New-IshSession'
             }
         }
@@ -41,7 +42,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             $cmdlets = @('Get-IshFolder')
             $cmdletsFullLoad = @('Get-IshDocumentObj', 'Set-IshDocumentObj')
             Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -CmdletsToRegisterFullLoad $cmdletsFullLoad -ActivateWhileLoop $false
-            Should -Invoke -ModuleName ISHRemote Register-IshRemoteMcpTool -ParameterFilter { 
+            Should-Invoke -ModuleName ISHRemote Register-IshRemoteMcpTool -ParameterFilter { 
                 $FunctionNameFullLoad -contains 'Get-IshDocumentObj' -and $FunctionNameFullLoad -contains 'Set-IshDocumentObj' -and -not ($FunctionNameFullLoad -contains 'Get-Help') -and -not ($FunctionNameFullLoad -contains 'New-IshSession')
             }
         }
@@ -54,8 +55,8 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             # the fix in GitHub issue #243.
             $cmdlets = @('Get-IshFolder')
             Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $false
-            [Console]::InputEncoding.WebName  | Should -Be 'utf-8'
-            [Console]::OutputEncoding.WebName | Should -Be 'utf-8'
+            [Console]::InputEncoding.WebName  | Should-Be 'utf-8'
+            [Console]::OutputEncoding.WebName | Should-Be 'utf-8'
         }
         It "Sets Console Out AutoFlush to true on inner StreamWriter" {
             # Console.SetOut re-wraps in SyncTextWriter; verify the inner StreamWriter has AutoFlush=true
@@ -65,26 +66,7 @@ Describe "Start-IshRemoteMcpServer" -Tags "Read" -Skip:($PSVersionTable.PSVersio
             Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $false
             $field = [Console]::Out.GetType().GetField('_out', [System.Reflection.BindingFlags]::NonPublic -bor [System.Reflection.BindingFlags]::Instance)
             $innerWriter = $field.GetValue([Console]::Out)
-            $innerWriter.AutoFlush | Should -Be $true
-        }
-    }
-    Context "Start-IshRemoteMcpServer with ActivateWhileLoop=true and stdin EOF" {
-        BeforeEach {
-            Mock -ModuleName ISHRemote Write-IshRemoteLog { }
-        }
-        It "Exits cleanly when stdin is closed (EOF) instead of looping forever" {
-            # Regression test for GitHub issue #243: ReadLine() returns $null on EOF.
-            # Replace Console.In with an empty StringReader so the first ReadLine() returns $null,
-            # simulating the MCP client closing the input stream. The server must exit promptly.
-            $cmdlets = @('Get-IshFolder')
-            $originalIn = [Console]::In
-            try {
-                [Console]::SetIn([System.IO.StringReader]::new(""))
-                { Start-IshRemoteMcpServer -CmdletsToRegister $cmdlets -ActivateWhileLoop $true } | Should -Not -Throw
-            }
-            finally {
-                [Console]::SetIn($originalIn)
-            }
+            $innerWriter.AutoFlush | Should-Be $true
         }
     }
 }

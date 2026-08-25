@@ -22,69 +22,69 @@ Describe "Add-IshFolder" -Tags "Create" {
 	}
 	Context "Add-IshFolder ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Add-IshFolder -IShSession "INVALIDISHSESSION" -ParentFolderId "-6" -FolderType ISHNone -FolderName "INVALIDFOLDERNAME" -OwnedBy "INVALIDUSERGROUP" -ReadAccess @("INVALIDUSERGROUPA","INVALIDUSERGROUPB") } | Should -Throw
+			{ Add-IshFolder -IShSession "INVALIDISHSESSION" -ParentFolderId "-6" -FolderType ISHNone -FolderName "INVALIDFOLDERNAME" -OwnedBy "INVALIDUSERGROUP" -ReadAccess @("INVALIDUSERGROUPA","INVALIDUSERGROUPB") } | Should-Throw
 		}
 	}
 	Context "Add-IshFolder returns IshFolder object" {
 		It "GetType().Name" {
-			$ishFolderCmdlet.GetType().Name | Should -BeExactly "IshFolder"
+			$ishFolderCmdlet.GetType().Name | Should-BeString -CaseSensitive "IshFolder"
 		}
 		It "ishFolderCmdlet.IshFolderRef" {
-			$ishFolderCmdlet.IshFolderRef -ge 0 | Should -Be $true
+			$ishFolderCmdlet.IshFolderRef -ge 0 | Should-Be $true
 		}
 		It "ishFolderCmdlet.IshFolderType" {
-			$ishFolderCmdlet.IshFolderType | Should -Not -BeNullOrEmpty
+			$ishFolderCmdlet.IshFolderType | Should-NotBeNull
 		}
 		It "ishFolderCmdlet.IshField" {
-			$ishFolderCmdlet.IshField | Should -Not -BeNullOrEmpty
+			$ishFolderCmdlet.IshField | Should-NotBeNull
 		}
 		It "Option IshSession.DefaultRequestedMetadata" {
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
-			$ishFolderCmdlet.name.Length -ge 1 | Should -Be $true 
-			$ishFolderCmdlet.fdocumenttype.Length -ge 1 | Should -Be $true 
-			$ishFolderCmdlet.fdocumenttype_none_element.StartsWith('VDOCTYPE') | Should -Be $true 
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
+			$ishFolderCmdlet.name.Length -ge 1 | Should-Be $true 
+			$ishFolderCmdlet.fdocumenttype.Length -ge 1 | Should-Be $true 
+			$ishFolderCmdlet.fdocumenttype_none_element.StartsWith('VDOCTYPE') | Should-Be $true 
 		}
 	}
 	Context "Add-IshFolder ParameterGroup" {
 		It "Parameter ParentFolderId invalid" {
-			{ Add-IshFolder -IShSession $ishSession -ParentFolderId "INVALIDFOLDERID" } | Should -Throw
+			{ Add-IshFolder -IShSession $ishSession -ParentFolderId "INVALIDFOLDERID" } | Should-Throw
 		}
 		It "Parameter ParentFolderId invalid" {
-			{ Add-IshFolder -IShSession $ishSession -ParentFolderId "INVALIDFOLDERID" } | Should -Throw
+			{ Add-IshFolder -IShSession $ishSession -ParentFolderId "INVALIDFOLDERID" } | Should-Throw
 		}
 		It "Parameter FolderType ISHIllustration" {
 			$ishFolders = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHIllustration -FolderName "ParameterGroup ISHIllustration" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter FolderType ISHLibrary" {
 			$ishFolders = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHLibrary -FolderName "ParameterGroup ISHLibrary" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter FolderType ISHMasterDoc" {
 			$ishFolders = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHMasterDoc -FolderName "ParameterGroup ISHMasterDoc" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter FolderType ISHModule" {
 			$ishFolders = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHModule -FolderName "ParameterGroup ISHModule" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter FolderType ISHNone" {
 			$ishFolders = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHNone -FolderName "ParameterGroup ISHNone" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter FolderType ISHPublication" {
 			$ishFolders = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHPublication -FolderName "ParameterGroup ISHPublication" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter FolderType ISHTemplate" {
 			$ishFolders = Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHTemplate -FolderName "ParameterGroup ISHTemplate" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter FolderType ISHQuery" {
-			{ Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHQuery -FolderName "ParameterGroup ISHQuery" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal }  | Should -Throw
+			{ Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHQuery -FolderName "ParameterGroup ISHQuery" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal }  | Should-Throw
 		}
 		It "Parameter FolderType ISHReference" {
-			{ Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHReference -FolderName "ParameterGroup ISHReference" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal }  | Should -Throw
+			{ Add-IshFolder -IshSession $ishSession -ParentFolderId ($ishFolderCmdlet.IshFolderRef) -FolderType ISHReference -FolderName "ParameterGroup ISHReference" -OwnedBy $ownedByTestRootOriginal -ReadAccess $readAccessTestRootOriginal }  | Should-Throw
 		}
 	}
 
@@ -97,29 +97,29 @@ Describe "Add-IshFolder" -Tags "Create" {
 			$ishFolderEditorTemplate = Get-IshFolder -IShSession $ishSession -BaseFolder EditorTemplate
 		}
 		It "Parameter IshFolder invalid" {
-			{ Add-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should -Throw
+			{ Add-IshFolder -IShSession $ishSession -IshFolder "INVALIDFOLDERID" } | Should-Throw
 		}
 		It "Parameter IshFolder Single with implicit IshSession" {
 			$ishFolderEditorTemplate = $ishFolderEditorTemplate | Set-IshMetadataField -Name "FNAME" -Level None -Value "EditorTemplate IshFoldersGroup Parameter IshFolder Single"
 			$ishFolders = Add-IshFolder -IshFolder $ishFolderEditorTemplate -ParentFolderId $ishFolderCmdlet.IshFolderRef
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Parameter IshFolder Multiple with implicit IshSession" {
 			$ishFolderEditorTemplate = $ishFolderEditorTemplate | Set-IshMetadataField -Name "FNAME" -Level None -Value "EditorTemplate IshFoldersGroup Parameter IshFolder Multiple"
 			$ishFolderFavorites = $ishFolderFavorites | Set-IshMetadataField -Name "FNAME" -Level None -Value "Favorites IshFoldersGroup Parameter IshFolder Multiple"
 			$ishFolders = Add-IshFolder -IshFolder @($ishFolderEditorTemplate,$ishFolderFavorites) -ParentFolderId $ishFolderCmdlet.IshFolderRef
-			$ishFolders.Count | Should -Be 2
+			$ishFolders.Count | Should-Be 2
 		}
 		It "Pipeline IshFolder Single" {
 			$ishFolderData = $ishFolderData | Set-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -Value "EditorTemplate IshFoldersGroup Pipeline IshFolder Single"
 			$ishFolders = $ishFolderData | Add-IshFolder -IshSession $ishSession -ParentFolderId $ishFolderCmdlet.IshFolderRef
-			$ishFolders.Count | Should -Be 1
+			$ishFolders.Count | Should-Be 1
 		}
 		It "Pipeline IshFolder Multiple" {
 			$ishFolderData = $ishFolderData | Set-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -Value "EditorTemplate IshFoldersGroup Pipeline IshFolder Multiple"
 			$ishFolderSystem = $ishFolderSystem | Set-IshMetadataField -IshSession $ishSession -Name "FNAME" -Level None -Value "System IshFoldersGroup Pipeline IshFolder Multiple"
 			$ishFolders = @($ishFolderData,$ishFolderSystem) | Add-IshFolder -IshSession $ishSession -ParentFolderId $ishFolderCmdlet.IshFolderRef
-			$ishFolders.Count | Should -Be 2
+			$ishFolders.Count | Should-Be 2
 		}
 	}
 }

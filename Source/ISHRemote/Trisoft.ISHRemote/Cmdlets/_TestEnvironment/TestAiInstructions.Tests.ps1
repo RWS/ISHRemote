@@ -153,15 +153,15 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
     Context 'Canonical file structure (.github/instructions/*.instructions.md)' {
 
         It 'instructions directory exists and contains files' {
-            Test-Path -LiteralPath $script:instrDir | Should -BeTrue
+            Test-Path -LiteralPath $script:instrDir | Should-BeTrue
             @(Get-ChildItem -LiteralPath $script:instrDir -Filter '*.instructions.md' -File).Count |
-                Should -BeGreaterThan 0
+                Should-BeGreaterThan 0
         }
 
         It "[<CfName>] line 1 is '---' (YAML frontmatter, no code fence)" `
            -TestCases $script:canonicalCases {
             (Get-Content -LiteralPath $CfPath -Encoding UTF8 -TotalCount 1) |
-                Should -BeExactly '---' -Because (
+                Should-BeString -CaseSensitive '---' -Because (
                     "line 1 must open YAML frontmatter; a code fence makes applyTo: inert. " +
                     "Remove any opening fence from '$CfName'.")
         }
@@ -169,14 +169,14 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
         It "[<CfName>] frontmatter has non-empty 'applyTo:'" `
            -TestCases $script:canonicalCases {
             Get-FmValue -FilePath $CfPath -Key 'applyTo' |
-                Should -Not -BeNullOrEmpty -Because (
+                Should-NotBeNull -Because (
                     "'$CfName' needs applyTo: for AI coding agent auto-injection.")
         }
 
         It "[<CfName>] frontmatter has non-empty 'description:'" `
            -TestCases $script:canonicalCases {
             Get-FmValue -FilePath $CfPath -Key 'description' |
-                Should -Not -BeNullOrEmpty -Because (
+                Should-NotBeNull -Because (
                     "'$CfName' needs description: for the agent to surface the file.")
         }
     }
@@ -185,7 +185,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
     Context 'AI coding agent stubs (.claude/rules/*.md)' {
 
         It 'rules directory exists' {
-            Test-Path -LiteralPath $script:rulesDir | Should -BeTrue -Because (
+            Test-Path -LiteralPath $script:rulesDir | Should-BeTrue -Because (
                 ".claude/rules/ must exist for Claude Code-compatible path-scoped injection.")
         }
 
@@ -193,7 +193,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
            -TestCases $script:canonicalCases {
             $stem = Get-Stem $CfName
             Test-Path -LiteralPath (Join-Path $script:rulesDir ($stem + '.md')) |
-                Should -BeTrue -Because (
+                Should-BeTrue -Because (
                     "'$CfName' requires a stub '$stem.md'. " +
                     "Add .claude/rules/$stem.md with paths: matching applyTo:.")
         }
@@ -202,7 +202,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
            -TestCases $script:stubCases {
             $canonName = ($SfName -replace '\.md$', '') + '.instructions.md'
             Test-Path -LiteralPath (Join-Path $script:instrDir $canonName) |
-                Should -BeTrue -Because (
+                Should-BeTrue -Because (
                     "stub '$SfName' has no matching canonical '$canonName'. " +
                     "Add the canonical file or remove the orphaned stub.")
         }
@@ -210,14 +210,14 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
         It "[stub <SfName>] line 1 is '---' (YAML frontmatter)" `
            -TestCases $script:stubCases {
             (Get-Content -LiteralPath $SfPath -Encoding UTF8 -TotalCount 1) |
-                Should -BeExactly '---' -Because (
+                Should-BeString -CaseSensitive '---' -Because (
                     "stub '$SfName' must open with YAML frontmatter at line 1.")
         }
 
         It "[stub <SfName>] frontmatter has non-empty 'paths:'" `
            -TestCases $script:stubCases {
             Get-FmValue -FilePath $SfPath -Key 'paths' |
-                Should -Not -BeNullOrEmpty -Because (
+                Should-NotBeNull -Because (
                     "stub '$SfName' needs paths: for Claude Code-compatible path-scoped injection.")
         }
     }
@@ -229,7 +229,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
            -TestCases $script:pairedCases {
             $applyTo = @(Get-FmValue -FilePath $CfPath -Key 'applyTo' | Sort-Object)
             $paths   = @(Get-FmValue -FilePath $SfPath -Key 'paths'   | Sort-Object)
-            $applyTo | Should -BeExactly $paths -Because (
+            $applyTo | Should-BeCollection $paths -Because (
                 "applyTo: in '$CfName' and paths: in '$SfName' must express the same glob. " +
                 "Update the out-of-sync value - see AGENTS.md > Maintaining these instructions.")
         }
@@ -239,12 +239,12 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
     Context 'AGENTS.md lazy-load table coverage' {
 
         It 'AGENTS.md exists at repository root' {
-            Test-Path -LiteralPath $script:agentsMd | Should -BeTrue
+            Test-Path -LiteralPath $script:agentsMd | Should-BeTrue
         }
 
         It 'AGENTS.md contains the lazy-load directive block' {
             (Get-Content -LiteralPath $script:agentsMd -Encoding UTF8 -Raw) |
-                Should -Match 'Scoped instructions' -Because (
+                Should-MatchString 'Scoped instructions' -Because (
                     "AGENTS.md must contain the Scoped instructions section for lazy loading.")
         }
 
@@ -252,7 +252,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
            -TestCases $script:canonicalCases {
             $expectedRef = '@.github/instructions/' + $CfName
             (Get-Content -LiteralPath $script:agentsMd -Encoding UTF8 -Raw) |
-                Should -Match ([regex]::Escape($expectedRef)) -Because (
+                Should-MatchString ([regex]::Escape($expectedRef)) -Because (
                     "'$CfName' must have a row in the AGENTS.md at-ref table. " +
                     "Add: | path description | $expectedRef |")
         }
@@ -260,7 +260,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
         It "[at-ref <Ref>] resolves to an existing canonical file" `
            -TestCases $script:agentsRefCases {
             $p = Join-Path $RepoRoot ($Ref -replace '/', '\')
-            Test-Path -LiteralPath $p | Should -BeTrue -Because (
+            Test-Path -LiteralPath $p | Should-BeTrue -Because (
                 "AGENTS.md references '@$Ref' but the file does not exist. " +
                 "Add the canonical file or remove the stale at-ref.")
         }
@@ -270,22 +270,22 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
     Context 'Pointer files integrity' {
 
         It 'CLAUDE.md exists and contains @AGENTS.md import' {
-            Test-Path -LiteralPath $script:claudeMd | Should -BeTrue
+            Test-Path -LiteralPath $script:claudeMd | Should-BeTrue
             (Get-Content -LiteralPath $script:claudeMd -Encoding UTF8 -Raw) |
-                Should -Match '@AGENTS\.md' -Because (
+                Should-MatchString '@AGENTS\.md' -Because (
                     "CLAUDE.md must import AGENTS.md for Claude Code-compatible harnesses.")
         }
 
         It '.github/copilot-instructions.md exists and references AGENTS.md' {
-            Test-Path -LiteralPath $script:copilotMd | Should -BeTrue
+            Test-Path -LiteralPath $script:copilotMd | Should-BeTrue
             (Get-Content -LiteralPath $script:copilotMd -Encoding UTF8 -Raw) |
-                Should -Match 'AGENTS\.md' -Because (
+                Should-MatchString 'AGENTS\.md' -Because (
                     ".github/copilot-instructions.md must reference AGENTS.md (pointer, not duplicate).")
         }
 
         It '.github/copilot-instructions.md is a short pointer (under 25 lines)' {
             (Get-Content -LiteralPath $script:copilotMd -Encoding UTF8).Count |
-                Should -BeLessOrEqual 25 -Because (
+                Should-BeLessThanOrEqual 25 -Because (
                     ".github/copilot-instructions.md must be a thin pointer. " +
                     "Full content belongs in AGENTS.md. Keep under 25 lines.")
         }
@@ -298,7 +298,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
            -TestCases $script:canonicalCases {
             $violations = Get-HarnessViolation -Lines (
                 Get-Content -LiteralPath $CfPath -Encoding UTF8)
-            $violations | Should -BeNullOrEmpty -Because (
+            $violations | Should-BeNull -Because (
                 "Use 'AI coding agent' instead of a product name. " +
                 "Violations in '$CfName': $($violations -join '; ')")
         }
@@ -306,7 +306,7 @@ Describe 'AI instruction files are internally consistent and correctly wired' {
         It 'AGENTS.md does not name a specific AI harness product' {
             $violations = Get-HarnessViolation -Lines (
                 Get-Content -LiteralPath $script:agentsMd -Encoding UTF8)
-            $violations | Should -BeNullOrEmpty -Because (
+            $violations | Should-BeNull -Because (
                 "AGENTS.md must use 'AI coding agent'. Violations: $($violations -join '; ')")
         }
     }

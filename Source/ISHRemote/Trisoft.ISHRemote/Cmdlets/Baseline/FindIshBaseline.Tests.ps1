@@ -22,7 +22,7 @@ Describe "Find-IshBaseline" -Tags "Read" {
 	}
 	Context "Find-IshBaseline ParameterGroup" {
 		It "Parameter IshSession invalid" {
-			{ Find-IshBaseline -IShSession "INVALIDISHSESSION" } | Should -Throw
+			{ Find-IshBaseline -IShSession "INVALIDISHSESSION" } | Should-Throw
 		}
 	}
 	Context "Find-IshBaseline returns IshBaseline object" {
@@ -46,21 +46,21 @@ Describe "Find-IshBaseline" -Tags "Read" {
 		It "Parameter IshSession explicit" {
 			$ishObject = Find-IshBaseline -IShSession $ishSession -RequestedMetadata $requestedMetadata | 
 		                 Where-Object -Property IshRef -EQ -Value $baselineId
-			$ishObject.GetType().Name | Should -BeExactly "IshBaseline"
-			$ishObject.IshRef -ge 0 | Should -Be $true
-			$ishObject.IshType | Should -Not -BeNullOrEmpty
-			$ishObject.IshField | Should -Not -BeNullOrEmpty
-			$ishSession.DefaultRequestedMetadata | Should -Be "Basic"
-			$ishObject.fishdocumentrelease.Length -ge 1 | Should -Be $true 
-			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should -Be $true 
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshBaseline"
+			$ishObject.IshRef -ge 0 | Should-Be $true
+			$ishObject.IshType | Should-NotBeNull
+			$ishObject.IshField | Should-NotBeNull
+			$ishSession.DefaultRequestedMetadata | Should-Be "Basic"
+			$ishObject.fishdocumentrelease.Length -ge 1 | Should-Be $true 
+			$ishObject.fishdocumentrelease_none_element.StartsWith('GUID') | Should-Be $true 
 		}
 		It "Parameter IshSession/RequestedMetadata implicit" {
 			$ishObject = Find-IshBaseline | 
 		                 Where-Object -Property IshRef -EQ -Value $baselineId
-			$ishObject.GetType().Name | Should -BeExactly "IshBaseline"
-			$ishObject.IshRef -ge 0 | Should -Be $true
-			$ishObject.IshType | Should -Not -BeNullOrEmpty
-			$ishObject.IshField | Should -Not -BeNullOrEmpty
+			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshBaseline"
+			$ishObject.IshRef -ge 0 | Should-Be $true
+			$ishObject.IshType | Should-NotBeNull
+			$ishObject.IshField | Should-NotBeNull
 		}
 	}
 }

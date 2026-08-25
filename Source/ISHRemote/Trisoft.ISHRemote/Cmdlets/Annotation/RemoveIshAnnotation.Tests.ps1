@@ -92,71 +92,71 @@ Describe "Remove-IshAnnotation" -Tags "Create" {
 
 	Context "Remove-IshAnnotation ParameterGroup" {
 		It "Parameter AnnotationId is empty" {
-			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId ""} | Should -Throw
+			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId ""} | Should-Throw
 		}
 		It "Parameter AnnotationId non-existing Id" {
-			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId "GUID-NON-EXISTING"} | Should -Throw
+			{Remove-IshAnnotation -IshSession $ishsession -AnnotationId "GUID-NON-EXISTING"} | Should-Throw
 		}
 		It "Annotation with replies" {
 			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPGWithReplies.IshRef
-			$ishAnnotation -eq $null | Should -Be $true
+			$ishAnnotation -eq $null | Should-Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPGWithReplies.IshRef
-            $ishAnnotation.Count | Should -Be 0
+            $ishAnnotation.Count | Should-Be 0
 		}
 		It "Annotation without replies" {
 			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPG1.IshRef
-			$ishAnnotation -eq $null | Should -Be $true
+			$ishAnnotation -eq $null | Should-Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationPG1.IshRef
-            $ishAnnotation.Count | Should -Be 0
+            $ishAnnotation.Count | Should-Be 0
 		}
     }
 
 	Context "Remove-IshAnnotation IshAnnotationGroup" {
 		It "Annotation with replies" {
 			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAGWithReplies
-			$ishAnnotation -eq $null | Should -Be $true
+			$ishAnnotation -eq $null | Should-Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationIAGWithReplies.IshRef
-            $ishAnnotation.Count | Should -Be 0
+            $ishAnnotation.Count | Should-Be 0
 		}
 		It "Annotation without replies" {
 			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation $ishAnnotationIAG1
-			$ishAnnotation -eq $null | Should -Be $true
+			$ishAnnotation -eq $null | Should-Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId $ishAnnotationIAG1.IshRef
-            $ishAnnotation.Count | Should -Be 0
+            $ishAnnotation.Count | Should-Be 0
 		}
 		It "Annotations mixed(with and without replies), passing as array" {
 			$ishAnnotation = Remove-IshAnnotation -IshSession $ishsession -IshAnnotation @($ishAnnotationIAGMixed1, $ishAnnotationIAGMixedWithReplies, $ishAnnotationIAGMixed2)
-			$ishAnnotation -eq $null | Should -Be $true
+			$ishAnnotation -eq $null | Should-Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationIAGMixed1.IshRef, $ishAnnotationIAGMixedWithReplies.IshRef, $ishAnnotationIAGMixed2.IshRef)
-            $ishAnnotation.Count | Should -Be 0
+            $ishAnnotation.Count | Should-Be 0
 		}
     }
 	
     Context "Remove-IshAnnotation IshAnnotationGroup pipeline" {
 		It "Passing empty collection via pipeline"{
             $ishObjects = Get-Ishfolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) | Get-IshFolderContent -IshSession $ishsession
-            $ishObjects.Count | Should -Be 0
+            $ishObjects.Count | Should-Be 0
             {Get-Ishfolder -IshSession $ishsession -FolderId ($global:ishAnnotationCmdlet.IshFolderRef) |
             Get-IshFolderContent -IshSession $ishsession |
             Remove-IshAnnotation -IshSession $ishsession} | Should -Not -Throw
 		}
 		It "Annotations with replies, passing one by one" {
 			$ishAnnotation = @($ishAnnotationIAGpipeline1WithReplies, $ishAnnotationIAGpipeline2WithReplies) | Remove-IshAnnotation -IshSession $ishsession
-			$ishAnnotation -eq $null | Should -Be $true
+			$ishAnnotation -eq $null | Should-Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationIAGpipeline1WithReplies.IshRef, $ishAnnotationIAGpipeline2WithReplies.IshRef)
-            $ishAnnotation.Count | Should -Be 0
+            $ishAnnotation.Count | Should-Be 0
 		}
 		It "Annotations without replies, passing one by one" {
 			$ishAnnotation = @($ishAnnotationIAGpipeline2, $ishAnnotationIAGpipeline1) | Remove-IshAnnotation -IshSession $ishsession
-			$ishAnnotation -eq $null | Should -Be $true
+			$ishAnnotation -eq $null | Should-Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationIAGpipeline2.IshRef,  $ishAnnotationIAGpipeline1.IshRef)
-            $ishAnnotation.Count | Should -Be 0
+            $ishAnnotation.Count | Should-Be 0
 		}
 		It "Annotations mixed(with and without replies), passing whole array" {
 			$ishAnnotation = @($ishAnnotationPipelineMixed, $ishAnnotationPipelineMixedWithReplies) | Remove-IshAnnotation -IshSession $ishsession
-			$ishAnnotation -eq $null | Should -Be $true
+			$ishAnnotation -eq $null | Should-Be $true
             $ishAnnotation = Get-IshAnnotation -IshSession $ishsession -AnnotationId @($ishAnnotationPipelineMixed.IshRef, $ishAnnotationPipelineMixedWithReplies.IshRef)
-            $ishAnnotation.Count | Should -Be 0
+            $ishAnnotation.Count | Should-Be 0
 		}
     }
 }
