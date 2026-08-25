@@ -109,24 +109,23 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                     return;
                 }
 
-                WriteDebug("Retrieving");
-
                 // --- Step 1: silently re-fetch all publication output metadata we need ---
                 // We need (on the publication output):
                 //   Version level : FISHBASELINE, FISHMASTERREF, FISHRESOURCES
                 //   Lng level     : FISHPUBLNGCOMBINATION, FISHOUTPUTFORMATREF
                 // lngref is always structurally present on every IshPublicationOutput so we use it
                 // to batch-fetch all the fields we need regardless of what the caller had requested.
-                WriteDebug("Retrieving required PublicationOutput metadata");
+                WriteDebug("PublicationOutput metadata retrieval");
                 var lngRefs = _incomingIshObjects
                     .Select(o => Convert.ToInt64(o.ObjectRef[Enumerations.ReferenceType.Lng]))
                     .ToArray();
 
                 // Build a minimal requested metadata set covering only what ExpandBaseline needs.
                 var requiredPubFields = new IshFields();
-                requiredPubFields.AddField(new IshRequestedMetadataField("FISHBASELINE", Enumerations.Level.Version, Enumerations.ValueType.Value));
-                requiredPubFields.AddField(new IshRequestedMetadataField("FISHMASTERREF", Enumerations.Level.Version, Enumerations.ValueType.Value));
-                requiredPubFields.AddField(new IshRequestedMetadataField("FISHRESOURCES", Enumerations.Level.Version, Enumerations.ValueType.Value));
+                requiredPubFields.AddField(new IshRequestedMetadataField("VERSION", Enumerations.Level.Version, Enumerations.ValueType.Value));
+                requiredPubFields.AddField(new IshRequestedMetadataField("FISHBASELINE", Enumerations.Level.Version, Enumerations.ValueType.Element));
+                requiredPubFields.AddField(new IshRequestedMetadataField("FISHMASTERREF", Enumerations.Level.Version, Enumerations.ValueType.Element));
+                requiredPubFields.AddField(new IshRequestedMetadataField("FISHRESOURCES", Enumerations.Level.Version, Enumerations.ValueType.Element));
                 requiredPubFields.AddField(new IshRequestedMetadataField("FISHPUBLNGCOMBINATION", Enumerations.Level.Lng, Enumerations.ValueType.Value));
                 requiredPubFields.AddField(new IshRequestedMetadataField("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Element));
 
@@ -135,7 +134,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                     requiredPubFields.ToXml());
                 var refreshedPubObjects = new IshObjects(ISHType, xmlPubObjects).Objects;
 
-                WriteDebug($"Refreshed PublicationOutput count[{refreshedPubObjects.Length}]");
+                WriteDebug($"PublicationOutput metadata retrieval count[{refreshedPubObjects.Length}]");
 
                 // --- Step 2: for each publication output call ExpandBaseline ---
                 var allLngRefs = new List<long>();
@@ -143,23 +142,27 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
 
                 foreach (var pubObject in refreshedPubObjects)
                 {
-                    WriteDebug($"Processing IshRef[{pubObject.IshRef}] {++current}/{refreshedPubObjects.Length}");
+                    string version = ((IshMetadataField)pubObject.IshFields.RetrieveFirst("VERSION", Enumerations.Level.Version, Enumerations.ValueType.Value)?.ToMetadataField()).Value;
+                    string pubLngCombination = ((IshMetadataField)pubObject.IshFields.RetrieveFirst("FISHPUBLNGCOMBINATION", Enumerations.Level.Lng, Enumerations.ValueType.Value)?.ToMetadataField()).Value;
+                    string pubOutputFormatRef = ((IshMetadataField)pubObject.IshFields.RetrieveFirst("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Element)?.ToMetadataField()) .Value;
+                    string pubObjectHumanId = $"={pubObject.IshRef}={version}={pubLngCombination}={pubOutputFormatRef}";
+                    WriteDebug($"Processing[{pubObjectHumanId}] {++current}/{refreshedPubObjects.Length}");
 
                     // Extract FISHBASELINE (baseline GUID)
                     // RetrieveFirst prefers id over element over value; ToMetadataField() / cast gives .Value
                     var baselineField = pubObject.IshFields
-                        .RetrieveFirst("FISHBASELINE", Enumerations.Level.Version, Enumerations.ValueType.Value)
+                        .RetrieveFirst("FISHBASELINE", Enumerations.Level.Version, Enumerations.ValueType.Element)
                         ?.ToMetadataField() as IshMetadataField;
                     string baselineId = baselineField?.Value;
                     if (string.IsNullOrEmpty(baselineId))
                     {
-                        WriteWarning($"IshRef[{pubObject.IshRef}] has no FISHBASELINE field value — skipping.");
+                        WriteWarning($"Processing[{pubObjectHumanId}] has no FISHBASELINE field value — skipping.");
                         continue;
                     }
 
                     // Extract FISHMASTERREF (root map logical ID) — startLogicalIds[]
                     var masterRefField = pubObject.IshFields
-                        .RetrieveFirst("FISHMASTERREF", Enumerations.Level.Version, Enumerations.ValueType.Value)
+                        .RetrieveFirst("FISHMASTERREF", Enumerations.Level.Version, Enumerations.ValueType.Element)
                         ?.ToMetadataField() as IshMetadataField;
                     string masterRef = masterRefField?.Value;
                     var startLogicalIds = string.IsNullOrEmpty(masterRef)
@@ -168,7 +171,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
 
                     // Extract FISHRESOURCES (multi-value) — startResourceLogicalIds[]
                     var resourcesField = pubObject.IshFields
-                        .RetrieveFirst("FISHRESOURCES", Enumerations.Level.Version, Enumerations.ValueType.Value)
+                        .RetrieveFirst("FISHRESOURCES", Enumerations.Level.Version, Enumerations.ValueType.Element)
                         ?.ToMetadataField() as IshMetadataField;
                     string resourcesRaw = resourcesField?.Value ?? string.Empty;
                     string[] startResourceLogicalIds = string.IsNullOrEmpty(resourcesRaw)
@@ -194,7 +197,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                     if (!string.IsNullOrEmpty(outputFormatRef))
                     {
                         var outputFormatRequestedFields = new IshFields();
-                        outputFormatRequestedFields.AddField(new IshRequestedMetadataField("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Value));
+                        outputFormatRequestedFields.AddField(new IshRequestedMetadataField("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Element));
                         var outputFormatResponse = IshSession.OutputFormat25.GetMetadata(
                             new OutputFormat25ServiceReference.GetMetadataRequest(
                                 outputFormatRef,
@@ -204,17 +207,17 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                         if (outputFormatObjects.Objects.Length > 0)
                         {
                             var resolutionsField = outputFormatObjects.Objects[0].IshFields
-                                .RetrieveFirst("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Value)
+                                .RetrieveFirst("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Element)
                                 ?.ToMetadataField() as IshMetadataField;
                             string resolutionsRaw = resolutionsField?.Value ?? string.Empty;
                             resolutions = string.IsNullOrEmpty(resolutionsRaw)
                                 ? Array.Empty<string>()
                                 : resolutionsRaw.Split(new[] { IshSession.Separator }, StringSplitOptions.RemoveEmptyEntries);
                         }
-                        WriteDebug($"IshRef[{pubObject.IshRef}] OutputFormatRef[{outputFormatRef}] Resolutions[{string.Join(",", resolutions)}]");
+                        WriteDebug($"Processing[{pubObjectHumanId}] OutputFormatRef[{outputFormatRef}] Resolutions[{string.Join(",", resolutions)}]");
                     }
 
-                    WriteDebug($"IshRef[{pubObject.IshRef}] BaselineId[{baselineId}] MasterRef[{masterRef}] Languages[{string.Join(",", languages)}] Resolutions[{string.Join(",", resolutions)}] Resources[{string.Join(",", startResourceLogicalIds)}]");
+                    WriteDebug($"Processing[{pubObjectHumanId}] BaselineId[{baselineId}] MasterRef[{masterRef}] Languages[{string.Join(",", languages)}] Resolutions[{string.Join(",", resolutions)}] Resources[{string.Join(",", startResourceLogicalIds)}]");
 
                     // --- Step 3: call ExpandBaseline ---
                     string xmlBaselineReport = IshSession.Baseline25.ExpandBaseline(
@@ -226,7 +229,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                         languages,         // resourceLanguages[]     — same combination per publication output convention
                         resolutions);
 
-                    WriteDebug($"IshRef[{pubObject.IshRef}] BaselineReport.length[{xmlBaselineReport?.Length ?? 0}]");
+                    WriteDebug($"Processing[{pubObjectHumanId}] BaselineReport.length[{xmlBaselineReport?.Length ?? 0}]");
 
                     // --- Step 4: collect lngrefs from reportitems with reportresult="OK" ---
                     if (!string.IsNullOrEmpty(xmlBaselineReport))
@@ -234,7 +237,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                         var reportDoc = new XmlDocument();
                         reportDoc.LoadXml(xmlBaselineReport);
                         // Each <reportitem lngref="NNN" reportresult="OK"/> contributes a language card ID
-                        foreach (XmlElement reportItem in reportDoc.SelectNodes("//reportitem[@reportresult='OK' and @lngref]"))
+                        foreach (XmlElement reportItem in reportDoc.SelectNodes("//reportitem[@lngref]"))
                         {
                             string lngRefStr = reportItem.GetAttribute("lngref");
                             if (long.TryParse(lngRefStr, out long lngRef))
