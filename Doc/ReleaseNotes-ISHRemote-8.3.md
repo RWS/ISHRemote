@@ -18,6 +18,23 @@ The one that is
 
 The below text describes the delta compared to fielded release ISHRemote v8.2.
 
+### Retrieve the content objects of your publication
+Cmdlet `Get-IshPublicationOutputContent` returns the `IshDocumentObj` content objects (topics, maps, illustrations, resources) directly reachable through the saved baseline of one or more incoming `IshPublicationOutput` objects, using `Baseline25.ExpandBaseline` under the hood. Content objects whose version is not pinned in the baseline (a "gap", for example a sub-map that has no version selected) are not returned, even if a topic used by that sub-map does have a version pinned — the baseline walk stops at the gap. Optional parameter `-AutoCompleteMode` (`FirstVersion`, `LatestReleased` or `LatestAvailable`) switches from `Baseline25.ExpandBaseline` to `Baseline25.CompleteBaselineByCandidateAndMode` so gaps get filled in using the given strategy before the (now larger) reachable set is returned. Optional parameters `-Language`/`-Resolution` let you override the languages/resolutions used to walk the baseline instead of relying on the publication output's own `FISHPUBLNGCOMBINATION`/output format `FISHRESOLUTIONS`. 
+
+For example:
+```powershell
+Get-IshPublicationOutput -LogicalId "GUID-03081B9A-11E4-4862-845B-27339E0C400D" |
+Out-GridView -PassThru |
+Get-IshPublicationOutputContent -AutoCompleteMode LatestAvailable |
+Get-IshDocumentObjData -FolderPath "C:\TEMP\"
+```
+interactively picks one or more publication outputs in a grid view, completes any gaps in their baselines using the latest available version of each missing content object, and extracts all reachable content objects to the file system. Or release all directly reachable content objects of a publication output:
+```powershell
+Get-IshPublicationOutput -LogicalId "GUID-03081B9A-11E4-4862-845B-27339E0C400D" |
+Get-IshPublicationOutputContent |
+Set-IshDocumentObj -Metadata (Set-IshMetadataField -Name "FSTATUS" -Level Lng -Value "Released")
+```
+
 
 ## Platform Support for PowerShell ....
 
@@ -27,6 +44,7 @@ The below text describes the delta compared to fielded release ISHRemote v8.2.
 
 * Fixed `Start-IshRemoteMcpServer` failing to connect on Windows with newer MCP clients (e.g. OpenCode 1.18.11, protocol `2025-11-25`) with errors `MCP error -32001: Request timed out` and `Failed to get tools`. Three root causes: (1) `initialize` requests with `"id":0` were silently dropped because PowerShell treats `0` as falsy; (2) `[Console]::InputEncoding` defaults to OEM code page (`ibm437`) when `pwsh.exe` is spawned with redirected stdio on Windows, causing `ReadLine()` to block forever on UTF-8 JSON — fixed by explicitly setting UTF-8 encoding and replacing `Console.Out` with an auto-flushing `StreamWriter` via `[Console]::SetOut()`; (3) `Register-IshRemoteMcpTool` emitted an invalid `type: "object"` field in `ToolAnnotations` and used string `"true"`/`"false"` instead of boolean `$true`/`$false` for hint values, causing strict MCP schema validation to reject the tools list. Server name updated from `"PowerShell MCP Server (Template)"` to `"ISHRemote MCP Server"` and version bumped to `0.3.0`. Also fixed the server looping forever on stdin EOF (orphaned `pwsh` processes) by breaking the while loop when `ReadLine()` returns `$null`. See #243 and #261. Thanks @ddemeyer
 * Migrated all 58 `*.Tests.ps1` files from Pester v5 to Pester v6 (`Should -Be` to `Should-Be`, `Should -BeExactly` to `Should-BeString -CaseSensitive`, `Should -Not -BeNullOrEmpty` to `Should-NotBeNull`, `Should -Throw "msg"` to `Should-Throw -ExceptionMessage "msg"`, etc.). CI install gates updated to `-MinimumVersion 6.0.0`. Classic `Should -Not -Throw` retained as there is no `Should-NotThrow` equivalent in Pester 6. Hardened the library for parallel test execution by replacing the process-wide `TrisoftCmdletLogger` singleton with per-cmdlet `ILogger` routing and adding a double-checked lock on `IshSession._ishTypeFieldSetup` to eliminate Collection was modified races under `Run.Parallel = $true`. CI Pester invocations now use `New-PesterConfiguration` (with `Run.Parallel = $false`) so parallel mode can be toggled in one place when ready. See #242, #265, #266.
+
 
 
 

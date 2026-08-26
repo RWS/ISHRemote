@@ -30,6 +30,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// <summary>
     /// <para type="synopsis">The Get-IshPublicationOutputContent cmdlet returns the IshDocumentObj objects that are directly reachable through the saved baseline of the incoming IshPublicationOutput objects.</para>
     /// <para type="description">The Get-IshPublicationOutputContent cmdlet expands the saved baseline of each incoming IshPublicationOutput and returns the IshDocumentObj objects (topics, maps, illustrations, resources) that are directly reachable — meaning only content objects for which the baseline holds a pinned version are returned. Content objects whose version is not selected in the baseline (gaps) are not returned even if they would be reachable via a full autocomplete pass.
+    /// When -AutoCompleteMode is provided, the cmdlet instead completes the baseline for any gaps (missing objects) using the specified strategy (FirstVersion, LatestReleased or LatestAvailable) before returning the (now larger) set of directly reachable IshDocumentObj objects. Without -AutoCompleteMode, gaps are left untouched and the corresponding content objects are not returned.
+    /// The -Language and -Resolution parameters allow overriding the languages and resolutions used to walk the baseline; when omitted they default to the publication output's own FISHPUBLNGCOMBINATION and output format FISHRESOLUTIONS.
     /// The cmdlet silently fetches all publication output metadata it needs (FISHBASELINE, FISHMASTERREF, FISHRESOURCES, FISHPUBLNGCOMBINATION, FISHOUTPUTFORMATREF and the output format's FISHRESOLUTIONS) — callers do not need to pre-fetch specific fields.
     /// Typical follow-on pipeline operations are Get-IshDocumentObjData, Set-IshDocumentObj or status-transition scripts.</para>
     /// </summary>
@@ -47,6 +49,29 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// Set-IshDocumentObj -Metadata (Set-IshMetadataField -Name "FSTATUS" -Level Lng -Value "Released")
     /// </code>
     /// <para>Releases all content objects that are directly reachable through the saved baseline of the given publication output.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// Get-IshPublicationOutput -LogicalId "GUID-12345678-ABCD-EFGH-IJKL-1234567890AB" |
+    /// Get-IshPublicationOutputContent -AutoCompleteMode LatestReleased
+    /// </code>
+    /// <para>Completes gaps in the saved baseline using the latest released version of each missing content object, then returns all reachable IshDocumentObj objects.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// Get-IshPublicationOutput -LogicalId "GUID-12345678-ABCD-EFGH-IJKL-1234567890AB" |
+    /// Get-IshPublicationOutputContent -Language @("en") -Resolution @("VRESLOW")
+    /// </code>
+    /// <para>Returns all directly reachable IshDocumentObj objects, overriding the languages and resolutions used to walk the baseline.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// Get-IshPublicationOutput -LogicalId ""GUID-12345678-ABCD-EFGH-IJKL-1234567890AB" |
+    /// Out-GridView -PassThru |
+    /// Get-IshPublicationOutputContent -AutoCompleteMode LatestAvailable |
+    /// Get-IshDocumentObjData -FolderPath "C:\TEMP\"
+    /// </code>
+    /// <para>Lets you interactively pick one or more publication outputs in a grid view, completes gaps in their baselines using the latest available version of each missing content object, and extracts the resulting content objects to the file system.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Get, "IshPublicationOutputContent", SupportsShouldProcess = false)]
     [OutputType(typeof(IshDocumentObj))]
@@ -72,6 +97,24 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [ValidateNotNull]
         public IshField[] RequestedMetadata { get; set; }
+
+        /// <summary>
+        /// <para type="description">When specified, gaps (missing objects) in the saved baseline are completed using the given strategy before the reachable content objects are returned. When omitted, gaps are left untouched (expand-only behavior).</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
+        public Enumerations.BaselineAutoCompleteMode AutoCompleteMode { get; set; }
+
+        /// <summary>
+        /// <para type="description">Overrides the languages used to walk the baseline, expressed as language Value labels (e.g. "en"), not Element identifiers. When omitted, defaults to the publication output's own FISHPUBLNGCOMBINATION.</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
+        public string[] Language { get; set; }
+
+        /// <summary>
+        /// <para type="description">Overrides the resolutions used to walk the baseline, expressed as resolution Element identifiers (e.g. "VRESLOW"), not Value labels. When omitted, defaults to the output format's FISHRESOLUTIONS.</para>
+        /// </summary>
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
+        public string[] Resolution { get; set; }
 
         // Accumulate incoming publication outputs across ProcessRecord calls so we can batch
         // the metadata re-fetch and the ExpandBaseline calls in EndProcessing.
@@ -179,55 +222,91 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                         : resourcesRaw.Split(new[] { IshSession.Separator }, StringSplitOptions.RemoveEmptyEntries);
 
                     // Extract FISHPUBLNGCOMBINATION — languages[], illustrationLanguages[], resourceLanguages[]
-                    var langComboField = pubObject.IshFields
-                        .RetrieveFirst("FISHPUBLNGCOMBINATION", Enumerations.Level.Lng, Enumerations.ValueType.Value)
-                        ?.ToMetadataField() as IshMetadataField;
-                    string langComboRaw = langComboField?.Value ?? string.Empty;
-                    string[] languages = string.IsNullOrEmpty(langComboRaw)
-                        ? Array.Empty<string>()
-                        : langComboRaw.Split(new[] { IshSession.Separator }, StringSplitOptions.RemoveEmptyEntries);
+                    // unless overridden by -Language parameter.
+                    string[] languages;
+                    if (MyInvocation.BoundParameters.ContainsKey(nameof(Language)))
+                    {
+                        languages = Language ?? Array.Empty<string>();
+                    }
+                    else
+                    {
+                        var langComboField = pubObject.IshFields
+                            .RetrieveFirst("FISHPUBLNGCOMBINATION", Enumerations.Level.Lng, Enumerations.ValueType.Value)
+                            ?.ToMetadataField() as IshMetadataField;
+                        string langComboRaw = langComboField?.Value ?? string.Empty;
+                        languages = string.IsNullOrEmpty(langComboRaw)
+                            ? Array.Empty<string>()
+                            : langComboRaw.Split(new[] { IshSession.Separator }, StringSplitOptions.RemoveEmptyEntries);
+                    }
 
                     // Extract FISHOUTPUTFORMATREF (element name of the output format card)
                     // then fetch FISHRESOLUTIONS from that output format card — resolutions[]
-                    var outputFormatRefField = pubObject.IshFields
-                        .RetrieveFirst("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Element)
-                        ?.ToMetadataField() as IshMetadataField;
-                    string outputFormatRef = outputFormatRefField?.Value;
-                    string[] resolutions = Array.Empty<string>();
-                    if (!string.IsNullOrEmpty(outputFormatRef))
+                    // unless overridden by -Resolution parameter.
+                    string[] resolutions;
+                    if (MyInvocation.BoundParameters.ContainsKey(nameof(Resolution)))
                     {
-                        var outputFormatRequestedFields = new IshFields();
-                        outputFormatRequestedFields.AddField(new IshRequestedMetadataField("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Element));
-                        var outputFormatResponse = IshSession.OutputFormat25.GetMetadata(
-                            new OutputFormat25ServiceReference.GetMetadataRequest(
-                                outputFormatRef,
-                                outputFormatRequestedFields.ToXml()));
-                        Enumerations.ISHType[] outputFormatISHType = { Enumerations.ISHType.ISHOutputFormat };
-                        var outputFormatObjects = new IshObjects(outputFormatISHType, outputFormatResponse.xmlObjectList);
-                        if (outputFormatObjects.Objects.Length > 0)
+                        resolutions = Resolution ?? Array.Empty<string>();
+                    }
+                    else
+                    {
+                        var outputFormatRefField = pubObject.IshFields
+                            .RetrieveFirst("FISHOUTPUTFORMATREF", Enumerations.Level.Lng, Enumerations.ValueType.Element)
+                            ?.ToMetadataField() as IshMetadataField;
+                        string outputFormatRef = outputFormatRefField?.Value;
+                        resolutions = Array.Empty<string>();
+                        if (!string.IsNullOrEmpty(outputFormatRef))
                         {
-                            var resolutionsField = outputFormatObjects.Objects[0].IshFields
-                                .RetrieveFirst("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Element)
-                                ?.ToMetadataField() as IshMetadataField;
-                            string resolutionsRaw = resolutionsField?.Value ?? string.Empty;
-                            resolutions = string.IsNullOrEmpty(resolutionsRaw)
-                                ? Array.Empty<string>()
-                                : resolutionsRaw.Split(new[] { IshSession.Separator }, StringSplitOptions.RemoveEmptyEntries);
+                            var outputFormatRequestedFields = new IshFields();
+                            outputFormatRequestedFields.AddField(new IshRequestedMetadataField("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Element));
+                            var outputFormatResponse = IshSession.OutputFormat25.GetMetadata(
+                                new OutputFormat25ServiceReference.GetMetadataRequest(
+                                    outputFormatRef,
+                                    outputFormatRequestedFields.ToXml()));
+                            Enumerations.ISHType[] outputFormatISHType = { Enumerations.ISHType.ISHOutputFormat };
+                            var outputFormatObjects = new IshObjects(outputFormatISHType, outputFormatResponse.xmlObjectList);
+                            if (outputFormatObjects.Objects.Length > 0)
+                            {
+                                var resolutionsField = outputFormatObjects.Objects[0].IshFields
+                                    .RetrieveFirst("FISHRESOLUTIONS", Enumerations.Level.None, Enumerations.ValueType.Element)
+                                    ?.ToMetadataField() as IshMetadataField;
+                                string resolutionsRaw = resolutionsField?.Value ?? string.Empty;
+                                resolutions = string.IsNullOrEmpty(resolutionsRaw)
+                                    ? Array.Empty<string>()
+                                    : resolutionsRaw.Split(new[] { IshSession.Separator }, StringSplitOptions.RemoveEmptyEntries);
+                            }
+                            WriteDebug($"Processing[{pubObjectHumanId}] OutputFormatRef[{outputFormatRef}] Resolutions[{string.Join(",", resolutions)}]");
                         }
-                        WriteDebug($"Processing[{pubObjectHumanId}] OutputFormatRef[{outputFormatRef}] Resolutions[{string.Join(",", resolutions)}]");
                     }
 
                     WriteDebug($"Processing[{pubObjectHumanId}] BaselineId[{baselineId}] MasterRef[{masterRef}] Languages[{string.Join(",", languages)}] Resolutions[{string.Join(",", resolutions)}] Resources[{string.Join(",", startResourceLogicalIds)}]");
 
-                    // --- Step 3: call ExpandBaseline ---
-                    string xmlBaselineReport = IshSession.Baseline25.ExpandBaseline(
-                        baselineId,
-                        startLogicalIds,
-                        startResourceLogicalIds,
-                        languages,         // languages[]
-                        languages,         // illustrationLanguages[] — same combination per publication output convention
-                        languages,         // resourceLanguages[]     — same combination per publication output convention
-                        resolutions);
+                    // --- Step 3: call ExpandBaseline, or CompleteBaselineByCandidateAndMode when -AutoCompleteMode is specified ---
+                    string xmlBaselineReport;
+                    if (MyInvocation.BoundParameters.ContainsKey(nameof(AutoCompleteMode)))
+                    {
+                        WriteDebug($"Processing[{pubObjectHumanId}] AutoCompleteMode[{AutoCompleteMode}]");
+                        xmlBaselineReport = IshSession.Baseline25.CompleteBaselineByCandidateAndMode(
+                            baselineId,
+                            string.Empty,      // extendBaselineId — none
+                            EnumConverter.ToBaselineAutoCompleteModeSoap<Baseline25ServiceReference.BaselineAutoCompleteMode>(AutoCompleteMode),
+                            startLogicalIds,
+                            startResourceLogicalIds,
+                            languages,         // languages[]
+                            languages,         // illustrationLanguages[] — same combination per publication output convention
+                            languages,         // resourceLanguages[]     — same combination per publication output convention
+                            resolutions);
+                    }
+                    else
+                    {
+                        xmlBaselineReport = IshSession.Baseline25.ExpandBaseline(
+                            baselineId,
+                            startLogicalIds,
+                            startResourceLogicalIds,
+                            languages,         // languages[]
+                            languages,         // illustrationLanguages[] — same combination per publication output convention
+                            languages,         // resourceLanguages[]     — same combination per publication output convention
+                            resolutions);
+                    }
 
                     WriteDebug($"Processing[{pubObjectHumanId}] BaselineReport.length[{xmlBaselineReport?.Length ?? 0}]");
 
