@@ -68,7 +68,13 @@ Describe "Get-IshUser" -Tags "Create" {
 			$ishObject = Get-IshUser -IshSession $ishSession
 			$ishSession.DefaultRequestedMetadata = $oldDefaultRequestedMetadata
 			$ishObject.GetType().Name | Should-BeString -CaseSensitive "IshUser"
-			$ishObject.IshField.Length | Should-Be 29
+			if((([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4) -or ([Version]$ishSession.ServerVersion).Major -ge 16) {
+				#15.4.0 added FISHUSEREXPORTFILES Element/Value entries
+				$ishObject.IshField.Length | Should-Be 31
+			}
+			else {
+				$ishObject.IshField.Length | Should-Be 29
+			}
 		}
 	}
 }
