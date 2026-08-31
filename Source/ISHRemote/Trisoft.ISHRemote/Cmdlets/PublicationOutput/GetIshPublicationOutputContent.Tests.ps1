@@ -150,7 +150,11 @@ Describe "Get-IshPublicationOutputContent" -Tags "Read" {
 		It "AutoCompleteMode LatestAvailable returns more objects than expand alone" {
 			$expandResult = $ishObjectPub | Get-IshPublicationOutputContent -IshSession $ishSession
 			$completeResult = $ishObjectPub | Get-IshPublicationOutputContent -IshSession $ishSession -AutoCompleteMode LatestAvailable
+			$completeResult.Count -eq 3 | Should-Be $true
 			$completeResult.Count -gt $expandResult.Count | Should-Be $true
+			($completeResult | Where-Object { $_.IshRef -eq $ishObjectLibraryTopic.IshRef }).version_version_value | Should-BeString -CaseSensitive "3"
+			($completeResult | Where-Object { $_.IshRef -eq $ishObjectMap.IshRef }).version_version_value | Should-BeString -CaseSensitive "2"
+			($completeResult | Where-Object { $_.IshRef -eq $ishObjectTopic.IshRef }).version_version_value | Should-BeString -CaseSensitive "1"
 		}
 		It "AutoCompleteMode LatestAvailable ResultContainsLibraryTopic" {
 			$result = $ishObjectPub | Get-IshPublicationOutputContent -IshSession $ishSession -AutoCompleteMode LatestAvailable
