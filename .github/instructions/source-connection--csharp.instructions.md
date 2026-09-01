@@ -51,7 +51,9 @@ Every `.cs` starts with the Apache 2.0 header exactly as in the neighbouring fil
   `internal sealed`; the shared base is `internal abstract`. **Exceptions to know:**
   `InfoShareOpenIdConnectSystemBrowser` is `public` (it implements Duende's `IBrowser`),
   `InfoShareOpenIdConnectLocalHttpEndpoint` and `IshConnectionConfiguration` are `internal` (not
-  sealed). Don't widen visibility without a reason.
+  sealed), `RetryOnFaultProxy<T>` is `public` (not sealed) because .NET Framework's
+  `DispatchProxy.Create<T, TProxy>()` fails to load a non-public `TProxy` with "Access is denied".
+  Don't widen visibility without a reason.
 - Constructor signature for the three connection front-ends is uniform:
   `(ILogger logger, HttpClient httpClient, <…ConnectionParameters> parameters)`. The `HttpClient` is
   **created once by `IshSession` and reused** (TLS/SSL already initialized) — never new up your own
@@ -124,10 +126,16 @@ and `#if NET10_0_OR_GREATER` for narrower cases). Both arms must compile **and b
 - `RetryOnFaultProxy.cs` — generic `System.Reflection.DispatchProxy`-based wrapper used only by
   `InfoShareWcfSoapWithOpenIdConnectConnection`'s `Get*25Channel()` accessors: catches
   `CommunicationException`/`FaultException` on the actual SOAP call, rebuilds the channel via the
-  caller-supplied delegate (the same `Get*25Channel()` method), and retries exactly once, unwrapping
-  reflection's `TargetInvocationException` so the original exception type/stack trace reaches the
-  caller unchanged. Wraps only the plain service-contract interface, never `ICommunicationObject`/
-  `IDisposable` — those keep operating on the private raw channel field, unaffected.
+  caller-supplied delegate, and retries exactly once, unwrapping reflection's
+  `TargetInvocationException` so the original exception type/stack trace reaches the caller
+  unchanged. Wraps only the plain service-contract interface, never `ICommunicationObject`/
+  `IDisposable` — those keep operating on the private raw channel field, unaffected. Each public
+  `Get*25Channel()` is split from a private `Ensure*25Channel()` that does the state-check/rebuild
+  and returns the **raw, unwrapped** channel; `Get*25Channel()` wraps exactly once and passes
+  `Ensure*25Channel` (not itself) as the rebuild delegate. **Never** pass a rebuild delegate that
+  returns an already-wrapped proxy — each retry would then recurse into a brand-new
+  `RetryOnFaultProxy` with its own full retry budget, chaining unbounded on a persistent (non-
+  transient) fault and causing a stack overflow instead of one bounded retry.
 
 **Diagram**
 - `__ConnectionClassDiagram.cd` — Visual Studio class diagram. **Keep it in sync** when you add,

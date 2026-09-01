@@ -31,9 +31,20 @@ namespace Trisoft.ISHRemote.Connection
     /// state checks, Faulted event wiring and Dispose() bookkeeping in <c>InfoShareWcfSoapWithOpenIdConnectConnection</c>
     /// keep operating on the underlying raw channel field directly, this proxy is only applied at the point where the
     /// channel is handed out to callers.
+    /// 
+    /// Each public <c>Get*25Channel()</c> method is split into itself (which wraps exactly once) and a private
+    /// <c>Ensure*25Channel()</c> helper (which does the state-check/rebuild and returns the raw, unwrapped channel). The
+    /// rebuild delegate passed to <see cref="Wrap"/> must be that private helper - see the warning on <see cref="Wrap"/>.
     /// </summary>
     /// <typeparam name="T">The generated WCF service-contract interface, for example <c>Baseline25ServiceReference.Baseline</c>.</typeparam>
-    internal sealed class RetryOnFaultProxy<T> : DispatchProxy where T : class
+    /// <remarks>
+    /// Must be <c>public</c>, not <c>internal</c>: on .NET Framework, <see cref="DispatchProxy.Create{T, TProxy}"/>
+    /// generates the proxy type in a new dynamic assembly under strict Reflection.Emit visibility checks, so a
+    /// non-public <c>TProxy</c> fails to load with "Access is denied" (observed on Windows PowerShell 5.1/net48).
+    /// .NET 6.0+ relaxes this check, so the same code works there regardless of visibility - keep it public so both
+    /// runtimes behave the same.
+    /// </remarks>
+    public class RetryOnFaultProxy<T> : DispatchProxy where T : class
     {
         private T _target;
         private Func<T> _rebuild;
@@ -44,8 +55,12 @@ namespace Trisoft.ISHRemote.Connection
         /// <paramref name="rebuild"/>.
         /// </summary>
         /// <param name="target">Current channel instance, as currently held/rebuilt by the owning connection.</param>
-        /// <param name="rebuild">Delegate that returns a (possibly rebuilt) channel of type <typeparamref name="T"/>; typically the same
-        /// <c>Get*25Channel()</c> method this proxy is being returned from.</param>
+        /// <param name="rebuild">Delegate that returns a (possibly rebuilt) channel of type <typeparamref name="T"/>. This
+        /// MUST be the raw, unwrapped channel accessor (e.g. a private <c>Ensure*25Channel()</c> helper) - never the public
+        /// <c>Get*25Channel()</c> method that itself calls <see cref="Wrap"/>. Passing a rebuild delegate that returns
+        /// another wrapped proxy causes each retry to recurse into a brand-new <see cref="RetryOnFaultProxy{T}"/> with its
+        /// own full retry budget; on a persistent (non-transient) fault this chains unbounded and causes a stack overflow
+        /// instead of a single bounded retry.</param>
         /// <returns>A proxy implementing <typeparamref name="T"/> that transparently retries once on fault.</returns>
         public static T Wrap(T target, Func<T> rebuild)
         {
