@@ -14,13 +14,14 @@
 * limitations under the License.
 */
 
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
-#if NET48
-using System;
-#else
+#if !NET48
 using System.Runtime.Loader;
 #endif
 
@@ -111,13 +112,73 @@ namespace Trisoft.ISHRemote.HelperClasses
             //_forcedLoadedAssemblies.GetOrAdd("Microsoft.Extensions.Logging", assembly);
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
+            TryForceLoadAssembly("Duende.IdentityModel.OidcClient", "Duende.IdentityModel.OidcClient.dll");
+            TryForceLoadAssembly("IdentityModel", "Duende.IdentityModel.dll");
+            TryForceLoadAssembly("Duende.IdentityModel", "Duende.IdentityModel.dll");
+            TryForceLoadAssembly("Microsoft.IdentityModel.Abstractions", "Microsoft.IdentityModel.Abstractions.dll");
+            TryForceLoadAssembly("Microsoft.IdentityModel.Logging", "Microsoft.IdentityModel.Logging.dll");
+            TryForceLoadAssembly("Microsoft.IdentityModel.Tokens", "Microsoft.IdentityModel.Tokens.dll");
+            TryForceLoadAssembly("Microsoft.IdentityModel.Tokens.Saml", "Microsoft.IdentityModel.Tokens.Saml.dll");
+            TryForceLoadAssembly("Microsoft.IdentityModel.Xml", "Microsoft.IdentityModel.Xml.dll");
 
-            var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Duende.IdentityModel.dll");
-            var assembly = Assembly.LoadFrom(filePath);
-            _forcedLoadedAssemblies.GetOrAdd("IdentityModel", assembly);
-            
 #endif
         }
+
+#if !NET48
+        /// <summary>
+        /// Diagnostic trail of what <see cref="TryForceLoadAssembly"/> did for each assembly it attempted,
+        /// in order. Public/static so it can be inspected from PowerShell for troubleshooting GAC/version
+        /// conflicts without needing a debugger, e.g.:
+        /// <c>[Trisoft.ISHRemote.HelperClasses.AppDomainModuleAssemblyInitializer]::Diagnostics</c>
+        /// </summary>
+        public static readonly List<string> Diagnostics = new List<string>();
+
+        /// <summary>
+        /// Best-effort force-load of one of ISHRemote's own bundled assemblies, as early as possible
+        /// during module import, so it wins the race to populate the assembly cache under
+        /// <paramref name="simpleName"/> before anything else (e.g. a GAC-resident copy at a different
+        /// version) gets a chance to. Never throws: if something already beat us to it (a different
+        /// version of the same strong name is already loaded), the failure is swallowed and whatever
+        /// is already loaded remains in place - matching the pre-mitigation behavior for that assembly.
+        /// </summary>
+        private static void TryForceLoadAssembly(string simpleName, string fileName)
+        {
+            try
+            {
+                var filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), fileName);
+                var assembly = Assembly.LoadFrom(filePath);
+                _forcedLoadedAssemblies.GetOrAdd(simpleName, assembly);
+                Diagnostics.Add($"TryForceLoadAssembly OK for simpleName[{simpleName}] loadedVersion[{assembly.GetName().Version}] from[{assembly.Location}]");
+            }
+            catch (Exception ex)
+            {
+                // Show exactly what was already loaded under this simple name at the moment of failure -
+                // its true .NET assembly identity (Name/Version/PublicKeyToken - what the CLR binder
+                // actually checks), its on-disk location, and its Win32 FileVersion/ProductVersion
+                // resource (what a human would read as "the version"). These two can legitimately differ,
+                // as they do for Duende.IdentityModel.OidcClient (AssemblyVersion frozen at 7.0.0.0 across
+                // NuGet package releases, while FileVersion/ProductVersion tracks the real 7.x.y release).
+                var alreadyLoaded = AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(a => a.GetName().Name == simpleName)
+                    .Select(a =>
+                    {
+                        string fileVersion = "?", productVersion = "?";
+                        try
+                        {
+                            var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(a.Location);
+                            fileVersion = versionInfo.FileVersion;
+                            productVersion = versionInfo.ProductVersion;
+                        }
+                        catch
+                        {
+                            // Location can be empty/inaccessible for dynamic or in-memory assemblies; leave "?"
+                        }
+                        return $"assemblyVersion[{a.GetName().Version}] location[{a.Location}] fileVersion[{fileVersion}] productVersion[{productVersion}]";
+                    });
+                Diagnostics.Add($"TryForceLoadAssembly FAIL for simpleName[{simpleName}] fileName[{fileName}] exception[{ex.GetType().Name}: {ex.Message}] alreadyLoaded[{string.Join("; ", alreadyLoaded)}]");
+            }
+        }
+#endif
 
 #if NET48
 

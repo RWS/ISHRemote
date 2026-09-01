@@ -31,7 +31,20 @@ namespace Trisoft.ISHRemote.Connection
     /// <summary>
     /// Knows how to reliably launch your default web browser (the one that opens any https:// url in any application) across the supported platforms Windows, Linux and MacOS
     /// </summary>
-    public class InfoShareOpenIdConnectSystemBrowser : IBrowser
+    /// <remarks>
+    /// Intentionally internal, not public: this class implements Duende.IdentityModel.OidcClient.Browser.IBrowser,
+    /// with method signatures (InvokeAsync) that reference BrowserOptions/BrowserResult types from that assembly.
+    /// If this class were public, PowerShell's binary module loader (PSSnapInHelpers.GetAssemblyTypes, via
+    /// assembly.ExportedTypes) would need to fully resolve Duende.IdentityModel.OidcClient while discovering
+    /// cmdlets - before IModuleAssemblyInitializer.OnImport() ever runs. On machines where a different build of
+    /// Duende.IdentityModel.OidcClient is registered in the Global Assembly Cache under the same strong name
+    /// identity (observed with Microsoft Intune Management Extension installed), that early, uncontrollable
+    /// resolution can end up loading the GAC copy instead of ISHRemote's own bundled one - see
+    /// AppDomainModuleAssemblyInitializer.cs for the full history of this investigation. Keeping this class
+    /// internal removes it from ExportedTypes entirely, so that early reflection pass never needs to touch
+    /// Duende.IdentityModel.OidcClient at all.
+    /// </remarks>
+    internal class InfoShareOpenIdConnectSystemBrowser : IBrowser
     {
         /// <summary>
         /// Logger

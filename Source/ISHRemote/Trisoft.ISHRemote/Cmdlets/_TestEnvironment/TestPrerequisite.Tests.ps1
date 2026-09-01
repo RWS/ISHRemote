@@ -47,6 +47,27 @@ Describe "Test-Prerequisite" -Tags "Read" {
 		}
 	}
 
+	Context "Assembly loading - No Global Assembly Cache (GAC) fallback on PowerShell Core" {
+		It "No assemblies loaded from GAC_MSIL/GAC_32/GAC_64 (only applicable to pwsh.exe/PowerShell Core; Windows PowerShell 5.1/Desktop legitimately uses the GAC)" {
+			# Regression test for a customer issue where a Microsoft.IdentityModel.Tokens assembly registered
+			# in the GAC (e.g. by Microsoft Intune Management Extension) got resolved instead of ISHRemote's
+			# own bundled copy, causing 'FileLoadException: The located assembly's manifest definition does
+			# not match the assembly reference' during New-IshSession (WcfSoapWithOpenIdConnect protocol).
+			# ISHRemote force-loads its own copies early in AppDomainModuleAssemblyInitializer.OnImport() to
+			# win that race; this test asserts that mitigation keeps holding for the whole session, including
+			# after Import-Module and New-IshSession ran as part of ISHRemote.PesterSetup.ps1 above.
+			if ($PSVersionTable.PSEdition -eq 'Core') {
+				$gacAssemblies = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.Location -like '*\Microsoft.NET\assembly\GAC_*' }
+				# Fold the offending assembly identity/location into the actual value under test, so a
+				# failure reports e.g. "Expected [string] '', but got [string] 'Duende.IdentityModel.OidcClient,
+				# Version=7.0.0.0,... from C:\WINDOWS\...\GAC_MSIL\...'" instead of a bare count mismatch
+				# that gives no lead on which library or where it came from.
+				$offendingAssemblies = ($gacAssemblies | ForEach-Object { "$($_.FullName) from $($_.Location)" }) -join "`r`n"
+				$offendingAssemblies | Should-BeEmptyString
+			}
+		}
+	}
+
 	Context "ISHRemote.PesterSetup.Debug.ps1 minimal overwrites" {
 		It "baseUrl" {
 			$baseUrl | Should-NotBe 'https://ish.example.com'
