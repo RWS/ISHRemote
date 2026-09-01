@@ -552,7 +552,7 @@ namespace Trisoft.ISHRemote.Connection
                 _annotationServiceReference = _annotationClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_annotationServiceReference).Faulted += new EventHandler(AnnotationClientChannelFaulted);
             }
-            return _annotationServiceReference;
+            return RetryOnFaultProxy<Annotation25ServiceReference.Annotation>.Wrap(_annotationServiceReference, GetAnnotation25Channel);
 #else
             if ((_annotationClient == null) || (_annotationServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -584,7 +584,7 @@ namespace Trisoft.ISHRemote.Connection
                 _annotationServiceReference = _annotationClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_annotationServiceReference).Faulted += new EventHandler(AnnotationClientChannelFaulted);
             }
-            return _annotationServiceReference;
+            return RetryOnFaultProxy<Annotation25ServiceReference.Annotation>.Wrap(_annotationServiceReference, GetAnnotation25Channel);
 #endif
         }
         /// <summary>
@@ -612,7 +612,7 @@ namespace Trisoft.ISHRemote.Connection
                 _applicationServiceReference = _applicationClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_applicationServiceReference).Faulted += new EventHandler(ApplicationClientChannelFaulted);
             }
-            return _applicationServiceReference;
+            return RetryOnFaultProxy<Application25ServiceReference.Application>.Wrap(_applicationServiceReference, GetApplication25Channel);
 #else
             if ((_applicationClient == null) || (_applicationServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -644,7 +644,7 @@ namespace Trisoft.ISHRemote.Connection
                 _applicationServiceReference = _applicationClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_applicationServiceReference).Faulted += new EventHandler(ApplicationClientChannelFaulted);
             }
-            return _applicationServiceReference;
+            return RetryOnFaultProxy<Application25ServiceReference.Application>.Wrap(_applicationServiceReference, GetApplication25Channel);
 #endif
         }
 
@@ -673,7 +673,7 @@ namespace Trisoft.ISHRemote.Connection
                 _documentObjServiceReference = _documentObjClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_documentObjServiceReference).Faulted += new EventHandler(DocumentObjClientChannelFaulted);
             }
-            return _documentObjServiceReference;
+            return RetryOnFaultProxy<DocumentObj25ServiceReference.DocumentObj>.Wrap(_documentObjServiceReference, GetDocumentObj25Channel);
 #else
             if ((_documentObjClient == null) || (_documentObjServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -705,7 +705,7 @@ namespace Trisoft.ISHRemote.Connection
                 _documentObjServiceReference = _documentObjClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_documentObjServiceReference).Faulted += new EventHandler(DocumentObjClientChannelFaulted);
             }
-            return _documentObjServiceReference;
+            return RetryOnFaultProxy<DocumentObj25ServiceReference.DocumentObj>.Wrap(_documentObjServiceReference, GetDocumentObj25Channel);
 #endif
         }
 
@@ -734,7 +734,7 @@ namespace Trisoft.ISHRemote.Connection
                 _folderServiceReference = _folderClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_folderServiceReference).Faulted += new EventHandler(FolderClientChannelFaulted);
             }
-            return _folderServiceReference;
+            return RetryOnFaultProxy<Folder25ServiceReference.Folder>.Wrap(_folderServiceReference, GetFolder25Channel);
 #else
             if ((_folderClient == null) || (_folderServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -766,7 +766,7 @@ namespace Trisoft.ISHRemote.Connection
                 _folderServiceReference = _folderClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_folderServiceReference).Faulted += new EventHandler(FolderClientChannelFaulted);
             }
-            return _folderServiceReference;
+            return RetryOnFaultProxy<Folder25ServiceReference.Folder>.Wrap(_folderServiceReference, GetFolder25Channel);
 #endif
         }
 
@@ -795,7 +795,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userServiceReference = _userClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_userServiceReference).Faulted += new EventHandler(UserClientChannelFaulted);
             }
-            return _userServiceReference;
+            return RetryOnFaultProxy<User25ServiceReference.User>.Wrap(_userServiceReference, GetUser25Channel);
 #else
             if ((_userClient == null) || (_userServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -827,7 +827,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userServiceReference = _userClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_userServiceReference).Faulted += new EventHandler(UserClientChannelFaulted);
             }
-            return _userServiceReference;
+            return RetryOnFaultProxy<User25ServiceReference.User>.Wrap(_userServiceReference, GetUser25Channel);
 #endif
         }
 
@@ -856,7 +856,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userRoleServiceReference = _userRoleClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_userRoleServiceReference).Faulted += new EventHandler(UserRoleClientChannelFaulted);
             }
-            return _userRoleServiceReference;
+            return RetryOnFaultProxy<UserRole25ServiceReference.UserRole>.Wrap(_userRoleServiceReference, GetUserRole25Channel);
 #else
             if ((_userRoleClient == null) || (_userRoleServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -888,7 +888,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userRoleServiceReference = _userRoleClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_userRoleServiceReference).Faulted += new EventHandler(UserRoleClientChannelFaulted);
             }
-            return _userRoleServiceReference;
+            return RetryOnFaultProxy<UserRole25ServiceReference.UserRole>.Wrap(_userRoleServiceReference, GetUserRole25Channel);
 #endif
         }
 
@@ -917,7 +917,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userGroupServiceReference = _userGroupClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_userGroupServiceReference).Faulted += new EventHandler(UserGroupClientChannelFaulted);
             }
-            return _userGroupServiceReference;
+            return RetryOnFaultProxy<UserGroup25ServiceReference.UserGroup>.Wrap(_userGroupServiceReference, GetUserGroup25Channel);
 #else
             if ((_userGroupClient == null) || (_userGroupServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -949,7 +949,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userGroupServiceReference = _userGroupClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_userGroupServiceReference).Faulted += new EventHandler(UserGroupClientChannelFaulted);
             }
-            return _userGroupServiceReference;
+            return RetryOnFaultProxy<UserGroup25ServiceReference.UserGroup>.Wrap(_userGroupServiceReference, GetUserGroup25Channel);
 #endif
         }
 
@@ -978,7 +978,7 @@ namespace Trisoft.ISHRemote.Connection
                 _listOfValuesServiceReference = _listOfValuesClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_listOfValuesServiceReference).Faulted += new EventHandler(ListOfValuesClientChannelFaulted);
             }
-            return _listOfValuesServiceReference;
+            return RetryOnFaultProxy<ListOfValues25ServiceReference.ListOfValues>.Wrap(_listOfValuesServiceReference, GetListOfValues25Channel);
 #else
             if ((_listOfValuesClient == null) || (_listOfValuesServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1010,7 +1010,7 @@ namespace Trisoft.ISHRemote.Connection
                 _listOfValuesServiceReference = _listOfValuesClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_listOfValuesServiceReference).Faulted += new EventHandler(ListOfValuesClientChannelFaulted);
             }
-            return _listOfValuesServiceReference;
+            return RetryOnFaultProxy<ListOfValues25ServiceReference.ListOfValues>.Wrap(_listOfValuesServiceReference, GetListOfValues25Channel);
 #endif
         }
 
@@ -1039,7 +1039,7 @@ namespace Trisoft.ISHRemote.Connection
                 _publicationOutputServiceReference = _publicationOutputClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_publicationOutputServiceReference).Faulted += new EventHandler(PublicationOutputClientChannelFaulted);
             }
-            return _publicationOutputServiceReference;
+            return RetryOnFaultProxy<PublicationOutput25ServiceReference.PublicationOutput>.Wrap(_publicationOutputServiceReference, GetPublicationOutput25Channel);
 #else
             if ((_publicationOutputClient == null) || (_publicationOutputServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1071,7 +1071,7 @@ namespace Trisoft.ISHRemote.Connection
                 _publicationOutputServiceReference = _publicationOutputClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_publicationOutputServiceReference).Faulted += new EventHandler(PublicationOutputClientChannelFaulted);
             }
-            return _publicationOutputServiceReference;
+            return RetryOnFaultProxy<PublicationOutput25ServiceReference.PublicationOutput>.Wrap(_publicationOutputServiceReference, GetPublicationOutput25Channel);
 #endif
         }
 
@@ -1100,7 +1100,7 @@ namespace Trisoft.ISHRemote.Connection
                 _outputFormatServiceReference = _outputFormatClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_outputFormatServiceReference).Faulted += new EventHandler(OutputFormatClientChannelFaulted);
             }
-            return _outputFormatServiceReference;
+            return RetryOnFaultProxy<OutputFormat25ServiceReference.OutputFormat>.Wrap(_outputFormatServiceReference, GetOutputFormat25Channel);
 #else
             if ((_outputFormatClient == null) || (_outputFormatServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1132,7 +1132,7 @@ namespace Trisoft.ISHRemote.Connection
                 _outputFormatServiceReference = _outputFormatClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_outputFormatServiceReference).Faulted += new EventHandler(OutputFormatClientChannelFaulted);
             }
-            return _outputFormatServiceReference;
+            return RetryOnFaultProxy<OutputFormat25ServiceReference.OutputFormat>.Wrap(_outputFormatServiceReference, GetOutputFormat25Channel);
 #endif
         }
 
@@ -1161,7 +1161,7 @@ namespace Trisoft.ISHRemote.Connection
                 _settingsServiceReference = _settingsClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_settingsServiceReference).Faulted += new EventHandler(SettingsClientChannelFaulted);
             }
-            return _settingsServiceReference;
+            return RetryOnFaultProxy<Settings25ServiceReference.Settings>.Wrap(_settingsServiceReference, GetSettings25Channel);
 #else
             if ((_settingsClient == null) || (_settingsServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1193,7 +1193,7 @@ namespace Trisoft.ISHRemote.Connection
                 _settingsServiceReference = _settingsClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_settingsServiceReference).Faulted += new EventHandler(SettingsClientChannelFaulted);
             }
-            return _settingsServiceReference;
+            return RetryOnFaultProxy<Settings25ServiceReference.Settings>.Wrap(_settingsServiceReference, GetSettings25Channel);
 #endif
         }
 
@@ -1222,7 +1222,7 @@ namespace Trisoft.ISHRemote.Connection
                 _EDTServiceReference = _EDTClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_EDTServiceReference).Faulted += new EventHandler(EDTClientChannelFaulted);
             }
-            return _EDTServiceReference;
+            return RetryOnFaultProxy<EDT25ServiceReference.EDT>.Wrap(_EDTServiceReference, GetEDT25Channel);
 #else
             if ((_EDTClient == null) || (_EDTServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1254,7 +1254,7 @@ namespace Trisoft.ISHRemote.Connection
                 _EDTServiceReference = _EDTClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_EDTServiceReference).Faulted += new EventHandler(EDTClientChannelFaulted);
             }
-            return _EDTServiceReference;
+            return RetryOnFaultProxy<EDT25ServiceReference.EDT>.Wrap(_EDTServiceReference, GetEDT25Channel);
 #endif
         }
 
@@ -1283,7 +1283,7 @@ namespace Trisoft.ISHRemote.Connection
                 _eventMonitorServiceReference = _eventMonitorClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_eventMonitorServiceReference).Faulted += new EventHandler(EventMonitorClientChannelFaulted);
             }
-            return _eventMonitorServiceReference;
+            return RetryOnFaultProxy<EventMonitor25ServiceReference.EventMonitor>.Wrap(_eventMonitorServiceReference, GetEventMonitor25Channel);
 #else
             if ((_eventMonitorClient == null) || (_eventMonitorServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1315,7 +1315,7 @@ namespace Trisoft.ISHRemote.Connection
                 _eventMonitorServiceReference = _eventMonitorClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_eventMonitorServiceReference).Faulted += new EventHandler(EventMonitorClientChannelFaulted);
             }
-            return _eventMonitorServiceReference;
+            return RetryOnFaultProxy<EventMonitor25ServiceReference.EventMonitor>.Wrap(_eventMonitorServiceReference, GetEventMonitor25Channel);
 #endif
         }
 
@@ -1344,7 +1344,7 @@ namespace Trisoft.ISHRemote.Connection
                 _baselineServiceReference = _baselineClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_baselineServiceReference).Faulted += new EventHandler(BaselineClientChannelFaulted);
             }
-            return _baselineServiceReference;
+            return RetryOnFaultProxy<Baseline25ServiceReference.Baseline>.Wrap(_baselineServiceReference, GetBaseline25Channel);
 #else
             if ((_baselineClient == null) || (_baselineServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1376,7 +1376,7 @@ namespace Trisoft.ISHRemote.Connection
                 _baselineServiceReference = _baselineClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_baselineServiceReference).Faulted += new EventHandler(BaselineClientChannelFaulted);
             }
-            return _baselineServiceReference;
+            return RetryOnFaultProxy<Baseline25ServiceReference.Baseline>.Wrap(_baselineServiceReference, GetBaseline25Channel);
 #endif
         }
 
@@ -1405,7 +1405,7 @@ namespace Trisoft.ISHRemote.Connection
                 _metadataBindingServiceReference = _metadataBindingClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_metadataBindingServiceReference).Faulted += new EventHandler(MetadataBindingClientChannelFaulted);
             }
-            return _metadataBindingServiceReference;
+            return RetryOnFaultProxy<MetadataBinding25ServiceReference.MetadataBinding>.Wrap(_metadataBindingServiceReference, GetMetadataBinding25Channel);
 #else
             if ((_metadataBindingClient == null) || (_metadataBindingServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1437,7 +1437,7 @@ namespace Trisoft.ISHRemote.Connection
                 _metadataBindingServiceReference = _metadataBindingClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_metadataBindingServiceReference).Faulted += new EventHandler(MetadataBindingClientChannelFaulted);
             }
-            return _metadataBindingServiceReference;
+            return RetryOnFaultProxy<MetadataBinding25ServiceReference.MetadataBinding>.Wrap(_metadataBindingServiceReference, GetMetadataBinding25Channel);
 #endif
         }
 
@@ -1466,7 +1466,7 @@ namespace Trisoft.ISHRemote.Connection
                 _searchServiceReference = _searchClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_searchServiceReference).Faulted += new EventHandler(SearchClientChannelFaulted);
             }
-            return _searchServiceReference;
+            return RetryOnFaultProxy<Search25ServiceReference.Search>.Wrap(_searchServiceReference, GetSearch25Channel);
 #else
             if ((_searchClient == null) || (_searchServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1498,7 +1498,7 @@ namespace Trisoft.ISHRemote.Connection
                 _searchServiceReference = _searchClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_searchServiceReference).Faulted += new EventHandler(SearchClientChannelFaulted);
             }
-            return _searchServiceReference;
+            return RetryOnFaultProxy<Search25ServiceReference.Search>.Wrap(_searchServiceReference, GetSearch25Channel);
 #endif
         }
 
@@ -1527,7 +1527,7 @@ namespace Trisoft.ISHRemote.Connection
                 _translationJobServiceReference = _translationJobClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_translationJobServiceReference).Faulted += new EventHandler(TranslationJobClientChannelFaulted);
             }
-            return _translationJobServiceReference;
+            return RetryOnFaultProxy<TranslationJob25ServiceReference.TranslationJob>.Wrap(_translationJobServiceReference, GetTranslationJob25Channel);
 #else
             if ((_translationJobClient == null) || (_translationJobServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1559,7 +1559,7 @@ namespace Trisoft.ISHRemote.Connection
                 _translationJobServiceReference = _translationJobClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_translationJobServiceReference).Faulted += new EventHandler(TranslationJobClientChannelFaulted);
             }
-            return _translationJobServiceReference;
+            return RetryOnFaultProxy<TranslationJob25ServiceReference.TranslationJob>.Wrap(_translationJobServiceReference, GetTranslationJob25Channel);
 #endif
         }
 
@@ -1588,7 +1588,7 @@ namespace Trisoft.ISHRemote.Connection
                 _translationTemplateServiceReference = _translationTemplateClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_translationTemplateServiceReference).Faulted += new EventHandler(TranslationTemplateClientChannelFaulted);
             }
-            return _translationTemplateServiceReference;
+            return RetryOnFaultProxy<TranslationTemplate25ServiceReference.TranslationTemplate>.Wrap(_translationTemplateServiceReference, GetTranslationTemplate25Channel);
 #else
             if ((_translationTemplateClient == null) || (_translationTemplateServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1620,7 +1620,7 @@ namespace Trisoft.ISHRemote.Connection
                 _translationTemplateServiceReference = _translationTemplateClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_translationTemplateServiceReference).Faulted += new EventHandler(TranslationTemplateClientChannelFaulted);
             }
-            return _translationTemplateServiceReference;
+            return RetryOnFaultProxy<TranslationTemplate25ServiceReference.TranslationTemplate>.Wrap(_translationTemplateServiceReference, GetTranslationTemplate25Channel);
 #endif
         }
 
@@ -1650,7 +1650,7 @@ namespace Trisoft.ISHRemote.Connection
                 _backgroundTaskServiceReference = _backgroundTaskClient.ChannelFactory.CreateChannelWithIssuedToken(WrapJwt(GetAccessToken().Value));
                 ((ICommunicationObject)_backgroundTaskServiceReference).Faulted += new EventHandler(BackgroundTaskClientChannelFaulted);
             }
-            return _backgroundTaskServiceReference;
+            return RetryOnFaultProxy<BackgroundTask25ServiceReference.BackgroundTask>.Wrap(_backgroundTaskServiceReference, GetBackgroundTask25Channel);
 #else
             if ((_backgroundTaskClient == null) || (_backgroundTaskServiceReference == null) ||
                 (clientInnerChannelState == CommunicationState.Faulted) || (serviceReferenceState == CommunicationState.Faulted) ||
@@ -1682,7 +1682,7 @@ namespace Trisoft.ISHRemote.Connection
                 _backgroundTaskServiceReference = _backgroundTaskClient.ChannelFactory.CreateChannel();
                 ((ICommunicationObject)_backgroundTaskServiceReference).Faulted += new EventHandler(BackgroundTaskClientChannelFaulted);
             }
-            return _backgroundTaskServiceReference;
+            return RetryOnFaultProxy<BackgroundTask25ServiceReference.BackgroundTask>.Wrap(_backgroundTaskServiceReference, GetBackgroundTask25Channel);
 #endif
         }
         #endregion

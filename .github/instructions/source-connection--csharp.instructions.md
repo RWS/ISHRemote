@@ -120,6 +120,15 @@ and `#if NET10_0_OR_GREATER` for narrower cases). Both arms must compile **and b
   (`OpenApiISH30Client`, `OpenApiAM10Client`), setting the `Bearer` header from `GetAccessToken()`;
   **inherits** the OIDC base; `IDisposable`.
 
+**Cross-cutting helper**
+- `RetryOnFaultProxy.cs` — generic `System.Reflection.DispatchProxy`-based wrapper used only by
+  `InfoShareWcfSoapWithOpenIdConnectConnection`'s `Get*25Channel()` accessors: catches
+  `CommunicationException`/`FaultException` on the actual SOAP call, rebuilds the channel via the
+  caller-supplied delegate (the same `Get*25Channel()` method), and retries exactly once, unwrapping
+  reflection's `TargetInvocationException` so the original exception type/stack trace reaches the
+  caller unchanged. Wraps only the plain service-contract interface, never `ICommunicationObject`/
+  `IDisposable` — those keep operating on the private raw channel field, unaffected.
+
 **Diagram**
 - `__ConnectionClassDiagram.cd` — Visual Studio class diagram. **Keep it in sync** when you add,
   remove, or rename a class in this folder.
@@ -151,6 +160,8 @@ When you copy `Connection/` out, these are the only external seams to satisfy �
   own generated service references.
 - The NSwag OpenAPI clients `Trisoft.ISHRemote.OpenApiISH30` / `…OpenApiAM10`.
 - NuGet: `Duende.IdentityModel` + `Duende.IdentityModel.OidcClient`, and `Newtonsoft.Json`.
+- NuGet: `System.Reflection.DispatchProxy` on `net48` only (built into the BCL on `net6.0`+), used by
+  `RetryOnFaultProxy.cs`.
 
 If you keep those seams thin, the WS-Trust, OIDC-over-SOAP and OIDC-over-OpenAPI flavours — with
 Client Credentials or interactive browser auth — all come across intact.
