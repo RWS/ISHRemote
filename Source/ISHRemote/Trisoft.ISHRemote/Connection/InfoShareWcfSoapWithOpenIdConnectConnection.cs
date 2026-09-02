@@ -533,6 +533,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public Annotation25ServiceReference.Annotation GetAnnotation25Channel()
         {
+            return RetryOnFaultProxy<Annotation25ServiceReference.Annotation>.Wrap(EnsureAnnotation25Channel(), EnsureAnnotation25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private Annotation25ServiceReference.Annotation EnsureAnnotation25Channel()
+        {
             var clientInnerChannelState = _annotationClient?.InnerChannel?.State;
             var serviceReferenceState = (_annotationServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -592,6 +601,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public Application25ServiceReference.Application GetApplication25Channel()
+        {
+            return RetryOnFaultProxy<Application25ServiceReference.Application>.Wrap(EnsureApplication25Channel(), EnsureApplication25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private Application25ServiceReference.Application EnsureApplication25Channel()
         {
             var clientInnerChannelState = _applicationClient?.InnerChannel?.State;
             var serviceReferenceState = (_applicationServiceReference as ICommunicationObject)?.State;
@@ -654,6 +672,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public DocumentObj25ServiceReference.DocumentObj GetDocumentObj25Channel()
         {
+            return RetryOnFaultProxy<DocumentObj25ServiceReference.DocumentObj>.Wrap(EnsureDocumentObj25Channel(), EnsureDocumentObj25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private DocumentObj25ServiceReference.DocumentObj EnsureDocumentObj25Channel()
+        {
             var clientInnerChannelState = _documentObjClient?.InnerChannel?.State;
             var serviceReferenceState = (_documentObjServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -714,6 +741,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public Folder25ServiceReference.Folder GetFolder25Channel()
+        {
+            return RetryOnFaultProxy<Folder25ServiceReference.Folder>.Wrap(EnsureFolder25Channel(), EnsureFolder25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private Folder25ServiceReference.Folder EnsureFolder25Channel()
         {
             var clientInnerChannelState = _folderClient?.InnerChannel?.State;
             var serviceReferenceState = (_folderServiceReference as ICommunicationObject)?.State;
@@ -776,6 +812,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public User25ServiceReference.User GetUser25Channel()
         {
+            return RetryOnFaultProxy<User25ServiceReference.User>.Wrap(EnsureUser25Channel(), EnsureUser25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private User25ServiceReference.User EnsureUser25Channel()
+        {
             var clientInnerChannelState = _userClient?.InnerChannel?.State;
             var serviceReferenceState = (_userServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -836,6 +881,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public UserRole25ServiceReference.UserRole GetUserRole25Channel()
+        {
+            return RetryOnFaultProxy<UserRole25ServiceReference.UserRole>.Wrap(EnsureUserRole25Channel(), EnsureUserRole25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private UserRole25ServiceReference.UserRole EnsureUserRole25Channel()
         {
             var clientInnerChannelState = _userRoleClient?.InnerChannel?.State;
             var serviceReferenceState = (_userRoleServiceReference as ICommunicationObject)?.State;
@@ -898,6 +952,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public UserGroup25ServiceReference.UserGroup GetUserGroup25Channel()
         {
+            return RetryOnFaultProxy<UserGroup25ServiceReference.UserGroup>.Wrap(EnsureUserGroup25Channel(), EnsureUserGroup25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private UserGroup25ServiceReference.UserGroup EnsureUserGroup25Channel()
+        {
             var clientInnerChannelState = _userGroupClient?.InnerChannel?.State;
             var serviceReferenceState = (_userGroupServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -958,6 +1021,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public ListOfValues25ServiceReference.ListOfValues GetListOfValues25Channel()
+        {
+            return RetryOnFaultProxy<ListOfValues25ServiceReference.ListOfValues>.Wrap(EnsureListOfValues25Channel(), EnsureListOfValues25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private ListOfValues25ServiceReference.ListOfValues EnsureListOfValues25Channel()
         {
             var clientInnerChannelState = _listOfValuesClient?.InnerChannel?.State;
             var serviceReferenceState = (_listOfValuesServiceReference as ICommunicationObject)?.State;
@@ -1020,6 +1092,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public PublicationOutput25ServiceReference.PublicationOutput GetPublicationOutput25Channel()
         {
+            return RetryOnFaultProxy<PublicationOutput25ServiceReference.PublicationOutput>.Wrap(EnsurePublicationOutput25Channel(), EnsurePublicationOutput25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private PublicationOutput25ServiceReference.PublicationOutput EnsurePublicationOutput25Channel()
+        {
             var clientInnerChannelState = _publicationOutputClient?.InnerChannel?.State;
             var serviceReferenceState = (_publicationOutputServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -1080,6 +1161,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public OutputFormat25ServiceReference.OutputFormat GetOutputFormat25Channel()
+        {
+            return RetryOnFaultProxy<OutputFormat25ServiceReference.OutputFormat>.Wrap(EnsureOutputFormat25Channel(), EnsureOutputFormat25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private OutputFormat25ServiceReference.OutputFormat EnsureOutputFormat25Channel()
         {
             var clientInnerChannelState = _outputFormatClient?.InnerChannel?.State;
             var serviceReferenceState = (_outputFormatServiceReference as ICommunicationObject)?.State;
@@ -1142,6 +1232,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public Settings25ServiceReference.Settings GetSettings25Channel()
         {
+            return RetryOnFaultProxy<Settings25ServiceReference.Settings>.Wrap(EnsureSettings25Channel(), EnsureSettings25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private Settings25ServiceReference.Settings EnsureSettings25Channel()
+        {
             var clientInnerChannelState = _settingsClient?.InnerChannel?.State;
             var serviceReferenceState = (_settingsServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -1198,10 +1297,19 @@ namespace Trisoft.ISHRemote.Connection
         }
 
         /// <summary>
-        /// Create a /Wcf/API25/Edt.svc proxy
+        /// Create a /Wcf/API25/EDT.svc proxy
         /// </summary>
         /// <returns>The proxy</returns>
         public EDT25ServiceReference.EDT GetEDT25Channel()
+        {
+            return RetryOnFaultProxy<EDT25ServiceReference.EDT>.Wrap(EnsureEDT25Channel(), EnsureEDT25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private EDT25ServiceReference.EDT EnsureEDT25Channel()
         {
             var clientInnerChannelState = _EDTClient?.InnerChannel?.State;
             var serviceReferenceState = (_EDTServiceReference as ICommunicationObject)?.State;
@@ -1264,6 +1372,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public EventMonitor25ServiceReference.EventMonitor GetEventMonitor25Channel()
         {
+            return RetryOnFaultProxy<EventMonitor25ServiceReference.EventMonitor>.Wrap(EnsureEventMonitor25Channel(), EnsureEventMonitor25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private EventMonitor25ServiceReference.EventMonitor EnsureEventMonitor25Channel()
+        {
             var clientInnerChannelState = _eventMonitorClient?.InnerChannel?.State;
             var serviceReferenceState = (_eventMonitorServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -1324,6 +1441,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public Baseline25ServiceReference.Baseline GetBaseline25Channel()
+        {
+            return RetryOnFaultProxy<Baseline25ServiceReference.Baseline>.Wrap(EnsureBaseline25Channel(), EnsureBaseline25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private Baseline25ServiceReference.Baseline EnsureBaseline25Channel()
         {
             var clientInnerChannelState = _baselineClient?.InnerChannel?.State;
             var serviceReferenceState = (_baselineServiceReference as ICommunicationObject)?.State;
@@ -1386,6 +1512,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public MetadataBinding25ServiceReference.MetadataBinding GetMetadataBinding25Channel()
         {
+            return RetryOnFaultProxy<MetadataBinding25ServiceReference.MetadataBinding>.Wrap(EnsureMetadataBinding25Channel(), EnsureMetadataBinding25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private MetadataBinding25ServiceReference.MetadataBinding EnsureMetadataBinding25Channel()
+        {
             var clientInnerChannelState = _metadataBindingClient?.InnerChannel?.State;
             var serviceReferenceState = (_metadataBindingServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -1446,6 +1581,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public Search25ServiceReference.Search GetSearch25Channel()
+        {
+            return RetryOnFaultProxy<Search25ServiceReference.Search>.Wrap(EnsureSearch25Channel(), EnsureSearch25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private Search25ServiceReference.Search EnsureSearch25Channel()
         {
             var clientInnerChannelState = _searchClient?.InnerChannel?.State;
             var serviceReferenceState = (_searchServiceReference as ICommunicationObject)?.State;
@@ -1508,6 +1652,15 @@ namespace Trisoft.ISHRemote.Connection
         /// <returns>The proxy</returns>
         public TranslationJob25ServiceReference.TranslationJob GetTranslationJob25Channel()
         {
+            return RetryOnFaultProxy<TranslationJob25ServiceReference.TranslationJob>.Wrap(EnsureTranslationJob25Channel(), EnsureTranslationJob25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private TranslationJob25ServiceReference.TranslationJob EnsureTranslationJob25Channel()
+        {
             var clientInnerChannelState = _translationJobClient?.InnerChannel?.State;
             var serviceReferenceState = (_translationJobServiceReference as ICommunicationObject)?.State;
 #if NET48
@@ -1568,6 +1721,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public TranslationTemplate25ServiceReference.TranslationTemplate GetTranslationTemplate25Channel()
+        {
+            return RetryOnFaultProxy<TranslationTemplate25ServiceReference.TranslationTemplate>.Wrap(EnsureTranslationTemplate25Channel(), EnsureTranslationTemplate25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private TranslationTemplate25ServiceReference.TranslationTemplate EnsureTranslationTemplate25Channel()
         {
             var clientInnerChannelState = _translationTemplateClient?.InnerChannel?.State;
             var serviceReferenceState = (_translationTemplateServiceReference as ICommunicationObject)?.State;
@@ -1630,6 +1792,15 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         /// <returns>The proxy</returns>
         public BackgroundTask25ServiceReference.BackgroundTask GetBackgroundTask25Channel()
+        {
+            return RetryOnFaultProxy<BackgroundTask25ServiceReference.BackgroundTask>.Wrap(EnsureBackgroundTask25Channel(), EnsureBackgroundTask25Channel);
+        }
+        /// <summary>
+        /// Ensures a live (non-faulted) channel, rebuilding it if necessary, and returns the raw (unwrapped) channel -
+        /// used both as the public accessor's initial target and as the rebuild delegate for retries in <see cref="RetryOnFaultProxy{T}"/>.
+        /// </summary>
+        /// <returns>The raw proxy, never wrapped.</returns>
+        private BackgroundTask25ServiceReference.BackgroundTask EnsureBackgroundTask25Channel()
         {
             var clientInnerChannelState = _backgroundTaskClient?.InnerChannel?.State;
             var serviceReferenceState = (_backgroundTaskServiceReference as ICommunicationObject)?.State;
