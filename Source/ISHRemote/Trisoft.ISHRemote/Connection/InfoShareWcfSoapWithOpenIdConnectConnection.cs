@@ -233,6 +233,14 @@ namespace Trisoft.ISHRemote.Connection
         /// </summary>
         private BackgroundTask25ServiceReference.BackgroundTaskClient _backgroundTaskClient;
         private BackgroundTask25ServiceReference.BackgroundTask _backgroundTaskServiceReference;
+#if !NET48
+        /// <summary>
+        /// Endpoint behavior wiring the shared <see cref="UserAgentState"/> onto every SOAP channel next to the
+        /// existing bearerCredentials behavior, so a User-Agent fallback set later (see #275) is carried by every
+        /// subsequent call on this connection without rebuilding any channel.
+        /// </summary>
+        private readonly InfoShareWcfSoapUserAgentEndpointBehavior _userAgentEndpointBehavior;
+#endif
         #endregion Private Members
 
         #region Constructors
@@ -242,9 +250,13 @@ namespace Trisoft.ISHRemote.Connection
         /// <param name="logger">Instance of Interfaces.ILogger implementation</param>
         /// <param name="httpClient">Incoming reused, probably Ssl/Tls initialized already.</param>
         /// <param name="infoShareOpenIdConnectConnectionParameters">OpenIdConnect connection parameters to be shared with WcfSoapWithOpenIdConnect and OpenApiWithOpenIdConnect</param>
-        public InfoShareWcfSoapWithOpenIdConnectConnection(ILogger logger, HttpClient httpClient, InfoShareOpenIdConnectConnectionParameters infoShareOpenIdConnectConnectionParameters)
+        /// <param name="userAgentState">Shared mutable User-Agent fallback holder (see #275); null-safe, but pass the same instance IshSession uses for LoadConnectionConfiguration so a WAF-triggered fallback is visible on both HttpClient and WCF traffic.</param>
+        public InfoShareWcfSoapWithOpenIdConnectConnection(ILogger logger, HttpClient httpClient, InfoShareOpenIdConnectConnectionParameters infoShareOpenIdConnectConnectionParameters, UserAgentState userAgentState)
             : base(logger, httpClient, infoShareOpenIdConnectConnectionParameters)
         {
+#if !NET48
+            _userAgentEndpointBehavior = new InfoShareWcfSoapUserAgentEndpointBehavior(userAgentState ?? new UserAgentState());
+#endif
             _logger.WriteDebug($"InfoShareWcfSoapWithOpenIdConnectConnection InfoShareWSUrl[{_connectionParameters.InfoShareWSUrl}]");
             if (_connectionParameters.Tokens == null)
             {
@@ -579,6 +591,7 @@ namespace Trisoft.ISHRemote.Connection
                 _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_annotationClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _annotationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _annotationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -648,6 +661,7 @@ namespace Trisoft.ISHRemote.Connection
                 _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_applicationClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _applicationClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _applicationClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -718,6 +732,7 @@ namespace Trisoft.ISHRemote.Connection
                 _documentObjClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_documentObjClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _documentObjClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _documentObjClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _documentObjClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -788,6 +803,7 @@ namespace Trisoft.ISHRemote.Connection
                 _folderClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_folderClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _folderClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _folderClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _folderClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -858,6 +874,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _userClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _userClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _userClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -928,6 +945,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userRoleClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userRoleClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _userRoleClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _userRoleClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _userRoleClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -998,6 +1016,7 @@ namespace Trisoft.ISHRemote.Connection
                 _userGroupClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_userGroupClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _userGroupClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _userGroupClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _userGroupClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1068,6 +1087,7 @@ namespace Trisoft.ISHRemote.Connection
                 _listOfValuesClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_listOfValuesClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _listOfValuesClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _listOfValuesClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _listOfValuesClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1138,6 +1158,7 @@ namespace Trisoft.ISHRemote.Connection
                 _publicationOutputClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_publicationOutputClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _publicationOutputClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _publicationOutputClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _publicationOutputClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1208,6 +1229,7 @@ namespace Trisoft.ISHRemote.Connection
                 _outputFormatClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_outputFormatClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _outputFormatClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _outputFormatClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _outputFormatClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1278,6 +1300,7 @@ namespace Trisoft.ISHRemote.Connection
                 _settingsClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_settingsClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _settingsClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _settingsClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _settingsClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1348,6 +1371,7 @@ namespace Trisoft.ISHRemote.Connection
                 _EDTClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_EDTClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _EDTClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _EDTClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _EDTClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1418,6 +1442,7 @@ namespace Trisoft.ISHRemote.Connection
                 _eventMonitorClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_eventMonitorClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _eventMonitorClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _eventMonitorClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _eventMonitorClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1488,6 +1513,7 @@ namespace Trisoft.ISHRemote.Connection
                 _baselineClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_baselineClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _baselineClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _baselineClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _baselineClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1558,6 +1584,7 @@ namespace Trisoft.ISHRemote.Connection
                 _metadataBindingClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_metadataBindingClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _metadataBindingClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _metadataBindingClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _metadataBindingClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1628,6 +1655,7 @@ namespace Trisoft.ISHRemote.Connection
                 _searchClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_searchClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _searchClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _searchClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _searchClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1698,6 +1726,7 @@ namespace Trisoft.ISHRemote.Connection
                 _translationJobClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_translationJobClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _translationJobClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _translationJobClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _translationJobClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1768,6 +1797,7 @@ namespace Trisoft.ISHRemote.Connection
                 _translationTemplateClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_translationTemplateClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _translationTemplateClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _translationTemplateClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _translationTemplateClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
@@ -1839,6 +1869,7 @@ namespace Trisoft.ISHRemote.Connection
                 _backgroundTaskClient.ChannelFactory.Endpoint.EndpointBehaviors.Remove(_backgroundTaskClient.ChannelFactory.Credentials);
                 var bearerCredentials = GetBearerCredentials();
                 _backgroundTaskClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(bearerCredentials);
+                _backgroundTaskClient.ChannelFactory.Endpoint.EndpointBehaviors.Add(_userAgentEndpointBehavior);
 
                 _backgroundTaskClient.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
                 if (_connectionParameters.IgnoreSslPolicyErrors)
