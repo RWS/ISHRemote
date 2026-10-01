@@ -18,6 +18,23 @@ The one that respects the details of Model Context Protocol (MCP) enabling usage
 
 The below text describes the delta compared to fielded release ISHRemote v8.2.
 
+### Retrieve the content objects of your publication
+Cmdlet `Get-IshPublicationOutputContent` returns the `IshDocumentObj` content objects (topics, maps, illustrations, resources) directly reachable through the saved baseline of one or more incoming `IshPublicationOutput` objects, using `Baseline25.ExpandBaseline` under the hood. Content objects whose version is not pinned in the baseline (a "gap", for example a sub-map that has no version selected) are not returned, even if a topic used by that sub-map does have a version pinned — the baseline walk stops at the gap. Optional parameter `-AutoCompleteMode` (`FirstVersion`, `LatestReleased` or `LatestAvailable`) switches from `Baseline25.ExpandBaseline` to `Baseline25.CompleteBaselineByCandidateAndMode` so gaps get filled in using the given strategy before the (now larger) reachable set is returned. Optional parameters `-Language`/`-Resolution` let you override the languages/resolutions used to walk the baseline instead of relying on the publication output's own `FISHPUBLNGCOMBINATION`/output format `FISHRESOLUTIONS`. 
+
+For example:
+```powershell
+Get-IshPublicationOutput -LogicalId "GUID-03081B9A-11E4-4862-845B-27339E0C400D" |
+Out-GridView -PassThru |
+Get-IshPublicationOutputContent -AutoCompleteMode LatestAvailable |
+Get-IshDocumentObjData -FolderPath "C:\TEMP\"
+```
+interactively picks one or more publication outputs in a grid view, completes any gaps in their baselines using the latest available version of each missing content object, and extracts all reachable content objects to the file system. Or release all directly reachable content objects of a publication output:
+```powershell
+Get-IshPublicationOutput -LogicalId "GUID-03081B9A-11E4-4862-845B-27339E0C400D" |
+Get-IshPublicationOutputContent |
+Set-IshDocumentObj -Metadata (Set-IshMetadataField -Name "FSTATUS" -Level Lng -Value "Released")
+```
+
 
 ## Platform Support for PowerShell ....
 
@@ -32,6 +49,7 @@ The below text describes the delta compared to fielded release ISHRemote v8.2.
 * Migrated all 58 `*.Tests.ps1` files from Pester v5 to Pester v6 (`Should -Be` to `Should-Be`, `Should -BeExactly` to `Should-BeString -CaseSensitive`, `Should -Not -BeNullOrEmpty` to `Should-NotBeNull`, `Should -Throw "msg"` to `Should-Throw -ExceptionMessage "msg"`, etc.). CI install gates updated to `-MinimumVersion 6.0.0`. Classic `Should -Not -Throw` retained as there is no `Should-NotThrow` equivalent in Pester 6. Hardened the library for parallel test execution by replacing the process-wide `TrisoftCmdletLogger` singleton with per-cmdlet `ILogger` routing and adding a double-checked lock on `IshSession._ishTypeFieldSetup` to eliminate Collection was modified races under `Run.Parallel = $true`. CI Pester invocations now use `New-PesterConfiguration` (with `Run.Parallel = $false`) so parallel mode can be toggled in one place when ready. See #242, #265, #266.
 * Fixed `New-IshSession` (protocol `WcfSoapWithOpenIdConnect`, PowerShell 7.2+/.NET 6.0+) throwing `FileLoadException: Could not load file or assembly 'Microsoft.IdentityModel.Tokens, Version=8.14.0.0, ...'. The located assembly's manifest definition does not match the assembly reference.` on machines where a different build of `Microsoft.IdentityModel.Tokens` (and related `Duende.IdentityModel.OidcClient`) is registered in the Global Assembly Cache (GAC) — observed on machines with Microsoft Intune Management Extension installed. `AppDomainModuleAssemblyInitializer` now force-loads ISHRemote's own bundled copies of `Duende.IdentityModel`, `Duende.IdentityModel.OidcClient`, `Microsoft.IdentityModel.Abstractions/.Logging/.Tokens/.Tokens.Saml/.Xml` as early as possible during module import, and `SessionCmdlet.BeginProcessing` now reports the full forced list over `-Verbose`. Root cause for the `Duende.IdentityModel.OidcClient` variant: `InfoShareOpenIdConnectSystemBrowser` was `public` and implemented `Duende.IdentityModel.OidcClient.Browser.IBrowser`, which put it in `Trisoft.ISHRemote.dll`'s exported types, forcing PowerShell's own binary-module cmdlet discovery (`Assembly.GetExportedTypes()`) to resolve `Duende.IdentityModel.OidcClient` before `IModuleAssemblyInitializer.OnImport()` ever ran — see Breaking Changes - Code. A new `TestPrerequisite.Tests.ps1` check asserts no assembly is ever loaded from the GAC on PowerShell Core. See #272. Thanks @ddemeyer
 * Fixed cmdlets over protocol `WcfSoapWithOpenIdConnect` occasionally throwing `An unsecured or incorrectly secured fault was received from the other party` on the first SOAP call after a channel fault, requiring the user to re-run the same cmdlet for it to succeed (the existing #201/#219 rebuild-on-next-call logic only kicked in on a second, separate call). Each `Get*25Channel()` method in `InfoShareWcfSoapWithOpenIdConnectConnection` now returns the channel wrapped in a new `RetryOnFaultProxy<T>` (`System.Reflection.DispatchProxy`) that catches `CommunicationException`/`FaultException` on the actual SOAP call, rebuilds the channel via the existing rebuild logic, and retries exactly once within the same cmdlet invocation before propagating any further failure — with the original exception type/stack trace preserved. Requires a new `net48`-only NuGet dependency, `System.Reflection.DispatchProxy` (built into the BCL on `net6.0`/`net10.0`). See #273. Thanks @ddemeyer
+
 
 
 

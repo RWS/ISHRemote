@@ -167,5 +167,33 @@ namespace Trisoft.ISHRemote.HelperClasses
             return (TResult)Enum.Parse(typeof(TResult), ishType.ToString(), true);
         }
 
+        /// <summary>
+        /// Convert a BaselineAutoCompleteMode to a SOAP enumeration value. The SOAP enumeration prefixes every value with "ISH" (e.g. ISHFirstVersion).
+        /// </summary>
+        /// <param name="autoCompleteMode">The BaselineAutoCompleteMode that needs to be converted.</param>
+        /// <returns>A SOAP BaselineAutoCompleteMode enumeration value.</returns>
+        public static TResult ToBaselineAutoCompleteModeSoap<TResult>(Enumerations.BaselineAutoCompleteMode autoCompleteMode)
+        {
+            if (!typeof(TResult).IsEnum)
+            {
+                throw new NotSupportedException("TResult must be an Enum");
+            }
+            return (TResult)Enum.Parse(typeof(TResult), "ISH" + autoCompleteMode.ToString(), true);
+        }
+
+        /// <summary>
+        /// Convert a BaselineAutoCompleteMode to a REST enumeration value.
+        /// </summary>
+        /// <param name="autoCompleteMode">The BaselineAutoCompleteMode that needs to be converted.</param>
+        /// <returns>A REST BaselineAutoCompleteMode enumeration value.</returns>
+        public static TResult ToBaselineAutoCompleteModeRest<TResult>(Enumerations.BaselineAutoCompleteMode autoCompleteMode)
+        {
+            if (!typeof(TResult).IsEnum)
+            {
+                throw new NotSupportedException("TResult must be an Enum");
+            }
+            return (TResult)Enum.Parse(typeof(TResult), autoCompleteMode.ToString(), true);
+        }
+
     }
 }
