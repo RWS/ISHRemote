@@ -117,7 +117,7 @@ $webServicesBaseUrl -match "https://((?<hostname>.+))+/(.)+/" | Out-Null
 $hostname=$Matches['hostname']
 
 #$true to indicate containerization skipping Windows-only .NET Framework features like WcfSoapWithWsTrust protocol; version 15.3.0 is insufficient
-$isLinuxContainerized = $baseUrl.Contains('.sdldev.net')
+$isLinuxContainerized = $baseUrl.Contains('.sdldev.net') -or $baseUrl.Contains('.tridiondocs.com')
 
 #
 # Note
