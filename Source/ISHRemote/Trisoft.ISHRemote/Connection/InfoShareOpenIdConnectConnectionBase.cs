@@ -114,7 +114,7 @@ namespace Trisoft.ISHRemote.Connection
                 ClientId = _connectionParameters.ClientId,
                 ClientSecret = _connectionParameters.ClientSecret
             };
-            TokenResponse response = await _httpClient.RequestClientCredentialsTokenAsync(tokenRequest, cancellationToken).ConfigureAwait(false);
+            var response = await _httpClient.RequestClientCredentialsTokenAsync(tokenRequest, cancellationToken).ConfigureAwait(false);
             if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
                 throw new ApplicationException($"GetTokensOverClientCredentialsAsync Access Error[{response.Error}] ErrorDescription[{response.ErrorDescription}]; either invalid ClientId/ClientSecret combination or expired ClientSecret.");
@@ -206,11 +206,20 @@ namespace Trisoft.ISHRemote.Connection
 #if NET48
             // Certificate validation works different on .NET Framework 4.8 versus .NET (Core) 6.0+, below is a catch all
             // bypass for /.well-known/openid-configuration detection. Otherwise you get error 
-            // "Error loading discovery document: Error connecting to /.well-known/openid-configuration. Operation is not valid due to the current state of the object..'"
+            // "Error loading discovery document: Error connecting to https://ish.example.com/ISHAM/.well-known/openid-configuration. Operation is not valid due to the current state of the object..'"
             oidcClientOptions.BackchannelHandler = new HttpClientHandler()
             {
                 ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true
             };
+#else
+            if (_connectionParameters.IgnoreSslPolicyErrors)
+            {
+                // "Error loading discovery document: Error connecting to https://ish.example.com/ISHAM/.well-known/openid-configuration. The SSL connection could not be established, see inner exception.."
+                oidcClientOptions.BackchannelHandler = new HttpClientHandler()
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+            }
 #endif
 
             var oidcClient = new OidcClient(oidcClientOptions);
@@ -240,7 +249,7 @@ namespace Trisoft.ISHRemote.Connection
                 ClientId = _connectionParameters.ClientAppId,
                 RefreshToken = _connectionParameters.Tokens.RefreshToken
             };
-            TokenResponse response = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest, cancellationToken).ConfigureAwait(false);
+            var response = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest, cancellationToken).ConfigureAwait(false);
             // initial usage response.IsError throws error about System.Runtime.CompilerServices.Unsafe v5 required, but OidcClient needs v6
             if (response.IsError || response.HttpStatusCode != System.Net.HttpStatusCode.OK)
             {
