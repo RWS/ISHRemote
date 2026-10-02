@@ -20,16 +20,18 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" Condition="'$(TargetFramework)' == 'net48'" />
     <PackageReference Include="Duende.IdentityModel" Version="7.1.0"  Condition="'$(TargetFramework)' == 'net6.0'" />
     <PackageReference Include="Duende.IdentityModel.OidcClient" Version="6.0.1"  Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" Condition="'$(TargetFramework)' == 'net6.0'" />
     <PackageReference Include="Duende.IdentityModel" Version="8.1.0" Condition="'$(TargetFramework)' == 'net10.0'" />
     <PackageReference Include="Duende.IdentityModel.OidcClient" Version="7.1.0" Condition="'$(TargetFramework)' == 'net10.0'" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" Condition="'$(TargetFramework)' == 'net10.0'" />
     
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" Condition="'$(TargetFramework)' == 'net48'" />
     <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.2.24" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
-    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.6.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.6.6" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     
-    <PackageReference Include="System.Drawing.Common" Version="10.0.11" Condition="'$(TargetFramework)' == 'net48'" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.11" Condition="'$(TargetFramework)' == 'net6.0'" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.11" Condition="'$(TargetFramework)' == 'net10.0'" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.12" Condition="'$(TargetFramework)' == 'net48'" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.12" Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.12" Condition="'$(TargetFramework)' == 'net10.0'" />
 
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Reflection.DispatchProxy" Version="4.7.1" Condition="'$(TargetFramework)' == 'net48'" /><!-- built into the BCL on net6.0+, only net48 needs this -->
@@ -43,6 +45,7 @@
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
     <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
     <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.2" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v8.3+ NET4.8 way -->
 
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.ServiceModel.Federation" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
@@ -51,6 +54,7 @@
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.2" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v8.3+ NET6.0 way -->
     
     <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.ServiceModel.Federation" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
@@ -58,13 +62,14 @@
     <PackageReference Include="System.ServiceModel.NetTcp" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.12" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.3+ NET10.0 way -->
     
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" Condition="'$(TargetFramework)' == 'net10.0'"/><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
-    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.5" Condition="'$(TargetFramework)' == 'net10.0'"/><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.12" Condition="'$(TargetFramework)' == 'net10.0'"/><!-- ISHRemote v8.2+ NET10.0 way -->
     
     <PackageReference Include="System.Text.Json" Version="8.0.6" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Text.Json" Version="8.0.6" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->

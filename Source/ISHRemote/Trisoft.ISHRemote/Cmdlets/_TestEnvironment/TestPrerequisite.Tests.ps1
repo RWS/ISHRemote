@@ -135,6 +135,33 @@ Describe "Test-Prerequisite" -Tags "Read" {
 		It "IshSession.ServerVersion not 0.0.0.0" {
 			$ishSession.ServerVersion | Should-NotBe "0.0.0.0"
 		}
+		It "IshSession.Protocol WcfSoapWithWsTrust did you refresh the ISHSTS certificate?" {
+			if (-not $isLinuxContainerized) {
+				# Detecting Containerization; Windows .NET-Framework-based WcfSoapWithWsTrust not supported
+				$errorThrown = $null
+				{ try {
+					New-IshSession -Protocol WcfSoapWithWsTrust -WsBaseUrl $webServicesBaseUrl -IshUserName $ishUserName -IshPassword $ishPassword -ErrorAction Stop
+				} catch {
+					$errorThrown = $_
+				} } | Should -Not -Throw 
+				if ($null -ne $errorThrown) {
+					$errorThrown.Exception.Message | Should -Not -Match 'Certificate with thumbprint'
+					$errorThrown.Exception.Message | Should -Not -Match 'Sequence contains no elements'
+					$errorThrown.Exception.Message | Should -Not -Match 'Security negotiation failed because the remote party did not send back a reply in a timely manner. This may be because the underlying transport connection was aborted.'
+					$errorThrown.Exception.Message | Should -Not -Match 'Metadata contains a reference that cannot be resolved:' #'https://leudevddemeye01.global.sdl.corp/ISHWSDITA/Wcf/API25/Application.svc?wsdl'
+				}
+				# [CRQ-38041] But as reminder on Windows PowerShell 5.1 run as Administrator. You have a new certificate, and you have reset your IIS SSL Bindings.
+				# Install-Module ISHDeploy
+				# Set-ISHAPIWCFServiceCertificate -Thumbprint 3c7208a60e6bd7cdc69fbf8b25914d8343d9b0a3
+				# Set-ISHIntegrationSTSCertificate -Issuer "SDL Issueing CA" -Thumbprint 3c7208a60e6bd7cdc69fbf8b25914d8343d9b0a3
+				# Restart-ISHDeployment
+				# -or-				
+				# Disable-ISHIISAppPool;Remove-Item C:\InfoShare\WebDITA\InfoShareSTS\App_Data\IdentityServerConfiguration-2.3.sdf;Enable-ISHIISAppPool
+				# -or-
+				# Still fails check thumbprint in C:\InfoShare\WebDITA\InfoShareSTS\Configuration\infoShareSTS.config
+				# Still fails ISHSTS works by certificate subject name and not thumbprint, so make sure there is only one
+			}
+		}    
 	}
 
 	Context "IshFolder - Manual clean up required, probably a lock blocked the previous test clean-up" {

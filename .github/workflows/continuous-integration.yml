@@ -19,9 +19,10 @@ on:
       - '*.TXT'
       - '*.MD'
 
-# Least-privilege default: both jobs only need to read the repository contents
-# (checkout) and use the actions runtime token for artifacts. No job writes back
-# to the GitHub repository — PSGallery publish uses an external NUGET_API_KEY.
+# Least-privilege default: jobs only need to read the repository contents
+# (checkout) and use the actions runtime token for artifacts. PSGallery publish uses
+# an external NUGET_API_KEY. Only the live job elevates to contents: write, to tag
+# the published version.
 permissions:
   contents: read
 
@@ -126,6 +127,8 @@ jobs:
     runs-on: windows-latest
     needs: build
     if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'pull_request' && github.base_ref == 'master')
+    permissions:
+      contents: write # only to create the git tag after a successful PSGallery publish
     concurrency:
       group: run-tests-on-ishbaseurl
       cancel-in-progress: false
@@ -285,6 +288,7 @@ jobs:
       if: ${{ always() }}
 
     - name: "Publish to PowerShellGallery if commit on Main/Master branch holds [PublishToPSGalleryAsPreview]"
+      id: publishtopsgalleryaspreview
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       if: ${{ success() && (github.ref == 'refs/heads/master') && contains(github.event.head_commit.message, '[PublishToPSGalleryAsPreview]') }}
@@ -303,13 +307,17 @@ jobs:
         {
           echo ("Found earlier module[ISHRemote] of version["+($remoteModule.Version)+"]. Publishing module with version[$fullVersion]!")
           Publish-Module -Path $packageRootFolderPath -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force #-WhatIf -ErrorAction:Continue
+          "fullVersion=$fullVersion" >> $env:GITHUB_OUTPUT
+          "published=true" >> $env:GITHUB_OUTPUT
         }
         else
         {
           echo ("Found recent module[ISHRemote] of version["+($remoteModule.Version)+"]. Skipping publish of module with version[$fullVersion]!")
+          "published=false" >> $env:GITHUB_OUTPUT
         }
 
     - name: "Publish to PowerShellGallery if commit on Main/Master branch holds [PublishToPSGalleryAsRelease]"
+      id: publishtopsgalleryasrelease
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       if: ${{ success() && (github.ref == 'refs/heads/master') && contains(github.event.head_commit.message, '[PublishToPSGalleryAsRelease]') }}
@@ -327,11 +335,38 @@ jobs:
         if($remoteModule.Version -ne $fullVersion)
         {
           echo ("Found earlier module[ISHRemote] of version["+($remoteModule.Version)+"]. Publishing module with version[$fullVersion]!")
-          Publish-Module -Path $packageRootFolderPath -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force -WhatIf #-ErrorAction:Continue
+          Publish-Module -Path $packageRootFolderPath -Repository PSGallery -NuGetApiKey $env:NUGET_API_KEY -Verbose -Force #-WhatIf -ErrorAction:Continue
+          "fullVersion=$fullVersion" >> $env:GITHUB_OUTPUT
+          "published=true" >> $env:GITHUB_OUTPUT
         }
         else
         {
           echo ("Found recent module[ISHRemote] of version["+($remoteModule.Version)+"]. Skipping publish of module with version[$fullVersion]!")
+          "published=false" >> $env:GITHUB_OUTPUT
         }
+
+    - name: "Git Tag for the version published to PowerShellGallery"
+      if: ${{ success() && (steps.publishtopsgalleryaspreview.outputs.published == 'true' || steps.publishtopsgalleryasrelease.outputs.published == 'true') }}
+      uses: actions/github-script@v9
+      env:
+        ISH_FULL_VERSION: ${{ steps.publishtopsgalleryaspreview.outputs.fullVersion || steps.publishtopsgalleryasrelease.outputs.fullVersion }}
+      with:
+        script: |
+          const tag = `v${process.env.ISH_FULL_VERSION}`;
+          try {
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tag}`,
+              sha: context.sha
+            });
+            core.info(`Created tag ${tag} at ${context.sha}`);
+          } catch (e) {
+            if (e.status === 422) {
+              core.warning(`Tag ${tag} already exists, skipping`);
+            } else {
+              throw e;
+            }
+          }
 
 

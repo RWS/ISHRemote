@@ -112,6 +112,7 @@ namespace Trisoft.ISHRemote.HelperClasses
             //_forcedLoadedAssemblies.GetOrAdd("Microsoft.Extensions.Logging", assembly);
 #else
             AssemblyLoadContext.Default.Resolving += ResolveAssembly_NetCore;
+            TryForceLoadAssembly("Microsoft.Extensions.Logging.Abstractions", "Microsoft.Extensions.Logging.Abstractions.dll");
             TryForceLoadAssembly("Duende.IdentityModel.OidcClient", "Duende.IdentityModel.OidcClient.dll");
             TryForceLoadAssembly("IdentityModel", "Duende.IdentityModel.dll");
             TryForceLoadAssembly("Duende.IdentityModel", "Duende.IdentityModel.dll");

@@ -55,7 +55,9 @@ locally without a Tridion Docs instance.
 
 ## Editing these workflows
 
-- Keep `permissions: contents: read` on every workflow (least privilege).
+- Keep `permissions: contents: read` on every workflow (least privilege). The single exception is
+  the `live` job of `continuous-integration.yml`, which has job-level `contents: write` so it can
+  create a `v<version>` git tag after a successful PSGallery publish.
 - Pin `actions/*` to a specific version tag; update via Dependabot (commit prefix `ci`).
 - Do not add a `global.json` — the build relies on the SDKs present on the runner.
 - Match CI shell targets: `pwsh` runs Scripts/Public + Cmdlets; `powershell` (5.1) runs Cmdlets only.
