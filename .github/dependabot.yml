@@ -76,6 +76,11 @@ updates:
       # Security-advisory PRs are NOT suppressed by update-types ignore rules.
       # -------------------------------------------------------------------
 
+      # PowerShell base library version is tightly related with target framework
+      # Requires major ISHRemote version to drop 7.2/6.0 combination.
+      - dependency-name: "Microsoft.PowerShell.Commands.Management"
+        update-types: ["version-update:semver-major"]
+
       # WCF Client - co-released from dotnet/wcf; net48/net6.0 must stay on 4.x.
       # The per-TFM version split is tracked in the codebase; upgrade is a milestone.
       - dependency-name: "System.ServiceModel.*"
