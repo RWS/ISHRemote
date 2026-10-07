@@ -30,50 +30,46 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <summary>
     /// <para type="synopsis">Search - so Full-Text-Index as data source, while Find is Relational Database as data source - matching the search criteria. Metadata is retrieved like Get-IshDocumentObj would, from the Relational Database.</para>
     /// <para type="description">Search - so Full-Text-Index as data source, while Find is Relational Database as data source - matching the search criteria. Metadata is retrieved like Get-IshDocumentObj would, from the Relational Database.</para>
-    /// <para type="description">Passes the search criteria to the Search25 API where the result set is capped by -MaxHitsToReturn. See online documentation for advanced query support on this 'ishquery' domain specific language.</para>
+    /// <para type="description">Passes the search criteria to the Search25 API where the result set is capped by -MaxHitsToReturn. See online documentation for advanced query support on this 'ishquery' domain specific language allowing you to search ISHANYWHERE (term search in content and metadata), ISHANYWHEREINCONTENT (term search in content) and ISHSEMANTICINCONTENT (semantic vector search in content since 15.4.0).</para>
     /// <para type="description">Then the search results is enriched using the DocumentObj25 API to retrieve ishobjects. As the output are IshObjects on the pipeline any further handling by other ISHRemote cmdlets or more is enabled.</para>
     /// </summary>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// Search-IshDocumentObj -SimpleQuery "bluetooth" -MaxHitsToReturn 200
     /// </code>
-    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
     /// <para>Executes a Full-Text-Index search for 'bluetooth' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language. The MaxHitsToReturn limits the Full-Text-Index result set.</para>
     /// <para>Results are returned sorted by the Full-Text-Index engine, first by score then by title.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// Search-IshDocumentObj -SimpleQuery "bluetooth" -Count
     /// </code>
-    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
     /// <para>Executes a Full-Text-Index search for 'bluetooth' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language.</para>
     /// <para>Results a count of hits, there are no IshObjects on the pipeline (MaxHitsToReturn is 0).</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// Search-IshDocumentObj -SimpleQuery "*" -MaxHitsToReturn 2000 |
     /// Out-GridView -PassThru
     /// </code>
-    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
     /// <para>Executes a Full-Text-Index search for '*' in the ANY field of the LatestVersion collection (so all latest version content objects are returned), with no filter on object types and only in the user's language. The MaxHitsToReturn limits the Full-Text-Index result set.</para>
     /// <para>Results are passed to Out-GridView where manual filtering can happen and the selection is passed to the pipeline for further processing.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// Search-IshDocumentObj -SimpleQuery "red AND green AND blue" | 
     /// Get-IshDocumentObjData -FolderPath c:\temp\
     /// </code>
-    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
     /// <para>Executes a Full-Text-Index search for 'red AND green AND blue' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language. Note that the AND keyword is recognized as boolean operator for the ISHANYWHERE field, see API documentation.</para>
     /// <para>Results are returned sorted by the Full-Text-Index engine, first by score then by title. And this IshObjects are passed to Get-IshDocumentObjData for (xml) file downloading.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $xmlQuery = @"
     /// &lt;ishquery&gt;
     ///   &lt;and&gt;&lt;ishfield name='ISHANYWHERE' level='none' ishoperator='contains'&gt;change oil filter&lt;/ishfield&gt;&lt;/and&gt;
@@ -95,13 +91,39 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// $requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
     /// Search-IshDocumentObj -XmlQuery $xmlQuery -MaxHitsToReturn 100 -RequestedMetadata $requestedMetadata
     /// </code>
-    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
-    /// <para>Executes a Full-Text-Index search for 'change oil filter' in the ANY field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language; results are returned sorted by the Full-Text-Index engine, and enriched with FISHSTATUSTYPE field on top of the $ishSession.DefaultRequestedMetadata</para>
+    /// <para>Executes a Full-Text-Index term search for 'change oil filter' in the ANY field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language; results are returned sorted by the Full-Text-Index engine, and enriched with FISHSTATUSTYPE field on top of the $ishSession.DefaultRequestedMetadata</para>
     /// <para>The provided $xmlQuery is the default query of parameter set lead by -SimpleQuery; where the ISHANYWHERE is overwritten with the given -SimpleQuery value, and the ishlanguagefilter is overwritten with the user's language.</para>
     /// </example>
     /// <example>
     /// <code>
-    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/InfoShareWS/" -PSCredential Admin
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
+    /// $xmlQuery = @"
+    /// &lt;ishquery&gt;
+    ///   &lt;and&gt;&lt;ishfield name='ISHSEMANTICINCONTENT' level='none' ishoperator='contains'&gt;replace oil in vehicle&lt;/ishfield&gt;&lt;/and&gt;
+    ///   &lt;ishsort&gt;
+    ///     &lt;ishsortfield name='ISHSCORE' level='none' ishorder='d'/&gt;
+    ///     &lt;ishsortfield name='FTITLE' level='logical' ishorder='d'/&gt;
+    ///   &lt;/ishsort&gt;
+    ///   &lt;ishobjectfilters&gt;
+    ///     &lt;ishversionfilter&gt;LatestVersion&lt;/ishversionfilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHModule&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHMasterDoc&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHLibrary&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHTemplate&lt;/ishtypefilter&gt;
+    ///     &lt;ishtypefilter&gt;ISHIllustration&lt;/ishtypefilter&gt;
+    ///     &lt;ishlanguagefilter&gt;en&lt;/ishlanguagefilter&gt;
+    ///   &lt;/ishobjectfilters&gt;
+    /// &lt;/ishquery&gt;
+    /// "@
+    /// $requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
+    /// Search-IshDocumentObj -XmlQuery $xmlQuery -MaxHitsToReturn 100 -RequestedMetadata $requestedMetadata
+    /// </code>
+    /// <para>Executes a Full-Text-Index semantic search for 'replace oil in vehicle' in the SEMANTICINCONTENT field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language; results are returned sorted by the Full-Text-Index engine, and enriched with FISHSTATUSTYPE field on top of the $ishSession.DefaultRequestedMetadata</para>
+    /// <para>The provided $xmlQuery is the default query of parameter set lead by -SimpleQuery; where the ISHANYWHERE is overwritten with the given -SimpleQuery value, and the ishlanguagefilter is overwritten with the user's language.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $xmlQuery = @"
     /// &lt;ishquery&gt;
     ///   &lt;and&gt;&lt;ishfield name='ISHANYWHERE' level='none' ishoperator='contains'&gt;change oil filter&lt;/ishfield&gt;&lt;/and&gt;
@@ -123,7 +145,6 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// $requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
     /// Search-IshDocumentObj -XmlQuery $xmlQuery -Count
     /// </code>
-    /// <para>New-IshSession will submit into SessionState, so it can be reused by this cmdlet.</para>
     /// <para>Executes a Full-Text-Index search for 'change oil filter' in the ANY field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language.</para>
     /// <para>Results a count of hits, there are no IshObjects on the pipeline (MaxHitsToReturn is 0).</para>
     /// </example>
