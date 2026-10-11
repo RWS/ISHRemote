@@ -26,8 +26,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" Condition="'$(TargetFramework)' == 'net10.0'" />
     
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" Condition="'$(TargetFramework)' == 'net48'" />
-    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.2.24" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
-    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.2.24" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.6.6" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.6.6" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     
     <PackageReference Include="System.Drawing.Common" Version="10.0.12" Condition="'$(TargetFramework)' == 'net48'" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.12" Condition="'$(TargetFramework)' == 'net6.0'" />
