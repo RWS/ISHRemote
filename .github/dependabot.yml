@@ -78,8 +78,9 @@ updates:
 
       # PowerShell base library version is tightly related with target framework
       # Requires major ISHRemote version to drop 7.2/6.0 combination.
+      # Minor bumps (7.2 -> 7.6) are also ignored; only patch bumps are proposed.
       - dependency-name: "Microsoft.PowerShell.Commands.Management"
-        update-types: ["version-update:semver-major"]
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
 
       # WCF Client - co-released from dotnet/wcf; net48/net6.0 must stay on 4.x.
       # The per-TFM version split is tracked in the codebase; upgrade is a milestone.
@@ -102,11 +103,6 @@ updates:
       - dependency-name: "Microsoft.Extensions.Logging.Abstractions"
         update-types: ["version-update:semver-major"]
       - dependency-name: "Microsoft.Extensions.ApiDescription.Client"
-        update-types: ["version-update:semver-major"]
-
-      # Microsoft.PowerShell.Commands.Management - net6.0 pins to 7.2.x,
-      # net10.0 pins to 7.6.x. A major bump is a deliberate PS version decision.
-      - dependency-name: "Microsoft.PowerShell.Commands.Management"
         update-types: ["version-update:semver-major"]
 
       # Duende.IdentityModel / OidcClient - net48/net6.0 pin to one major,
