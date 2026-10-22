@@ -62,7 +62,7 @@
     <PackageReference Include="System.ServiceModel.NetTcp" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.12" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.3+ NET10.0 way -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.13" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.3+ NET10.0 way -->
     
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
