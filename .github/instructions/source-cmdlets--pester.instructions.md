@@ -79,6 +79,23 @@ test that needs a new piece of tenant data, add a defaulted variable to `ISHRemo
 (so CI/other tenants can override it) rather than hard-coding a value. **Never commit
 `ISHRemote.PesterSetup.Debug.ps1`** — it holds credentials.
 
+## Gating tests on the server version — inside the `It`, never in `-Skip`
+Pester evaluates `-Skip:` expressions during the **Discovery** phase, before any `BeforeAll` has
+run, so `$ishSession` is not initialized yet and a `-Skip:($ishSession...)` expression is silently
+wrong. Check the server version **inside** the `It` block, where `$ishSession` exists, and wrap the
+version-specific body in an `if`, as `AddIshBackgroundTask.Tests.ps1` does:
+
+```powershell
+It "Parameter Count" {
+    if (([Version]$ishSession.ServerVersion).Major -gt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4)) {   # 15.4.0 and up
+        # version-specific assertions
+    }
+}
+```
+
+`-Skip:` remains fine for conditions known at Discovery time, such as
+`-Skip:($PSVersionTable.PSVersion.Major -lt 7)`.
+
 ## Build test data per test, clean it up per test
 Each file is responsible for **creating its own data and removing all of it**, leaving the tenant in
 its original state:
