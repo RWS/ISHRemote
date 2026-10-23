@@ -130,6 +130,29 @@ Describe "Add-IshDocumentObj" -Tags "Create" {
 			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderImage -IshType ISHIllustration -LogicalId "ADDISHDOCUMENTOBJ-MYOWNGENERATEDLOGICALIDIMAGE" -Version '5' -Lng $ishLng -Resolution $ishResolution -Metadata $ishImageMetadata -Edt "EDTJPEG" -FilePath $tempFilePath
 			$ishObject.LngRef -gt 0 | Should-Be $true
 		}
+		It "All Parameters (Image like EDTJPEG) with LanguageApplicability" {
+			#[-105001] The parameter language with value "en" is invalid. The parameter 'en' with value 'es, de' conflicts with the value '2' in the parameter 'ishFields' [105001;InvalidParameter]
+			$ishImageMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Image $timestamp" |
+						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
+			    			    Set-IshMetadataField -IshSession $ishSession -Name "FSTATUS" -Level Lng -ValueType Element -Value $ishStatusDraft |
+								Set-IshMetadataField -IshSession $ishSession -Name "DOC-LANGUAGE" -Level Lng -ValueType Element -Value "$ishLng, $ishLngTarget1, $ishLngTarget2"
+			$tempFilePath = (New-TemporaryFile).FullName
+			Add-Type -AssemblyName "System.Drawing"
+			$bmp = New-Object -TypeName System.Drawing.Bitmap(100,100)
+			for ($i = 0; $i -lt 100; $i++)
+			{
+				for ($j = 0; $j -lt 100; $j++)
+				{
+					$bmp.SetPixel($i, $j, 'Green')
+				}
+			}
+			$bmp.Save($tempFilePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
+			$ishObject = Add-IshDocumentObj -IshSession $ishSession -IshFolder $ishFolderImage -IshType ISHIllustration -LogicalId "ADDISHDOCUMENTOBJ-MYOWNGENERATEDLOGICALIDIMAGE2" -Version '6' -Lng $ishLng -Resolution $ishResolution -Metadata $ishImageMetadata -Edt "EDTJPEG" -FilePath $tempFilePath
+			$ishObject.LngRef -gt 0 | Should-Be $true
+			$ishObject.doclanguage_lng_element.Contains($ishLng) | Should-Be $true
+			$ishObject.doclanguage_lng_element.Contains($ishLngTarget1) | Should-Be $true
+			$ishObject.doclanguage_lng_element.Contains($ishLngTarget2) | Should-Be $true
+		}
 		It "All Parameters (Other like EDT-TEXT)" {
 			$ishOtherMetadata = Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "All Parameters Other $timestamp" |
 						        Set-IshMetadataField -IshSession $ishSession -Name "FAUTHOR" -Level Lng -ValueType Element -Value $ishUserAuthor |
