@@ -69,6 +69,41 @@ Describe "Search-IshDocumentObjData" -Tags "Read" {
 			$ishObject[0].fishstatustype -ge 0  | Should-Be $false  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
 		}
 	}
+	Context "Search-IshDocumentObj SemanticSearchGroup" {
+		It "Parameter IshSession invalid" {
+			{ Search-IshDocumentObj -IShSession "INVALIDISHSESSION" -SemanticSearch "cordless or wireless" } | Should-Throw
+		}
+		It "Parameter MaxHitsToReturn invalid" {
+			{ Search-IshDocumentObj -MaxHitsToReturn "INVALIDMAXHITSTORETURN" -SemanticSearch "cordless or wireless" } | Should-Throw
+		}
+		It "Parameter SemanticSearch throws before 15.4.0" {
+			if (([Version]$ishSession.ServerVersion).Major -lt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -lt 4)) {
+				{ Search-IshDocumentObj -IshSession $ishSession -SemanticSearch "cordless or wireless" } | Should-Throw
+			}
+		}
+		It "Parameter MaxHitsToReturn" {
+			if (([Version]$ishSession.ServerVersion).Major -gt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4)) {
+				$ishObject = Search-IshDocumentObj -IshSession $ishSession -MaxHitsToReturn 3 -SemanticSearch "cordless or wireless"
+				($ishObject.Count -le 3) | Should-Be $true
+			}
+		}
+		It "Parameter RequestedMetadata" {
+			if (([Version]$ishSession.ServerVersion).Major -gt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4)) {
+				$requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
+				$ishObject = Search-IshDocumentObj -IshSession $ishSession -MaxHitsToReturn 2 -SemanticSearch "cordless or wireless" -RequestedMetadata $requestedMetadata
+				if ($ishObject) {
+					$ishObject[0].IshRef | Should-NotBeNull
+					$ishObject[0].fishstatustype -ge 0 | Should-Be $true
+				}
+			}
+		}
+		It "Parameter Count" {
+			if (([Version]$ishSession.ServerVersion).Major -gt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4)) {
+				$count = Search-IshDocumentObj -IshSession $ishSession -SemanticSearch "cordless or wireless" -Count
+				$count -ge 0 | Should-Be $true
+			}
+		}
+	}
 	Context "Search-IshDocumentObj XmlQueryQueryGroup" {
 		BeforeAll {
 			$xmlQueryLatestVersion = @"

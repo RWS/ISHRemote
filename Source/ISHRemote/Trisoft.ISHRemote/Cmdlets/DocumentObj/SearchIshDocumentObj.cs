@@ -44,6 +44,14 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
+    /// Search-IshDocumentObj -SemanticSearch "cordless or wireless" -MaxHitsToReturn 50
+    /// </code>
+    /// <para>Executes a Full-Text-Index semantic vector search for 'cordless or wireless' in the SEMANTICINCONTENT field of the LatestVersion collection (compared to AllVersion), with a filter on the default object types and only in the user's language. Requires Tridion Docs 15.4.0 and up, otherwise a PlatformNotSupportedException is thrown.</para>
+    /// <para>Results are returned sorted by the Full-Text-Index engine, first by score then by title.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// Search-IshDocumentObj -SimpleQuery "bluetooth" -Count
     /// </code>
     /// <para>Executes a Full-Text-Index search for 'bluetooth' in the ANY field of the LatestVersion collection (compared to AllVersion), with no filter on object types and only in the user's language.</para>
@@ -99,7 +107,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/"
     /// $xmlQuery = @"
     /// &lt;ishquery&gt;
-    ///   &lt;and&gt;&lt;ishfield name='ISHSEMANTICINCONTENT' level='none' ishoperator='contains'&gt;replace oil in vehicle&lt;/ishfield&gt;&lt;/and&gt;
+    ///   &lt;and&gt;&lt;ishfield name='ISHSEMANTICINCONTENT' level='none' ishoperator='contains'&gt;cordless or wireless&lt;/ishfield&gt;&lt;/and&gt;
     ///   &lt;ishsort&gt;
     ///     &lt;ishsortfield name='ISHSCORE' level='none' ishorder='d'/&gt;
     ///     &lt;ishsortfield name='FTITLE' level='logical' ishorder='d'/&gt;
@@ -118,7 +126,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
     /// $requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
     /// Search-IshDocumentObj -XmlQuery $xmlQuery -MaxHitsToReturn 100 -RequestedMetadata $requestedMetadata
     /// </code>
-    /// <para>Executes a Full-Text-Index semantic search for 'replace oil in vehicle' in the SEMANTICINCONTENT field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language; results are returned sorted by the Full-Text-Index engine, and enriched with FISHSTATUSTYPE field on top of the $ishSession.DefaultRequestedMetadata</para>
+    /// <para>Executes a Full-Text-Index semantic search for 'cordless or wireless' in the SEMANTICINCONTENT field of the LatestVersion collection (compared to AllVersion), filtered on these object types and language; results are returned sorted by the Full-Text-Index engine, and enriched with FISHSTATUSTYPE field on top of the $ishSession.DefaultRequestedMetadata</para>
     /// <para>The provided $xmlQuery is the default query of parameter set lead by -SimpleQuery; where the ISHANYWHERE is overwritten with the given -SimpleQuery value, and the ishlanguagefilter is overwritten with the user's language.</para>
     /// </example>
     /// <example>
@@ -155,15 +163,17 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// <summary>
         /// <para type="description">The IshSession variable holds the authentication and contract information. This object can be initialized using the New-IshSession cmdlet.</para>
         /// </summary>
-        [Parameter(Mandatory =false, ValueFromPipelineByPropertyName = false, ParameterSetName = "XmlQueryGroup")]
-        [Parameter(Mandatory =false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SimpleQueryGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "XmlQueryGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "XmlQueryCountGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SimpleQueryGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SimpleQueryCountGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SemanticSearchGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SemanticSearchCountGroup")]
         [ValidateNotNullOrEmpty]
         public IshSession IshSession { get; set; }
 
         /// <summary>
-        /// <para type="description">The RAW xml ishquery used by Search25 API</para>
+        /// <para type="description">The keyword search text, for example 'bluetooth' or 'red AND green AND blue', that is placed in the ISHANYWHERE field (term search in content and metadata) of a default ishquery that is passed to the Search25 API.</para>
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "SimpleQueryGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "SimpleQueryCountGroup")]
@@ -172,6 +182,18 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         {
             get { return _simpleQuery; }
             set { _simpleQuery = value; }
+        }
+
+        /// <summary>
+        /// <para type="description">The natural language search text, for example 'cordless or wireless', that is placed in the ISHSEMANTICINCONTENT field (semantic vector search in content) of a default ishquery that is passed to the Search25 API. Requires server-side semantic search, so Tridion Docs 15.4.0 and up.</para>
+        /// </summary>
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "SemanticSearchGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "SemanticSearchCountGroup")]
+        [ValidateNotNullOrEmpty]
+        public string SemanticSearch
+        {
+            get { return _semanticSearch; }
+            set { _semanticSearch = value; }
         }
 
         /// <summary>
@@ -191,6 +213,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "XmlQueryGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SimpleQueryGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SemanticSearchGroup")]
         [ValidateNotNullOrEmpty]
         public long MaxHitsToReturn
         {
@@ -203,6 +226,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "XmlQueryGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SimpleQueryGroup")]
+        [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "SemanticSearchGroup")]
         [ValidateNotNullOrEmpty]
         public IshField[] RequestedMetadata { get; set; }
 
@@ -211,6 +235,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// </summary>
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "XmlQueryCountGroup")]
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "SimpleQueryCountGroup")]
+        [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = false, ParameterSetName = "SemanticSearchCountGroup")]
         [ValidateNotNullOrEmpty]
         public SwitchParameter Count
         {
@@ -224,6 +249,11 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
         /// Private field to store the simple ISHANYWHERE query to later construct the XmlQuery
         /// </summary>
         private string _simpleQuery = "";
+
+        /// <summary>
+        /// Private field to store the semantic ISHSEMANTICINCONTENT query to later construct the XmlQuery
+        /// </summary>
+        private string _semanticSearch = "";
 
         /// <summary>
         /// Private field to store the incoming &gt;ishquery&lt; that is litteraly passed into Search25 API.
@@ -247,6 +277,12 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
             if (IshSession == null) { IshSession = (IshSession)SessionState.PSVariable.GetValue(ISHRemoteSessionStateGlobalIshSession); }
             if (IshSession == null) { throw new ArgumentException(ISHRemoteSessionStateIshSessionException); }
             WriteDebug($"Using IshSession[{IshSession.Name}] from SessionState.{ISHRemoteSessionStateIshSession} or in turn SessionState.{ISHRemoteSessionStateGlobalIshSession}");
+
+            if ((ParameterSetName == "SemanticSearchGroup" || ParameterSetName == "SemanticSearchCountGroup")
+                && ((IshSession.ServerIshVersion.MajorVersion < 15) || ((IshSession.ServerIshVersion.MajorVersion == 15) && (IshSession.ServerIshVersion.MinorVersion < 4))))
+            {
+                throw new PlatformNotSupportedException($"Search-IshDocumentObj with -SemanticSearch requires server-side semantic search which is only available starting from 15.4.0 and up. ServerIshVersion[{IshSession.ServerVersion}]");
+            }
             base.BeginProcessing();
         }
 
@@ -262,9 +298,11 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 {
                     case "SimpleQueryGroup":
                     case "SimpleQueryCountGroup":
+                    case "SemanticSearchGroup":
+                    case "SemanticSearchCountGroup":
                         WriteDebug("Loading default query");
                         _xmlQuery = @"<ishquery>
-                                      <and><ishfield name='ISHANYWHERE' level='none' ishoperator='contains'>change oil filter</ishfield></and>
+                                      <and><ishfield name='ISHANYWHERE' level='none' ishoperator='contains'></ishfield></and>
                                       <ishsort>
                                         <ishsortfield name='ISHSCORE' level='none' ishorder='d'/>
                                         <ishsortfield name='FTITLE' level='logical' ishorder='d'/>
@@ -282,8 +320,18 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                         XmlDocument xmlDocument = new XmlDocument();
                         xmlDocument.LoadXml(_xmlQuery);
                         // Converting type filter, could be something like FolderTypeFilter in Get-IshFolder, not for now
-                        WriteDebug("Setting query string based on SimpleQuery");
-                        xmlDocument.SelectSingleNode("ishquery/and/ishfield").InnerText = SimpleQuery;
+                        XmlNode ishFieldNode = xmlDocument.SelectSingleNode("ishquery/and/ishfield");
+                        if (ParameterSetName.StartsWith("SemanticSearch"))
+                        {
+                            WriteDebug("Setting query string based on SemanticSearch");
+                            ishFieldNode.Attributes["name"].Value = "ISHSEMANTICINCONTENT";
+                            ishFieldNode.InnerText = SemanticSearch;
+                        }
+                        else
+                        {
+                            WriteDebug("Setting query string based on SimpleQuery");
+                            ishFieldNode.InnerText = SimpleQuery;
+                        }
                         WriteDebug("Setting language based on IshSession");
                         xmlDocument.SelectSingleNode("ishquery/ishobjectfilters/ishlanguagefilter").InnerText = IshSession.UserLanguage;
                         WriteDebug("Validating transformed XmlQuery");
@@ -313,6 +361,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
                 switch (ParameterSetName)
                 {
                     case "SimpleQueryCountGroup":
+                    case "SemanticSearchCountGroup":
                     case "XmlQueryCountGroup":
                         {
                             // 3A. Executing the count query
@@ -325,6 +374,7 @@ namespace Trisoft.ISHRemote.Cmdlets.DocumentObj
 
                     case "XmlQueryGroup":
                     case "SimpleQueryGroup":
+                    case "SemanticSearchGroup":
                         {
                             // 3B. Executing the result query
                             WriteVerbose("Executing a result query");

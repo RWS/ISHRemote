@@ -98,6 +98,9 @@ Authoring detail lives in
   `ISHRemote.PesterSetup.ps1` — they must be runnable without a live server.
 - [ ] **PS 7+ only tests** guard with `-Skip:($PSVersionTable.PSVersion.Major -lt 7)` on the
   `It` or `Context` block.
+- [ ] **Server-version gates** are an `if` on `[Version]$ishSession.ServerVersion` **inside** the
+  `It`, never `-Skip:($ishSession...)` — `-Skip:` is evaluated at Discovery, before `$ishSession`
+  exists.
 - [ ] **Script / MCP tests** that mock collaborators use `Mock -ModuleName ISHRemote <FunctionName>
   { ... }` scoped to the module, not a global mock.
 
