@@ -73,6 +73,14 @@ namespace Trisoft.ISHRemote.Objects.Public
         // one HttpClient per IshSession with potential certificate overwrites which can be reused across requests
         private readonly HttpClient _httpClient;
         /// <summary>
+        /// Shared mutable holder for the User-Agent fallback value (see #275). Null until a cloud WAF (AWS WAF Bot
+        /// Control, Azure Front Door/App Gateway WAF bot manager, GCP Cloud Armor) is observed blocking a bare/no
+        /// User-Agent request with a 403, at which point it is set once for the lifetime of this IshSession and
+        /// every subsequent HttpClient/WCF request carries it. Reference type on purpose - see
+        /// Connection/InfoShareWcfSoapUserAgentClientMessageInspector.cs for why a plain string field cannot do this.
+        /// </summary>
+        private readonly UserAgentState _userAgentState = new UserAgentState();
+        /// <summary>
         /// OpenIdConnect Client Application Id that is typically configured in Access Management (ISHID) to allow a local redirect (http://127.0.0.1:SomePort/)
         /// This option is not typically used but allows validating other applications like Tridion_Docs_Content_Importer
         /// </summary>
@@ -259,7 +267,22 @@ namespace Trisoft.ISHRemote.Objects.Public
             var responseMessage = _httpClient.GetAsync(connectionConfigurationUri).GetAwaiter().GetResult();
             if (!responseMessage.IsSuccessStatusCode)
             {
-                throw new ArgumentException($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{_httpClient.Timeout}] failed with StatusCode[{responseMessage.StatusCode}]");
+                // Some cloud WAFs (AWS WAF Bot Control, Azure Front Door/App Gateway WAF bot manager, GCP Cloud
+                // Armor) bucket a missing or bare Product/Version User-Agent with known non-browser tooling and
+                // return 403, while accepting the RFC-sanctioned crawler self-identification convention (same
+                // format Googlebot/Bingbot use). Retry exactly once with that fallback before giving up. See #275.
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden && _userAgentState.Value == null)
+                {
+                    _userAgentState.Value = $"Mozilla/5.0 (compatible; ISHRemote/{ClientIshVersion}; +https://github.com/rws/ISHRemote)";
+                    _logger.WriteVerbose($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] failed with StatusCode[Forbidden], retrying once with fallback User-Agent[{_userAgentState.Value}]");
+                    _httpClient.DefaultRequestHeaders.UserAgent.Clear();
+                    _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgentState.Value);
+                    responseMessage = _httpClient.GetAsync(connectionConfigurationUri).GetAwaiter().GetResult();
+                }
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    throw new ArgumentException($"LoadConnectionConfiguration uri[{connectionConfigurationUri}] timeout[{_httpClient.Timeout}] failed with StatusCode[{responseMessage.StatusCode}]");
+                }
             }
             string response = responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             //_logger.WriteDebug($"LoadConnectionConfiguration response[{response}]");
@@ -280,12 +303,63 @@ namespace Trisoft.ISHRemote.Objects.Public
         private void CreateInfoShareWcfSoapWithOpenIdConnectConnection()
         {
             _logger.WriteVerbose($"CreateInfoShareWcfSoapWithOpenIdConnectConnection");
-            _infoShareWcfSoapWithOpenIdConnectConnection = new InfoShareWcfSoapWithOpenIdConnectConnection(_logger, _httpClient, _infoShareOpenIdConnectConnectionParameters);
+            _infoShareWcfSoapWithOpenIdConnectConnection = new InfoShareWcfSoapWithOpenIdConnectConnection(_logger, _httpClient, _infoShareOpenIdConnectConnectionParameters, _userAgentState);
             // application proxy to get server version or authentication context init is a must as it also confirms credentials, can take up to 1s
             _logger.WriteDebug("CreateInfoShareWcfSoapWithOpenIdConnectConnection _serverVersion GetApplication25Channel");
             var application25Proxy = _infoShareWcfSoapWithOpenIdConnectConnection.GetApplication25Channel();
             _logger.WriteDebug("CreateInfoShareWcfSoapWithOpenIdConnectConnection _serverVersion GetApplication25Channel.GetVersion");
-            _serverVersion = new IshVersion(application25Proxy.GetVersion());
+            try
+            {
+                _serverVersion = new IshVersion(application25Proxy.GetVersion());
+            }
+            catch (Exception ex) when (IsForbiddenWcfFault(ex))
+            {
+#if NET48
+                // On net48, WcfSoapWithOpenIdConnect SOAP channels are built over ChannelFactory.CreateChannelWithIssuedToken(...)
+                // (see InfoShareWcfSoapWithOpenIdConnectConnection), which does not go through EndpointBehaviors/
+                // IClientMessageInspector at all. There is no transport-level hook available here to attach a
+                // fallback User-Agent header to SOAP traffic, unlike the plain HttpClient calls in
+                // LoadConnectionConfiguration. So, unlike net6.0+/net10.0, we cannot retry our way out of this - the
+                // best we can do is fail with an actionable message instead of the raw WCF exception. See #275.
+                _logger.WriteWarning($"CreateInfoShareWcfSoapWithOpenIdConnectConnection GetVersion failed with a 403 Forbidden-shaped fault, most likely caused by a cloud WAF (AWS WAF Bot Control, Azure Front Door/App Gateway WAF bot manager, GCP Cloud Armor) bot-management rule blocking SOAP requests without a recognized browser User-Agent. On Windows PowerShell 5.1 (.NET Framework 4.8), ISHRemote cannot work around this for SOAP-based calls used by protocol WcfSoapWithOpenIdConnect. Ask your Tridion Docs administrator to adjust the WAF bot-management rule for this endpoint, or switch to PowerShell 7+ (pwsh) where this fallback is applied automatically.");
+                throw;
+#else
+                if (_userAgentState.Value == null)
+                {
+                    _userAgentState.Value = $"Mozilla/5.0 (compatible; ISHRemote/{ClientIshVersion}; +https://github.com/rws/ISHRemote)";
+                }
+                _logger.WriteVerbose($"CreateInfoShareWcfSoapWithOpenIdConnectConnection GetVersion failed with a 403 Forbidden-shaped fault, retrying once with fallback User-Agent[{_userAgentState.Value}]");
+                _serverVersion = new IshVersion(application25Proxy.GetVersion());
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Walks the exception chain (WCF's exception wrapping around a 403 is not fully consistent across .NET
+        /// targets - it can surface as CommunicationException/ProtocolException wrapping a WebException, or as
+        /// System.Net.Http.HttpRequestException wrapping a status code, depending on binding/transport) looking for
+        /// a Forbidden (403) signal. See #275.
+        /// </summary>
+        private static bool IsForbiddenWcfFault(Exception ex)
+        {
+            for (var current = ex; current != null; current = current.InnerException)
+            {
+                if (current is WebException webException &&
+                    webException.Response is HttpWebResponse httpWebResponse &&
+                    httpWebResponse.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    return true;
+                }
+                if (current is System.Net.Http.HttpRequestException && current.Message != null && current.Message.Contains("403"))
+                {
+                    return true;
+                }
+                if (current.Message != null && current.Message.IndexOf("(403) Forbidden", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void CreateOpenApiWithOpenIdConnectConnection()
