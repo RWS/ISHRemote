@@ -411,7 +411,8 @@ Describe "New-IshSession" -Tags "Read" {
 	Context "New-IshSession over OpenApiWithOpenIdConnect returns IshSession object" {
 		BeforeAll {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				$localIShSession = New-IshSession -Protocol OpenApiWithOpenIdConnect -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
+				# no -Protocol on purpose, so Protocol Autodetect must select OpenApiWithOpenIdConnect on 15/15.0.0 and later
+				$localIShSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			}
 		}
 		It "Local ISHRemoteSessionStateIshSession" {

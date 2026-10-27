@@ -186,14 +186,9 @@ namespace Trisoft.ISHRemote.Objects.Public
                 _protocol = Enumerations.Protocol.WcfSoapWithWsTrust;
                 _logger.WriteDebug($"LoadConnectionConfiguration selecting _protocol[{_protocol}] on SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
             }
-            else if (_protocol == Enumerations.Protocol.Autodetect && (new IshVersion(ishwsConnectionConfiguration.SoftwareVersion).MajorVersion == 15))
+            else if (_protocol == Enumerations.Protocol.Autodetect && (new IshVersion(ishwsConnectionConfiguration.SoftwareVersion).MajorVersion >= 15))
             {
-                _protocol = Enumerations.Protocol.WcfSoapWithOpenIdConnect;
-                _logger.WriteDebug($"LoadConnectionConfiguration selecting _protocol[{_protocol}] on SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
-            }
-            else if (_protocol == Enumerations.Protocol.Autodetect && (new IshVersion(ishwsConnectionConfiguration.SoftwareVersion).MajorVersion >= 16))
-            {
-                // >= 16, so predicting public OpenApi
+                // >= 15, so OpenApi where available; cmdlets without OpenApi implementation fall back to WcfSoapWithOpenIdConnect, which is initialized as well
                 _protocol = Enumerations.Protocol.OpenApiWithOpenIdConnect;
                 _logger.WriteDebug($"LoadConnectionConfiguration selecting _protocol[{_protocol}] on SoftwareVersion[{ishwsConnectionConfiguration.SoftwareVersion}]");
             }
