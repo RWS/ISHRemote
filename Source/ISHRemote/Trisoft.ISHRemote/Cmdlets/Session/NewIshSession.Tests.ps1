@@ -891,6 +891,10 @@ Describe "New-IshSession" -Tags "Read" {
 				$openApiAM10ClientMembers20251210 = @( 'ApiResources_GetAsync','ApiResources_GetByIdAsync','Applications_CreateAsync','Applications_DeleteAsync','Applications_GetAsync','Applications_GetByIdAsync','Applications_UpdateAsync','AuditLogs_GetByFilterAsync','AuditLogs_GetByIdAsync','Equals','GetHashCode','GetType','IdentityProviders_CreateAsync','IdentityProviders_DeleteAsync','IdentityProviders_GetAsync','IdentityProviders_GetAvailableIdpTypesAsync','IdentityProviders_GetByIdAsync','IdentityProviders_GetIconAsync','IdentityProviders_GetLoginOptionsAsync','IdentityProviders_GetParametersForIdentityProviderTypeAsync','IdentityProviders_UpdateAsync','ServiceAccounts_CreateAsync','ServiceAccounts_DeleteAsync','ServiceAccounts_DeleteClientSecretAsync','ServiceAccounts_GenerateClientSecretAsync','ServiceAccounts_GetAsync','ServiceAccounts_GetByIdAsync','ServiceAccounts_UpdateAsync','ServiceAccounts_UpdateClientSecretAsync','System_GetLoginStatusAsync','System_GetSupportedCulturesAsync','System_GetUserInfoAsync','ToString','Users_ActivateUserAsync','Users_DeactivateUserAsync','Users_DeleteAsync','Users_DeleteClientSecretAsync','Users_GenerateClientSecretAsync','Users_GetAsync','Users_GetByIdAsync','Users_UpdateAsync','Users_UpdateClientSecretAsync' ) # Since v8.2
 				# Up to ISHRemote v8.2 $ishSession.OpenApiAM10Client was CamelCase, chose to break and align to Snake_Case as delivered by Access Management since v2.0.0 so Tridion Docs 15.0.0
 				$openApiAM10ClientMembers20240404 = $openApiAM10ClientMembers20251210
+				# Method names are retrieved once, as repeated PSObject.Methods.Name reflection per member made the OperationIds tests very slow
+				$openApiISH30ClientActualMembers = @($localIShSession.OpenApiISH30Client.PSObject.Methods.Name)
+				$openApiAM10ClientActualMembers = @($localIShSession.OpenApiAM10Client.PSObject.Methods.Name)
+				$openApiClientIgnoredMembers = @('Equals','GetHashCode','GetType','ToString','get_BaseUrl','set_BaseUrl','get_ReadResponseAsString','set_ReadResponseAsString')
 			}
 		}
 		It "IshSession.OpenApiISH30Client" {
@@ -901,25 +905,20 @@ Describe "New-IshSession" -Tags "Read" {
 		}
 		It "IshSession.OpenApiISH30Client OperationIds (15.1 20240404 methods exists)" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				foreach ($member in $openApiISH30ClientMembers20240404) {
-					$localIShSession.OpenApiISH30Client.PSObject.Methods.Name | Should-ContainCollection $member
-				}
+				$missingMembers = @($openApiISH30ClientMembers20240404 | Where-Object { $_ -notin $openApiISH30ClientActualMembers })
+				("missing[" + ($missingMembers -join ',') + "]") | Should-BeString "missing[]"
 			}
 		}
 		It "IshSession.OpenApiISH30Client OperationIds (15.3 20251210 methods exists)" {
-			if ((([Version]$ishSession.ServerVersion).Major -ge 15) -and (([Version]$ishSession.ServerVersion).Minor -ge 2)) { # new service since 15.2/15.2.0
-				foreach ($member in $openApiISH30ClientMembers20251210) {
-					$localIShSession.OpenApiISH30Client.PSObject.Methods.Name | Should-ContainCollection $member
-				}
+			if ([Version]$ishSession.ServerVersion -ge [Version]"15.2") { # new service since 15.2/15.2.0
+				$missingMembers = @($openApiISH30ClientMembers20251210 | Where-Object { $_ -notin $openApiISH30ClientActualMembers })
+				("missing[" + ($missingMembers -join ',') + "]") | Should-BeString "missing[]"
 			}
 		}
 		It "IshSession.OpenApiISH30Client OperationIds (new methods found, adapt this test)" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
-				foreach ($member in $localIShSession.OpenApiISH30Client.PSObject.Methods.Name) {
-					if ($member -notin @('Equals','GetHashCode','GetType','ToString','get_BaseUrl','set_BaseUrl','get_ReadResponseAsString','set_ReadResponseAsString')) {
-						$openApiISH30ClientMembers20251210 | Should-ContainCollection $member
-					}
-				}
+				$superfluousMembers = @($openApiISH30ClientActualMembers | Where-Object { ($_ -notin $openApiClientIgnoredMembers) -and ($_ -notin $openApiISH30ClientMembers20251210) })
+				("superfluous[" + ($superfluousMembers -join ',') + "]") | Should-BeString "superfluous[]"
 			}
 		}
 		It "IshSession.OpenApiAM10Client" {
@@ -929,16 +928,12 @@ Describe "New-IshSession" -Tags "Read" {
 			}
 		}
 		It "IshSession.OpenApiAM10Client OperationIds (20240404 methods exists)" {
-			foreach ($member in $openApiAM10ClientMembers20240404) {
-				$localIShSession.OpenApiAM10Client.PSObject.Methods.Name | Should-ContainCollection $member
-			}
+			$missingMembers = @($openApiAM10ClientMembers20240404 | Where-Object { $_ -notin $openApiAM10ClientActualMembers })
+			("missing[" + ($missingMembers -join ',') + "]") | Should-BeString "missing[]"
 		}
 		It "IshSession.OpenApiAM10Client OperationIds (new methods found, adapt this test)" {
-			foreach ($member in $localIShSession.OpenApiAM10Client.PSObject.Methods.Name) {
-				if ($member -notin @('Equals','GetHashCode','GetType','ToString','get_BaseUrl','set_BaseUrl','get_ReadResponseAsString','set_ReadResponseAsString')) {
-					$openApiAM10ClientMembers20240404 | Should-ContainCollection $member
-				}
-			}
+			$superfluousMembers = @($openApiAM10ClientActualMembers | Where-Object { ($_ -notin $openApiClientIgnoredMembers) -and ($_ -notin $openApiAM10ClientMembers20240404) })
+			("superfluous[" + ($superfluousMembers -join ',') + "]") | Should-BeString "superfluous[]"
 		}
 		It "IshSession.Annotation25" {
 			if (([Version]$ishSession.ServerVersion).Major -ge 15) { # new service since 15/15.0.0
