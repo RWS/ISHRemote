@@ -100,9 +100,9 @@ Describe "Test-Prerequisite" -Tags "Read" {
 			$ishSession = New-IshSession -WsBaseUrl $webServicesBaseUrl -ClientId $amClientId -ClientSecret $amClientSecret
 			$ishUser = Get-IshUser
 		}
-		It "IshSession.Protocol WcfSoapWithOpenIdConnect" {
-			if (([Version]$ishSession.ServerVersion).Major -eq 15) { 
-				$IshSession.Protocol | Should-Be 'WcfSoapWithOpenIdConnect'
+		It "IshSession.Protocol Autodetect selects OpenApiWithOpenIdConnect" {
+			if (([Version]$ishSession.ServerVersion).Major -ge 15) { 
+				$IshSession.Protocol | Should-Be 'OpenApiWithOpenIdConnect'
 			}
 		}
 		It "Current IShSession user over ClientId/ClientSecret should match UserName parameter so all tests run under the same account" {
