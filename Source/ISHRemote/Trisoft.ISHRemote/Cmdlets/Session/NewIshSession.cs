@@ -93,6 +93,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// <para>Building a session for the chosen service based on Client Credentials authentication.</para>
     /// <para>Explicit Protocol OpenApiWithOpenIdConnect on 15/15.0.0 and later systems will initialize the OpenApi endpoints giving you access to the $ishSession.OpenApiISH30Service proxy.</para>
     /// </example>
+    /// <example>
+    /// <code>
+    /// $env:HTTPS_PROXY = "http://127.0.0.1:8080"
+    /// # Import-Module ISHRemote # needs to happen after setting the proxy line
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IgnoreSslPolicyErrors
+    /// </code>
+    /// <para>On PowerShell 7+, when using a proxy to catch HTTP traffic like Burp Suite Community Edition. The proxy is not configured by ISHRemote, so .NET picks it up from the HTTPS_PROXY/HTTP_PROXY environment variables, which are read once per process. Start Burp Suite with a Temporary project and Burp defaults, which gives you a proxy listener on 127.0.0.1:8080. Under Proxy > Intercept make sure interception is off, otherwise every request waits for you to forward it. Then select Proxy > HTTP history to follow the calls.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// [System.Net.WebRequest]::DefaultWebProxy = New-Object System.Net.WebProxy("http://127.0.0.1:8080")
+    /// # Import-Module ISHRemote # needs to happen after setting the proxy line
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IgnoreSslPolicyErrors
+    /// </code>
+    /// <para>On PowerShell 5.1, when using a proxy to catch HTTP traffic like Burp Suite Community Edition. The proxy is not configured by ISHRemote, so set the default web proxy of the PowerShell process before the first HTTP call. Start Burp Suite with a Temporary project and Burp defaults, which gives you a proxy listener on 127.0.0.1:8080. Under Proxy > Intercept make sure interception is off, otherwise every request waits for you to forward it. Then select Proxy > HTTP history to follow the calls.</para>
+    /// </example>
     [Cmdlet(VerbsCommon.New, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(IshSession))]
     public sealed class NewIshSession : SessionCmdlet
@@ -171,7 +187,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
+        /// <para type="description">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for intercepting proxy usage like Burp Suite or Fiddler though, see the proxy samples.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "Interactive")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
