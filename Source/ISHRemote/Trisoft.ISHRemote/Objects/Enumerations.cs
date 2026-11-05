@@ -517,6 +517,25 @@ namespace Trisoft.ISHRemote.Objects
         }
 
         /// <summary>
+        /// <para type="description">Enumeration indicating which auto complete mode must be used to fill gaps (missing versions) in a baseline.</para>
+        /// </summary>
+        public enum BaselineAutoCompleteMode
+        {
+            /// <summary>
+            /// Fills gaps with the first available version of each missing object.
+            /// </summary>
+            FirstVersion,
+            /// <summary>
+            /// Fills gaps with the latest released version of each missing object.
+            /// </summary>
+            LatestReleased,
+            /// <summary>
+            /// Fills gaps with the latest available version (any status) of each missing object.
+            /// </summary>
+            LatestAvailable
+        }
+
+        /// <summary>
         /// <para type="description">BackgroundTask Status Filter</para>
         /// </summary>
         public enum BackgroundTaskStatusFilter
