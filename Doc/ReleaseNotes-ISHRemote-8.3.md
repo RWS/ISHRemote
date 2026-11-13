@@ -9,7 +9,7 @@ High level release notes are on [Github](https://github.com/rws/ISHRemote/releas
 
 This release inherits the v0.1 to v0.14 up to v8.2 development branch and features. All cmdlets and business logic are fully compatible even around authentication. In short, we expect it all to work still :)
 
-The one that respects the details of Model Context Protocol (MCP) enabling usage in other toolings like Claude Code or OpenCode/OpenChamber. All `OpenApiWithOpenIdConnect` is now using in-flight http compression which benefits `Get-IshPublicationOutputData` offering faster downloads on 15.1.0+ environments.
+The one that respects the details of Model Context Protocol (MCP) enabling usage in other toolings like Claude Code or OpenCode/OpenChamber. All `OpenApiWithOpenIdConnect` is now using in-flight http compression which benefits `Get-IshPublicationOutputData` offering faster downloads on 15.1.0+ environments. Fixed cmdlets over protocol `WcfSoapWithOpenIdConnect` occasionally throwing An unsecured or incorrectly secured fault was received from the other party on the first SOAP call after a channel fault, requiring the user to re-run the same cmdlet for it to succeed; this has now an inner retry loop which should avoid breaking your script.
 
 
 ### Remember
