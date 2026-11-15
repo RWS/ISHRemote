@@ -45,7 +45,7 @@
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
     <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
     <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net48'"  /><!-- last version with net48 support -->
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.2" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v8.3+ NET4.8 way -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="11.0.0" Condition="'$(TargetFramework)' == 'net48'" /><!-- ISHRemote v8.3+ NET4.8 way -->
 
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.ServiceModel.Federation" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
@@ -54,7 +54,7 @@
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
     <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" Condition="'$(TargetFramework)' == 'net6.0'"  /><!-- ISHRemote v7.0-v8.1 NET6.0 way -->
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.2" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v8.3+ NET6.0 way -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="11.0.0" Condition="'$(TargetFramework)' == 'net6.0'" /><!-- ISHRemote v8.3+ NET6.0 way -->
     
     <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
     <PackageReference Include="System.ServiceModel.Federation" Version="10.0.652802" Condition="'$(TargetFramework)' == 'net10.0'" /><!-- ISHRemote v8.2+ NET10.0 way -->
