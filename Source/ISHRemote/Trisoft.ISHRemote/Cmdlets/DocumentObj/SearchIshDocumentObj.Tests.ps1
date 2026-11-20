@@ -69,6 +69,51 @@ Describe "Search-IshDocumentObjData" -Tags "Read" {
 			$ishObject[0].fishstatustype -ge 0  | Should-Be $false  # Basic does not return FISHSTATUSTYPE but extra RequestedMetadata parameter does
 		}
 	}
+	Context "Search-IshDocumentObj SemanticQueryGroup" {
+		It "Parameter IshSession invalid" {
+			{ Search-IshDocumentObj -IShSession "INVALIDISHSESSION" -SemanticQuery "cordless or wireless" } | Should-Throw
+		}
+		It "Parameter SemanticMode invalid" {
+			{ Search-IshDocumentObj -IshSession $ishSession -SemanticQuery "cordless or wireless" -SemanticMode "INVALIDSEMANTICMODE" } | Should-Throw
+		}
+		It "Parameter MaxHitsToReturn invalid" {
+			{ Search-IshDocumentObj -MaxHitsToReturn "INVALIDMAXHITSTORETURN" -SemanticQuery "cordless or wireless" } | Should-Throw
+		}
+		It "Parameter SemanticQuery throws before 15.4.0" {
+			if (([Version]$ishSession.ServerVersion).Major -lt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -lt 4)) {
+				{ Search-IshDocumentObj -IshSession $ishSession -SemanticQuery "cordless or wireless" } | Should-Throw
+			}
+		}
+		It "Parameter MaxHitsToReturn" {
+			if (([Version]$ishSession.ServerVersion).Major -gt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4)) {
+				$ishObject = Search-IshDocumentObj -IshSession $ishSession -MaxHitsToReturn 3 -SemanticQuery "cordless or wireless"
+				($ishObject.Count -le 3) | Should-Be $true
+			}
+		}
+		It "Parameter RequestedMetadata" {
+			if (([Version]$ishSession.ServerVersion).Major -gt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4)) {
+				$requestedMetadata = Set-IshRequestedMetadataField -Level Lng -Name FISHSTATUSTYPE
+				$ishObject = Search-IshDocumentObj -IshSession $ishSession -MaxHitsToReturn 2 -SemanticQuery "cordless or wireless" -RequestedMetadata $requestedMetadata
+				if ($ishObject) {
+					$ishObject[0].IshRef | Should-NotBeNull
+					$ishObject[0].fishstatustype -ge 0 | Should-Be $true
+				}
+			}
+		}
+		It "Parameter SemanticMode TopK" {
+			if (([Version]$ishSession.ServerVersion).Major -gt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4)) {
+				$ishObject = Search-IshDocumentObj -IshSession $ishSession -MaxHitsToReturn 3 -SemanticQuery "cordless or wireless" -SemanticMode TopK
+				($ishObject.Count -le 3) | Should-Be $true
+			}
+		}
+		It "Parameter SemanticMode VectorSimilarity" {
+			# Needs the server-side ISHSEMANTICALLINCONTENT field, fails until the server implements it
+			if (([Version]$ishSession.ServerVersion).Major -gt 15 -or (([Version]$ishSession.ServerVersion).Major -eq 15 -and ([Version]$ishSession.ServerVersion).Minor -ge 4)) {
+				$ishObject = Search-IshDocumentObj -IshSession $ishSession -MaxHitsToReturn 3 -SemanticQuery "cordless or wireless" -SemanticMode VectorSimilarity
+				($ishObject.Count -le 3) | Should-Be $true
+			}
+		}
+	}
 	Context "Search-IshDocumentObj XmlQueryQueryGroup" {
 		BeforeAll {
 			$xmlQueryLatestVersion = @"
