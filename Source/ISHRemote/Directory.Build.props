@@ -1,5 +1,5 @@
 <Project>
-  <!-- Force CI/GithubAction on 20260402 -->
+  <!-- Force CI/GithubAction on 20261006 -->
 
   <PropertyGroup>
     <ProductName>ISHRemote</ProductName>

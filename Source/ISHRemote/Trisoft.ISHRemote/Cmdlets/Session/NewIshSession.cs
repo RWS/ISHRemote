@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (c) 2014 All Rights Reserved by the SDL Group.
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
 {
     /// <summary>
     /// <para type="synopsis">The New-IshSession cmdlet creates a new IshSession object using the parameters that are provided.</para>
-    /// <para type="description">The communication protocol will be derived from the server-side product version. On 14SP4/14.0.4 plus ISHRemote 7.0 and earlier there is only WcfSoapWithWsTrust. Since 15/15.0.0 ISHRemote prefers Modern Authentication and selects WcfSoapWithOpenIdConnect. Experimental since 15/15.0.0 is OpenApiWithOpenIdConnect, where already possible cmdlets will go over OpenAPI REST calls instead of WcfSoapWithOpenIdConnect calls.</para>
+    /// <para type="description">The communication protocol will be derived from the server-side product version. On 14SP4/14.0.4 plus ISHRemote 7.0 and earlier there is only WcfSoapWithWsTrust. Since 15/15.0.0 ISHRemote prefers Modern Authentication and selects OpenApiWithOpenIdConnect, where cmdlets with an OpenAPI implementation go over OpenAPI REST calls and all other cmdlets fall back to WcfSoapWithOpenIdConnect calls.</para>
     /// <para type="description">The New-IshSession cmdlet creates a new IshSession object for usage on any other cmdlet later using the parameters that are provided.</para>
     /// <para type="description">The object contains the service endpoint proxies, and api contract information like multi-value separator, date format, etc</para>
     /// </summary>
@@ -46,7 +46,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>Building a session for the chosen service based on implicit authentication.</para>
     /// <para>Protocol will be WcfSoapWithWsTrust on 14SP4/14.0.4 and earlier systems. An implicit NetworkCredential object will be passed for authentication to the service on PowerShell 5.1 - will throw an error on PowerShell 7.2+.</para>
-    /// <para>Protocol will be WcfSoapWithOpenIdConnect on 15/15.0.0 and later systems. This will trigger the interactive system browser based flow - so your browser as trusted single sign on client.</para>
+    /// <para>Protocol will be OpenApiWithOpenIdConnect on 15/15.0.0 and later systems. This will trigger the interactive system browser based flow - so your browser as trusted single sign on client.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -60,7 +60,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -PSCredential "Admin"
     /// </code>
     /// <para>Protocol will be WcfSoapWithWsTrust on 14SP4/14.0.4 and earlier systems. Iteratively the New-IshSession line with PSCredential parameter holding a string representation will prompt you for a password.</para>
-    /// <para>Protocol will be WcfSoapWithOpenIdConnect on 15/15.0.0 and later systems. Iteratively the New-IshSession line with PSCredential parameter holding a string representation will prompt you for a ClientSecret. Note that sample 'Admin' as ClientId has to be configured in Access Management (ISHAM), by default ClientId typically is a GUID.</para>
+    /// <para>Protocol will be OpenApiWithOpenIdConnect on 15/15.0.0 and later systems. Iteratively the New-IshSession line with PSCredential parameter holding a string representation will prompt you for a ClientSecret. Note that sample 'Admin' as ClientId has to be configured in Access Management (ISHAM), by default ClientId typically is a GUID.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -77,14 +77,14 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>Extensive automation example based on the PSCredential parameter. Responsibility of the plain text password or client secret is yours. Check Microsoft module https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-are-generally-available/</para>
     /// <para>Protocol will be WcfSoapWithWsTrust on 14SP4/14.0.4 and earlier systems.</para>
-    /// <para>Protocol will be WcfSoapWithOpenIdConnect on 15/15.0.0 and later systems. Note that sample 'MYISHUSERNAME' as ClientId has to be configured in Access Management (ISHAM), by default ClientId typically is a GUID.</para>
+    /// <para>Protocol will be OpenApiWithOpenIdConnect on 15/15.0.0 and later systems. Note that sample 'MYISHUSERNAME' as ClientId has to be configured in Access Management (ISHAM), by default ClientId typically is a GUID.</para>
     /// </example>
     /// <example>
     /// <code>
     /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -ClientId "c826e7e1-c35c-43fe-9756-e1b61f44bb40" -ClientSecret "ziKiGbx6N0G3m69/vWMZUTs2paVO1Mzqt6Y6TX7mnpPJyFVODsI1Vw=="
     /// </code>
     /// <para>Building a session for the chosen service based on Client Credentials authentication.</para>
-    /// <para>Protocol will be WcfSoapWithOpenIdConnect on 15/15.0.0 and later systems. Note that ClientId/ClientSecret has to be configured in Access Management (ISHAM), by default ClientId typically is a GUID.</para>
+    /// <para>Protocol will be OpenApiWithOpenIdConnect on 15/15.0.0 and later systems. Note that ClientId/ClientSecret has to be configured in Access Management (ISHAM), by default ClientId typically is a GUID.</para>
     /// </example>
     /// <example>
     /// <code>
@@ -92,6 +92,22 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
     /// </code>
     /// <para>Building a session for the chosen service based on Client Credentials authentication.</para>
     /// <para>Explicit Protocol OpenApiWithOpenIdConnect on 15/15.0.0 and later systems will initialize the OpenApi endpoints giving you access to the $ishSession.OpenApiISH30Service proxy.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $env:HTTPS_PROXY = "http://127.0.0.1:8080"
+    /// # Import-Module ISHRemote # needs to happen after setting the proxy line
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IgnoreSslPolicyErrors
+    /// </code>
+    /// <para>On PowerShell 7+, when using a proxy to catch HTTP traffic like Burp Suite Community Edition. The proxy is not configured by ISHRemote, so .NET picks it up from the HTTPS_PROXY/HTTP_PROXY environment variables, which are read once per process. Start Burp Suite with a Temporary project and Burp defaults, which gives you a proxy listener on 127.0.0.1:8080. Under Proxy > Intercept make sure interception is off, otherwise every request waits for you to forward it. Then select Proxy > HTTP history to follow the calls.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// [System.Net.WebRequest]::DefaultWebProxy = New-Object System.Net.WebProxy("http://127.0.0.1:8080")
+    /// # Import-Module ISHRemote # needs to happen after setting the proxy line
+    /// $ishSession = New-IshSession -WsBaseUrl "https://example.com/ISHWS/" -IgnoreSslPolicyErrors
+    /// </code>
+    /// <para>On PowerShell 5.1, when using a proxy to catch HTTP traffic like Burp Suite Community Edition. The proxy is not configured by ISHRemote, so set the default web proxy of the PowerShell process before the first HTTP call. Start Burp Suite with a Temporary project and Burp defaults, which gives you a proxy listener on 127.0.0.1:8080. Under Proxy > Intercept make sure interception is off, otherwise every request waits for you to forward it. Then select Proxy > HTTP history to follow the calls.</para>
     /// </example>
     [Cmdlet(VerbsCommon.New, "IshSession", SupportsShouldProcess = false)]
     [OutputType(typeof(IshSession))]
@@ -171,7 +187,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for Fiddler usage though.</para>
+        /// <para type="description">IgnoreSslPolicyErrors presence indicates that a custom callback will be assigned to ServicePointManager.ServerCertificateValidationCallback. Defaults false of course, as this is creates security holes! But very handy for intercepting proxy usage like Burp Suite or Fiddler though, see the proxy samples.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "Interactive")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
@@ -184,7 +200,7 @@ namespace Trisoft.ISHRemote.Cmdlets.Session
         }
 
         /// <summary>
-        /// <para type="description">IshSession Protocol explicitly selects the communication protocol; either WcfSoapWithWsTrust (legacy option of Tridion Docs 14SP4/14.0.4, in turn ISHRemote 7.0 and earlier), WcfSoapWithOpenIdConnect (since Tridion Docs 15/15.0.0) and OpenApiWithOpenIdConnect (experimental since Tridion Docs 15/15.0.0). If not provided, the CMS version will pick the most optimal support protocol. See also <see cref="Protocol"/>.</para>
+        /// <para type="description">IshSession Protocol explicitly selects the communication protocol; either WcfSoapWithWsTrust (legacy option of Tridion Docs 14SP4/14.0.4, in turn ISHRemote 7.0 and earlier), WcfSoapWithOpenIdConnect (since Tridion Docs 15/15.0.0) and OpenApiWithOpenIdConnect (since Tridion Docs 15/15.0.0). If not provided, or default value Autodetect, WcfSoapWithWsTrust is picked on Tridion Docs 14SP4/14.0.4 and earlier, and OpenApiWithOpenIdConnect (OpenAPI where available, WcfSoapWithOpenIdConnect as per-cmdlet fallback) since Tridion Docs 15/15.0.0. See also <see cref="Protocol"/>.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "Interactive")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "UserNamePassword")]
