@@ -18,6 +18,23 @@ The one that respects the details of Model Context Protocol (MCP) enabling usage
 
 The below text describes the delta compared to fielded release ISHRemote v8.2.
 
+### Retrieve the content objects of your publication
+Cmdlet `Get-IshPublicationOutputContent` returns the `IshDocumentObj` content objects (topics, maps, illustrations, resources) directly reachable through the saved baseline of one or more incoming `IshPublicationOutput` objects, using `Baseline25.ExpandBaseline` under the hood. Content objects whose version is not pinned in the baseline (a "gap", for example a sub-map that has no version selected) are not returned, even if a topic used by that sub-map does have a version pinned — the baseline walk stops at the gap. Optional parameter `-AutoCompleteMode` (`FirstVersion`, `LatestReleased` or `LatestAvailable`) switches from `Baseline25.ExpandBaseline` to `Baseline25.CompleteBaselineByCandidateAndMode` so gaps get filled in using the given strategy before the (now larger) reachable set is returned. Optional parameters `-Language`/`-Resolution` let you override the languages/resolutions used to walk the baseline instead of relying on the publication output's own `FISHPUBLNGCOMBINATION`/output format `FISHRESOLUTIONS`. 
+
+For example:
+```powershell
+Get-IshPublicationOutput -LogicalId "GUID-03081B9A-11E4-4862-845B-27339E0C400D" |
+Out-GridView -PassThru |
+Get-IshPublicationOutputContent -AutoCompleteMode LatestAvailable |
+Get-IshDocumentObjData -FolderPath "C:\TEMP\"
+```
+interactively picks one or more publication outputs in a grid view, completes any gaps in their baselines using the latest available version of each missing content object, and extracts all reachable content objects to the file system. Or release all directly reachable content objects of a publication output:
+```powershell
+Get-IshPublicationOutput -LogicalId "GUID-03081B9A-11E4-4862-845B-27339E0C400D" |
+Get-IshPublicationOutputContent |
+Set-IshDocumentObj -Metadata (Set-IshMetadataField -Name "FSTATUS" -Level Lng -Value "Released")
+```
+
 
 ## Platform Support for PowerShell ....
 
@@ -35,6 +52,7 @@ The below text describes the delta compared to fielded release ISHRemote v8.2.
 * Extended `New-IshSession` with an automatic `User-Agent` fallback on PowerShell 7+ so it no longer gets blocked outright by cloud WAF bot-management rule groups (AWS WAF Bot Control, Azure Front Door/App Gateway WAF bot manager rules, GCP Cloud Armor adaptive protection/bot management) that inspect the `User-Agent` header on every request. Measured behavior against a live WAF-fronted environment: sending no `User-Agent` at all (today's default) or a bare `Product/Version` token (e.g. `ISHRemote/8.3.0`) both get bucketed with known non-browser tooling (`curl`, `python-requests`, ...) and blocked with `HTTP 403 Forbidden`. When WAF blocks the connection on the first `403` from the `connectionconfiguration.xml` probe, `New-IshSession` retries once with `Mozilla/5.0 (compatible; ISHRemote/{version}; +https://github.com/rws/ISHRemote)`; on success that header sticks for the session's lifetime and every subsequent request carries it. Windows PowerShell 5.1 (`net48`) will warn instead of a raw WCF exception, recommending you to ask your Tridion Docs administrator to adjust the WAF bot-management rule for this endpoint, or switch to PowerShell 7+ where the fallback is applied automatically. See #275. Thanks @ddemeyer
 * Enhanced `New-IshSession` and `Test-IshSession` protocol `Autodetect` (the default) to select `OpenApiWithOpenIdConnect` on Tridion Docs 15/15.0.0 and later, instead of `WcfSoapWithOpenIdConnect` on earlier ISHRemote versions. Cmdlets already choose between OpenAPI and SOAP per call, so `WcfSoapWithOpenIdConnect` remains the per-cmdlet fallback. An explicit `-Protocol`, including `WcfSoapWithOpenIdConnect`, works as before.  See #282. Thanks @ddemeyer
 * Package bumps, deliberate adding of `System.Security.Cryptography.Xml` to fix vulnerability coming from transitive `System.ServiceModel.Primitives`. See #278 and #279. Thanks @ddemeyer
+
 
 
 
