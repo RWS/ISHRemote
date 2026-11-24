@@ -56,7 +56,8 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     /// </example>
     /// <example>
     /// <code>
-    /// $metadataFilter = Set-IshMetadataFilterField -Name "FISHLASTMODIFIEDON" -Level Lng -ValueType Value -FilterOperator LessThan -Value "01/01/2022 00:00:00"
+    /// $metadataFilter = Set-IshMetadataFilterField -Name FISHLASTMODIFIEDON -Level Lng -ValueType Value -FilterOperator LessThan -Value "01/01/2022 00:00:00" |
+    ///                   Set-IshMetadataFilterField -Name FISHPUBSTATUS -Level Lng -ValueType Element -FilterOperator Equal -Value VPUBSTATUSRELEASED
     /// Get-IshFolder -FolderPath "General\MyPublications" -FolderTypeFilter @("ISHPublication") -Recurse |
     /// ForEach-Object -Process {
     ///     Get-IshFolderContent -IshFolder $_ -VersionFilter "" -MetadataFilter $metadataFilter |
@@ -130,7 +131,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         public SwitchParameter Force { get; set; }
 
         /// <summary>
-        /// <para type="description">When the Unrelease switch is set, publication outputs with status Released are first unreleased (status set to Publishing Cancelled) so the server accepts their removal. Publication outputs that are currently publishing are skipped with a warning and neither unreleased nor removed. Requires 14SP4/14.0.4 with hotfix CRQ-31475, or 15/15.0.0 and up.</para>
+        /// <para type="description">When the Unrelease switch is set, publication outputs with status Released are first unreleased (status set to Draft) so the server accepts their removal. Publication outputs that are currently publishing are skipped with a warning and neither unreleased nor removed. Requires 14SP4/14.0.4 with hotfix CRQ-31475, or 15/15.0.0 and up.</para>
         /// </summary>
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "IshObjectGroup")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = false, ParameterSetName = "ParameterGroup")]
@@ -153,7 +154,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         private const string PublicationStatusFieldName = "FISHPUBSTATUS";
         private const string PublishingStatus = "VPUBSTATUSPUBLISHING";
         private const string ReleasedStatus = "VPUBSTATUSRELEASED";
-        private const string PublishingCancelledStatus = "VPUBSTATUSPUBLISHINGCANCELLED";
+        private const string DraftStatus = "VPUBSTATUSPUBLISHEDDRAFT";
 
         private IshFields PublicationStatusRequestedMetadata()
         {
@@ -165,7 +166,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         private IshFields UnreleaseMetadata()
         {
             var metadata = new IshFields();
-            metadata.AddField(new IshMetadataField(PublicationStatusFieldName, Enumerations.Level.Lng, Enumerations.ValueType.Element, PublishingCancelledStatus));
+            metadata.AddField(new IshMetadataField(PublicationStatusFieldName, Enumerations.Level.Lng, Enumerations.ValueType.Element, DraftStatus));
             return IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, metadata, Enumerations.ActionMode.Update);
         }
 
