@@ -65,6 +65,37 @@ Describe "Remove-IshPublicationOutput" -Tags "Delete" {
             $publicationOutput.length -eq 0 | Should-Be $true
         }
     }
+
+    Context "Remove-IshPublicationOutput -Unrelease" {
+        # Full coverage of unreleasing starting from VPUBSTATUSRELEASED needs a prior publish cycle (Publishing to Released), which is manual-tested.
+        # These tests cover the draft status path where -Unrelease must leave the output alone and simply remove it.
+        It "-Unrelease on draft output removed over IshObject pipeline" {
+            $ishPubMetadata = $ishPublicationOutputMetadata | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Pub $cmdletName Unrelease $timestamp"
+            $ishPub = Add-IshPublicationOutput -IshSession $ishSession -IshFolder $ishFolderPub -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Metadata $ishPubMetadata
+            $ishPub | Remove-IshPublicationOutput -IshSession $ishSession -Unrelease -Force
+            $publicationOutput = Get-IshPublicationOutput -IshSession $ishSession -LogicalId $ishPub.IshRef
+            $publicationOutput.length -eq 0 | Should-Be $true
+        }
+        It "-Unrelease on draft output removed over ParameterGroup" {
+            $ishPubMetadata = $ishPublicationOutputMetadata | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Pub $cmdletName Unrelease $timestamp"
+            $ishPub = Add-IshPublicationOutput -IshSession $ishSession -IshFolder $ishFolderPub -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Metadata $ishPubMetadata
+            Remove-IshPublicationOutput -IshSession $ishSession -LogicalId $ishPub.IshRef -Version $ishPub.version_version_value -LanguageCombination $ishPub.fishpublngcombination -OutputFormat $ishPub.fishoutputformatref_lng_element -Unrelease -Force
+            $publicationOutput = Get-IshPublicationOutput -IshSession $ishSession -LogicalId $ishPub.IshRef
+            $publicationOutput.length -eq 0 | Should-Be $true
+        }
+        It "-Unrelease with -Force cascades to version and logical on last language" {
+            $ishPubMetadata = $ishPublicationOutputMetadata | Set-IshMetadataField -IshSession $ishSession -Name "FTITLE" -Level Logical -Value "Pub $cmdletName Unrelease $timestamp"
+            $ishPub = Add-IshPublicationOutput -IshSession $ishSession -IshFolder $ishFolderPub -LanguageCombination $ishLngCombination -OutputFormat $ishOutputFormatDitaXml -Metadata $ishPubMetadata
+            # -WhatIf should not remove the publication output
+            $ishPub | Remove-IshPublicationOutput -IshSession $ishSession -Unrelease -Force -WhatIf
+            $publicationOutput = Get-IshPublicationOutput -IshSession $ishSession -LogicalId $ishPub.IshRef
+            $publicationOutput.length -eq 1 | Should-Be $true
+            # -Force should remove the publication output
+            $ishPub | Remove-IshPublicationOutput -IshSession $ishSession -Unrelease -Force
+            $publicationOutput = Get-IshPublicationOutput -IshSession $ishSession -LogicalId $ishPub.IshRef
+            $publicationOutput.length -eq 0 | Should-Be $true
+        }
+    }
 }
 
 AfterAll {
@@ -73,4 +104,3 @@ AfterAll {
     try { Get-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse | Get-IshFolderContent -IshSession $ishSession | Remove-IshPublicationOutput -IshSession $ishSession -Force } catch { Write-Host "An error occurred: $_" }
     try { Remove-IshFolder -IshSession $ishSession -FolderPath $folderCmdletRootPath -Recurse } catch { Write-Host "An error occurred: $_" }
 }
-
