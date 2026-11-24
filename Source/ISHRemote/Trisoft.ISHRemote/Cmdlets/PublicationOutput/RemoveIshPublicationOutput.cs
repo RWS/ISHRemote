@@ -52,7 +52,20 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
     ///     Remove-IshPublicationOutput -Unrelease -WhatIf
     /// }
     /// </code>
-    /// <para>Archiving pattern that walks the publication folders and, for the publication outputs not modified since 2022, describes (-WhatIf) the unrelease of released outputs followed by their removal. Remove -WhatIf to commit. The publication version and logical cards survive because -Force is not used.</para>
+    /// <para>Walks the publication folders and, for the publication outputs not modified since 2022, describes (-WhatIf) the unrelease of released outputs followed by their removal. Remove -WhatIf to commit. The publication version and logical cards survive because -Force is not used.</para>
+    /// </example>
+    /// <example>
+    /// <code>
+    /// $metadataFilter = Set-IshMetadataFilterField -Name "FISHLASTMODIFIEDON" -Level Lng -ValueType Value -FilterOperator LessThan -Value "01/01/2022 00:00:00"
+    /// Get-IshFolder -FolderPath "General\MyPublications" -FolderTypeFilter @("ISHPublication") -Recurse |
+    /// ForEach-Object -Process {
+    ///     Get-IshFolderContent -IshFolder $_ -VersionFilter "" -MetadataFilter $metadataFilter |
+    ///     Tee-Object -Variable publicationOutputs |
+    ///     Get-IshPublicationOutputData -FolderPath "C:\Temp\Archive"
+    ///     $publicationOutputs | Remove-IshPublicationOutput -Unrelease
+    /// }
+    /// </code>
+    /// <para>Archiving pattern that downloads the rendered data of the publication outputs of one folder at a time to the file system, and only then unreleases and removes them. Note that Get-IshPublicationOutputData only downloads outputs that have rendered data, so draft-only outputs silently produce no file.</para>
     /// </example>
     [Cmdlet(VerbsCommon.Remove, "IshPublicationOutput", SupportsShouldProcess = true)]
     public sealed class RemoveIshPublicationOutput : PublicationOutputCmdlet
@@ -137,20 +150,22 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
             base.BeginProcessing();
         }
 
+        private const string PublicationStatusFieldName = "FISHPUBSTATUS";
         private const string PublishingStatus = "VPUBSTATUSPUBLISHING";
         private const string ReleasedStatus = "VPUBSTATUSRELEASED";
+        private const string PublishingCancelledStatus = "VPUBSTATUSPUBLISHINGCANCELLED";
 
         private IshFields PublicationStatusRequestedMetadata()
         {
             var requestedMetadata = new IshFields();
-            requestedMetadata.AddField(new IshRequestedMetadataField("FISHPUBSTATUS", Enumerations.Level.Lng, Enumerations.ValueType.Element));
+            requestedMetadata.AddField(new IshRequestedMetadataField(PublicationStatusFieldName, Enumerations.Level.Lng, Enumerations.ValueType.Element));
             return requestedMetadata;
         }
 
         private IshFields UnreleaseMetadata()
         {
             var metadata = new IshFields();
-            metadata.AddField(new IshMetadataField("FISHPUBSTATUS", Enumerations.Level.Lng, Enumerations.ValueType.Element, "VPUBSTATUSPUBLISHINGCANCELLED"));
+            metadata.AddField(new IshMetadataField(PublicationStatusFieldName, Enumerations.Level.Lng, Enumerations.ValueType.Element, PublishingCancelledStatus));
             return IshSession.IshTypeFieldSetup.ToIshMetadataFields(ISHType, metadata, Enumerations.ActionMode.Update);
         }
 
@@ -160,7 +175,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
         /// <returns>False when the publication output is currently publishing and must be skipped</returns>
         private bool UnreleaseBeforeRemove(string target, string currentStatus, Action unrelease)
         {
-            WriteDebug($"target[{target}] FISHPUBSTATUS[{currentStatus}]");
+            WriteDebug($"target[{target}] {PublicationStatusFieldName}[{currentStatus}]");
             if (currentStatus == PublishingStatus)
             {
                 WriteWarning($"Skipping target[{target}] because it is currently publishing. Re-run after publishing completes.");
@@ -208,12 +223,12 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             WriteDebug($"lngRef[{lngRef}] {++current}/{ishObjects.Objects.Length}");
                             if (Unrelease.IsPresent)
                             {
-                                string currentStatus = ishObject.IshFields.GetFieldValue("FISHPUBSTATUS", Enumerations.Level.Lng, Enumerations.ValueType.Element);
+                                string currentStatus = ishObject.IshFields.GetFieldValue(PublicationStatusFieldName, Enumerations.Level.Lng, Enumerations.ValueType.Element);
                                 if (string.IsNullOrEmpty(currentStatus))
                                 {
                                     string xmlStatus = IshSession.PublicationOutput25.RetrieveMetadataByIshLngRefs(new long[] { lngRef }, PublicationStatusRequestedMetadata().ToXml());
                                     var statusObject = new IshObjects(ISHType, xmlStatus).Objects.FirstOrDefault();
-                                    currentStatus = (statusObject == null) ? "" : statusObject.IshFields.GetFieldValue("FISHPUBSTATUS", Enumerations.Level.Lng, Enumerations.ValueType.Element);
+                                    currentStatus = (statusObject == null) ? "" : statusObject.IshFields.GetFieldValue(PublicationStatusFieldName, Enumerations.Level.Lng, Enumerations.ValueType.Element);
                                 }
                                 if (!UnreleaseBeforeRemove(Convert.ToString(lngRef), currentStatus,
                                     () => IshSession.PublicationOutput25.SetMetadataByIshLngRef(lngRef, UnreleaseMetadata().ToXml(), "")))
@@ -237,7 +252,7 @@ namespace Trisoft.ISHRemote.Cmdlets.PublicationOutput
                             var statusResponse = IshSession.PublicationOutput25.GetMetadata(new GetMetadataRequest(
                                 LogicalId, Version, OutputFormat, LanguageCombination, PublicationStatusRequestedMetadata().ToXml()));
                             var statusObject = new IshObjects(ISHType, statusResponse.xmlObjectList).Objects.FirstOrDefault();
-                            string currentStatus = (statusObject == null) ? "" : statusObject.IshFields.GetFieldValue("FISHPUBSTATUS", Enumerations.Level.Lng, Enumerations.ValueType.Element);
+                            string currentStatus = (statusObject == null) ? "" : statusObject.IshFields.GetFieldValue(PublicationStatusFieldName, Enumerations.Level.Lng, Enumerations.ValueType.Element);
                             if (!UnreleaseBeforeRemove(LogicalId + "=" + Version + "=" + LanguageCombination + "=" + OutputFormat, currentStatus,
                                 () => IshSession.PublicationOutput25.SetMetadata(new SetMetadataRequest(
                                     LogicalId, Version, OutputFormat, LanguageCombination, UnreleaseMetadata().ToXml(), ""))))

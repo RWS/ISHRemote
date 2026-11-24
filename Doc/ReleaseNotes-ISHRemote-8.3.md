@@ -47,6 +47,18 @@ ForEach-Object -Process {
     Remove-IshPublicationOutput -Unrelease -WhatIf
 }
 ```
+To archive instead, download the rendered data of one folder at a time before removing it:
+```powershell
+Get-IshFolder -FolderPath "General\MyPublications" -FolderTypeFilter @("ISHPublication") -Recurse |
+ForEach-Object -Process {
+    Get-IshFolderContent -IshFolder $_ -VersionFilter "" |
+    Tee-Object -Variable publicationOutputs |
+    Get-IshPublicationOutputData -FolderPath "C:\Temp\Archive"
+    $publicationOutputs | Remove-IshPublicationOutput -Unrelease
+}
+```
+Note that `Get-IshPublicationOutputData` only downloads outputs that have rendered data, so draft-only outputs silently produce no file.
+
 Note that we now marked for deletion, just like you would do in Organize Space or Client tools. The Crawler service does the actual delete. And a database shrink by your database engine finally returns the space. See the [community thread](https://community.rws.com/product-groups/tridion/tridion-docs/f/forum/61643/shrinking-a-large-test-database-can-you-create-a-new-db-with-all-the-existing-metadata-but-no-data) for background.
 
 
