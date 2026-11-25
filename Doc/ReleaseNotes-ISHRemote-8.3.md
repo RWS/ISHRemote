@@ -36,6 +36,33 @@ Set-IshDocumentObj -Metadata (Set-IshMetadataField -Name "FSTATUS" -Level Lng -V
 ```
 
 
+### Archive and Remove released publication outputs
+Removing unwanted publication outputs is one way to shrink a large environment. Released publication outputs are secured by the server, so `Remove-IshPublicationOutput` got a new `-Unrelease` switch which first sets the status of a released output to Draft and then removes it. Publication Outputs that are currently publishing are skipped with a warning, re-run once publishing completes. Requires 14SP4/14.0.4 with hotfix CRQ-31475, or 15/15.0.0 and up. The publication logical and version cards survive unless you also add `-Force`.
+
+For example, first with `-WhatIf`, then remove the switch:
+```powershell
+Get-IshFolder -FolderPath "General\MyPublications" -FolderTypeFilter @("ISHPublication") -Recurse |
+ForEach-Object -Process {
+    Get-IshFolderContent -IshFolder $_ -VersionFilter "" |
+    Remove-IshPublicationOutput -Unrelease -WhatIf
+}
+```
+To archive instead, download the rendered data of one folder at a time before removing it:
+```powershell
+    $metadataFilter = Set-IshMetadataFilterField -Name "FISHLASTMODIFIEDON" -Level Lng -ValueType Value -FilterOperator LessThan -Value "01/01/2022 00:00:00"
+Get-IshFolder -FolderPath "General\MyPublications" -FolderTypeFilter @("ISHPublication") -Recurse |
+ForEach-Object -Process {
+    Get-IshFolderContent -IshFolder $_ -VersionFilter "" -MetadataFilter $metadataFilter |
+    Tee-Object -Variable publicationOutputs |
+    Get-IshPublicationOutputData -FolderPath "C:\Temp\Archive"
+    $publicationOutputs | Remove-IshPublicationOutput -Unrelease -WhatIf
+}
+```
+Note that `Get-IshPublicationOutputData` only downloads outputs that have rendered data, so draft-only outputs silently produce no file.
+
+Note that we now marked for deletion, just like you would do in Organize Space or Client tools. The Crawler service does the actual delete. And a database shrink by your database engine finally returns the space. See the [community thread](https://community.rws.com/product-groups/tridion/tridion-docs/f/forum/61643/shrinking-a-large-test-database-can-you-create-a-new-db-with-all-the-existing-metadata-but-no-data) for background.
+
+
 ## Platform Support for PowerShell ....
 
 
@@ -51,6 +78,7 @@ Set-IshDocumentObj -Metadata (Set-IshMetadataField -Name "FSTATUS" -Level Lng -V
 * Fixed cmdlets over protocol `WcfSoapWithOpenIdConnect` occasionally throwing `An unsecured or incorrectly secured fault was received from the other party` on the first SOAP call after a channel fault, requiring the user to re-run the same cmdlet for it to succeed (the existing #201/#219 rebuild-on-next-call logic only kicked in on a second, separate call). Each `Get*25Channel()` method in `InfoShareWcfSoapWithOpenIdConnectConnection` now returns the channel wrapped in a new `RetryOnFaultProxy<T>` (`System.Reflection.DispatchProxy`) that catches `CommunicationException`/`FaultException` on the actual SOAP call, rebuilds the channel via the existing rebuild logic, and retries exactly once within the same cmdlet invocation before propagating any further failure — with the original exception type/stack trace preserved. Requires a new `net48`-only NuGet dependency, `System.Reflection.DispatchProxy` (built into the BCL on `net6.0`/`net10.0`). See #273. Thanks @ddemeyer
 * Extended `New-IshSession` with an automatic `User-Agent` fallback on PowerShell 7+ so it no longer gets blocked outright by cloud WAF bot-management rule groups (AWS WAF Bot Control, Azure Front Door/App Gateway WAF bot manager rules, GCP Cloud Armor adaptive protection/bot management) that inspect the `User-Agent` header on every request. Measured behavior against a live WAF-fronted environment: sending no `User-Agent` at all (today's default) or a bare `Product/Version` token (e.g. `ISHRemote/8.3.0`) both get bucketed with known non-browser tooling (`curl`, `python-requests`, ...) and blocked with `HTTP 403 Forbidden`. When WAF blocks the connection on the first `403` from the `connectionconfiguration.xml` probe, `New-IshSession` retries once with `Mozilla/5.0 (compatible; ISHRemote/{version}; +https://github.com/rws/ISHRemote)`; on success that header sticks for the session's lifetime and every subsequent request carries it. Windows PowerShell 5.1 (`net48`) will warn instead of a raw WCF exception, recommending you to ask your Tridion Docs administrator to adjust the WAF bot-management rule for this endpoint, or switch to PowerShell 7+ where the fallback is applied automatically. See #275. Thanks @ddemeyer
 * Enhanced `New-IshSession` and `Test-IshSession` protocol `Autodetect` (the default) to select `OpenApiWithOpenIdConnect` on Tridion Docs 15/15.0.0 and later, instead of `WcfSoapWithOpenIdConnect` on earlier ISHRemote versions. Cmdlets already choose between OpenAPI and SOAP per call, so `WcfSoapWithOpenIdConnect` remains the per-cmdlet fallback. An explicit `-Protocol`, including `WcfSoapWithOpenIdConnect`, works as before.  See #282. Thanks @ddemeyer
+* Extended `Remove-IshPublicationOutput` with switch `-Unrelease` which sets released publication outputs to Draft before removing them, skipping outputs that are currently publishing with a warning. Supersedes #262. See #268. Thanks @ddemeyer
 * Package bumps, deliberate adding of `System.Security.Cryptography.Xml` to fix vulnerability coming from transitive `System.ServiceModel.Primitives`. See #278 and #279. Thanks @ddemeyer
 
 
